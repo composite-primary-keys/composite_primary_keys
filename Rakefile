@@ -38,17 +38,18 @@ end
 SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions))
 
 desc 'Build the MySQL test databases'
-task :build_mysql_databases do 
-  %x( mysqladmin  create activerecord_unittest )
-  %x( mysqladmin  create activerecord_unittest2 )
-  %x( mysql  activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql.sql')} )
-  %x( mysql  activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql2.sql')} )
+task :build_mysql_databases => [:drop_mysql_databases] do 
+  puts File.join(SCHEMA_PATH, 'mysql.sql')
+  %x( mysqladmin -u root create activerecord_unittest )
+  #%x( mysqladmin  -u root create activerecord_unittest2 )
+  %x( mysql -u root activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql.sql')} )
+  #%x( mysql -u root activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql2.sql')} )
 end
 
 desc 'Drop the MySQL test databases'
 task :drop_mysql_databases do 
-  %x( mysqladmin -f drop activerecord_unittest )
-  %x( mysqladmin -f drop activerecord_unittest2 )
+  %x( mysqladmin -u root -f drop activerecord_unittest )
+  #%x( mysqladmin -u root -f drop activerecord_unittest2 )
 end
 
 desc 'Rebuild the MySQL test databases'
@@ -166,10 +167,10 @@ end
 
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do
-  `rubyforge login`
+  `ruby scripts/rubyforge login`
 
   for ext in %w( gem tgz zip )
-    release_command = "rubyforge add_release #{PKG_NAME} #{PKG_NAME} 'REL #{PKG_VERSION}' pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}"
+    release_command = "ruby scripts/rubyforge add_release #{PKG_NAME} #{PKG_NAME} 'REL #{PKG_VERSION}' pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}"
     puts release_command
     system(release_command)
   end

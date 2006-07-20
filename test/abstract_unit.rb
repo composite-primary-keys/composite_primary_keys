@@ -7,6 +7,8 @@ require 'active_record/fixtures'
 require 'active_support/binding_of_caller'
 require 'active_support/breakpoint'
 require 'connection'
+require 'composite_primary_keys'
+require 'composite_primary_keys/fixtures'
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)
 

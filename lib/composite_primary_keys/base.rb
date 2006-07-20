@@ -1,6 +1,10 @@
 module CompositePrimayKeys
   module ActiveRecord #:nodoc:
     module Base #:nodoc:
+
+      INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
+      ID_SEP = ','
+       
       def self.append_features(base)
         super
         base.extend(ClassMethods)
@@ -25,13 +29,21 @@ module CompositePrimayKeys
         # whether you name it the default 'id' or set it to something else.
         def id
           attr_names = self.class.primary_keys
-          attr_names.map do |attr_name|
-            column = column_for_attribute(attr_name)
-            define_read_method(:id, attr_name, column) if self.class.generate_read_methods
-            read_attribute(attr_name)
-          end
+          attr_names.map {|attr_name| get_attr(attr_name)}
         end
         alias_method :ids, :id
+        
+        def get_attr(attr_name)
+          column = column_for_attribute(attr_name)
+          define_read_method(:id, attr_name, column) if self.class.generate_read_methods
+          read_attribute(attr_name)
+        end
+  
+        #id_to_s([1,2]) -> "1,2"
+        #id_to_s([1,2], '-') -> "1-2"
+        def id_to_s(ids, id_sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP)
+          ids.map{|id| self.class.sanitize(id)}.join("#{id_sep}")
+        end
   
         # Enables Active Record objects to be used as URL parameters in Action Pack automatically.
         def to_param
@@ -56,27 +68,57 @@ module CompositePrimayKeys
           end
           ids.each {|id| write_attribute(self.class.primary_key , id)}
         end
+        
+        # Define an attribute reader method.  Cope with nil column.
+        def define_read_method(symbol, attr_name, column)
+          cast_code = column.type_cast_code('v') if column
+          access_code = cast_code ? "(v=@attributes['#{attr_name}']) && #{cast_code}" : "@attributes['#{attr_name}']"
+          
+          unless self.class.primary_keys.include? attr_name.to_sym
+            access_code = access_code.insert(0, "raise NoMethodError, 'missing attribute: #{attr_name}', caller unless @attributes.has_key?('#{attr_name}'); ")
+            self.class.read_methods << attr_name
+          end
+          
+          evaluate_read_method attr_name, "def #{symbol}; #{access_code}; end"
+        end
+        
+        def method_missing(method_id, *args, &block)
+          method_name = method_id.to_s
+          if @attributes.include?(method_name) or
+              (md = /\?$/.match(method_name) and
+              @attributes.include?(method_name = md.pre_match))
+            define_read_methods if self.class.read_methods.empty? && self.class.generate_read_methods
+            md ? query_attribute(method_name) : read_attribute(method_name)
+          elsif self.class.primary_keys.include? method_name.to_sym
+            get_attr(method_name.to_sym)
+          elsif md = /(=|_before_type_cast)$/.match(method_name)
+            attribute_name, method_type = md.pre_match, md.to_s
+            if @attributes.include?(attribute_name)
+              case method_type
+                when '='
+                  write_attribute(attribute_name, args.first)
+                when '_before_type_cast'
+                  read_attribute_before_type_cast(attribute_name)
+              end
+            else
+              super
+            end
+          else
+            super
+          end
+        end
       end
       
       module CompositeClassMethods
         
-        INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
-        ID_SEP = ','
-       
-        def primary_keys_to_s(sep = ID_SEP)
+        def primary_keys_to_s(sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP)
           primary_keys.map(&:to_s).join(sep)
         end
        
         #ids_to_s([[1,2],[7,3]]) -> "(1,2),(7,3)"
         #ids_to_s([[1,2],[7,3]], ',', ';', '', '') -> "1,2;7,3"
-        def ids_to_s(ids, id_sep = ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
+        def ids_to_s(ids, id_sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
           "#{left_bracket}#{ids.map{|id| sanitize(id)}.join('#{id_sep}')}#{right_bracket}"
-        end
-  
-        #id_to_s([1,2]) -> "1,2"
-        #id_to_s([1,2], '-') -> "1-2"
-        def id_to_s(ids, id_sep = ID_SEP)
-          "#{ids.map{|id| sanitize(id)}.join('#{id_sep}')}"
         end
   
         # Returns true if the given +ids+ represents the primary keys of a record in the database, false otherwise.
@@ -102,7 +144,7 @@ module CompositePrimayKeys
        
         # Alias for the composite primary_keys accessor method
         def primary_key
-          raise INVALID_FOR_COMPOSITE_KEYS
+          raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           # primary_keys
           # Initially invalidate the method to find places where its used
         end
@@ -117,30 +159,30 @@ module CompositePrimayKeys
           end
           @columns
         end
-  
+          
         ## DEACTIVATED METHODS ##
-  
+        public
         # Lazy-set the sequence name to the connection's default.  This method
         # is only ever called once since set_sequence_name overrides it.
-        def sequence_name #:nodoc:
-          raise INVALID_FOR_COMPOSITE_KEYS
-        end
-  
-        def reset_sequence_name #:nodoc:
-          raise INVALID_FOR_COMPOSITE_KEYS
-        end
-  
-        def set_primary_key(value = nil, &block)
-          raise INVALID_FOR_COMPOSITE_KEYS
-        end
+          def sequence_name #:nodoc:
+            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+          end
+    
+          def reset_sequence_name #:nodoc:
+            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+          end
+    
+          def set_primary_key(value = nil, &block)
+            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+          end
        
         private
           def find_one(id, options)
-            raise INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
        
           def find_some(ids, options)
-            raise INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
   
           def find_from_ids(ids, options)
@@ -171,7 +213,7 @@ module CompositePrimayKeys
             result = find_every(options)
   
             if result.size == ids.size
-              result
+              ids.size == 1 ? result[0] : result
             else
               raise RecordNotFound, "Couldn't find all #{name.pluralize} with IDs (#{ids_list})#{conditions}"
             end
