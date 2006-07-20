@@ -1,0 +1,8 @@
+* 0.0.1 * Initial version
+ - set_primary_keys(*keys) is the activation class method to transform an ActiveRecord into
+ 		a composite primary key AR
+ - find(*ids) supports the passing of 
+ 		- id sets: Foo.find(2,1), 
+ 		- lists of id sets: Foo.find([2,1], [7,3], [8,12]), 
+ 		- and even stringified versions of the above:
+ 		- Foo.find '2,1' or Foo.find '2,1;7,3'
