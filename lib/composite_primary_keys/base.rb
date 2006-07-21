@@ -29,16 +29,10 @@ module CompositePrimayKeys
         # whether you name it the default 'id' or set it to something else.
         def id
           attr_names = self.class.primary_keys
-          attr_names.map {|attr_name| get_attr(attr_name)}
+          attr_names.map {|attr_name| read_attribute(attr_name)}
         end
         alias_method :ids, :id
         
-        def get_attr(attr_name)
-          column = column_for_attribute(attr_name)
-          define_read_method(:id, attr_name, column) if self.class.generate_read_methods
-          read_attribute(attr_name)
-        end
-  
         #id_to_s([1,2]) -> "1,2"
         #id_to_s([1,2], '-') -> "1-2"
         def id_to_s(ids, id_sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP)
