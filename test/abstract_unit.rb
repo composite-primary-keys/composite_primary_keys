@@ -49,6 +49,29 @@ class Test::Unit::TestCase #:nodoc:
   def assert_no_queries(&block)
     assert_queries(0, &block)
   end
+  
+  cattr_accessor :classes
+protected
+  
+  def testing_with(&block)
+    classes.keys.each do |@key_test|
+      @klass, @primary_keys = classes[@key_test][:class], classes[@key_test][:primary_keys]
+      @first = @klass.find_first
+      yield
+    end
+  end
+  
+  def first_id
+    (1..@primary_keys.length).map {|num| 1}
+  end
+  
+  def first_id_str
+    first_id.join(CompositePrimaryKeys::ID_SEP)
+  end
+  
+  def composite?
+    @key_test != :single
+  end  
 end
 
 def current_adapter?(type)

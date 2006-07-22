@@ -37,5 +37,5 @@ end
 require 'composite_primary_keys/base'
 
 ActiveRecord::Base.class_eval do
-  include CompositePrimayKeys::ActiveRecord::Base
+  include CompositePrimaryKeys::ActiveRecord::Base
 end

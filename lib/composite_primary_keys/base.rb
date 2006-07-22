@@ -1,29 +1,38 @@
-module CompositePrimayKeys
+module CompositePrimaryKeys
   module ActiveRecord #:nodoc:
     module Base #:nodoc:
 
       INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
-      ID_SEP = ','
        
       def self.append_features(base)
         super
+        base.send(:include, InstanceMethods)
         base.extend(ClassMethods)
       end
     
       module ClassMethods
         def set_primary_keys(*keys)
-          @@primary_keys = []
           cattr_accessor :primary_keys 
-          self.primary_keys = keys
+          self.primary_keys = CompositePrimaryKeys::PrimaryKeys.new(keys)
           
           class_eval <<-EOV
-            include CompositePrimayKeys::ActiveRecord::Base::InstanceMethods
-            extend CompositePrimayKeys::ActiveRecord::Base::CompositeClassMethods
+            include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
+            extend CompositePrimaryKeys::ActiveRecord::Base::CompositeClassMethods
           EOV
+          
+          #puts "#{self.class}-#{self}.composite = #{self.composite?}"
+        end
+        
+        def composite?
+          false
         end
       end
+      
+      module InstanceMethods
+        def composite?; self.class.composite?; end
+      end
      
-      module InstanceMethods  
+      module CompositeInstanceMethods  
         
         # A model instance's primary keys is always available as model.ids
         # whether you name it the default 'id' or set it to something else.
@@ -35,7 +44,7 @@ module CompositePrimayKeys
         
         #id_to_s([1,2]) -> "1,2"
         #id_to_s([1,2], '-') -> "1-2"
-        def id_to_s(ids, id_sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP)
+        def id_to_s(ids, id_sep = CompositePrimaryKeys::ID_SEP)
           ids.map{|id| self.class.sanitize(id)}.join("#{id_sep}")
         end
   
@@ -104,14 +113,16 @@ module CompositePrimayKeys
       end
       
       module CompositeClassMethods
+        def primary_key; primary_keys; end
+        def primary_key=(keys); primary_keys = keys; end
         
-        def primary_keys_to_s(sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP)
-          primary_keys.map(&:to_s).join(sep)
+        def composite?
+          true
         end
        
         #ids_to_s([[1,2],[7,3]]) -> "(1,2),(7,3)"
         #ids_to_s([[1,2],[7,3]], ',', ';', '', '') -> "1,2;7,3"
-        def ids_to_s(ids, id_sep = CompositePrimayKeys::ActiveRecord::Base::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
+        def ids_to_s(ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
           "#{left_bracket}#{ids.map{|id| sanitize(id)}.join('#{id_sep}')}#{right_bracket}"
         end
   
@@ -127,7 +138,7 @@ module CompositePrimayKeys
         # If an array of ids is provided (e.g. delete([1,2], [3,4]), all of them
         # are deleted.
         def delete(*ids)
-          delete_all([ "(#{primary_keys_to_s}) IN (#{ids_to_s(ids)})" ])
+          delete_all([ "(#{primary_keys}) IN (#{ids_to_s(ids)})" ])
         end
   
         # Destroys the record with the given +ids+ by instantiating the object and calling #destroy (all the callbacks are the triggered).
@@ -136,13 +147,6 @@ module CompositePrimayKeys
           ids.first.is_a?(Array) ? ids.each { |id_set| destroy(id_set) } : find(ids).destroy
         end
        
-        # Alias for the composite primary_keys accessor method
-        def primary_key
-          raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
-          # primary_keys
-          # Initially invalidate the method to find places where its used
-        end
-  
         # Returns an array of column objects for the table associated with this class.
         # Each column that matches to one of the primary keys has its
         # primary attribute set to true
@@ -159,24 +163,24 @@ module CompositePrimayKeys
         # Lazy-set the sequence name to the connection's default.  This method
         # is only ever called once since set_sequence_name overrides it.
           def sequence_name #:nodoc:
-            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
     
           def reset_sequence_name #:nodoc:
-            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
     
           def set_primary_key(value = nil, &block)
-            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
        
         private
           def find_one(id, options)
-            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
        
           def find_some(ids, options)
-            raise CompositePrimayKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
   
           def find_from_ids(ids, options)

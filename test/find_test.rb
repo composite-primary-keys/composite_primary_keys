@@ -6,7 +6,7 @@ require 'fixtures/reference_code'
 class FindTest < Test::Unit::TestCase
   fixtures :reference_types, :reference_codes
   
-  CLASSES = {
+  @@classes = {
     :single => {
       :class => ReferenceType,
       :primary_keys => [:reference_type_id],
@@ -16,16 +16,6 @@ class FindTest < Test::Unit::TestCase
       :primary_keys => [:reference_type_id, :reference_code],
     }
   }
-  
-  def test_primary_keys
-    testing_with do
-      if composite?
-        assert_equal @primary_keys, @klass.primary_keys
-      else
-        assert_equal @primary_keys, [@klass.primary_key.to_sym]
-      end
-    end
-  end
   
   def test_find_first
     testing_with do
@@ -64,25 +54,4 @@ class FindTest < Test::Unit::TestCase
     end
   end
   
-protected
-  
-  def testing_with(&block)
-    CLASSES.keys.each do |@key_test|
-      @klass, @primary_keys = CLASSES[@key_test][:class], CLASSES[@key_test][:primary_keys]
-      @first = @klass.find_first
-      yield
-    end
-  end
-  
-  def first_id
-    (1..@primary_keys.length).map {|num| 1}
-  end
-  
-  def first_id_str
-    first_id.join(',')
-  end
-  
-  def composite?
-    @key_test != :single
-  end  
 end
