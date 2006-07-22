@@ -36,7 +36,6 @@ class FindTest < Test::Unit::TestCase
       found = @klass.find(*first_id) # e.g. find(1,1) or find 1,1
       assert found
       assert_equal @klass, found.class
-      #breakpoint
       assert_equal found, @klass.find(found.id)
       assert_equal found, @klass.find(found.to_param)
     end

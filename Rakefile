@@ -9,7 +9,7 @@ require File.join(File.dirname(__FILE__), 'lib', 'composite_primary_keys', 'vers
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
 PKG_NAME      = 'composite_primary_keys'
-PKG_VERSION   = CompositePrimayKeys::VERSION::STRING + PKG_BUILD
+PKG_VERSION   = CompositePrimaryKeys::VERSION::STRING + PKG_BUILD
 PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
 
 RELEASE_NAME  = "REL #{PKG_VERSION}"

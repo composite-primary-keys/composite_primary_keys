@@ -7,9 +7,11 @@ has a *composite primary key*, one of which is a foreign key to a parent Referen
 
 <pre syntax="ruby">require 'compositekeys'
 ReferenceType.primary_key
-=> "reference_type_id"  # normal single key ActiveRecord
+=> "reference_type_id"                   # normal single key
 ReferenceCode.primary_keys
-=> [:reference_type_id, :reference_code] # composite key ActiveRecord</pre>
+=> [:reference_type_id, :reference_code] # composite keys
+ReferenceCode.primary_keys.to_s
+=> "reference_type_id,reference_code"</pre>
 
 Now we want to be able to find instances using the same syntax we always use for ActiveRecords...
 

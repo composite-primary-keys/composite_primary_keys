@@ -3,6 +3,9 @@
 require 'redcloth'
 require 'syntax/convertors/html'
 require 'erb'
+require '../lib/composite_primary_keys/version.rb'
+
+version = CompositePrimaryKeys::VERSION::STRING
 
 class Fixnum
   def ordinal
@@ -28,7 +31,7 @@ def convert_syntax(syntax, source)
   return Syntax::Convertors::HTML.for_syntax(syntax).convert(source).gsub(%r!^<pre>|</pre>$!,'')
 end
 
-if ARGV.length <= 2
+if ARGV.length >= 1
   src, template = ARGV
   template ||= 'template.rhtml'
 else

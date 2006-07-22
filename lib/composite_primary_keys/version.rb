@@ -1,4 +1,4 @@
-module CompositePrimayKeys
+module CompositePrimaryKeys
   module VERSION #:nodoc:
     MAJOR = 0
     MINOR = 1

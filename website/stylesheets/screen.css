@@ -16,10 +16,6 @@ h1 {
   line-height: 0.8em;
   letter-spacing: -0.1ex;
 }
-* {
-  padding: 0;
-  margin: 0 0 24px 0;
-}
 li {
   padding: 0;
   margin: 0;
@@ -70,6 +66,21 @@ pre, code {
 .number { color: #F99; }
 .expr { color: #227; }
 
-/* vim: ts=2 sw=2 
-*/
-	
+#version {
+  float: right;
+  text-align: right;
+  font-family: sans-serif;
+  font-weight: normal;
+  background-color: #ff8;
+  color: #66f;
+  padding: 15px 20px 10px 20px;
+  margin: 0 auto;
+  border: 3px solid #ffffff;
+}
+
+#version .numbers {
+  display: block;
+  font-size: 4em;
+  line-height: 0.8em;
+  letter-spacing: -0.1ex;
+}
