@@ -55,7 +55,8 @@ protected
   
   def testing_with(&block)
     classes.keys.each do |@key_test|
-      @klass, @primary_keys = classes[@key_test][:class], classes[@key_test][:primary_keys]
+      @klass_info = classes[@key_test]
+      @klass, @primary_keys = @klass_info[:class], @klass_info[:primary_keys]
       @first = @klass.find_first
       yield
     end

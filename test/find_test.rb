@@ -25,12 +25,6 @@ class FindTest < Test::Unit::TestCase
     end
   end
   
-  def test_ids
-    testing_with do
-      assert_equal @first.id, @first.ids if composite?
-    end
-  end
-  
   def test_find
     testing_with do
       found = @klass.find(*first_id) # e.g. find(1,1) or find 1,1

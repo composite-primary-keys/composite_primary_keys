@@ -2,11 +2,11 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class DummyTest < Test::Unit::TestCase
-
-  def test_truth
+class IdsTest < Test::Unit::TestCase
+  
+  def test_ids
     testing_with do
-      assert true
+      assert_equal @first.id, @first.ids if composite?
     end
   end
 end

@@ -44,13 +44,13 @@ module CompositePrimaryKeys
         
         #id_to_s([1,2]) -> "1,2"
         #id_to_s([1,2], '-') -> "1-2"
-        def id_to_s(ids, id_sep = CompositePrimaryKeys::ID_SEP)
+        def id_to_s(id_sep = CompositePrimaryKeys::ID_SEP)
           ids.map{|id| self.class.sanitize(id)}.join("#{id_sep}")
         end
   
         # Enables Active Record objects to be used as URL parameters in Action Pack automatically.
         def to_param
-          id_to_s(ids)
+          id_to_s
         end
   
         def id_before_type_cast #:nodoc:
@@ -109,6 +109,18 @@ module CompositePrimaryKeys
           else
             super
           end
+        end
+        
+      private
+        # Updates the associated record with values matching those of the instance attributes.
+        def update
+          connection.update(
+            "UPDATE #{self.class.table_name} " +
+            "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
+            "WHERE (#{self.class.primary_key}) = (#{id_to_s})",
+            "#{self.class.name} Update"
+          )
+          return true
         end
       end
       
