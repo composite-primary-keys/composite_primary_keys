@@ -1,3 +1,7 @@
+* 0.1.4 *
+	- it was important that #{primary_key} for composites --> 'key1,key2' and not 'key1key2'
+	  so created PrimaryKeys class
+
 * 0.0.1 * Initial version
  - set_primary_keys(*keys) is the activation class method to transform an ActiveRecord into
  		a composite primary key AR
