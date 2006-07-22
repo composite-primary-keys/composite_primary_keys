@@ -5,7 +5,8 @@ require 'syntax/convertors/html'
 require 'erb'
 require '../lib/composite_primary_keys/version.rb'
 
-version = CompositePrimaryKeys::VERSION::STRING
+version  = CompositePrimaryKeys::VERSION::STRING
+download = 'http://rubyforge.org/compositekeys'
 
 class Fixnum
   def ordinal

@@ -8,18 +8,18 @@ has a *composite primary key*, one of which is a foreign key to a parent Referen
 <pre syntax="ruby">require 'compositekeys'
 ReferenceType.primary_key
 => "reference_type_id"                   # normal single key
-ReferenceCode.primary_keys
+ReferenceCode.primary_key
 => [:reference_type_id, :reference_code] # composite keys
-ReferenceCode.primary_keys.to_s
+ReferenceCode.primary_key.to_s
 => "reference_type_id,reference_code"</pre>
 
 Now we want to be able to find instances using the same syntax we always use for ActiveRecords...
 
 <pre syntax="ruby">ReferenceType.find 1    # single id returns single instance
-=> &hash;<ReferenceType:0x392a8c8 @attributes={"reference_type_id"=>"1", 
+=> <ReferenceType:0x392a8c8 @attributes={"reference_type_id"=>"1", 
 "abbreviation"=>"Name Prefix", "type_label"=>"NAME_PREFIX"}>
 ReferenceCode.find 1,1  # composite ids returns single instance
-=> &hash;<ReferenceCode:0x39218b0 @attributes={"reference_type_id"=>"1", 
+=> <ReferenceCode:0x39218b0 @attributes={"reference_type_id"=>"1", 
 "code_label"=>"MR", "abbreviation"=>"Mr", "reference_code"=>"1"}></pre>
 
 Using "Ruby on Rails":http://www.rubyonrails.org? You'll want to your url_for helpers
@@ -28,7 +28,7 @@ to convert composite keys into strings and back again...
 <pre syntax="ruby">param_id = ReferenceCode.find_first.to_param
 => "1,1"
 ReferenceCode.find param_id
-=> => &hash;<ReferenceCode:0x3904288 @attributes={"reference_type_id"=>"1", 
+=> => <ReferenceCode:0x3904288 @attributes={"reference_type_id"=>"1", 
 "code_label"=>"MR", "abbreviation"=>"Mr", "reference_code"=>"1"}></pre>
 
 That is, an ActiveRecord supporting composite keys should behave transparently
@@ -38,13 +38,14 @@ h2. Installing
 
 <pre syntax="ruby">gem install composite_primary_keys</pre>
 
-To activate your ActiveRecords...
+To prepare ActiveRecords for composite primary keys...
 
 <pre syntax="ruby">require 'composite_primary_keys'</pre>
 
-The definition of a class with composite primary keys would like...
+A class with composite primary keys would look like...
 
 <pre syntax="ruby">class ReferenceCode < ActiveRecord::Base
+  # set_primary_keys *keys - turns on composite key functionality
   set_primary_keys :reference_type_id, :reference_code
   belongs_to :reference_type, :foreign_key => "reference_type_id"
 end</pre>
@@ -52,18 +53,22 @@ end</pre>
 
 h2. Other tricks
 
-<pre syntax="ruby">ReferenceCode.find([2,1], [2,2]) # list of composite ids
+<pre syntax="ruby">ReferenceCode.find [2,1], [2,2]  # list of composite ids
 => [
-  &hash;<ReferenceCode:0x394ade8 @attributes={"reference_type_id"=>"2", 
+  <ReferenceCode:0x394ade8 @attributes={"reference_type_id"=>"2", 
   "code_label"=>"MALE", "abbreviation"=>"Male", "reference_code"=>"1"}>, 
-  &hash;<ReferenceCode:0x394ada0 @attributes={"reference_type_id"=>"2", 
+  <ReferenceCode:0x394ada0 @attributes={"reference_type_id"=>"2", 
   "code_label"=>"FEMALE", "abbreviation"=>"Female", "reference_code"=>"2"}>
 ]</pre>
+
+h2. Forum
+
+"http://groups.google.com/group/compositeprimarykeys":http://groups.google.com/group/compositeprimarykeys
+
 h2. Licence
 
 This code is free to use under the terms of the MIT licence. 
 
 h2. Contact
 
-Comments are welcome. Send an email to "drnicwilliams@gmail.com":mailto:drnicwilliams@gmail.com.
-
+Comments are welcome. Send an email to "Dr Nic Williams":mailto:drnicwilliams@gmail.com.

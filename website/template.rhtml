@@ -31,13 +31,14 @@
 <div id="main">
 
     <h1><%= title %></h1>
-    <div id="version">
-      Version
-      <span class="numbers"><%= version %></span>
+    <div id="version" class="clickable" onclick='document.location = "<%= download %>"; return false'>
+      Get Version
+      <a href="<%= download %>" class="numbers"><%= version %></a>
     </div>
     <%= body %>
     <p class="coda">
-      Dr Nic, <%= modified.pretty %>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, <%= modified.pretty %><br>
+      Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
 </body>

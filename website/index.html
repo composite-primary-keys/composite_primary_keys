@@ -31,9 +31,9 @@
 <div id="main">
 
     <h1>compositekeys &#8211; ActiveRecord Composite Primary Keys</h1>
-    <div id="version">
-      Version
-      <span class="numbers">0.1.4</span>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/compositekeys"; return false'>
+      Get Version
+      <a href="http://rubyforge.org/compositekeys" class="numbers">0.2.1</a>
     </div>
     <h2>Instant look-see</h2>
 
@@ -45,9 +45,9 @@ has a <strong>composite primary key</strong>, one of which is a foreign key to a
 	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">compositekeys</span><span class="punct">'</span>
 <span class="constant">ReferenceType</span><span class="punct">.</span><span class="ident">primary_key</span>
 <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>                   <span class="comment"># normal single key</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_keys</span>
+<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_key</span>
 <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span><span class="punct">]</span> <span class="comment"># composite keys</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_keys</span><span class="punct">.</span><span class="ident">to_s</span>
+<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_key</span><span class="punct">.</span><span class="ident">to_s</span>
 <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id,reference_code</span><span class="punct">&quot;</span></pre></p>
 
 
@@ -55,10 +55,10 @@ has a <strong>composite primary key</strong>, one of which is a foreign key to a
 
 
 	<p><pre class="syntax"><span class="constant">ReferenceType</span><span class="punct">.</span><span class="ident">find</span> <span class="number">1</span>    <span class="comment"># single id returns single instance</span>
-<span class="punct">=&gt;</span> <span class="punct">&amp;</span><span class="ident">hash</span><span class="punct">;&lt;</span><span class="constant">ReferenceType</span><span class="punct">:</span><span class="number">0x392a8c8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
+<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceType</span><span class="punct">:</span><span class="number">0x392a8c8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
 <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Name Prefix</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">type_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">NAME_PREFIX</span><span class="punct">&quot;}&gt;</span>
 <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="number">1</span><span class="punct">,</span><span class="number">1</span>  <span class="comment"># composite ids returns single instance</span>
-<span class="punct">=&gt;</span> <span class="punct">&amp;</span><span class="ident">hash</span><span class="punct">;&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x39218b0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
+<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x39218b0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
 <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MR</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Mr</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
 
 
@@ -69,7 +69,7 @@ to convert composite keys into strings and back again&#8230;</p>
 	<p><pre class="syntax"><span class="ident">param_id</span> <span class="punct">=</span> <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find_first</span><span class="punct">.</span><span class="ident">to_param</span>
 <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">1,1</span><span class="punct">&quot;</span>
 <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="ident">param_id</span>
-<span class="punct">=&gt;</span> <span class="punct">=&gt;</span> <span class="punct">&amp;</span><span class="ident">hash</span><span class="punct">;&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x3904288</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
+<span class="punct">=&gt;</span> <span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x3904288</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
 <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MR</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Mr</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
 
 
@@ -83,16 +83,17 @@ throughout your application.</p>
 	<p><pre class="syntax"><span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
 
 
-	<p>To activate your ActiveRecords&#8230;</p>
+	<p>To prepare ActiveRecords for composite primary keys&#8230;</p>
 
 
 	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
 
 
-	<p>The definition of a class with composite primary keys would like&#8230;</p>
+	<p>A class with composite primary keys would look like&#8230;</p>
 
 
 	<p><pre class="syntax"><span class="keyword">class </span><span class="class">ReferenceCode</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
+  <span class="comment"># set_primary_keys *keys - turns on composite key functionality</span>
   <span class="ident">set_primary_keys</span> <span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span>
   <span class="ident">belongs_to</span> <span class="symbol">:reference_type</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>
 <span class="keyword">end</span></pre></p>
@@ -101,13 +102,21 @@ throughout your application.</p>
 	<h2>Other tricks</h2>
 
 
-<pre class="syntax"><span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span><span class="punct">([</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">2</span><span class="punct">])</span> <span class="comment"># list of composite ids</span>
+	<p><pre class="syntax"><span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">2</span><span class="punct">]</span>  <span class="comment"># list of composite ids</span>
 <span class="punct">=&gt;</span> <span class="punct">[</span>
-  <span class="punct">&amp;</span><span class="ident">hash</span><span class="punct">;&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ade8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
+  <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ade8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
   <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MALE</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Male</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;,</span> 
-  <span class="punct">&amp;</span><span class="ident">hash</span><span class="punct">;&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ada0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
+  <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ada0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
   <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">FEMALE</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Female</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;}&gt;</span>
-<span class="punct">]</span></pre>
+<span class="punct">]</span></pre></p>
+
+
+	<h2>Forum</h2>
+
+
+	<p><a href="http://groups.google.com/group/compositeprimarykeys">http://groups.google.com/group/compositeprimarykeys</a></p>
+
+
 	<h2>Licence</h2>
 
 
@@ -117,9 +126,10 @@ throughout your application.</p>
 	<h2>Contact</h2>
 
 
-	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">drnicwilliams@gmail.com</a>.</p>
+	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      Dr Nic, 22nd July 2006
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 23rd July 2006<br>
+      Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
 </body>

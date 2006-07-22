@@ -75,7 +75,7 @@ pre, code {
   color: #66f;
   padding: 15px 20px 10px 20px;
   margin: 0 auto;
-  border: 3px solid #ffffff;
+  border: 3px solid #66f;
 }
 
 #version .numbers {
@@ -84,3 +84,13 @@ pre, code {
   line-height: 0.8em;
   letter-spacing: -0.1ex;
 }
+
+#version a {
+  text-decoration: none;
+}
+
+.clickable {
+	cursor:	pointer; 
+	cursor:	hand;
+}
+
