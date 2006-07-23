@@ -45,7 +45,10 @@ module CompositePrimaryKeys
           )
         end
         alias_method :ids, :id
-        alias_method :to_param, :id
+        
+        def to_param
+          id.to_s
+        end
         
         def id_before_type_cast #:nodoc:
             raise CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
