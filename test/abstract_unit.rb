@@ -1,7 +1,7 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-$:.unshift(File.dirname(__FILE__) + '/../../activesupport/lib')
 
 require 'test/unit'
+require 'hash_tricks'
 require 'active_record'
 require 'active_record/fixtures'
 require 'active_support/binding_of_caller'
@@ -15,7 +15,7 @@ QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Obj
 class Test::Unit::TestCase #:nodoc:
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   self.use_instantiated_fixtures = false
-  self.use_transactional_fixtures = (ENV['AR_NO_TX_FIXTURES'] != "yes")
+  self.use_transactional_fixtures = true #(ENV['AR_NO_TX_FIXTURES'] != "yes")
 
   def create_fixtures(*table_names, &block)
     Fixtures.create_fixtures(File.dirname(__FILE__) + "/fixtures/", table_names, {}, &block)

@@ -24,6 +24,7 @@ PKG_FILES = FileList[
 
 desc "Default Task"
 task :default => [ :test_mysql ] # UNTESTED =, :test_sqlite, :test_postgresql ]
+task :test    => [ :test_mysql ]
 
 # Run the unit tests
 
@@ -38,18 +39,15 @@ end
 SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions))
 
 desc 'Build the MySQL test databases'
-task :build_mysql_databases => [:drop_mysql_databases] do 
+task :build_mysql_databases do 
   puts File.join(SCHEMA_PATH, 'mysql.sql')
-  %x( mysqladmin -u root create activerecord_unittest )
-  #%x( mysqladmin  -u root create activerecord_unittest2 )
-  %x( mysql -u root activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql.sql')} )
-  #%x( mysql -u root activerecord_unittest < #{File.join(SCHEMA_PATH, 'mysql2.sql')} )
+  %x( mysqladmin -u root create "#{PKG_NAME}_unittest" )
+  %x( mysql -u root "#{PKG_NAME}_unittest" < #{File.join(SCHEMA_PATH, 'mysql.sql')} )
 end
 
 desc 'Drop the MySQL test databases'
 task :drop_mysql_databases do 
-  %x( mysqladmin -u root -f drop activerecord_unittest )
-  #%x( mysqladmin -u root -f drop activerecord_unittest2 )
+  %x( mysqladmin -u root -f drop "#{PKG_NAME}_unittest" )
 end
 
 desc 'Rebuild the MySQL test databases'
@@ -57,16 +55,13 @@ task :rebuild_mysql_databases => [:drop_mysql_databases, :build_mysql_databases]
 
 desc 'Build the PostgreSQL test databases'
 task :build_postgresql_databases do 
-  %x( createdb activerecord_unittest )
-  %x( createdb activerecord_unittest2 )
-  %x( psql activerecord_unittest -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} )
-  %x( psql activerecord_unittest2 -f #{File.join(SCHEMA_PATH, 'postgresql2.sql')} )
+  %x( createdb "#{PKG_NAME}_unittest" )
+  %x( psql "#{PKG_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} )
 end
 
 desc 'Drop the PostgreSQL test databases'
 task :drop_postgresql_databases do 
-  %x( dropdb   activerecord_unittest )
-  %x( dropdb   activerecord_unittest2 )
+  %x( dropdb   "#{PKG_NAME}_unittest" )
 end
 
 desc 'Rebuild the PostgreSQL test databases'
@@ -117,8 +112,8 @@ spec = Gem::Specification.new do |s|
   
   s.author = "Dr Nic Williams"
   s.email = "drnicwilliams@gmail.com"
-  s.homepage = "http://composite_primary_keys.rubyforge.org"
-  s.rubyforge_project = "composite_primary_keys"
+  s.homepage = "http://compositekeys.rubyforge.org"
+  s.rubyforge_project = "compositekeys"
 end
   
 Rake::GemPackageTask.new(spec) do |p|
@@ -153,17 +148,6 @@ end
 
 
 # Publishing ------------------------------------------------------
-
-desc "Publish the beta gem"
-task :pgem => [:package] do 
-  Rake::SshFilePublisher.new("drnicwilliams@gmail.com", "public_html/gems/gems", "pkg", "#{PKG_FILE_NAME}.gem").upload
-  `ssh drnicwilliams@gmail.com './gemupdate.sh'`
-end
-
-desc "Publish the API documentation"
-task :pdoc => [:rdoc] do 
-  Rake::SshDirPublisher.new("drnicwilliams@gmail.com", "public_html/ar", "doc").upload
-end
 
 desc "Publish the release files to RubyForge."
 task :release => [ :package ] do

@@ -3,8 +3,9 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
 class UpdateTest < Test::Unit::TestCase
+  fixtures :reference_types, :reference_codes
   
-  @@classes = {
+  CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => [:reference_type_id],
@@ -14,8 +15,13 @@ class UpdateTest < Test::Unit::TestCase
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
       :update => { :description => 'RT Desc' },
-    }
+    },
   }
+  
+  def setup
+    super
+    self.class.classes = CLASSES
+  end
   
   def test_setup
     testing_with do

@@ -3,6 +3,7 @@ module CompositePrimaryKeys
     module Base #:nodoc:
 
       INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
+      NOT_IMPLEMENTED_YET = 'Not implemented for composite primary keys yet'
        
       def self.append_features(base)
         super
@@ -12,8 +13,9 @@ module CompositePrimaryKeys
     
       module ClassMethods
         def set_primary_keys(*keys)
+          keys = keys.first if keys.first.is_a?(Array) or keys.first.is_a?(CompositeKeys)
           cattr_accessor :primary_keys 
-          self.primary_keys = CompositePrimaryKeys::PrimaryKeys.new(keys)
+          self.primary_keys = keys.to_composite_keys
           
           class_eval <<-EOV
             include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
@@ -38,29 +40,22 @@ module CompositePrimaryKeys
         # whether you name it the default 'id' or set it to something else.
         def id
           attr_names = self.class.primary_keys
-          attr_names.map {|attr_name| read_attribute(attr_name)}
+          CompositeIds.new(
+            attr_names.map {|attr_name| read_attribute(attr_name)}
+          )
         end
         alias_method :ids, :id
+        alias_method :to_param, :id
         
-        #id_to_s([1,2]) -> "1,2"
-        #id_to_s([1,2], '-') -> "1-2"
-        def id_to_s(id_sep = CompositePrimaryKeys::ID_SEP)
-          ids.map{|id| self.class.sanitize(id)}.join("#{id_sep}")
-        end
-  
-        # Enables Active Record objects to be used as URL parameters in Action Pack automatically.
-        def to_param
-          id_to_s
-        end
-  
         def id_before_type_cast #:nodoc:
-          # TODO
-          read_attribute_before_type_cast(self.class.primary_key)
+            raise CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
         end
   
         def quoted_id #:nodoc:
-          # TODO
-          quote(id, column_for_attribute(self.class.primary_key))
+          [self.class.primary_keys, ids].
+            transpose.
+            map {|attr_name,id| quote(id, column_for_attribute(attr_name))}.
+            to_composite_ids
         end
   
         # Sets the primary ID.
@@ -71,7 +66,33 @@ module CompositePrimaryKeys
           end
           ids.each {|id| write_attribute(self.class.primary_key , id)}
         end
-        
+          
+        # Deletes the record in the database and freezes this instance to reflect that no changes should
+        # be made (since they can't be persisted).
+        def destroy
+          unless new_record?
+            connection.delete <<-end_sql, "#{self.class.name} Destroy"
+              DELETE FROM #{self.class.table_name}
+              WHERE (#{self.class.primary_key}) = (#{quoted_id})
+            end_sql
+          end
+  
+          freeze
+        end
+  
+        # Returns a clone of the record that hasn't been assigned an id yet and
+        # is treated as a new record.  Note that this is a "shallow" clone:
+        # it copies the object's attributes only, not its associations.
+        # The extent of a "deep" clone is application-specific and is therefore
+        # left to the application to implement according to its need.
+        def clone
+          attrs = self.attributes_before_type_cast
+          self.class.primary_keys.each {|key| attrs.delete(key.to_s)}
+          self.class.new do |record|
+            record.send :instance_variable_set, '@attributes', attrs
+          end
+        end
+  
         # Define an attribute reader method.  Cope with nil column.
         def define_read_method(symbol, attr_name, column)
           cast_code = column.type_cast_code('v') if column
@@ -117,7 +138,7 @@ module CompositePrimaryKeys
           connection.update(
             "UPDATE #{self.class.table_name} " +
             "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
-            "WHERE (#{self.class.primary_key}) = (#{id_to_s})",
+            "WHERE (#{self.class.primary_key}) = (#{id})",
             "#{self.class.name} Update"
           )
           return true
@@ -133,9 +154,9 @@ module CompositePrimaryKeys
         end
        
         #ids_to_s([[1,2],[7,3]]) -> "(1,2),(7,3)"
-        #ids_to_s([[1,2],[7,3]], ',', ';', '', '') -> "1,2;7,3"
-        def ids_to_s(ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
-          "#{left_bracket}#{ids.map{|id| sanitize(id)}.join('#{id_sep}')}#{right_bracket}"
+        #ids_to_s([[1,2],[7,3]], ',', ';') -> "1,2;7,3"
+        def ids_to_s(many_ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
+          many_ids.map {|ids| "#{left_bracket}#{ids}#{right_bracket}"}.join(list_sep)
         end
   
         # Returns true if the given +ids+ represents the primary keys of a record in the database, false otherwise.
@@ -150,13 +171,21 @@ module CompositePrimaryKeys
         # If an array of ids is provided (e.g. delete([1,2], [3,4]), all of them
         # are deleted.
         def delete(*ids)
+          unless ids.is_a?(Array); raise "*ids must be an Array"; end
+          ids = [ids.to_composite_ids] if not ids.first.is_a?(Array)
           delete_all([ "(#{primary_keys}) IN (#{ids_to_s(ids)})" ])
         end
   
         # Destroys the record with the given +ids+ by instantiating the object and calling #destroy (all the callbacks are the triggered).
         # If an array of ids is provided, all of them are destroyed.
         def destroy(*ids)
-          ids.first.is_a?(Array) ? ids.each { |id_set| destroy(id_set) } : find(ids).destroy
+          unless ids.is_a?(Array); raise "*ids must be an Array"; end
+          if ids.first.is_a?(Array)
+            ids = ids.map{|compids| compids.to_composite_ids}
+          else
+            ids = ids.to_composite_ids
+          end
+          ids.first.is_a?(CompositeIds) ? ids.each { |id_set| find(id_set).destroy } : find(ids).destroy
         end
        
         # Returns an array of column objects for the table associated with this class.

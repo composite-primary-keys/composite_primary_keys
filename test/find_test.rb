@@ -6,7 +6,7 @@ require 'fixtures/reference_code'
 class FindTest < Test::Unit::TestCase
   fixtures :reference_types, :reference_codes
   
-  @@classes = {
+  CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => [:reference_type_id],
@@ -14,8 +14,13 @@ class FindTest < Test::Unit::TestCase
     :dual   => { 
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
-    }
+    },
   }
+  
+  def setup
+    super
+    self.class.classes = CLASSES
+  end
   
   def test_find_first
     testing_with do
