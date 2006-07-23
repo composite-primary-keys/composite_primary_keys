@@ -2,8 +2,9 @@ h1. compositekeys - ActiveRecord Composite Primary Keys
 
 h2. Instant look-see
 
-Take two classes - *ReferenceType* and *ReferenceCode* - where ReferenceCode
-has a *composite primary key*, one of which is a foreign key to a parent ReferenceType.
+Take two classes - <code syntax="ruby">ReferenceType</code> and <code syntax="ruby">ReferenceCode</code>
+ - where ReferenceCode has a *composite primary key*, 
+ one of which is a foreign key to a parent ReferenceType.
 
 <pre syntax="ruby">require 'compositekeys'
 ReferenceType.primary_key
@@ -50,6 +51,44 @@ A class with composite primary keys would look like...
   belongs_to :reference_type, :foreign_key => "reference_type_id"
 end</pre>
 
+
+h2. Associations/Composite Foreign Keys
+
+The <code syntax="ruby">has_many, has_one</code>, and <code syntax="ruby">belongs_to</code> 
+associations allow for composite foreign keys.
+
+<pre syntax="ruby">
+class Product < ActiveRecord::Base
+  set_primary_key :id  # redundant
+  has_many :product_tariffs, :foreign_key => :product_id
+  has_many :tariffs, :through => :product_tariffs, :foreign_key => :product_id
+end
+class ProductTariff < ActiveRecord::Base
+  set_primary_keys :product_id, :tariff_id, :tariff_start_date
+  belongs_to :products, :foreign_key => :product_id
+  belongs_to :tariffs,  :foreign_keys => [:tariff_id, :tariff_start_date]
+end
+class Tariff < ActiveRecord::Base
+  set_primary_keys [:tariff_id, :start_date]
+  has_many :product_tariffs, :foreign_keys => [:tariff_id, :tariff_start_date]
+end
+</pre>
+
+The Tariff table has a composite primary key. Hence, the 
+<code syntax="ruby">belongs_to</code> association from ProductTariff to Tariff
+(called :tariffs) must use a composite foreign key.
+
+The expression can use either the
+:foreign_key or :foreign_keys option to specific the ordered list of table
+columns. If the column names in both tables match, then the :foreign_key(s)
+option can be omitted.
+
+Similarly, the <code syntax="ruby">has_many</code> and <code syntax="ruby">has_one</code>
+commands require the same :foreign_key(s) options if the target table
+doesn't have column names that match its own primary key column names.
+
+The order of foreign keys should match the order of the primary keys in the 
+parent table.
 
 h2. Other tricks
 

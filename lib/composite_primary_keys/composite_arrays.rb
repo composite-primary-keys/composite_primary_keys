@@ -1,5 +1,6 @@
 module CompositePrimaryKeys
   ID_SEP = ','
+  ID_SET_SEP = ';'
   module ArrayExtension
     def to_composite_keys
       CompositeKeys.new(self)

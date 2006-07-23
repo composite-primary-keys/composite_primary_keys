@@ -33,13 +33,14 @@
     <h1>compositekeys &#8211; ActiveRecord Composite Primary Keys</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.3.2</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.4.1</a>
     </div>
     <h2>Instant look-see</h2>
 
 
-	<p>Take two classes &#8211; <strong>ReferenceType</strong> and <strong>ReferenceCode</strong> &#8211; where ReferenceCode
-has a <strong>composite primary key</strong>, one of which is a foreign key to a parent ReferenceType.</p>
+	<p>Take two classes &#8211; <code class="syntax"><span class="constant">ReferenceType</span></code> and <code class="syntax"><span class="constant">ReferenceCode</span></code>
+ &#8211; where ReferenceCode has a <strong>composite primary key</strong>, 
+ one of which is a foreign key to a parent ReferenceType.</p>
 
 
 	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">compositekeys</span><span class="punct">'</span>
@@ -97,6 +98,51 @@ throughout your application.</p>
   <span class="ident">set_primary_keys</span> <span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span>
   <span class="ident">belongs_to</span> <span class="symbol">:reference_type</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>
 <span class="keyword">end</span></pre></p>
+
+
+	<h2>Associations/Composite Foreign Keys</h2>
+
+
+	<p>The <code class="syntax"><span class="ident">has_many</span><span class="punct">,</span> <span class="ident">has_one</span></code>, and <code class="syntax"><span class="ident">belongs_to</span></code> 
+associations allow for composite foreign keys.</p>
+
+
+	<p><pre class="syntax">
+<span class="keyword">class </span><span class="class">Product</span>
+  <span class="ident">set_primary_key</span> <span class="symbol">:id</span>  <span class="comment"># redundant</span>
+  <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
+  <span class="ident">has_many</span> <span class="symbol">:tariffs</span><span class="punct">,</span> <span class="symbol">:through</span> <span class="punct">=&gt;</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
+<span class="keyword">end</span>
+<span class="keyword">class </span><span class="class">ProductTariff</span>
+  <span class="ident">set_primary_keys</span> <span class="symbol">:product_id</span><span class="punct">,</span> <span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:products</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:tariffs</span><span class="punct">,</span>  <span class="symbol">:foreign_keys</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
+<span class="keyword">end</span>
+<span class="keyword">class </span><span class="class">Tariff</span>
+  <span class="ident">set_primary_keys</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:start_date</span><span class="punct">]</span>
+  <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_keys</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
+<span class="keyword">end</span>
+</pre></p>
+
+
+	<p>The Tariff table has a composite primary key. Hence, the 
+<code class="syntax"><span class="ident">belongs_to</span></code> association from ProductTariff to Tariff
+(called :tariffs) must use a composite foreign key.</p>
+
+
+	<p>The expression can use either the
+:foreign_key or :foreign_keys option to specific the ordered list of table
+columns. If the column names in both tables match, then the :foreign_key(s)
+option can be omitted.</p>
+
+
+	<p>Similarly, the <code class="syntax"><span class="ident">has_many</span></code> and <code class="syntax"><span class="ident">has_one</span></code>
+commands require the same :foreign_key(s) options if the target table
+doesn&#8217;t have column names that match its own primary key column names.</p>
+
+
+	<p>The order of foreign keys should match the order of the primary keys in the 
+parent table.</p>
 
 
 	<h2>Other tricks</h2>

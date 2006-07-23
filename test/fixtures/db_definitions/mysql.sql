@@ -14,3 +14,24 @@ CREATE TABLE `reference_codes` (
   `description` varchar(50) default NULL,
   PRIMARY KEY  (`reference_type_id`,`reference_code`)
 ) TYPE=InnoDB;
+
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) default NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB;
+
+CREATE TABLE `tariffs` (
+  `tariff_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `amount` integer(11) default NULL,
+  PRIMARY KEY  (`tariff_id`,`start_date`)
+) TYPE=InnoDB;
+
+CREATE TABLE `product_tariffs` (
+  `product_id` int(11) NOT NULL,
+  `tariff_id` int(11) NOT NULL,
+  `tariff_start_date` date NOT NULL,
+  PRIMARY KEY  (`product_id`,`tariff_id`,`tariff_start_date`)
+) TYPE=InnoDB;
+

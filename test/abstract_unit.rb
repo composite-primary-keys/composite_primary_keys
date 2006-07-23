@@ -8,7 +8,6 @@ require 'active_support/binding_of_caller'
 require 'active_support/breakpoint'
 require 'connection'
 require 'composite_primary_keys'
-require 'composite_primary_keys/fixtures'
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)
 
@@ -63,11 +62,12 @@ protected
   end
   
   def first_id
-    (1..@primary_keys.length).map {|num| 1}
+    ids = (1..@primary_keys.length).map {|num| 1}
+    composite? ? ids.to_composite_ids : ids.first
   end
   
   def first_id_str
-    first_id.join(CompositePrimaryKeys::ID_SEP)
+    composite? ? first_id.join(CompositePrimaryKeys::ID_SEP) : first_id.to_s
   end
   
   def composite?

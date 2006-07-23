@@ -17,6 +17,7 @@ class DummyTest < Test::Unit::TestCase
   }
   
   def setup
+    super
     self.class.classes = CLASSES
   end
   

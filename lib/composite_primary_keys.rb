@@ -34,7 +34,10 @@ unless defined?(ActiveRecord)
   end
 end
 
+require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/composite_arrays'
+require 'composite_primary_keys/associations'
+require 'composite_primary_keys/reflection'
 require 'composite_primary_keys/base'
 
 ActiveRecord::Base.class_eval do

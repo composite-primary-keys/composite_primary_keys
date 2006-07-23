@@ -40,6 +40,16 @@ class FindTest < Test::Unit::TestCase
     end
   end
   
+  def test_find_composite_ids
+    testing_with do
+      found = @klass.find(first_id) # e.g. find([1,1].to_composite_ids)
+      assert found
+      assert_equal @klass, found.class
+      assert_equal found, @klass.find(found.id)
+      assert_equal found, @klass.find(found.to_param)
+    end
+  end
+  
   def test_to_param
     testing_with do
       assert_equal first_id_str, @first.to_param.to_s
