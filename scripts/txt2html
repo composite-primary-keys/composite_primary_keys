@@ -6,7 +6,7 @@ require 'erb'
 require '../lib/composite_primary_keys/version.rb'
 
 version  = CompositePrimaryKeys::VERSION::STRING
-download = 'http://rubyforge.org/compositekeys'
+download = 'http://rubyforge.org/projects/compositekeys'
 
 class Fixnum
   def ordinal
