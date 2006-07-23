@@ -63,7 +63,7 @@ h2. Other tricks
 
 h2. Forum
 
-"http://groups.google.com/group/compositeprimarykeys":http://groups.google.com/group/compositeprimarykeys
+"http://groups.google.com/group/compositekeys":http://groups.google.com/group/compositekeys
 
 h2. Licence
 
