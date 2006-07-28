@@ -42,6 +42,33 @@ class IdsTest < Test::Unit::TestCase
     end
   end
   
+  def test_set_ids_string
+    testing_with do
+      array = @primary_keys.collect {|key| 5}
+      expected = composite? ? array.to_composite_keys : array.first
+      @first.id = expected.to_s
+      assert_equal expected, @first.id
+    end
+  end
+  
+  def test_set_ids_array
+    testing_with do
+      array = @primary_keys.collect {|key| 5}
+      expected = composite? ? array.to_composite_keys : array.first
+      @first.id = expected
+      assert_equal expected, @first.id
+    end
+  end
+  
+  def test_set_ids_comp
+    testing_with do
+      array = @primary_keys.collect {|key| 5}
+      expected = composite? ? array.to_composite_keys : array.first
+      @first.id = expected
+      assert_equal expected, @first.id
+    end
+  end
+  
   def test_primary_keys
     testing_with do
       if composite?

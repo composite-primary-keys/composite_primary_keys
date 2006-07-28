@@ -62,12 +62,14 @@ module CompositePrimaryKeys
         end
   
         # Sets the primary ID.
-        def id=(value)
-          ids = id.split(value) if value.is_a?(String)
+        def id=(ids)
+          ids = ids.split(ID_SEP) if ids.is_a?(String)
+          ids.flatten!
           unless ids.is_a?(Array) and ids.length == self.class.primary_keys.length
             raise "#{self.class}.id= requires #{self.class.primary_keys.length} ids"
           end
-          ids.each {|id| write_attribute(self.class.primary_key , id)}
+          [primary_keys, ids].transpose.each {|key, an_id| write_attribute(key , an_id)}
+          id
         end
           
         # Deletes the record in the database and freezes this instance to reflect that no changes should
