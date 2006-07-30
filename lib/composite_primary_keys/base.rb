@@ -1,5 +1,8 @@
 module CompositePrimaryKeys
   module ActiveRecord #:nodoc:
+    class CompositeKeyError < StandardError #:nodoc:
+    end
+
     module Base #:nodoc:
 
       INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
@@ -51,7 +54,7 @@ module CompositePrimaryKeys
         end
         
         def id_before_type_cast #:nodoc:
-            raise CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
         end
   
         def quoted_id #:nodoc:
@@ -178,6 +181,25 @@ module CompositePrimaryKeys
           )
           return true
         end
+        
+        # Creates a new record with values matching those of the instance attributes.
+        def create
+          if self.id.nil?
+            raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"
+          end
+  
+          self.id = connection.insert(
+            "INSERT INTO #{self.class.table_name} " +
+            "(#{quoted_column_names.join(', ')}) " +
+            "VALUES(#{attributes_with_quotes.values.join(', ')})",
+            "#{self.class.name} Create",
+            self.class.primary_key, self.id
+          )
+  
+          @new_record = false
+          
+          return true
+        end
       end
       
       module CompositeClassMethods
@@ -239,24 +261,24 @@ module CompositePrimaryKeys
         # Lazy-set the sequence name to the connection's default.  This method
         # is only ever called once since set_sequence_name overrides it.
           def sequence_name #:nodoc:
-            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
     
           def reset_sequence_name #:nodoc:
-            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
     
           def set_primary_key(value = nil, &block)
-            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
        
         private
           def find_one(id, options)
-            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
        
           def find_some(ids, options)
-            raise CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
+            raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::INVALID_FOR_COMPOSITE_KEYS
           end
   
           def find_from_ids(ids, options)
