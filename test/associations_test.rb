@@ -41,4 +41,14 @@ class AssociationTest < Test::Unit::TestCase
     assert_not_nil @flat.products
     assert_equal 2, @flat.products.length
   end
+  
+  def test_find_includes
+    assert products = Product.find(:all, :include => :product_tariffs)
+    assert_equal 2, @products.length
+  end
+  
+  #I'm also having problems when I use composite primary keys together with eager loading of associations. Here I'm doing
+#ArtistName.find(:all, :include => :artist, ...)
+# => ActiveRecord::StatementInvalid: Mysql::Error: Unknown column 'artists_names.artist_id,name' in 'field list': SELECT artists_names.`artist_id,name` AS t0_r0, ....
+# Had a brief look into it but couldn't spot the code causing this...
 end

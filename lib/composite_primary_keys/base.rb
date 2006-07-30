@@ -75,19 +75,6 @@ module CompositePrimaryKeys
           id
         end
           
-        # Deletes the record in the database and freezes this instance to reflect that no changes should
-        # be made (since they can't be persisted).
-        def destroy
-          unless new_record?
-            connection.delete <<-end_sql, "#{self.class.name} Destroy"
-              DELETE FROM #{self.class.table_name}
-              WHERE (#{self.class.primary_key}) = (#{quoted_id})
-            end_sql
-          end
-  
-          freeze
-        end
-  
         # Returns a clone of the record that hasn't been assigned an id yet and
         # is treated as a new record.  Note that this is a "shallow" clone:
         # it copies the object's attributes only, not its associations.
@@ -171,20 +158,11 @@ module CompositePrimaryKeys
         end
         
       private
-        # Updates the associated record with values matching those of the instance attributes.
-        def update
-          connection.update(
-            "UPDATE #{self.class.table_name} " +
-            "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
-            "WHERE (#{self.class.primary_key}) = (#{id})",
-            "#{self.class.name} Update"
-          )
-          return true
-        end
-        
+        # The xx_without_callbacks methods are overwritten as that is the end of the alias chain
+      
         # Creates a new record with values matching those of the instance attributes.
-        def create
-          if self.id.nil?
+        def create_without_callbacks
+          unless self.id
             raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"
           end
   
@@ -195,11 +173,34 @@ module CompositePrimaryKeys
             "#{self.class.name} Create",
             self.class.primary_key, self.id
           )
-  
           @new_record = false
-          
           return true
         end
+        
+        # Updates the associated record with values matching those of the instance attributes.
+        def update_without_callbacks
+          connection.update(
+            "UPDATE #{self.class.table_name} " +
+            "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
+            "WHERE (#{self.class.primary_key}) = (#{id})",
+            "#{self.class.name} Update"
+          )
+          return true
+        end
+        
+        # Deletes the record in the database and freezes this instance to reflect that no changes should
+        # be made (since they can't be persisted).
+        def destroy_without_callbacks
+          unless new_record?
+            connection.delete <<-end_sql, "#{self.class.name} Destroy"
+              DELETE FROM #{self.class.table_name}
+              WHERE (#{self.class.primary_key}) = (#{quoted_id})
+            end_sql
+          end
+  
+          freeze
+        end
+  
       end
       
       module CompositeClassMethods
