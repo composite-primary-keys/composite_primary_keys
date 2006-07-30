@@ -33,7 +33,7 @@
     <h1>compositekeys &#8211; ActiveRecord Composite Primary Keys</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.4.1</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.3.3</a>
     </div>
     <h2>Instant look-see</h2>
 
@@ -108,17 +108,17 @@ associations allow for composite foreign keys.</p>
 
 
 	<p><pre class="syntax">
-<span class="keyword">class </span><span class="class">Product</span>
+<span class="keyword">class </span><span class="class">Product</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
   <span class="ident">set_primary_key</span> <span class="symbol">:id</span>  <span class="comment"># redundant</span>
   <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
   <span class="ident">has_many</span> <span class="symbol">:tariffs</span><span class="punct">,</span> <span class="symbol">:through</span> <span class="punct">=&gt;</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
 <span class="keyword">end</span>
-<span class="keyword">class </span><span class="class">ProductTariff</span>
+<span class="keyword">class </span><span class="class">ProductTariff</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
   <span class="ident">set_primary_keys</span> <span class="symbol">:product_id</span><span class="punct">,</span> <span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span>
   <span class="ident">belongs_to</span> <span class="symbol">:products</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
   <span class="ident">belongs_to</span> <span class="symbol">:tariffs</span><span class="punct">,</span>  <span class="symbol">:foreign_keys</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
 <span class="keyword">end</span>
-<span class="keyword">class </span><span class="class">Tariff</span>
+<span class="keyword">class </span><span class="class">Tariff</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
   <span class="ident">set_primary_keys</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:start_date</span><span class="punct">]</span>
   <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_keys</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
 <span class="keyword">end</span>
