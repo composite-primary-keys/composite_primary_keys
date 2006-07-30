@@ -1,3 +1,7 @@
+* 0.3.3 * - bug fixes
+  - id=
+  - create now work
+
 * 0.1.4 *
 	- it was important that #{primary_key} for composites --> 'key1,key2' and not 'key1key2'
 	  so created PrimaryKeys class
