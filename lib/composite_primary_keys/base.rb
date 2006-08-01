@@ -16,16 +16,15 @@ module CompositePrimaryKeys
     
       module ClassMethods
         def set_primary_keys(*keys)
-          keys = keys.first if keys.first.is_a?(Array) or keys.first.is_a?(CompositeKeys)
+          keys = keys.first if keys.first.is_a?(Array)
           cattr_accessor :primary_keys 
           self.primary_keys = keys.to_composite_keys
           
           class_eval <<-EOV
-            include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
             extend CompositePrimaryKeys::ActiveRecord::Base::CompositeClassMethods
+            include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
+            include CompositePrimaryKeys::ActiveRecord::Associations
           EOV
-          
-          #puts "#{self.class}-#{self}.composite = #{self.composite?}"
         end
         
         def composite?

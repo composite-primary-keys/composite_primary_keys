@@ -32,4 +32,9 @@ class MiscellaneousTest < Test::Unit::TestCase
       assert_equal composite?, @first.composite?
     end
   end
+  
+  def test_count
+    assert_equal 2, Product.count
+  end
+  
 end
