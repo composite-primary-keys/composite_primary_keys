@@ -151,3 +151,127 @@ module ActiveRecord::Associations::ClassMethods
     end
   end
 end
+
+module ActiveRecord::Associations
+  class AssociationProxy #:nodoc:
+    def full_keys(table_name, keys)
+      keys.is_a?(Array) ?
+        keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) :
+        "#{table_name}.#{keys}"
+    end
+  end
+
+  class HasManyAssociation < AssociationCollection #:nodoc:
+    def construct_sql
+      case
+        when @reflection.options[:finder_sql]
+          @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
+
+        when @reflection.options[:as]
+          @finder_sql = 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote @owner.class.base_class.name.to_s}"
+          @finder_sql << " AND (#{conditions})" if conditions
+            
+        else
+          @finder_sql = "(%s) = (%s)" % [
+            full_keys(@reflection.klass.table_name, @reflection.primary_key_name),
+            @owner.quoted_id
+          ]
+          @finder_sql << " AND (#{conditions})" if conditions
+      end
+
+      if @reflection.options[:counter_sql]
+        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+      elsif @reflection.options[:finder_sql]
+        # replace the SELECT clause with COUNT(*), preserving any hints within /* ... */
+        @reflection.options[:counter_sql] = @reflection.options[:finder_sql].sub(/SELECT (\/\*.*?\*\/ )?(.*)\bFROM\b/im) { "SELECT #{$1}COUNT(*) FROM" }
+        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+      else
+        @counter_sql = @finder_sql
+      end
+    end
+  end
+  
+  class HasOneAssociation < BelongsToAssociation #:nodoc:
+    def construct_sql
+      case
+        when @reflection.options[:as]
+          @finder_sql = 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote @owner.class.base_class.name.to_s}"          
+        else
+          @finder_sql = "(%s) = (%s)" % [
+            full_keys(@reflection.table_name, @reflection.primary_key_name),
+            @owner.quoted_id
+          ]
+      end
+      @finder_sql << " AND (#{conditions})" if conditions
+    end
+  end
+  
+  class HasManyThroughAssociation < AssociationProxy #:nodoc:
+    def construct_conditions
+      conditions = if @reflection.through_reflection.options[:as]
+          "#{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_id = #{@owner.quoted_id} " + 
+          "AND #{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_type = #{@owner.class.quote @owner.class.base_class.name.to_s}"
+      else
+      # FIXME - this bit wrong - not working
+        "(%s) = (%s)" % [
+          full_keys(@reflection.through_reflection.table_name, @reflection.through_reflection.primary_key_name),
+          @owner.quoted_id
+        ]
+      end
+      conditions << " AND (#{sql_conditions})" if sql_conditions
+      
+      return conditions
+    end
+    
+    def construct_joins(custom_joins = nil)          
+      polymorphic_join = nil
+      if @reflection.through_reflection.options[:as] || @reflection.source_reflection.macro == :belongs_to
+        reflection_primary_key = @reflection.klass.primary_key
+        source_primary_key     = @reflection.source_reflection.primary_key_name
+      else
+        reflection_primary_key = @reflection.source_reflection.primary_key_name
+        source_primary_key     = @reflection.klass.primary_key
+        if @reflection.source_reflection.options[:as]
+          polymorphic_join = "AND %s.%s = %s" % [
+            @reflection.table_name, "#{@reflection.source_reflection.options[:as]}_type",
+                @owner.class.quote(@reflection.through_reflection.klass.name)
+              ]
+            end
+          end
+
+          "INNER JOIN %s ON (%s) = (%s) %s #{@reflection.options[:joins]} #{custom_joins}" % [
+            @reflection.through_reflection.table_name,
+            full_keys(@reflection.table_name, reflection_primary_key),
+            full_keys(@reflection.through_reflection.table_name, source_primary_key),
+            polymorphic_join
+          ]
+    end
+    
+    def construct_sql
+      case
+        when @reflection.options[:finder_sql]
+          @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
+
+          @finder_sql = "(%s) = (%s)" % [
+                          full_keys(@reflection.klass.table_name, @reflection.primary_key_name),
+                          @owner.quoted_id
+                        ]
+          @finder_sql << " AND (#{conditions})" if conditions
+      end
+
+      if @reflection.options[:counter_sql]
+        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+      elsif @reflection.options[:finder_sql]
+        # replace the SELECT clause with COUNT(*), preserving any hints within /* ... */
+        @reflection.options[:counter_sql] = @reflection.options[:finder_sql].sub(/SELECT (\/\*.*?\*\/ )?(.*)\bFROM\b/im) { "SELECT #{$1}COUNT(*) FROM" }
+        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
+      else
+        @counter_sql = @finder_sql
+      end
+    end
+  end
+end
