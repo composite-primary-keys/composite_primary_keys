@@ -21,17 +21,17 @@ class AssociationTest < Test::Unit::TestCase
     assert_not_nil @first_flat
   end
   
-  def xtest_quoted_table_columns
+  def test_quoted_table_columns
     assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
         ProductTariff.send(:quoted_table_columns, ProductTariff.primary_key)
   end
   
-  def xtest_count
+  def test_count
     assert_equal 2, Product.count(:include => :product_tariffs)
     assert_equal 3, Tariff.count(:include => :product_tariffs)
   end
   
-  def xtest_products
+  def test_products
     assert_not_nil @first_product.product_tariffs
     assert_equal 2, @first_product.product_tariffs.length
     assert_not_nil @first_product.tariffs
@@ -39,7 +39,7 @@ class AssociationTest < Test::Unit::TestCase
     assert_not_nil @first_product.product_tariff
   end
   
-  def xtest_product_tariffs
+  def test_product_tariffs
     assert_not_nil @first_flat.product
     assert_not_nil @first_flat.tariff
     assert_equal Product, @first_flat.product.class
@@ -50,15 +50,33 @@ class AssociationTest < Test::Unit::TestCase
     assert_not_nil @flat.product_tariffs
     assert_equal 1, @flat.product_tariffs.length
     assert_not_nil @flat.products
-    assert_equal 2, @flat.products.length
+    assert_equal 1, @flat.products.length
     assert_not_nil @flat.product_tariff
   end
   
-  def test_find_includes
-    assert products = Product.find(:all, :include => :product_tariffs)
+  # Its not generating the instances of associated classes from the rows
+  def test_find_includes_products
+    assert @products = Product.find(:all, :include => :product_tariffs)
     assert_equal 2, @products.length
-    assert tariffs = Tariff.find(:all, :include => :product_tariffs)
+    assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
+    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+  end
+  
+  def test_find_includes_tariffs
+    assert @tariffs = Tariff.find(:all, :include => :product_tariffs)
     assert_equal 3, @tariffs.length
+    assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
+    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+  end
+  
+  def XXX_test_find_includes_extended
+    # TODO - what's the correct syntax?
+    assert @products = Product.find(:all, :include => {:product_tariffs => :tariffs})
+    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+    
+    assert @tariffs = Tariff.find(:all, :include => {:product_tariffs => :products})
+    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+    
   end
   
   #I'm also having problems when I use composite primary keys together with eager loading of associations. Here I'm doing

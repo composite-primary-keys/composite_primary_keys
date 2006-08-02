@@ -57,6 +57,7 @@ module CompositePrimaryKeys
         def quoted_table_columns(columns)
           table_columns(columns).join(ID_SEP)
         end
+        
       end
       
     end
@@ -65,6 +66,54 @@ end
 
 module ActiveRecord::Associations::ClassMethods
   class JoinDependency
+    def construct_association(record, join, row)
+      case join.reflection.macro
+        when :has_many, :has_and_belongs_to_many
+          collection = record.send(join.reflection.name)
+          collection.loaded
+
+          join_aliased_primary_keys = join.active_record.composite? ? 
+            join.aliased_primary_key : [join.aliased_primary_key]
+          return nil if 
+            record.id.to_s != join.parent.record_id(row).to_s or not
+            join_aliased_primary_keys.select {|key| row[key].nil?}.blank?
+          association = join.instantiate(row)
+          collection.target.push(association) unless collection.target.include?(association)
+        when :has_one, :belongs_to
+          return if record.id.to_s != join.parent.record_id(row).to_s or row[join.aliased_primary_key].nil?
+          association = join.instantiate(row)
+          record.send("set_#{join.reflection.name}_target", association)
+        else
+          raise ConfigurationError, "unknown macro: #{join.reflection.macro}"
+      end
+      return association
+    end
+    
+    class JoinBase
+      def aliased_primary_key
+        active_record.composite? ? 
+          primary_key.inject([]) {|aliased_keys, key| aliased_keys << "#{ aliased_prefix }_r#{aliased_keys.length}"} : 
+          "#{ aliased_prefix }_r0"
+      end
+
+      def record_id(row)
+        active_record.composite? ?
+          aliased_primary_key.map {|key| row[key]}.to_composite_ids :
+          row[aliased_primary_key]
+      end
+
+      def column_names_with_alias
+        unless @column_names_with_alias
+          @column_names_with_alias = []
+          keys = active_record.composite? ? primary_key.map(&:to_s) : [primary_key]
+          (keys + (column_names - keys)).each_with_index do |column_name, i|
+            @column_names_with_alias << [column_name, "#{ aliased_prefix }_r#{ i }"]
+          end
+        end
+        return @column_names_with_alias
+      end
+    end
+    
     class JoinAssociation < JoinBase
       alias single_association_join association_join
       def association_join
@@ -155,9 +204,17 @@ end
 module ActiveRecord::Associations
   class AssociationProxy #:nodoc:
     def full_keys(table_name, keys)
+      keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ?
         keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) :
         "#{table_name}.#{keys}"
+    end
+    
+    def full_columns_equals(table_name, keys, quoted_ids)
+      keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
+      keys_ids = [keys, quoted_ids]
+      keys_ids = keys.is_a?(Symbol) ? [keys_ids] : keys_ids.transpose
+      keys_ids.collect {|key, id| "(#{table_name}.#{key} = #{id})"}.join(' AND ')
     end
   end
 
@@ -174,10 +231,8 @@ module ActiveRecord::Associations
           @finder_sql << " AND (#{conditions})" if conditions
             
         else
-          @finder_sql = "(%s) = (%s)" % [
-            full_keys(@reflection.klass.table_name, @reflection.primary_key_name),
-            @owner.quoted_id
-          ]
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, 
+                                  @reflection.primary_key_name, @owner.quoted_id)
           @finder_sql << " AND (#{conditions})" if conditions
       end
 
@@ -216,11 +271,8 @@ module ActiveRecord::Associations
           "#{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_id = #{@owner.quoted_id} " + 
           "AND #{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_type = #{@owner.class.quote @owner.class.base_class.name.to_s}"
       else
-      # FIXME - this bit wrong - not working
-        "(%s) = (%s)" % [
-          full_keys(@reflection.through_reflection.table_name, @reflection.through_reflection.primary_key_name),
-          @owner.quoted_id
-        ]
+        @finder_sql = full_columns_equals(@reflection.through_reflection.table_name, 
+                                  @reflection.through_reflection.primary_key_name, @owner.quoted_id)
       end
       conditions << " AND (#{sql_conditions})" if sql_conditions
       
