@@ -11,7 +11,7 @@ class AttributesTest < Test::Unit::TestCase
   CLASSES = {
     :single => {
       :class => ReferenceType,
-      :primary_keys => [:reference_type_id],
+      :primary_keys => :reference_type_id,
     },
     :dual   => { 
       :class => ReferenceCode,
@@ -34,7 +34,7 @@ class AttributesTest < Test::Unit::TestCase
     
   def test_brackets_primary_key
     testing_with do
-      assert_equal @first.id, @first[@primary_keys]
+      assert_equal @first.id, @first[@primary_keys], "[] failing for #{@klass}"
       assert_equal @first.id, @first[@first.class.primary_key]
     end
   end

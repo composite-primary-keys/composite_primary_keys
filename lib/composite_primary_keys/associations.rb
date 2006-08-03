@@ -206,16 +206,19 @@ module ActiveRecord::Associations
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ?
-        keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) :
+        keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : 
         "#{table_name}.#{keys}"
     end
     
     def full_columns_equals(table_name, keys, quoted_ids)
+      if keys.is_a?(Symbol) or (keys.is_a?(String) and keys == keys.split(CompositePrimaryKeys::ID_SEP))
+        return "#{table_name}.#{keys} = #{quoted_ids}"
+      end
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
-      keys_ids = [keys, quoted_ids]
-      keys_ids = keys.is_a?(Symbol) ? [keys_ids] : keys_ids.transpose
+      quoted_ids = quoted_ids.split(CompositePrimaryKeys::ID_SEP) if quoted_ids.is_a?(String)
+      keys_ids = [keys, quoted_ids].transpose
       keys_ids.collect {|key, id| "(#{table_name}.#{key} = #{id})"}.join(' AND ')
-    end
+    end  
   end
 
   class HasManyAssociation < AssociationCollection #:nodoc:

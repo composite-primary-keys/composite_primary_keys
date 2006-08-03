@@ -50,3 +50,23 @@ CREATE TABLE `streets` (
   PRIMARY KEY  (`id`)
 ) TYPE=InnoDB;
 
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB;
+
+CREATE TABLE `articles` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB;
+
+CREATE TABLE `readings` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `article_id` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB;
+

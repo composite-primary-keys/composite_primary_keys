@@ -11,7 +11,7 @@ class PaginationTest < Test::Unit::TestCase
   CLASSES = {
     :single => {
       :class => ReferenceType,
-      :primary_keys => [:reference_type_id],
+      :primary_keys => :reference_type_id,
       :table => :reference_types,
     },
     :dual   => { 
