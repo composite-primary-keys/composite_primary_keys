@@ -1,4 +1,4 @@
-h1. compositekeys - ActiveRecord Composite Primary Keys
+h1. Composite Primary Keys for ActiveRecords/Ruby on Rails
 
 h2. Instant look-see
 

@@ -2,9 +2,11 @@ require 'abstract_unit'
 require 'fixtures/product'
 require 'fixtures/tariff'
 require 'fixtures/product_tariff'
+require 'fixtures/suburb'
+require 'fixtures/street'
 
 class AssociationTest < Test::Unit::TestCase
-  fixtures :products, :tariffs, :product_tariffs
+  fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets
 
   def setup
     super
@@ -79,8 +81,11 @@ class AssociationTest < Test::Unit::TestCase
     
   end
   
-  #I'm also having problems when I use composite primary keys together with eager loading of associations. Here I'm doing
-#ArtistName.find(:all, :include => :artist, ...)
-# => ActiveRecord::StatementInvalid: Mysql::Error: Unknown column 'artists_names.artist_id,name' in 'field list': SELECT artists_names.`artist_id,name` AS t0_r0, ....
-# Had a brief look into it but couldn't spot the code causing this...
+  def test_santiago
+    assert_not_nil @suburb = Suburb.find(1,1)
+    assert_equal 1, @suburb.streets.length
+    
+    assert_not_nil @street = Street.find(1)
+    assert_not_nil @street.suburb
+  end
 end

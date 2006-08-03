@@ -87,36 +87,6 @@ module CompositePrimaryKeys
           end
         end
   
-        # Allows +attr_name+ to be the list of primary_keys, and returns the id
-        # of the object
-        # e.g. @object[@object.class.primary_key] => [1,1]
-        def [](attr_name)
-          if attr_name.is_a?(String) and attr_name != attr_name.split(ID_SEP).first
-            attr_name = attr_name.split(ID_SEP)
-          end
-          attr_name.is_a?(Array) ?
-            attr_name.map {|name| read_attribute(name)} :
-            read_attribute(attr_name)
-        end
-  
-        # Updates the attribute identified by <tt>attr_name</tt> with the specified +value+.
-        # (Alias for the protected write_attribute method).
-        def []=(attr_name, value)
-          if attr_name.is_a?(String) and attr_name != attr_name.split(ID_SEP).first
-            attr_name = attr_name.split(ID_SEP)
-          end
-          if attr_name.is_a? Array
-            value = value.split(ID_SEP) if value.is_a? String
-            unless value.length == attr_name.length
-              raise "Number of attr_names and values do not match"
-            end
-            #breakpoint
-            [attr_name, value].transpose.map {|name,val| write_attribute(name.to_s, val)}
-          else
-            write_attribute(attr_name, value)
-          end
-        end
-
         # Define an attribute reader method.  Cope with nil column.
         def define_read_method(symbol, attr_name, column)
           cast_code = column.type_cast_code('v') if column
@@ -321,5 +291,43 @@ module CompositePrimaryKeys
 
       end
     end
+  end
+end
+
+module ActiveRecord
+  ID_SEP = ','
+  ID_SET_SEP = ';'
+
+  class Base
+    # Allows +attr_name+ to be the list of primary_keys, and returns the id
+    # of the object
+    # e.g. @object[@object.class.primary_key] => [1,1]
+    def [](attr_name)
+      if attr_name.is_a?(String) and attr_name != attr_name.split(ID_SEP).first
+        attr_name = attr_name.split(ID_SEP)
+      end
+      attr_name.is_a?(Array) ?
+        attr_name.map {|name| read_attribute(name)} :
+        read_attribute(attr_name)
+    end
+
+    # Updates the attribute identified by <tt>attr_name</tt> with the specified +value+.
+    # (Alias for the protected write_attribute method).
+    def []=(attr_name, value)
+      if attr_name.is_a?(String) and attr_name != attr_name.split(ID_SEP).first
+        attr_name = attr_name.split(ID_SEP)
+      end
+      if attr_name.is_a? Array
+        value = value.split(ID_SEP) if value.is_a? String
+        unless value.length == attr_name.length
+          raise "Number of attr_names and values do not match"
+        end
+        #breakpoint
+        [attr_name, value].transpose.map {|name,val| write_attribute(name.to_s, val)}
+      else
+        write_attribute(attr_name, value)
+      end
+    end
+
   end
 end

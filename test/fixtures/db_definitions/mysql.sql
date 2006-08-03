@@ -35,3 +35,18 @@ CREATE TABLE `product_tariffs` (
   PRIMARY KEY  (`product_id`,`tariff_id`,`tariff_start_date`)
 ) TYPE=InnoDB;
 
+CREATE TABLE `suburbs` (
+  `city_id` int(11) NOT NULL,
+  `suburb_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY  (`city_id`,`suburb_id`)
+) TYPE=InnoDB;
+
+CREATE TABLE `streets` (
+  `id` int(11) NOT NULL auto_increment,
+  `city_id` int(11) NOT NULL,
+  `suburb_id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB;
+
