@@ -101,7 +101,7 @@ spec = Gem::Specification.new do |s|
     s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
   end
   
-  s.add_dependency('activerecord', '= 1.14.3' + PKG_BUILD)
+  s.add_dependency('activerecord', '>= 1.14.3' + PKG_BUILD)
 
   s.require_path = 'lib'
   s.autorequire = 'composite_primary_keys'

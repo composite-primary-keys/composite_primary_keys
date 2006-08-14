@@ -1,6 +1,27 @@
-h1. Composite Primary Keys for ActiveRecords/Ruby on Rails
+h1. Composite Primary Keys for Ruby on Rails/ActiveRecords
 
-h2. Instant look-see
+h2. What
+
+Ruby on Rails does not support composite primary keys. This free software is an extension 
+to the database layer of Rails - ActiveRecords - to support composite primary keys
+as transparently as possible.
+
+h2. Installing
+
+<pre syntax="ruby">gem install composite_primary_keys</pre>
+
+To prepare ActiveRecords for composite primary keys...
+
+<pre syntax="ruby">require 'composite_primary_keys'</pre>
+
+A class with composite primary keys would look like...
+
+<pre syntax="ruby">class ReferenceCode < ActiveRecord::Base
+  # set_primary_keys *keys - turns on composite key functionality
+  set_primary_keys :reference_type_id, :reference_code
+  belongs_to :reference_type, :foreign_key => "reference_type_id"
+end</pre>
+
 
 Take two classes - <code syntax="ruby">ReferenceType</code> and <code syntax="ruby">ReferenceCode</code>
  - where ReferenceCode has a *composite primary key*, 
@@ -35,21 +56,6 @@ ReferenceCode.find param_id
 That is, an ActiveRecord supporting composite keys should behave transparently
 throughout your application.
 
-h2. Installing
-
-<pre syntax="ruby">gem install composite_primary_keys</pre>
-
-To prepare ActiveRecords for composite primary keys...
-
-<pre syntax="ruby">require 'composite_primary_keys'</pre>
-
-A class with composite primary keys would look like...
-
-<pre syntax="ruby">class ReferenceCode < ActiveRecord::Base
-  # set_primary_keys *keys - turns on composite key functionality
-  set_primary_keys :reference_type_id, :reference_code
-  belongs_to :reference_type, :foreign_key => "reference_type_id"
-end</pre>
 
 
 h2. Associations/Composite Foreign Keys

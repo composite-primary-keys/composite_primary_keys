@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>
-      Composite Primary Keys for ActiveRecords/Ruby on Rails
+      Composite Primary Keys for Ruby on Rails/ActiveRecords
   </title>
   <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
 <style>
@@ -30,12 +30,39 @@
 <body>
 <div id="main">
 
-    <h1>Composite Primary Keys for ActiveRecords/Ruby on Rails</h1>
+    <h1>Composite Primary Keys for Ruby on Rails/ActiveRecords</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.6.2</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.6.3</a>
     </div>
-    <h2>Instant look-see</h2>
+    <h2>What</h2>
+
+
+	<p>Ruby on Rails does not support composite primary keys. This free software is an extension 
+to the database layer of Rails &#8211; ActiveRecords &#8211; to support composite primary keys
+as transparently as possible.</p>
+
+
+	<h2>Installing</h2>
+
+
+	<p><pre class="syntax"><span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
+
+
+	<p>To prepare ActiveRecords for composite primary keys&#8230;</p>
+
+
+	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
+
+
+	<p>A class with composite primary keys would look like&#8230;</p>
+
+
+	<p><pre class="syntax"><span class="keyword">class </span><span class="class">ReferenceCode</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
+  <span class="comment"># set_primary_keys *keys - turns on composite key functionality</span>
+  <span class="ident">set_primary_keys</span> <span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:reference_type</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>
+<span class="keyword">end</span></pre></p>
 
 
 	<p>Take two classes &#8211; <code class="syntax"><span class="constant">ReferenceType</span></code> and <code class="syntax"><span class="constant">ReferenceCode</span></code>
@@ -76,28 +103,6 @@ to convert composite keys into strings and back again&#8230;</p>
 
 	<p>That is, an ActiveRecord supporting composite keys should behave transparently
 throughout your application.</p>
-
-
-	<h2>Installing</h2>
-
-
-	<p><pre class="syntax"><span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
-
-
-	<p>To prepare ActiveRecords for composite primary keys&#8230;</p>
-
-
-	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
-
-
-	<p>A class with composite primary keys would look like&#8230;</p>
-
-
-	<p><pre class="syntax"><span class="keyword">class </span><span class="class">ReferenceCode</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
-  <span class="comment"># set_primary_keys *keys - turns on composite key functionality</span>
-  <span class="ident">set_primary_keys</span> <span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span>
-  <span class="ident">belongs_to</span> <span class="symbol">:reference_type</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>
-<span class="keyword">end</span></pre></p>
 
 
 	<h2>Associations/Composite Foreign Keys</h2>
@@ -174,7 +179,7 @@ parent table.</p>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 2nd August 2006<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 5th August 2006<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
