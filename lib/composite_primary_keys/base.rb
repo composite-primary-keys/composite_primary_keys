@@ -151,7 +151,7 @@ module CompositePrimaryKeys
           connection.update(
             "UPDATE #{self.class.table_name} " +
             "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
-            "WHERE (#{self.class.primary_key}) = (#{id})",
+            "WHERE (#{self.class.primary_key}) = (#{quoted_id})",
             "#{self.class.name} Update"
           )
           return true
