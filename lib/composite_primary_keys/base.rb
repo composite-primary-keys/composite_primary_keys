@@ -276,10 +276,13 @@ module CompositePrimaryKeys
             # If ids = [[10, 50], [11, 51]], then :conditions => 
             #   "(#{table_name}.a, #{table_name}.b) IN ((10, 50), (11, 51))"
             
-            keys_sql = primary_keys.map {|key| "#{table_name}.#{key.to_s}"}.join(',')
-            ids_sql  = ids.map {|id_set| id_set.map {|id| sanitize(id)}.join(',')}.join('),(')
-            options.update :conditions => "(#{keys_sql}) IN ((#{ids_sql}))"
-  
+            conditions = ids.map do |id_set|
+              [primary_keys, id_set].transpose.map do |key, id|
+                "#{table_name}.#{key.to_s}=#{sanitize(id)}"
+              end.join(" AND ")
+            end.join(") OR (")
+            options.update :conditions => "(#{conditions})"
+            
             result = find_every(options)
   
             if result.size == ids.size
