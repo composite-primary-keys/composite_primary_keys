@@ -18,7 +18,7 @@ RUBY_FORGE_PROJECT = "compositekeys"
 RUBY_FORGE_USER    = "nicwilliams"
 
 PKG_FILES = FileList[
-    "lib/**/*", "test/**/*", "examples/**/*", "doc/**/*", "[A-Z]*", "install.rb", "Rakefile"
+    "lib/**/*", "test/**/*", "examples/**/*", "doc/**/*", "scripts/**/*", "website/**/*", "[A-Z]*", "install.rb", "CHANGELOG", "README", "Rakefile"
 ].exclude(/\bCVS\b|~$/)
 
 
