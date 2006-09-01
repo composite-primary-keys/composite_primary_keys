@@ -88,7 +88,7 @@ end
 
 # Create compressed packages
 
-dist_dirs = [ "lib", "test", "examples", "dev-utils" ]
+dist_dirs = [ "lib", "test", "website", "scripts" ]
 
 spec = Gem::Specification.new do |s|
   s.name = PKG_NAME

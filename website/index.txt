@@ -27,8 +27,7 @@ Take two classes - <code syntax="ruby">ReferenceType</code> and <code syntax="ru
  - where ReferenceCode has a *composite primary key*, 
  one of which is a foreign key to a parent ReferenceType.
 
-<pre syntax="ruby">require 'compositekeys'
-ReferenceType.primary_key
+<pre syntax="ruby">ReferenceType.primary_key
 => "reference_type_id"                   # normal single key
 ReferenceCode.primary_key
 => [:reference_type_id, :reference_code] # composite keys

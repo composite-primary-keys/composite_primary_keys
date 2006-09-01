@@ -135,12 +135,11 @@ module CompositePrimaryKeys
             raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"
           end
   
-          self.id = connection.insert(
+          connection.insert(
             "INSERT INTO #{self.class.table_name} " +
             "(#{quoted_column_names.join(', ')}) " +
             "VALUES(#{attributes_with_quotes.values.join(', ')})",
-            "#{self.class.name} Create",
-            self.class.primary_key, self.id
+            "#{self.class.name} Create"
           )
           @new_record = false
           return true
@@ -148,10 +147,11 @@ module CompositePrimaryKeys
         
         # Updates the associated record with values matching those of the instance attributes.
         def update_without_callbacks
+          where_class = [self.class.primary_key, quoted_id].transpose.each {|key,id| "(#{key} = #{id})"}.join(" AND ")
           connection.update(
             "UPDATE #{self.class.table_name} " +
             "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
-            "WHERE (#{self.class.primary_key}) = (#{quoted_id})",
+            "WHERE #{where_class}",
             "#{self.class.name} Update"
           )
           return true
