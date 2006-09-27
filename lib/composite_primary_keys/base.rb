@@ -147,7 +147,7 @@ module CompositePrimaryKeys
         
         # Updates the associated record with values matching those of the instance attributes.
         def update_without_callbacks
-          where_class = [self.class.primary_key, quoted_id].transpose.each {|key,id| "(#{key} = #{id})"}.join(" AND ")
+          where_class = [self.class.primary_key, quoted_id].transpose.map {|pair| "(#{pair[0]} = #{pair[1]})"}.join(" AND ")
           connection.update(
             "UPDATE #{self.class.table_name} " +
             "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
