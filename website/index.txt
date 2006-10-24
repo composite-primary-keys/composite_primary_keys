@@ -83,7 +83,7 @@ The Tariff table has a composite primary key. Hence, the
 <code syntax="ruby">belongs_to</code> association from ProductTariff to Tariff
 (called :tariffs) must use a composite foreign key.
 
-The expression must use the :foreign_key option (NOTE, :foreign_keys is not currently supported)
+The expression must use the :foreign_key option (NOTE, <code>:foreign_keys</code> is not currently supported)
 to specific the ordered list of table
 columns. If the column names in both tables match, then the :foreign_key
 option can be omitted.
