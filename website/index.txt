@@ -71,11 +71,11 @@ end
 class ProductTariff < ActiveRecord::Base
   set_primary_keys :product_id, :tariff_id, :tariff_start_date
   belongs_to :products, :foreign_key => :product_id
-  belongs_to :tariffs,  :foreign_keys => [:tariff_id, :tariff_start_date]
+  belongs_to :tariffs,  :foreign_key => [:tariff_id, :tariff_start_date]
 end
 class Tariff < ActiveRecord::Base
   set_primary_keys [:tariff_id, :start_date]
-  has_many :product_tariffs, :foreign_keys => [:tariff_id, :tariff_start_date]
+  has_many :product_tariffs, :foreign_key => [:tariff_id, :tariff_start_date]
 end
 </pre>
 
@@ -83,9 +83,9 @@ The Tariff table has a composite primary key. Hence, the
 <code syntax="ruby">belongs_to</code> association from ProductTariff to Tariff
 (called :tariffs) must use a composite foreign key.
 
-The expression can use either the
-:foreign_key or :foreign_keys option to specific the ordered list of table
-columns. If the column names in both tables match, then the :foreign_key(s)
+The expression must use the :foreign_key option (NOTE, :foreign_keys is not currently supported)
+to specific the ordered list of table
+columns. If the column names in both tables match, then the :foreign_key
 option can be omitted.
 
 Similarly, the <code syntax="ruby">has_many</code> and <code syntax="ruby">has_one</code>
