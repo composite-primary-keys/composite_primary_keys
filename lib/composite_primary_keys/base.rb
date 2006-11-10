@@ -131,19 +131,20 @@ module CompositePrimaryKeys
         
         # Creates a new record with values matching those of the instance attributes.
         def create_without_callbacks
-          unless self.id
-            raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"
-          end
-          
+          unless self.id; raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"; end
+          attributes_minus_pks = attributes_with_quotes(false)
+          cols = quoted_column_names(attributes_minus_pks) << self.class.primary_key
+          vals = attributes_minus_pks.values << quoted_id
           connection.insert(
-            "INSERT INTO #{self.class.table_name} " +
-            "(#{quoted_column_names.join(', ')}) " +
-            "VALUES(#{attributes_with_quotes.values.join(', ')})",
-            "#{self.class.name} Create"
+           "INSERT INTO #{self.class.table_name} " +
+           "(#{cols.join(', ')}) " +
+           "VALUES(#{vals.join(', ')})",
+           "#{self.class.name} Create"
           )
           @new_record = false
           return true
         end
+        
         
         # Updates the associated record with values matching those of the instance attributes.
         def update_without_callbacks
