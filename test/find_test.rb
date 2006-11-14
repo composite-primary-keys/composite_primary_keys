@@ -15,6 +15,10 @@ class FindTest < Test::Unit::TestCase
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
+    :dual_strs   => { 
+      :class => ReferenceCode,
+      :primary_keys => ['reference_type_id', 'reference_code'],
+    },
   }
   
   def setup

@@ -17,6 +17,7 @@ module CompositePrimaryKeys
       module ClassMethods
         def set_primary_keys(*keys)
           keys = keys.first if keys.first.is_a?(Array)
+          keys = keys.map {|k| k.to_sym }
           cattr_accessor :primary_keys 
           self.primary_keys = keys.to_composite_keys
           

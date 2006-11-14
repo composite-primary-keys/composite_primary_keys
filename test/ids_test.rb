@@ -14,6 +14,10 @@ class IdsTest < Test::Unit::TestCase
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
+    :dual_strs   => { 
+      :class => ReferenceCode,
+      :primary_keys => ['reference_type_id', 'reference_code'],
+    },
   }
   
   def setup
@@ -73,7 +77,7 @@ class IdsTest < Test::Unit::TestCase
     testing_with do
       if composite?
         assert_not_nil @klass.primary_keys
-        assert_equal @primary_keys, @klass.primary_keys
+        assert_equal @primary_keys.map {|key| key.to_sym}, @klass.primary_keys
         assert_equal @klass.primary_keys, @klass.primary_key
       else
         assert_not_nil @klass.primary_key
