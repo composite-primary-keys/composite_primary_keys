@@ -93,7 +93,7 @@ as transparently as possible.</p>
 to convert composite keys into strings and back again&#8230;</p>
 
 
-	<p><pre class="syntax"><span class="ident">param_id</span> <span class="punct">=</span> <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find_first</span><span class="punct">.</span><span class="ident">to_param</span>
+	<p><pre class="syntax"><span class="ident">param_id</span> <span class="punct">=</span> <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">ind(:first)</span><span class="punct">.</span><span class="ident">to_param</span>
 <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">1,1</span><span class="punct">&quot;</span>
 <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="ident">param_id</span>
 <span class="punct">=&gt;</span> <span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x3904288</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 

@@ -60,7 +60,7 @@ module CompositePrimaryKeys
         def quoted_id #:nodoc:
           [self.class.primary_keys, ids].
           transpose.
-          map {|attr_name,id| quote(id, column_for_attribute(attr_name))}.
+          map {|attr_name,id| quote_value(id, column_for_attribute(attr_name))}.
           to_composite_ids
         end
         

@@ -28,7 +28,7 @@ class FindTest < Test::Unit::TestCase
   
   def test_find_first
     testing_with do
-      obj = @klass.find_first
+      obj = @klass.ind(:first)
       assert obj
       assert_equal @klass, obj.class
     end

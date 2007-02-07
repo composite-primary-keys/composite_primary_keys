@@ -46,7 +46,7 @@ ReferenceCode.find 1,1  # composite ids returns single instance
 Using "Ruby on Rails":http://www.rubyonrails.org? You'll want to your url_for helpers
 to convert composite keys into strings and back again...
 
-<pre syntax="ruby">param_id = ReferenceCode.find_first.to_param
+<pre syntax="ruby">param_id = ReferenceCode.ind(:first).to_param
 => "1,1"
 ReferenceCode.find param_id
 => => <ReferenceCode:0x3904288 @attributes={"reference_type_id"=>"1", 

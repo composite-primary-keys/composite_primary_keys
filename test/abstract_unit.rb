@@ -56,7 +56,7 @@ protected
     classes.keys.each do |@key_test|
       @klass_info = classes[@key_test]
       @klass, @primary_keys = @klass_info[:class], @klass_info[:primary_keys]
-      @first = @klass.find_first
+      @first = @klass.find(:first)
       yield
     end
   end
