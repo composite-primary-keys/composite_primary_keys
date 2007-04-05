@@ -48,8 +48,8 @@ class AttributesTest < Test::Unit::TestCase
   end
     
   def test_brackets_foreign_key_assignment
-    @flat = tariffs(:flat)
-    @second_free = product_tariffs(:second_free)
+    @flat = Tariff.find(1, Date.today.to_s(:db))
+    @second_free = ProductTariff.find(2,2,Date.today.to_s(:db))
     @second_free_fk = [:tariff_id, :tariff_start_date]
     @second_free[key = @second_free_fk] = @flat.id
       compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
