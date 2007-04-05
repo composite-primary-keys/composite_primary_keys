@@ -3,9 +3,8 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
 class DummyTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
 
-  CLASSES = {
+  classes = {
     :single => {
       :class => ReferenceType,
       :primary_keys => :reference_type_id,
@@ -17,8 +16,8 @@ class DummyTest < Test::Unit::TestCase
   }
   
   def setup
-    super
-    self.class.classes = CLASSES
+    create_fixtures :reference_types, :reference_codes
+    self.class.classes = classes
   end
   
   def test_truth

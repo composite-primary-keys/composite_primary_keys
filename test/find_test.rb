@@ -4,7 +4,6 @@ require 'fixtures/reference_code'
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class FindTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
   
   CLASSES = {
     :single => {
@@ -22,13 +21,13 @@ class FindTest < Test::Unit::TestCase
   }
   
   def setup
-    super
+    create_fixtures :reference_types, :reference_codes
     self.class.classes = CLASSES
   end
   
   def test_find_first
     testing_with do
-      obj = @klass.ind(:first)
+      obj = @klass.find(:first)
       assert obj
       assert_equal @klass, obj.class
     end

@@ -1,5 +1,6 @@
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 
+require 'rubygems'
 require 'test/unit'
 require 'hash_tricks'
 require 'active_record'
@@ -56,7 +57,8 @@ protected
     classes.keys.each do |@key_test|
       @klass_info = classes[@key_test]
       @klass, @primary_keys = @klass_info[:class], @klass_info[:primary_keys]
-      @first = @klass.find(:first)
+      order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
+      @first = @klass.find(:first, :order => order)
       yield
     end
   end

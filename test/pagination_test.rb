@@ -4,9 +4,10 @@ require 'fixtures/reference_code'
 require 'action_controller/pagination'
 
 class PaginationTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
   include ActionController::Pagination
   DEFAULT_PAGE_SIZE = 2
+  
+  attr_accessor :params
    
   CLASSES = {
     :single => {
@@ -22,7 +23,7 @@ class PaginationTest < Test::Unit::TestCase
   }
   
   def setup
-    super
+    create_fixtures :reference_types, :reference_codes
     self.class.classes = CLASSES
     @params = {}
   end

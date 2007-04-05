@@ -3,7 +3,6 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
 class IdsTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
   
   CLASSES = {
     :single => {
@@ -21,7 +20,7 @@ class IdsTest < Test::Unit::TestCase
   }
   
   def setup
-    super
+    create_fixtures :reference_types, :reference_codes
     self.class.classes = CLASSES
   end
   
@@ -40,7 +39,8 @@ class IdsTest < Test::Unit::TestCase
   
   def test_ids_to_s
     testing_with do
-      to_test = @klass.find(:all)[0..1].map(&:id)
+      order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
+      to_test = @klass.find(:all, :order => order)[0..1].map(&:id)
       assert_equal '(1,1),(1,2)', @klass.ids_to_s(to_test) if @key_test == :dual
       assert_equal '1,1;1,2', @klass.ids_to_s(to_test, ',', ';', '', '') if @key_test == :dual
     end

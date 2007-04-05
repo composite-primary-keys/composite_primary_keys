@@ -5,9 +5,12 @@ ActiveRecord::Base.logger = Logger.new("debug.log")
 
 db1 = 'composite_primary_keys_unittest'
 
-ActiveRecord::Base.establish_connection(
+connection_options = {
   :adapter  => "mysql",
   :username => "root",
   :encoding => "utf8",
   :database => db1
-)
+}
+
+ActiveRecord::Base.configurations = { db1 => connection_options }
+ActiveRecord::Base.establish_connection(connection_options)

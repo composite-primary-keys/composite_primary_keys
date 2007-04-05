@@ -6,8 +6,10 @@ require 'fixtures/user'
 require 'fixtures/article'
 require 'fixtures/reading'
 
-class AssociationTest < Test::Unit::TestCase
-  fixtures :suburbs, :streets, :users, :articles, :readings
+class SantiagoTest < Test::Unit::TestCase
+  def setup
+    create_fixtures :suburbs, :streets, :users, :articles, :readings
+  end
   
   def test_normal_and_composite_associations
     assert_not_nil @suburb = Suburb.find(1,1)
@@ -18,7 +20,7 @@ class AssociationTest < Test::Unit::TestCase
   end
   
   def test_single_keys
-    @santiago = users(:santiago)
+    @santiago = User.find(1)
     assert_not_nil @santiago.articles
     assert_equal 2, @santiago.articles.length
     assert_not_nil @santiago.readings

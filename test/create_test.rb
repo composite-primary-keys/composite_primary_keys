@@ -2,8 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class DummyTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
+class CreateTest < Test::Unit::TestCase
 
   CLASSES = {
     :single => {
@@ -19,7 +18,7 @@ class DummyTest < Test::Unit::TestCase
   }
   
   def setup
-    super
+    create_fixtures :reference_types, :reference_codes
     self.class.classes = CLASSES
   end
   

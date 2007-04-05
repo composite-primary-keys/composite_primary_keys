@@ -6,14 +6,13 @@ require 'fixtures/suburb'
 require 'fixtures/street'
 
 class AssociationTest < Test::Unit::TestCase
-  fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets
 
   def setup
-    super
-    @first_product = products(:first_product)
-    @flat = tariffs(:flat)
-    @free = tariffs(:free)
-    @first_flat = product_tariffs(:first_flat)
+    create_fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets
+    @first_product = Product.find(1)
+    @flat = Tariff.find(1, Date.today.to_s(:db))
+    @free = Tariff.find(2, Date.today.to_s(:db))
+    @first_flat = ProductTariff.find(1, 1, Date.today.to_s(:db))
   end
   
   def test_setup

@@ -25,6 +25,7 @@ module CompositePrimaryKeys
             extend CompositePrimaryKeys::ActiveRecord::Base::CompositeClassMethods
             include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
             include CompositePrimaryKeys::ActiveRecord::Associations
+            extend CompositePrimaryKeys::ActiveRecord::Calculations::ClassMethods
           EOV
         end
         
@@ -257,10 +258,10 @@ module CompositePrimaryKeys
           end
           
           def find_from_ids(ids, options)
+            ids = ids.first if ids.last == nil
             conditions = " AND (#{sanitize_sql(options[:conditions])})" if options[:conditions]
             # if ids is just a flat list, then its size must = primary_key.length (one id per primary key, in order)
             # if ids is list of lists, then each inner list must follow rule above
-            
             if ids.first.is_a? String
               # find '2,1' -> ids = ['2,1']
               # find '2,1;7,3' -> ids = ['2,1;7,3']

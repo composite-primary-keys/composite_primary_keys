@@ -6,7 +6,6 @@ require 'fixtures/tariff'
 require 'fixtures/product_tariff'
 
 class AttributesTest < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs
 
   CLASSES = {
     :single => {
@@ -20,7 +19,7 @@ class AttributesTest < Test::Unit::TestCase
   }
   
   def setup
-    super
+    create_fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs
     self.class.classes = CLASSES
   end
   
