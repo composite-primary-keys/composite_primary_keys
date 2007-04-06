@@ -5,7 +5,7 @@ require 'fixtures/product'
 require 'fixtures/tariff'
 require 'fixtures/product_tariff'
 
-class AttributesTest < Test::Unit::TestCase
+class TestAttributes < Test::Unit::TestCase
 
   CLASSES = {
     :single => {

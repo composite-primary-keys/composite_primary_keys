@@ -125,10 +125,12 @@ module ActiveRecord::Associations::ClassMethods
       def composite_association_join
         join = case reflection.macro
           when :has_and_belongs_to_many
+            # TODO replace (keys) = (ids), with key1=id1 and key2=id2
             " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
                table_alias_for(options[:join_table], aliased_join_table_name),
                full_keys(aliased_join_table_name, options[:foreign_key] || reflection.active_record.to_s.classify.foreign_key),
                full_keys(reflection.active_record.table_name, reflection.active_record.primary_key)] +
+           # TODO replace (keys) = (ids), with key1=id1 and key2=id2
             " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
                table_name_and_alias, 
                full_keys(aliased_table_name, klass.primary_key),
@@ -153,10 +155,12 @@ module ActiveRecord::Associations::ClassMethods
                         second_key = options[:foreign_key] || primary_key
                     end
                     
+                    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
                     " LEFT OUTER JOIN %s ON (%s) = (%s) "  % [
                       table_alias_for(through_reflection.klass.table_name, aliased_join_table_name), 
                       full_keys(aliased_join_table_name, through_reflection.primary_key_name),
                       full_keys(parent.aliased_table_name, parent.primary_key)] +
+                    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
                     " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
                       table_name_and_alias,
                       full_keys(aliased_table_name, first_key), 
@@ -171,6 +175,7 @@ module ActiveRecord::Associations::ClassMethods
                 raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
               else
                 foreign_key = options[:foreign_key] || reflection.active_record.name.foreign_key
+                # TODO replace (keys) = (ids), with key1=id1 and key2=id2
                 " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
                   table_name_and_alias,
                   full_keys(aliased_table_name, foreign_key),
@@ -178,6 +183,7 @@ module ActiveRecord::Associations::ClassMethods
                 ]
             end
           when :belongs_to
+            # TODO replace (keys) = (ids), with key1=id1 and key2=id2
             " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
                table_name_and_alias, 
                full_keys(aliased_table_name, reflection.klass.primary_key),
@@ -203,6 +209,15 @@ end
 
 module ActiveRecord::Associations
   class AssociationProxy #:nodoc:
+    
+    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
+    # TODO - are these still useful? or shouldn't we use them?
+    # Should we create method to generate the k1=id1 AND .. for us
+    # where_class = ids.map do |id_set|
+    #   [primary_keys, id_set].transpose.map do |key, id|
+    #     "#{table_name}.#{key.to_s}=#{sanitize(id)}"
+    #   end.join(" AND ")
+    # end.join(") OR (")
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ?

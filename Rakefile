@@ -27,7 +27,7 @@ task :test    => [ :test_sqlite ]
 for adapter in %w( mysql sqlite oracle postgresql ) # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase )
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
-    t.pattern = "test/*_test{,_#{adapter}}.rb"
+    t.pattern = "test/test_*.rb"
     t.verbose = true
   }
 end

@@ -6,7 +6,7 @@ require 'fixtures/user'
 require 'fixtures/article'
 require 'fixtures/reading'
 
-class SantiagoTest < Test::Unit::TestCase
+class TestSantiago < Test::Unit::TestCase
   def setup
     create_fixtures :suburbs, :streets, :users, :articles, :readings
   end

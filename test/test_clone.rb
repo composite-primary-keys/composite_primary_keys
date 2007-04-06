@@ -1,37 +1,34 @@
 require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
-require 'action_controller/pagination'
 
-class PaginationTest < Test::Unit::TestCase
-  include ActionController::Pagination
-  DEFAULT_PAGE_SIZE = 2
-  
-  attr_accessor :params
-   
+class TestClone < Test::Unit::TestCase
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => :reference_type_id,
-      :table => :reference_types,
     },
     :dual   => { 
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
-      :table => :reference_codes,
     },
   }
   
   def setup
     create_fixtures :reference_types, :reference_codes
     self.class.classes = CLASSES
-    @params = {}
   end
-
-  def test_paginate_all
+  
+  def test_truth
     testing_with do
-      @object_pages, @objects = paginate @klass_info[:table], :per_page => DEFAULT_PAGE_SIZE
-      assert_equal 2, @objects.length, "Each page should have #{DEFAULT_PAGE_SIZE} items"
+      clone = @first.clone
+      assert_equal @first.attributes.block(@klass.primary_key), clone.attributes
+      if composite?
+        @klass.primary_key.each {|key| assert_nil clone[key], "Primary key '#{key}' should be nil"} 
+      else
+        assert_nil clone[@klass.primary_key], "Sole primary key should be nil"
+      end
     end
   end
 end

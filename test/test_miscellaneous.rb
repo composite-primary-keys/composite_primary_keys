@@ -2,7 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class MiscellaneousTest < Test::Unit::TestCase
+class TestMiscellaneous < Test::Unit::TestCase
   fixtures :reference_types, :reference_codes
   
   CLASSES = {

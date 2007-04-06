@@ -32,7 +32,10 @@ module CompositePrimaryKeys
           end
           add_joins!(sql, options, scope)
           add_conditions!(sql, options[:conditions], scope)
-          add_limited_ids_condition!(sql, options, join_dependency) if join_dependency && !using_limitable_reflections? (join_dependency.reflections) && ((scope && scope[:limit]) || options[:limit])
+          add_limited_ids_condition!(sql, options, join_dependency) if \
+            join_dependency && 
+            !using_limitable_reflections?(join_dependency.reflections) && 
+            ((scope && scope[:limit]) || options[:limit])
 
           if options[:group]
             group_key = Base.connection.adapter_name == 'FrontBase' ?  :group_alias : :group_field

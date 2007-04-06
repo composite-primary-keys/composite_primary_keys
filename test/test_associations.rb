@@ -5,7 +5,7 @@ require 'fixtures/product_tariff'
 require 'fixtures/suburb'
 require 'fixtures/street'
 
-class AssociationTest < Test::Unit::TestCase
+class TestAssociations < Test::Unit::TestCase
 
   def setup
     create_fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets

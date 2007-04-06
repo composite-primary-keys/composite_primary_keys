@@ -7,7 +7,12 @@ require 'active_record'
 require 'active_record/fixtures'
 require 'active_support/binding_of_caller'
 require 'active_support/breakpoint'
-require 'connection'
+begin
+  require 'connection'
+rescue MissingSourceFile => e
+  adapter = 'sqlite'
+  require "#{File.dirname(__FILE__)}/connections/native_#{adapter}/connection"
+end
 require 'composite_primary_keys'
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)

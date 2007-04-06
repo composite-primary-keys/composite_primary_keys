@@ -2,7 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class UpdateTest < Test::Unit::TestCase
+class TestUpdate < Test::Unit::TestCase
   
   CLASSES = {
     :single => {

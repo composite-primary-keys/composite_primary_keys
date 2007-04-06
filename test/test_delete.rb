@@ -2,7 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class DeleteTest < Test::Unit::TestCase
+class TestDelete < Test::Unit::TestCase
 
   CLASSES = {
     :single => {

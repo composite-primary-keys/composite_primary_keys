@@ -3,7 +3,7 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
 # Testing the find action on composite ActiveRecords with two primary keys
-class FindTest < Test::Unit::TestCase
+class TestFind < Test::Unit::TestCase
   
   CLASSES = {
     :single => {
