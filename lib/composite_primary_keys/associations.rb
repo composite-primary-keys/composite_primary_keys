@@ -176,18 +176,20 @@ module ActiveRecord::Associations::ClassMethods
               else
                 foreign_key = options[:foreign_key] || reflection.active_record.name.foreign_key
                 # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-                " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
+                " LEFT OUTER JOIN %s ON %s " % [
                   table_name_and_alias,
-                  full_keys(aliased_table_name, foreign_key),
-                  full_keys(parent.aliased_table_name, parent.primary_key)
+                  composite_join_clause(
+                    full_keys(aliased_table_name, foreign_key), 
+                    full_keys(parent.aliased_table_name, parent.primary_key)),
                 ]
             end
           when :belongs_to
             # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-            " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
+            " LEFT OUTER JOIN %s ON %s " % [
                table_name_and_alias, 
-               full_keys(aliased_table_name, reflection.klass.primary_key),
-               full_keys(parent.aliased_table_name, options[:foreign_key] || klass.to_s.foreign_key)
+               composite_join_clause(
+                 full_keys(aliased_table_name, reflection.klass.primary_key), 
+                 full_keys(parent.aliased_table_name, options[:foreign_key] || klass.to_s.foreign_key)),
               ]
           else
             ""
@@ -203,6 +205,15 @@ module ActiveRecord::Associations::ClassMethods
       def full_keys(table_name, keys)
         keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP)
       end
+
+      def composite_join_clause(full_keys1, full_keys2)
+        full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
+        full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
+        where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
+          "#{key_pair.first}=#{key_pair.last}"
+        end.join(" AND ")
+        "(#{where_clause})"
+      end
     end
   end
 end
@@ -210,14 +221,31 @@ end
 module ActiveRecord::Associations
   class AssociationProxy #:nodoc:
     
-    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-    # TODO - are these still useful? or shouldn't we use them?
-    # Should we create method to generate the k1=id1 AND .. for us
-    # where_class = ids.map do |id_set|
-    #   [primary_keys, id_set].transpose.map do |key, id|
-    #     "#{table_name}.#{key.to_s}=#{sanitize(id)}"
-    #   end.join(" AND ")
-    # end.join(") OR (")
+    def composite_where_clause(full_keys, ids)
+      full_keys = full_keys.split(CompositePrimaryKeys::ID_SEP) if full_keys.is_a?(String)
+      if ids.is_a?(String)
+        ids = [[ids]]
+      elsif not ids.first.is_a?(Array) # if single comp key passed, turn into an array of 1
+        ids = [ids.to_composite_ids]
+      end
+      where_clause = ids.map do |id_set|
+        transposed = id_set.size == 1 ? [[full_keys, id_set.first]] : [full_keys, id_set].transpose
+        transposed.map do |full_key, id|
+          "#{full_key.to_s}=#{@reflection.klass.sanitize(id)}"
+        end.join(" AND ")
+      end.join(") OR (")
+      "(#{where_clause})"
+    end
+
+    def composite_join_clause(full_keys1, full_keys2)
+      full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
+      full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
+      where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
+        "#{key_pair.first}=#{key_pair.last}"
+      end.join(" AND ")
+      "(#{where_clause})"
+    end
+
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ?
@@ -226,7 +254,7 @@ module ActiveRecord::Associations
     end
     
     def full_columns_equals(table_name, keys, quoted_ids)
-      if keys.is_a?(Symbol) or (keys.is_a?(String) and keys == keys.split(CompositePrimaryKeys::ID_SEP))
+      if keys.is_a?(Symbol) or (keys.is_a?(String) and keys == keys.to_s.split(CompositePrimaryKeys::ID_SEP))
         return "#{table_name}.#{keys} = #{quoted_ids}"
       end
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
@@ -274,10 +302,8 @@ module ActiveRecord::Associations
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote @owner.class.base_class.name.to_s}"          
         else
-          @finder_sql = "(%s) = (%s)" % [
-            full_keys(@reflection.table_name, @reflection.primary_key_name),
-            @owner.quoted_id
-          ]
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, 
+                                  @reflection.primary_key_name, @owner.quoted_id)
       end
       @finder_sql << " AND (#{conditions})" if conditions
     end
@@ -313,10 +339,11 @@ module ActiveRecord::Associations
             end
           end
 
-          "INNER JOIN %s ON (%s) = (%s) %s #{@reflection.options[:joins]} #{custom_joins}" % [
+          "INNER JOIN %s ON %s %s #{@reflection.options[:joins]} #{custom_joins}" % [
             @reflection.through_reflection.table_name,
-            full_keys(@reflection.table_name, reflection_primary_key),
-            full_keys(@reflection.through_reflection.table_name, source_primary_key),
+            composite_join_clause(
+              full_keys(@reflection.table_name, reflection_primary_key), 
+              full_keys(@reflection.through_reflection.table_name, source_primary_key)),
             polymorphic_join
           ]
     end
@@ -326,10 +353,16 @@ module ActiveRecord::Associations
         when @reflection.options[:finder_sql]
           @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
 
-          @finder_sql = "(%s) = (%s)" % [
-                          full_keys(@reflection.klass.table_name, @reflection.primary_key_name),
-                          @owner.quoted_id
-                        ]
+          @finder_sql << " AND (#{conditions})" if conditions
+        when @reflection.options[:as]
+          @finder_sql = 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
+          @finder_sql << " AND (#{conditions})" if conditions
+        
+        else
+          @finder_sql = composite_where_clause(
+            full_keys(@reflection.klass.table_name, @reflection.primary_key_name), @owner.quoted_id),
           @finder_sql << " AND (#{conditions})" if conditions
       end
 

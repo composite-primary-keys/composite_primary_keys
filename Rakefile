@@ -19,7 +19,7 @@ RUBY_FORGE_USER    = "nicwilliams"
 
 
 desc "Default Task"
-task :default => [ :test_sqlite ] 
+task :default => [ :test_sqlite ]
 task :test    => [ :test_sqlite ]
 
 # Run the unit tests

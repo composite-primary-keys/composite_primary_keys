@@ -60,24 +60,35 @@ class TestAssociations < Test::Unit::TestCase
     assert @products = Product.find(:all, :include => :product_tariffs)
     assert_equal 2, @products.length
     assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
+      "Incorrect number of product_tariffs returned"
   end
   
   def test_find_includes_tariffs
     assert @tariffs = Tariff.find(:all, :include => :product_tariffs)
     assert_equal 3, @tariffs.length
     assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
+      "Incorrect number of product_tariffs returnedturned"
   end
   
   def XXX_test_find_includes_extended
     # TODO - what's the correct syntax?
     assert @products = Product.find(:all, :include => {:product_tariffs => :tariffs})
-    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
+    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
+      "Incorrect number of product_tariffs returned"
     
     assert @tariffs = Tariff.find(:all, :include => {:product_tariffs => :products})
-    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, "Incorrect number of product_tariffs returned"
-    
+    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
+      "Incorrect number of product_tariffs returned"
+  end
+  
+  def test_join_where_clause
+    @product = Product.find(:first, :include => :product_tariffs)
+    where_clause = @product.product_tariffs.composite_where_clause(
+      ['foo','bar'], [1,2]
+    )
+    assert_equal('(foo=1 AND bar=2)', where_clause)
   end
   
 end
