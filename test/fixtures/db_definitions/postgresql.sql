@@ -1,4 +1,4 @@
-CREATE SEQUENCE public.reference_types_seq START 1;
+CREATE SEQUENCE public.reference_types_seq START 100;
 CREATE TABLE reference_types (
   reference_type_id int DEFAULT nextval('public.reference_types_seq'),
   type_label varchar(50) default NULL,
@@ -16,7 +16,7 @@ CREATE TABLE reference_codes (
   PRIMARY KEY  (reference_type_id,reference_code)
 );
 
-CREATE SEQUENCE public.products_seq START 1;
+CREATE SEQUENCE public.products_seq START 100;
 CREATE TABLE products (
   id int NOT NULL DEFAULT nextval('public.products_seq'),
   name varchar(50) default NULL,
@@ -44,7 +44,7 @@ CREATE TABLE suburbs (
   PRIMARY KEY  (city_id,suburb_id)
 );
 
-CREATE SEQUENCE public.streets_seq START 1;
+CREATE SEQUENCE public.streets_seq START 100;
 CREATE TABLE streets (
   id int NOT NULL DEFAULT nextval('public.streets_seq'),
   city_id int NOT NULL,
@@ -53,21 +53,21 @@ CREATE TABLE streets (
   PRIMARY KEY  (id)
 );
 
-CREATE SEQUENCE public.users_seq START 1;
+CREATE SEQUENCE public.users_seq START 100;
 CREATE TABLE users (
   id int NOT NULL DEFAULT nextval('public.users_seq'),
   name varchar(50) NOT NULL,
   PRIMARY KEY  (id)
 );
 
-CREATE SEQUENCE public.articles_seq START 1;
+CREATE SEQUENCE public.articles_seq START 100;
 CREATE TABLE articles (
   id int NOT NULL DEFAULT nextval('public.articles_seq'),
   name varchar(50) NOT NULL,
   PRIMARY KEY  (id)
 );
 
-CREATE SEQUENCE public.readings_seq START 1;
+CREATE SEQUENCE public.readings_seq START 100;
 CREATE TABLE readings (
   id int NOT NULL DEFAULT nextval('public.readings_seq'),
   user_id int NOT NULL,
