@@ -1,109 +1,94 @@
-h1. Composite Primary Keys for Ruby on Rails/ActiveRecords
+h1. Composite Primary Keys
+
+h1. &#x2192; Ruby on Rails
+
+h1. &#x2192; ActiveRecords
 
 h2. What
 
 Ruby on Rails does not support composite primary keys. This free software is an extension 
-to the database layer of Rails - ActiveRecords - to support composite primary keys
-as transparently as possible.
+to the database layer of Rails - "ActiveRecords":http://wiki.rubyonrails.com/rails/pages/ActiveRecord - to support composite primary keys as transparently as possible.
+
+Any Ruby script using ActiveRecords can use Composite Primary Keys with this library.
 
 h2. Installing
 
-<pre syntax="ruby">gem install composite_primary_keys</pre>
+<pre syntax="ruby">sudo gem install composite_primary_keys</pre>
 
-To prepare ActiveRecords for composite primary keys...
+Rails: Add the following to the bottom of your <code>environment.rb</code> file
 
 <pre syntax="ruby">require 'composite_primary_keys'</pre>
 
-A class with composite primary keys would look like...
+Ruby scripts: Add the following to the top of your script
 
-<pre syntax="ruby">class ReferenceCode < ActiveRecord::Base
+<pre syntax="ruby">require 'rubygems'
+require 'composite_primary_keys'</pre>
+
+h2. The basics
+
+A model with composite primary keys would look like...
+
+<pre syntax="ruby">class Membership < ActiveRecord::Base
   # set_primary_keys *keys - turns on composite key functionality
-  set_primary_keys :reference_type_id, :reference_code
-  belongs_to :reference_type, :foreign_key => "reference_type_id"
+  set_primary_keys :user_id, :group_id
+  belongs_to :user
+  belongs_to :group
+  has_many :statuses, :class => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
 end</pre>
 
+A model associated with a composite key model would be defined like...
 
-Take two classes - <code syntax="ruby">ReferenceType</code> and <code syntax="ruby">ReferenceCode</code>
- - where ReferenceCode has a *composite primary key*, 
- one of which is a foreign key to a parent ReferenceType.
+<pre syntax="ruby">class MembershipStatus < ActiveRecord::Base
+  belongs_to :membership, :foreign_key => [:user_id, :group_id]
+end</pre>
 
-<pre syntax="ruby">ReferenceType.primary_key
-=> "reference_type_id"                   # normal single key
-ReferenceCode.primary_key
-=> [:reference_type_id, :reference_code] # composite keys
-ReferenceCode.primary_key.to_s
-=> "reference_type_id,reference_code"</pre>
+That is, associations can include composite keys too. Nice.
+
+h2. Demonstration of usage
+
+Once you've created your models to specify composite primary keys (such as the Membership class) and associations (such as MembershipStatus#membership), you can uses them like any normal model with associations.
+
+But first, lets check out our primary keys.
+
+<pre syntax="ruby">MembershipStatus.primary_key # => "id"    # normal single key
+Membership.primary_key  # => [:user_id, :group_id] # composite keys
+Membership.primary_key.to_s # => "user_id,group_id"</pre>
 
 Now we want to be able to find instances using the same syntax we always use for ActiveRecords...
 
-<pre syntax="ruby">ReferenceType.find 1    # single id returns single instance
-=> <ReferenceType:0x392a8c8 @attributes={"reference_type_id"=>"1", 
-"abbreviation"=>"Name Prefix", "type_label"=>"NAME_PREFIX"}>
-ReferenceCode.find 1,1  # composite ids returns single instance
-=> <ReferenceCode:0x39218b0 @attributes={"reference_type_id"=>"1", 
-"code_label"=>"MR", "abbreviation"=>"Mr", "reference_code"=>"1"}></pre>
+<pre syntax="ruby">MembershipStatus.find(1)    # single id returns single instance
+=> <MembershipStatus:0x392a8c8 @attributes={"id"=>"1", "status"=>"Active"}>
+Membership.find(1,1)  # composite ids returns single instance
+=> <Membership:0x39218b0 @attributes={"user_id"=>"1", "group_id"=>"1"}></pre>
 
 Using "Ruby on Rails":http://www.rubyonrails.org? You'll want to your url_for helpers
 to convert composite keys into strings and back again...
 
-<pre syntax="ruby">param_id = ReferenceCode.ind(:first).to_param
-=> "1,1"
-ReferenceCode.find param_id
-=> => <ReferenceCode:0x3904288 @attributes={"reference_type_id"=>"1", 
-"code_label"=>"MR", "abbreviation"=>"Mr", "reference_code"=>"1"}></pre>
+<pre syntax="ruby">Membership.find(:first).to_param # => "1,1"</pre>
 
-That is, an ActiveRecord supporting composite keys should behave transparently
-throughout your application.
+And then use the string id within your controller to find the object again
 
+<pre syntax="ruby">params[:id] # => '1,1'
+Membership.find(params[:id])
+=> <Membership:0x3904288 @attributes={"user_id"=>"1", "group_id"=>"1"}></pre>
 
+That is, an ActiveRecord supporting composite keys behaves transparently
+throughout your application. Just like a normal ActiveRecord.
 
-h2. Associations/Composite Foreign Keys
-
-The <code syntax="ruby">has_many, has_one</code>, and <code syntax="ruby">belongs_to</code> 
-associations allow for composite foreign keys.
-
-<pre syntax="ruby">
-class Product < ActiveRecord::Base
-  set_primary_key :id  # redundant
-  has_many :product_tariffs, :foreign_key => :product_id
-  has_many :tariffs, :through => :product_tariffs, :foreign_key => :product_id
-end
-class ProductTariff < ActiveRecord::Base
-  set_primary_keys :product_id, :tariff_id, :tariff_start_date
-  belongs_to :products, :foreign_key => :product_id
-  belongs_to :tariffs,  :foreign_key => [:tariff_id, :tariff_start_date]
-end
-class Tariff < ActiveRecord::Base
-  set_primary_keys [:tariff_id, :start_date]
-  has_many :product_tariffs, :foreign_key => [:tariff_id, :tariff_start_date]
-end
-</pre>
-
-The Tariff table has a composite primary key. Hence, the 
-<code syntax="ruby">belongs_to</code> association from ProductTariff to Tariff
-(called :tariffs) must use a composite foreign key.
-
-The expression must use the :foreign_key option (NOTE, <code>:foreign_keys</code> is not currently supported)
-to specific the ordered list of table
-columns. If the column names in both tables match, then the :foreign_key
-option can be omitted.
-
-Similarly, the <code syntax="ruby">has_many</code> and <code syntax="ruby">has_one</code>
-commands require the same :foreign_key(s) options if the target table
-doesn't have column names that match its own primary key column names.
-
-The order of foreign keys should match the order of the primary keys in the 
-parent table.
 
 h2. Other tricks
 
-<pre syntax="ruby">ReferenceCode.find [2,1], [2,2]  # list of composite ids
+Pass a list of composite ids to the <code>#find</code> method
+
+<pre syntax="ruby">Membership.find [1,1], [2,1]
 => [
-  <ReferenceCode:0x394ade8 @attributes={"reference_type_id"=>"2", 
-  "code_label"=>"MALE", "abbreviation"=>"Male", "reference_code"=>"1"}>, 
-  <ReferenceCode:0x394ada0 @attributes={"reference_type_id"=>"2", 
-  "code_label"=>"FEMALE", "abbreviation"=>"Female", "reference_code"=>"2"}>
+  <Membership:0x394ade8 @attributes={"user_id"=>"1", "group_id"=>"1"}>, 
+  <Membership:0x394ada0 @attributes={"user_id"=>"2", "group_id"=>"1"}>
 ]</pre>
+
+Perform <code>#count</code> operations
+
+<pre syntax="ruby">MembershipStatus.find(:first).memberships.count # => 1</pre>
 
 h2. Dr Nic's Blog
 

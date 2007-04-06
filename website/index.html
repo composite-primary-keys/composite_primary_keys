@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>
-      Composite Primary Keys for Ruby on Rails/ActiveRecords
+      Composite Primary Keys
   </title>
   <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
 <style>
@@ -30,135 +30,131 @@
 <body>
 <div id="main">
 
-    <h1>Composite Primary Keys for Ruby on Rails/ActiveRecords</h1>
+    <h1>Composite Primary Keys</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.7.5</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.8.0</a>
     </div>
-    <h2>What</h2>
+    <h1>&#x2192; Ruby on Rails</h1>
+
+
+	<h1>&#x2192; ActiveRecords</h1>
+
+
+	<h2>What</h2>
 
 
 	<p>Ruby on Rails does not support composite primary keys. This free software is an extension 
-to the database layer of Rails &#8211; ActiveRecords &#8211; to support composite primary keys
-as transparently as possible.</p>
+to the database layer of Rails &#8211; <a href="http://wiki.rubyonrails.com/rails/pages/ActiveRecord">ActiveRecords</a> &#8211; to support composite primary keys as transparently as possible.</p>
+
+
+	<p>Any Ruby script using ActiveRecords can use Composite Primary Keys with this library.</p>
 
 
 	<h2>Installing</h2>
 
 
-	<p><pre class="syntax"><span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
+	<p><pre class="syntax"><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
 
 
-	<p>To prepare ActiveRecords for composite primary keys&#8230;</p>
+	<p>Rails: Add the following to the bottom of your <code>environment.rb</code> file</p>
 
 
 	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
 
 
-	<p>A class with composite primary keys would look like&#8230;</p>
+	<p>Ruby scripts: Add the following to the top of your script</p>
 
 
-	<p><pre class="syntax"><span class="keyword">class </span><span class="class">ReferenceCode</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
+	<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
+
+
+	<h2>The basics</h2>
+
+
+	<p>A model with composite primary keys would look like&#8230;</p>
+
+
+	<p><pre class="syntax"><span class="keyword">class </span><span class="class">Membership</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
   <span class="comment"># set_primary_keys *keys - turns on composite key functionality</span>
-  <span class="ident">set_primary_keys</span> <span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span>
-  <span class="ident">belongs_to</span> <span class="symbol">:reference_type</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>
+  <span class="ident">set_primary_keys</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:user</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:group</span>
+  <span class="ident">has_many</span> <span class="symbol">:statuses</span><span class="punct">,</span> <span class="symbol">:class</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">MembershipStatus</span><span class="punct">',</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
 <span class="keyword">end</span></pre></p>
 
 
-	<p>Take two classes &#8211; <code class="syntax"><span class="constant">ReferenceType</span></code> and <code class="syntax"><span class="constant">ReferenceCode</span></code>
- &#8211; where ReferenceCode has a <strong>composite primary key</strong>, 
- one of which is a foreign key to a parent ReferenceType.</p>
+	<p>A model associated with a composite key model would be defined like&#8230;</p>
 
 
-	<p><pre class="syntax"><span class="constant">ReferenceType</span><span class="punct">.</span><span class="ident">primary_key</span>
-<span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;</span>                   <span class="comment"># normal single key</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_key</span>
-<span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:reference_type_id</span><span class="punct">,</span> <span class="symbol">:reference_code</span><span class="punct">]</span> <span class="comment"># composite keys</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">primary_key</span><span class="punct">.</span><span class="ident">to_s</span>
-<span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">reference_type_id,reference_code</span><span class="punct">&quot;</span></pre></p>
+	<p><pre class="syntax"><span class="keyword">class </span><span class="class">MembershipStatus</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
+  <span class="ident">belongs_to</span> <span class="symbol">:membership</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
+<span class="keyword">end</span></pre></p>
+
+
+	<p>That is, associations can include composite keys too. Nice.</p>
+
+
+	<h2>Demonstration of usage</h2>
+
+
+	<p>Once you&#8217;ve created your models to specify composite primary keys (such as the Membership class) and associations (such as MembershipStatus#membership), you can uses them like any normal model with associations.</p>
+
+
+	<p>But first, lets check out our primary keys.</p>
+
+
+	<p><pre class="syntax"><span class="constant">MembershipStatus</span><span class="punct">.</span><span class="ident">primary_key</span> <span class="comment"># =&gt; &quot;id&quot;    # normal single key</span>
+<span class="constant">Membership</span><span class="punct">.</span><span class="ident">primary_key</span>  <span class="comment"># =&gt; [:user_id, :group_id] # composite keys</span>
+<span class="constant">Membership</span><span class="punct">.</span><span class="ident">primary_key</span><span class="punct">.</span><span class="ident">to_s</span> <span class="comment"># =&gt; &quot;user_id,group_id&quot;</span></pre></p>
 
 
 	<p>Now we want to be able to find instances using the same syntax we always use for ActiveRecords&#8230;</p>
 
 
-	<p><pre class="syntax"><span class="constant">ReferenceType</span><span class="punct">.</span><span class="ident">find</span> <span class="number">1</span>    <span class="comment"># single id returns single instance</span>
-<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceType</span><span class="punct">:</span><span class="number">0x392a8c8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
-<span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Name Prefix</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">type_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">NAME_PREFIX</span><span class="punct">&quot;}&gt;</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="number">1</span><span class="punct">,</span><span class="number">1</span>  <span class="comment"># composite ids returns single instance</span>
-<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x39218b0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
-<span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MR</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Mr</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
+	<p><pre class="syntax"><span class="constant">MembershipStatus</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>    <span class="comment"># single id returns single instance</span>
+<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">MembershipStatus</span><span class="punct">:</span><span class="number">0x392a8c8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">status</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Active</span><span class="punct">&quot;}&gt;</span>
+<span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="number">1</span><span class="punct">,</span><span class="number">1</span><span class="punct">)</span>  <span class="comment"># composite ids returns single instance</span>
+<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x39218b0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
 
 
 	<p>Using <a href="http://www.rubyonrails.org">Ruby on Rails</a>? You&#8217;ll want to your url_for helpers
 to convert composite keys into strings and back again&#8230;</p>
 
 
-	<p><pre class="syntax"><span class="ident">param_id</span> <span class="punct">=</span> <span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">ind(:first)</span><span class="punct">.</span><span class="ident">to_param</span>
-<span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">1,1</span><span class="punct">&quot;</span>
-<span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="ident">param_id</span>
-<span class="punct">=&gt;</span> <span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x3904288</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> 
-<span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MR</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Mr</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
+	<p><pre class="syntax"><span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">).</span><span class="ident">to_param</span> <span class="comment"># =&gt; &quot;1,1&quot;</span></pre></p>
 
 
-	<p>That is, an ActiveRecord supporting composite keys should behave transparently
-throughout your application.</p>
+	<p>And then use the string id within your controller to find the object again</p>
 
 
-	<h2>Associations/Composite Foreign Keys</h2>
+	<p><pre class="syntax"><span class="ident">params</span><span class="punct">[</span><span class="symbol">:id</span><span class="punct">]</span> <span class="comment"># =&gt; '1,1'</span>
+<span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="ident">params</span><span class="punct">[</span><span class="symbol">:id</span><span class="punct">])</span>
+<span class="punct">=&gt;</span> <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x3904288</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span></pre></p>
 
 
-	<p>The <code class="syntax"><span class="ident">has_many</span><span class="punct">,</span> <span class="ident">has_one</span></code>, and <code class="syntax"><span class="ident">belongs_to</span></code> 
-associations allow for composite foreign keys.</p>
-
-
-	<p><pre class="syntax">
-<span class="keyword">class </span><span class="class">Product</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
-  <span class="ident">set_primary_key</span> <span class="symbol">:id</span>  <span class="comment"># redundant</span>
-  <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
-  <span class="ident">has_many</span> <span class="symbol">:tariffs</span><span class="punct">,</span> <span class="symbol">:through</span> <span class="punct">=&gt;</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
-<span class="keyword">end</span>
-<span class="keyword">class </span><span class="class">ProductTariff</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
-  <span class="ident">set_primary_keys</span> <span class="symbol">:product_id</span><span class="punct">,</span> <span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span>
-  <span class="ident">belongs_to</span> <span class="symbol">:products</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="symbol">:product_id</span>
-  <span class="ident">belongs_to</span> <span class="symbol">:tariffs</span><span class="punct">,</span>  <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
-<span class="keyword">end</span>
-<span class="keyword">class </span><span class="class">Tariff</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
-  <span class="ident">set_primary_keys</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:start_date</span><span class="punct">]</span>
-  <span class="ident">has_many</span> <span class="symbol">:product_tariffs</span><span class="punct">,</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:tariff_id</span><span class="punct">,</span> <span class="symbol">:tariff_start_date</span><span class="punct">]</span>
-<span class="keyword">end</span>
-</pre></p>
-
-
-	<p>The Tariff table has a composite primary key. Hence, the 
-<code class="syntax"><span class="ident">belongs_to</span></code> association from ProductTariff to Tariff
-(called :tariffs) must use a composite foreign key.</p>
-
-
-	<p>The expression must use the :foreign_key option (NOTE, <code>:foreign_keys</code> is not currently supported)
-to specific the ordered list of table
-columns. If the column names in both tables match, then the :foreign_key
-option can be omitted.</p>
-
-
-	<p>Similarly, the <code class="syntax"><span class="ident">has_many</span></code> and <code class="syntax"><span class="ident">has_one</span></code>
-commands require the same :foreign_key(s) options if the target table
-doesn&#8217;t have column names that match its own primary key column names.</p>
-
-
-	<p>The order of foreign keys should match the order of the primary keys in the 
-parent table.</p>
+	<p>That is, an ActiveRecord supporting composite keys behaves transparently
+throughout your application. Just like a normal ActiveRecord.</p>
 
 
 	<h2>Other tricks</h2>
 
 
-	<p><pre class="syntax"><span class="constant">ReferenceCode</span><span class="punct">.</span><span class="ident">find</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">2</span><span class="punct">]</span>  <span class="comment"># list of composite ids</span>
+	<p>Pass a list of composite ids to the <code>#find</code> method</p>
+
+
+	<p><pre class="syntax"><span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span> <span class="punct">[</span><span class="number">1</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">]</span>
 <span class="punct">=&gt;</span> <span class="punct">[</span>
-  <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ade8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
-  <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">MALE</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Male</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;,</span> 
-  <span class="punct">&lt;</span><span class="constant">ReferenceCode</span><span class="punct">:</span><span class="number">0x394ada0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">reference_type_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> 
-  <span class="punct">&quot;</span><span class="string">code_label</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">FEMALE</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">abbreviation</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">Female</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">reference_code</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;}&gt;</span>
+  <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x394ade8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;,</span> 
+  <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x394ada0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span>
 <span class="punct">]</span></pre></p>
+
+
+	<p>Perform <code>#count</code> operations</p>
+
+
+	<p><pre class="syntax"><span class="constant">MembershipStatus</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">).</span><span class="ident">memberships</span><span class="punct">.</span><span class="ident">count</span> <span class="comment"># =&gt; 1</span></pre></p>
 
 
 	<h2>Dr Nic&#8217;s Blog</h2>
@@ -185,7 +181,7 @@ other stories and things.</p>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 24th October 2006<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 6th April 2007<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
