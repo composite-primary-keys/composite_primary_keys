@@ -143,7 +143,9 @@ module CompositePrimaryKeys
             "INSERT INTO #{self.class.table_name} " +
             "(#{cols.join(', ')}) " +
             "VALUES (#{vals.join(', ')})",
-            "#{self.class.name} Create"
+            "#{self.class.name} Create",
+            self.class.primary_key,
+            self.id
           )
           @new_record = false
           return true
