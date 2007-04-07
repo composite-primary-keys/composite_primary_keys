@@ -71,7 +71,7 @@ CREATE TABLE `readings` (
 ) TYPE=InnoDB;
 
 CREATE TABLE groups (
-  id in(11)t NOT NULL auto_increment,
+  id int(11) NOT NULL auto_increment,
   name varchar(50) NOT NULL,
   PRIMARY KEY  (id)
 ) TYPE=InnoDB;
@@ -86,7 +86,7 @@ CREATE TABLE membership_statuses (
   id int(11) NOT NULL auto_increment,
   user_id int(11) NOT NULL,
   group_id int(11) NOT NULL,
-	status varchar(50) NOT NULL,
+  status varchar(50) NOT NULL,
   PRIMARY KEY (id)
 ) TYPE=InnoDB;
 
