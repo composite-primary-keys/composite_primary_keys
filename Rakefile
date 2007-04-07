@@ -1,11 +1,55 @@
 require 'rubygems'
 require 'rake'
+require 'rake/clean'
 require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/contrib/rubyforgepublisher'
+require 'fileutils'
+require 'hoe'
+include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'composite_primary_keys', 'version')
+
+AUTHOR = "Dr Nic Williams"
+EMAIL = "drnicwilliams@gmail.com"
+DESCRIPTION = "Composite key support for ActiveRecords"
+GEM_NAME = "composite_primary_keys" # what ppl will type to install your gem
+RUBYFORGE_PROJECT = "compositekeys"
+HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
+
+REV = nil #File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
+VERSION = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV}" : ""))
+CLEAN.include ['**/.*.sw?', '*.gem', '.config']
+RDOC_OPTS = ['--quiet', '--title', "newgem documentation",
+    "--opname", "index.html",
+    "--line-numbers", 
+    "--main", "README",
+    "--inline-source"]
+
+class Hoe
+  def extra_deps 
+    @extra_deps.reject { |x| Array(x).first == 'hoe' } 
+  end 
+end
+
+# Generate all the Rake tasks
+# Run 'rake -T' to see list of generated tasks (from gem root directory)
+hoe = Hoe.new(GEM_NAME, VERSION) do |p|
+  p.author = AUTHOR 
+  p.description = DESCRIPTION
+  p.email = EMAIL
+  p.summary = DESCRIPTION
+  p.url = HOMEPATH
+  p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
+  p.test_globs = ["test/**/test*.rb"]
+  p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
+
+  # == Optional
+  #p.changes        - A description of the release's latest changes.
+  p.extra_deps = [['activerecord', '>= 1.14.3']]  #An array of rubygem dependencies.
+  #p.spec_extras    - A hash of extra values to set in the gemspec.
+end
 
 PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
 PKG_NAME      = 'composite_primary_keys'
@@ -79,96 +123,3 @@ end
 
 desc 'Rebuild the PostgreSQL test databases'
 task :rebuild_postgresql_databases => [:drop_postgresql_databases, :build_postgresql_databases]
-
-# Generate the RDoc documentation
-
-Rake::RDocTask.new { |rdoc|
-  rdoc.rdoc_dir = 'doc'
-  rdoc.title    = "Composite Primary Keys -- Composite keys for Active Records/Rails"
-  rdoc.options << '--line-numbers' << '--inline-source' << '-A cattr_accessor=object'
-  rdoc.template = "#{ENV['template']}.rb" if ENV['template']
-  rdoc.rdoc_files.include('README', 'CHANGELOG')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-  rdoc.rdoc_files.exclude('lib/active_record/vendor/*')
-  rdoc.rdoc_files.include('dev-utils/*.rb')
-}
-
-# Enhance rdoc task to copy referenced images also
-task :rdoc do
-  FileUtils.mkdir_p "doc/files/examples/"
-end
-
-
-# Create compressed packages
-
-dist_dirs = [ "lib", "test", "website", "scripts" ]
-
-spec = Gem::Specification.new do |s|
-  s.name = PKG_NAME
-  s.version = PKG_VERSION
-  s.summary = "Support for composite primary keys in ActiveRecords"
-  s.description = %q{ActiveRecords only support a single primary key, preventing their use on legacy databases where tables have primary keys over 2+ columns. This solution allows an ActiveRecord to be extended to support multiple keys using the class method set_primary_keys.}
-
-  s.files = [ "Rakefile", "install.rb", "README", "CHANGELOG" ]
-  dist_dirs.each do |dir|
-    s.files = s.files + Dir.glob( "#{dir}/**/*" ).delete_if { |item| item.include?( "\.svn" ) }
-  end
-  
-  s.add_dependency('activerecord', '>= 1.14.3' + PKG_BUILD)
-
-  s.require_path = 'lib'
-  s.autorequire = 'composite_primary_keys'
-
-  s.has_rdoc = true
-  s.extra_rdoc_files = %w( README )
-  s.rdoc_options.concat ['--main',  'README']
-  
-  s.author = "Dr Nic Williams"
-  s.email = "drnicwilliams@gmail.com"
-  s.homepage = "http://compositekeys.rubyforge.org"
-  s.rubyforge_project = "compositekeys"
-end
-  
-Rake::GemPackageTask.new(spec) do |p|
-  p.gem_spec = spec
-  p.need_tar = false
-  p.need_zip = false
-end
-
-task :lines do
-  lines, codelines, total_lines, total_codelines = 0, 0, 0, 0
-
-  for file_name in FileList["lib/composite_primary_keys/**/*.rb"]
-    next if file_name =~ /vendor/
-    f = File.open(file_name)
-
-    while line = f.gets
-      lines += 1
-      next if line =~ /^\s*$/
-      next if line =~ /^\s*#/
-      codelines += 1
-    end
-    puts "L: #{sprintf("%4d", lines)}, LOC #{sprintf("%4d", codelines)} | #{file_name}"
-    
-    total_lines     += lines
-    total_codelines += codelines
-    
-    lines, codelines = 0, 0
-  end
-
-  puts "Total: Lines #{total_lines}, LOC #{total_codelines}"
-end
-
-
-# Publishing ------------------------------------------------------
-
-desc "Publish the release files to RubyForge."
-task :release => [ :package ] do
-  `ruby scripts/rubyforge login`
-
-  for ext in %w( gem tgz zip )
-    release_command = "ruby scripts/rubyforge add_release #{PKG_NAME} #{PKG_NAME} 'REL #{PKG_VERSION}' pkg/#{PKG_NAME}-#{PKG_VERSION}.#{ext}"
-    puts release_command
-    system(release_command)
-  end
-end
