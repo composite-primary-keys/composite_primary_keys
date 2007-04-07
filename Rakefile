@@ -75,13 +75,13 @@ SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions
 desc 'Build the MySQL test databases'
 task :build_mysql_databases do 
   puts File.join(SCHEMA_PATH, 'mysql.sql')
-  %x( mysqladmin -u root create "#{PKG_NAME}_unittest" )
-  %x( mysql -u root "#{PKG_NAME}_unittest" < #{File.join(SCHEMA_PATH, 'mysql.sql')} )
+  sh %{ mysqladmin -u root create "#{PKG_NAME}_unittest" }
+  sh %{ mysql -u root "#{PKG_NAME}_unittest" < #{File.join(SCHEMA_PATH, 'mysql.sql')} }
 end
 
 desc 'Drop the MySQL test databases'
 task :drop_mysql_databases do 
-  %x( mysqladmin -u root -f drop "#{PKG_NAME}_unittest" )
+  sh %{ mysqladmin -u root -f drop "#{PKG_NAME}_unittest" }
 end
 
 desc 'Rebuild the MySQL test databases'
@@ -93,12 +93,12 @@ task :build_sqlite_databases do
   file = File.join(SCHEMA_PATH, 'sqlite.sql')
   cmd = "sqlite3 test.db < #{file}"
   puts cmd
-  %x( #{cmd} )
+  sh %{ #{cmd} }
 end
 
 desc 'Drop the sqlite test databases'
 task :drop_sqlite_databases do 
-  %x( rm -f test.db )
+  sh %{ rm -f test.db }
 end
 
 desc 'Rebuild the sqlite test databases'
@@ -106,13 +106,13 @@ task :rebuild_sqlite_databases => [:drop_sqlite_databases, :build_sqlite_databas
 
 desc 'Build the PostgreSQL test databases'
 task :build_postgresql_databases do 
-  %x( createdb "#{PKG_NAME}_unittest" )
-  %x( psql "#{PKG_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} )
+  sh %{ createdb "#{PKG_NAME}_unittest" }
+  sh %{ psql "#{PKG_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
 end
 
 desc 'Drop the PostgreSQL test databases'
 task :drop_postgresql_databases do 
-  %x( dropdb   "#{PKG_NAME}_unittest" )
+  sh %{ dropdb "#{PKG_NAME}_unittest" }
 end
 
 desc 'Rebuild the PostgreSQL test databases'
@@ -120,9 +120,9 @@ task :rebuild_postgresql_databases => [:drop_postgresql_databases, :build_postgr
 
 desc 'Generate website files'
 task :website_generate do
-  %x( ruby scripts/txt2html website/index.txt > website/index.html )
-  %x( ruby scripts/txt2js website/version.txt > website/version.js )
-  %x( ruby scripts/txt2js website/version-raw.txt > website/version-raw.js )
+  sh %{ ruby scripts/txt2html website/index.txt > website/index.html }
+  sh %{ ruby scripts/txt2js website/version.txt > website/version.js }
+  sh %{ ruby scripts/txt2js website/version-raw.txt > website/version-raw.js }
 end
 
 desc 'Upload website files to rubyforge'
