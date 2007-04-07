@@ -99,9 +99,9 @@ A suite of unit tests have been run on the following databases:
 
 |_.Database|_.Test Success|
 |mysql     |<span class=success>YES</span>|
-|oracle    |<span class=success>YES</span> (new 0.8.0)|
 |sqlite3   |<span class=success>YES</span> (new 0.8.0)|
 |postgresql|<span class=success>YES</span> (new 0.8.0)|
+|oracle    |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
 |firebird  |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
 |sqlserver |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
 |db2       |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|

@@ -41,25 +41,44 @@ CREATE TABLE `suburbs` (
 );
 
 CREATE TABLE `streets` (
-  `id` int(11) NOT NULL PRIMARY KEY,
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `city_id` int(11) NOT NULL,
   `suburb_id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL
 );
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL PRIMARY KEY,
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `name` varchar(50) NOT NULL
 );
 
 CREATE TABLE `articles` (
-  `id` int(11) NOT NULL PRIMARY KEY,
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `name` varchar(50) NOT NULL
 );
 
 CREATE TABLE `readings` (
-  `id` int(11) NOT NULL PRIMARY KEY,
+  `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `user_id` int(11) NOT NULL,
   `article_id` int(11) NOT NULL,
   `rating` int(11) NOT NULL
 );
+
+CREATE TABLE groups (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name varchar(50) NOT NULL
+);
+
+CREATE TABLE memberships (
+  user_id int NOT NULL,
+  group_id int NOT NULL,
+  PRIMARY KEY  (user_id,group_id)
+);
+
+CREATE TABLE membership_statuses (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  user_id int NOT NULL,
+  group_id int NOT NULL,
+	status varchar(50) NOT NULL
+);
+

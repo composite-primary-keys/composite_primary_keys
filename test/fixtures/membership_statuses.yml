@@ -1,0 +1,8 @@
+santiago-cpk:
+  user_id: 1
+  group_id: 1
+  status: Active
+drnic-cpk:
+  user_id: 2
+  group_id: 1
+  status: Owner

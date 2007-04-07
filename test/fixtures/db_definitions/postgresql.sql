@@ -76,3 +76,25 @@ CREATE TABLE readings (
   PRIMARY KEY  (id)
 );
 
+CREATE SEQUENCE public.groups_seq START 100;
+CREATE TABLE groups (
+  id int NOT NULL DEFAULT nextval('public.groups_seq'),
+  name varchar(50) NOT NULL,
+  PRIMARY KEY  (id)
+);
+
+CREATE TABLE memberships (
+  user_id int NOT NULL,
+  group_id int NOT NULL,
+  PRIMARY KEY  (user_id,group_id)
+);
+
+CREATE SEQUENCE public.membership_statuses_seq START 100;
+CREATE TABLE membership_statuses (
+  id int NOT NULL DEFAULT nextval('public.membership_statuses_seq'),
+  user_id int NOT NULL,
+  group_id int NOT NULL,
+	status varchar(50) NOT NULL,
+  PRIMARY KEY (id)
+);
+

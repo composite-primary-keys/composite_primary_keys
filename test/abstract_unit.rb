@@ -10,7 +10,7 @@ require 'active_support/breakpoint'
 begin
   require 'connection'
 rescue MissingSourceFile => e
-  adapter = 'sqlite'
+  adapter = 'postgresql' #'sqlite'
   require "#{File.dirname(__FILE__)}/connections/native_#{adapter}/connection"
 end
 require 'composite_primary_keys'
