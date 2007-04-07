@@ -62,12 +62,6 @@ RUBY_FORGE_PROJECT = "compositekeys"
 RUBY_FORGE_USER    = "nicwilliams"
 
 
-desc "Default Task"
-task :default => [ :test_sqlite ]
-task :test    => [ :test_sqlite ]
-
-# Run the unit tests
-
 for adapter in %w( mysql sqlite oracle postgresql ) # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase )
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
@@ -129,4 +123,17 @@ task :website_generate do
   %x( ruby scripts/txt2html website/index.txt > website/index.html )
   %x( ruby scripts/txt2js website/version.txt > website/version.js )
   %x( ruby scripts/txt2js website/version-raw.txt > website/version-raw.js )
+end
+
+desc 'Upload website files to rubyforge'
+task :website_upload do
+  config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
+  host = "#{config["username"]}@rubyforge.org"
+  remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/"
+  local_dir = 'website'
+  sh %{rsync -av --delete #{local_dir}/ #{host}:#{remote_dir}}
+end
+
+desc 'Generate and upload website files'
+task :website => [:website_generate, :website_upload] do
 end
