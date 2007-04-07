@@ -90,6 +90,25 @@ Perform <code>#count</code> operations
 
 <pre syntax="ruby">MembershipStatus.find(:first).memberships.count # => 1</pre>
 
+<a name="dbs"></a>
+
+h2. Which databases?
+
+
+A suite of unit tests have been run on the following databases:
+
+|_.Database|_.Test Success|
+|mysql     |<span class=success>YES</span>|
+|oracle    |<span class=success>YES</span> (new 0.8.0)|
+|sqlite3   |<span class=success>YES</span> (new 0.8.0)|
+|postgresql|<span class=success>YES</span> (new 0.8.0)|
+|firebird  |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+|sqlserver |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+|db2       |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+|sybase    |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+|openbase  |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+|frontbase |<span class=unknown>???</span> ("I can help":mailto:compositekeys@googlegroups.com)|
+
 h2. Dr Nic's Blog
 
 "http://www.drnicwilliams.com":http://www.drnicwilliams.com - for future announcements and

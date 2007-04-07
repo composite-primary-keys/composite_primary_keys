@@ -48,6 +48,34 @@ blockquote {
   font-size: smaller;
 }
 
+table {
+  font-size: 90%;
+  line-height: 1.4em;
+  color: #ff8;
+  background-color: #111;
+  padding: 2px 10px 2px 10px;
+	border-style: dashed;
+}
+
+th {
+	color: #fff;
+}
+
+td {
+  padding: 2px 10px 2px 10px;
+}
+
+.success {
+	color: #0CC52B;
+}
+
+.failed {
+	color: #E90A1B;
+}
+
+.unknown {
+	color: #995000;
+}
 pre, code {
   font-family: monospace;
   font-size: 90%;
