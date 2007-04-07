@@ -5,7 +5,7 @@ require 'redcloth'
 require 'syntax/convertors/html'
 require 'erb'
 require 'active_support'
-require '../lib/composite_primary_keys/version.rb'
+require File.dirname(__FILE__) + '/../lib/composite_primary_keys/version.rb'
 
 version  = CompositePrimaryKeys::VERSION::STRING
 download = 'http://rubyforge.org/projects/compositekeys'
@@ -36,7 +36,7 @@ end
 
 if ARGV.length >= 1
   src, template = ARGV
-  template ||= 'template.js'
+  template ||= File.dirname(__FILE__) + '/../website/template.js'
 else
   puts("Usage: #{File.split($0).last} source.txt [template.js] > output.html")
   exit!

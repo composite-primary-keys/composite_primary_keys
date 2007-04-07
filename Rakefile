@@ -123,3 +123,10 @@ end
 
 desc 'Rebuild the PostgreSQL test databases'
 task :rebuild_postgresql_databases => [:drop_postgresql_databases, :build_postgresql_databases]
+
+desc 'Generate website files'
+task :website_generate do
+  %x( ruby scripts/txt2html website/index.txt > website/index.html )
+  %x( ruby scripts/txt2js website/version.txt > website/version.js )
+  %x( ruby scripts/txt2js website/version-raw.txt > website/version-raw.js )
+end
