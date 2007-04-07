@@ -12,8 +12,6 @@ lib/composite_primary_keys/connection_adapters/postgresql_adapter.rb
 lib/composite_primary_keys/fixtures.rb
 lib/composite_primary_keys/reflection.rb
 lib/composite_primary_keys/version.rb
-scripts/http-access2-2.0.6.gem
-scripts/rubyforge-orig
 scripts/txt2html
 scripts/txt2js
 test/abstract_unit.rb
