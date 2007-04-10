@@ -8,6 +8,7 @@ lib/composite_primary_keys/associations.rb
 lib/composite_primary_keys/base.rb
 lib/composite_primary_keys/calculations.rb
 lib/composite_primary_keys/composite_arrays.rb
+lib/composite_primary_keys/connection_adapters/oracle_adapter.rb
 lib/composite_primary_keys/connection_adapters/postgresql_adapter.rb
 lib/composite_primary_keys/fixtures.rb
 lib/composite_primary_keys/reflection.rb

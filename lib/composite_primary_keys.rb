@@ -45,7 +45,6 @@ ActiveRecord::Base.class_eval do
   include CompositePrimaryKeys::ActiveRecord::Base
 end
 
-require "composite_primary_keys/connection_adapters/abstract_adapter"
 RAILS_CONNECTION_ADAPTERS.each do |adapter|
   begin
     require "composite_primary_keys/connection_adapters/" + adapter + "_adapter"

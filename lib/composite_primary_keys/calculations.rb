@@ -54,7 +54,7 @@ module CompositePrimaryKeys
 
           sql << " ORDER BY #{options[:order]} "       if options[:order]
           add_limit!(sql, options, scope)
-          sql << ')' + connection.subquery_need_table_name if use_workaround
+          sql << ') w1' if use_workaround # assign a dummy table name as required for postgresql
           sql
         end
       end

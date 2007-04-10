@@ -6,10 +6,6 @@ module ActiveRecord
       def supports_count_distinct? #:nodoc:
         false
       end
-      
-      def subquery_need_table_name
-        ' as w1'
-      end
     end
   end
 end
