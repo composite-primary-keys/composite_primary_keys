@@ -1,0 +1,15 @@
+*** 0.8.1 / 2007-4-10
+
++ 1 bug fix:
+        + Fixed the distinct(count) for oracle (removed 'as')
+
+*** 0.8.0 / 2007-4-6
+
++ 1 major enhancement:
+        + Support for calcualtions on associations
++ 2 new DB supported:
+        + Tests run on sqlite
+        + Tests run on postgresql
++ History.txt to keep track of changes like these
++ Using Hoe for Rakefile
++ Website generator rake tasks

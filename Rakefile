@@ -46,7 +46,7 @@ hoe = Hoe.new(GEM_NAME, VERSION) do |p|
   p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
 
   # == Optional
-  #p.changes        - A description of the release's latest changes.
+  p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
   p.extra_deps = [['activerecord', '>= 1.14.3']]  #An array of rubygem dependencies.
   #p.spec_extras    - A hash of extra values to set in the gemspec.
 end
@@ -135,5 +135,4 @@ task :website_upload do
 end
 
 desc 'Generate and upload website files'
-task :website => [:website_generate, :website_upload] do
-end
+task :website => [:website_generate, :website_upload]
