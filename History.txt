@@ -1,3 +1,9 @@
+*** 0.8.2 / 2007-4-11
+
++ 1 major enhancement:
+        + Oracle unit tests!! [Darrin Holst]
+				+ And they work too
+
 *** 0.8.1 / 2007-4-10
 
 + 1 bug fix:
