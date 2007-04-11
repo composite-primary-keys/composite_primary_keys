@@ -72,6 +72,12 @@ class TestAssociations < Test::Unit::TestCase
       "Incorrect number of product_tariffs returnedturned"
   end
   
+  def test_find_includes_product
+    assert @product_tariffs = ProductTariff.find(:all, :include => :product)
+    assert_equal 3, @product_tariffs.length
+    assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
+  end
+  
   def XXX_test_find_includes_extended
     # TODO - what's the correct syntax?
     assert @products = Product.find(:all, :include => {:product_tariffs => :tariffs})

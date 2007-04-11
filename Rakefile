@@ -118,6 +118,20 @@ end
 desc 'Rebuild the PostgreSQL test databases'
 task :rebuild_postgresql_databases => [:drop_postgresql_databases, :build_postgresql_databases]
 
+desc 'Build the Oracle test databases'
+task :build_oracle_databases do 
+  puts File.join(SCHEMA_PATH, 'oracle.sql')
+  sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.sql')} )
+end
+
+desc 'Drop the Oracle test databases'
+task :drop_oracle_databases do 
+  sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.drop.sql')} )
+end
+
+desc 'Rebuild the Oracle test databases'
+task :rebuild_oracle_databases => [:drop_oracle_databases, :build_oracle_databases]
+
 desc 'Generate website files'
 task :website_generate do
   sh %{ ruby scripts/txt2html website/index.txt > website/index.html }

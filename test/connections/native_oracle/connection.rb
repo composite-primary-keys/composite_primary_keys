@@ -1,23 +1,16 @@
-print "Using Oracle\n"
-require_dependency 'fixtures/course'
+print "Using native Oracle\n"
 require 'logger'
 
-ActiveRecord::Base.logger = Logger.new STDOUT
-ActiveRecord::Base.logger.level = Logger::WARN
+ActiveRecord::Base.logger = Logger.new("debug.log")
 
-# Set these to your database connection strings
-db = ENV['ARUNIT_DB'] || 'ruby_ut'
+db1 = 'composite_primary_keys_unittest'
 
-ActiveRecord::Base.establish_connection(
-  :adapter  => 'oracle',
-  :username => 'ruby_ut',
-  :password => 'ruby_ut1',
-  :database => db
-)
+connection_options = {
+  :adapter  => 'oci',
+  :username => 'holstdl',
+  :password => 'holstdl',
+  :host     => 'test'
+}
 
-Course.establish_connection(
-  :adapter  => 'oracle',
-  :username => 'ruby_ut',
-  :password => 'ruby_ut1',
-  :database => db
-)
+ActiveRecord::Base.configurations = { db1 => connection_options }
+ActiveRecord::Base.establish_connection(connection_options)

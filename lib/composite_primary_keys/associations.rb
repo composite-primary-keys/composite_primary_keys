@@ -203,7 +203,7 @@ module ActiveRecord::Associations::ClassMethods
       end
       
       def full_keys(table_name, keys)
-        keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP)
+        keys.is_a?(Array) ? keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : "#{table_name}.#{keys}"
       end
 
       def composite_join_clause(full_keys1, full_keys2)
