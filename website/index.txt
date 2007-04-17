@@ -78,7 +78,7 @@ throughout your application. Just like a normal ActiveRecord.
 
 h2. Other tricks
 
-Pass a list of composite ids to the <code>#find</code> method
+h3. Pass a list of composite ids to the <code>#find</code> method
 
 <pre syntax="ruby">Membership.find [1,1], [2,1]
 => [
@@ -89,6 +89,29 @@ Pass a list of composite ids to the <code>#find</code> method
 Perform <code>#count</code> operations
 
 <pre syntax="ruby">MembershipStatus.find(:first).memberships.count # => 1</pre>
+
+h3. Routes with Rails
+
+From Pete Sumskas:
+
+<blockquote>
+	I ran into one problem that I didn't see mentioned on "this list":http://groups.google.com/group/compositekeys - 
+	and I	didn't see any information about what I should do to address it in the
+	documentation (might have missed it).
+
+	The problem was that the urls being generated for a 'show' action (for
+	example) had a syntax like:
+	
+	<pre>/controller/show/123000,Bu70</pre>
+
+	for a two-field composite PK. The default routing would not match that,
+	so after working out how to do the routing I added:
+	
+	<pre syntax="ruby">map.connect ':controller/:action/:id', :id => /\w+(,\w+)*/</pre>
+	
+	to my <code>route.rb</code> file.
+	
+</blockquote>
 
 <a name="dbs"></a>
 

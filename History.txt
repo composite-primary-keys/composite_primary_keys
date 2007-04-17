@@ -1,3 +1,8 @@
+*** 0.8.3 / 2007-?-??
+
++ 1 website addition:
+        + Added routing help [Pete Sumskas]
+
 *** 0.8.2 / 2007-4-11
 
 + 1 major enhancement:

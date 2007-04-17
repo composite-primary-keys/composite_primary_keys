@@ -25,6 +25,8 @@ test/connections/native_sqlite/connection.rb
 test/fixtures/article.rb
 test/fixtures/articles.yml
 test/fixtures/db_definitions/mysql.sql
+test/fixtures/db_definitions/oracle.drop.sql
+test/fixtures/db_definitions/oracle.sql
 test/fixtures/db_definitions/postgresql.sql
 test/fixtures/db_definitions/sqlite.sql
 test/fixtures/group.rb

@@ -141,7 +141,7 @@ throughout your application. Just like a normal ActiveRecord.</p>
 	<h2>Other tricks</h2>
 
 
-	<p>Pass a list of composite ids to the <code>#find</code> method</p>
+	<h3>Pass a list of composite ids to the <code>#find</code> method</h3>
 
 
 	<p><pre class="syntax"><span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span> <span class="punct">[</span><span class="number">1</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">]</span>
@@ -156,6 +156,31 @@ throughout your application. Just like a normal ActiveRecord.</p>
 
 	<p><pre class="syntax"><span class="constant">MembershipStatus</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">).</span><span class="ident">memberships</span><span class="punct">.</span><span class="ident">count</span> <span class="comment"># =&gt; 1</span></pre></p>
 
+
+	<h3>Routes with Rails</h3>
+
+
+	<p>From Pete Sumskas:</p>
+
+
+<blockquote>
+    I ran into one problem that I didn&#8217;t see mentioned on <a href="http://groups.google.com/group/compositekeys">this list</a> &#8211; 
+    and I    didn&#8217;t see any information about what I should do to address it in the
+    documentation (might have missed it).
+
+    The problem was that the urls being generated for a &#8216;show&#8217; action (for
+    example) had a syntax like:
+
+    <pre>/controller/show/123000,Bu70</pre>
+
+    for a two-field composite PK. The default routing would not match that,
+    so after working out how to do the routing I added:
+
+    <pre class="syntax"><span class="ident">map</span><span class="punct">.</span><span class="ident">connect</span> <span class="punct">'</span><span class="string">:controller/:action/:id</span><span class="punct">',</span> <span class="symbol">:id</span> <span class="punct">=&gt;</span> <span class="punct">/</span><span class="regex"><span class="escape">\w</span>+(,<span class="escape">\w</span>+)*</span><span class="punct">/</span></pre>
+
+    to my <code>route.rb</code> file.
+
+</blockquote>
 
 	<p><a name="dbs"></a></p>
 
@@ -257,7 +282,7 @@ other stories and things.</p>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 11th April 2007<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 17th April 2007<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>

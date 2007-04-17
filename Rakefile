@@ -19,8 +19,8 @@ RUBYFORGE_PROJECT = "compositekeys"
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 REV = nil #File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
-VERSION = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV}" : ""))
-CLEAN.include ['**/.*.sw?', '*.gem', '.config']
+VER = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV}" : ""))
+CLEAN.include ['**/.*.sw?', '*.gem', '.config','debug.log','*.db','logfile','.DS_Store']
 RDOC_OPTS = ['--quiet', '--title', "newgem documentation",
     "--opname", "index.html",
     "--line-numbers", 
@@ -35,7 +35,7 @@ end
 
 # Generate all the Rake tasks
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
-hoe = Hoe.new(GEM_NAME, VERSION) do |p|
+hoe = Hoe.new(GEM_NAME, VER) do |p|
   p.author = AUTHOR 
   p.description = DESCRIPTION
   p.email = EMAIL
