@@ -65,4 +65,9 @@ class TestFind < Test::Unit::TestCase
     end
   end
   
+  def test_not_found
+    assert_raise(::ActiveRecord::RecordNotFound) do
+      ReferenceCode.send :find, '999,999'
+    end
+  end
 end
