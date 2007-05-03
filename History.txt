@@ -1,5 +1,7 @@
-*** 0.8.3 / 2007-?-??
+*** 0.8.3 / 2007-5-3
 
++ 1 bugfix
+				+ Explicit reference to ::ActiveRecord::RecordNotFound
 + 1 website addition:
         + Added routing help [Pete Sumskas]
 

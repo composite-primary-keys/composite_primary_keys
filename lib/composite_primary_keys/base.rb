@@ -303,7 +303,7 @@ module CompositePrimaryKeys
               if result.size == ids.size
                 ids.size == 1 ? result[0] : result
               else
-                raise RecordNotFound, "Couldn't find all #{name.pluralize} with IDs (#{ids_list})#{conditions}"
+                raise ::ActiveRecord::RecordNotFound, "Couldn't find all #{name.pluralize} with IDs (#{ids_list})#{conditions}"
               end
             end
             
