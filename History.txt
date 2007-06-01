@@ -1,33 +1,41 @@
-*** 0.8.4 / 2007-5-3
+== 0.X.Y 2007-06-01
 
-+ 1 bugfix
-				+ Corrected ids_list => ids in the exception message. That'll teach me for not adding unit tests before fixing bugs. 
+* 2 dev improvement:
+  * Changed History.txt syntax to rdoc format
+  * Added deploy tasks
+* 1 website improvement:
+  * website/index.txt includes link to "8 steps to fix other ppls code"
 
-*** 0.8.3 / 2007-5-3
+== 0.8.4 / 2007-5-3
 
-+ 1 bugfix
-				+ Explicit reference to ::ActiveRecord::RecordNotFound
-+ 1 website addition:
-        + Added routing help [Pete Sumskas]
+* 1 bugfix
+  * Corrected ids_list => ids in the exception message. That'll teach me for not adding unit tests before fixing bugs. 
 
-*** 0.8.2 / 2007-4-11
+== 0.8.3 / 2007-5-3
 
-+ 1 major enhancement:
-        + Oracle unit tests!! [Darrin Holst]
-				+ And they work too
+* 1 bugfix
+  * Explicit reference to ::ActiveRecord::RecordNotFound
+* 1 website addition:
+  * Added routing help [Pete Sumskas]
 
-*** 0.8.1 / 2007-4-10
+== 0.8.2 / 2007-4-11
 
-+ 1 bug fix:
-        + Fixed the distinct(count) for oracle (removed 'as')
+* 1 major enhancement:
+  * Oracle unit tests!! [Darrin Holst]
+  * And they work too
 
-*** 0.8.0 / 2007-4-6
+== 0.8.1 / 2007-4-10
 
-+ 1 major enhancement:
-        + Support for calcualtions on associations
-+ 2 new DB supported:
-        + Tests run on sqlite
-        + Tests run on postgresql
-+ History.txt to keep track of changes like these
-+ Using Hoe for Rakefile
-+ Website generator rake tasks
+* 1 bug fix:
+  * Fixed the distinct(count) for oracle (removed 'as')
+
+== 0.8.0 / 2007-4-6
+
+* 1 major enhancement:
+  * Support for calcualtions on associations
+* 2 new DB supported:
+  * Tests run on sqlite
+  * Tests run on postgresql
+* History.txt to keep track of changes like these
+* Using Hoe for Rakefile
+* Website generator rake tasks

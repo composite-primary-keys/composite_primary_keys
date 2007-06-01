@@ -15,6 +15,8 @@ AUTHOR = "Dr Nic Williams"
 EMAIL = "drnicwilliams@gmail.com"
 DESCRIPTION = "Composite key support for ActiveRecords"
 GEM_NAME = "composite_primary_keys" # what ppl will type to install your gem
+config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
+RUBYFORGE_USERNAME = config["username"]
 RUBYFORGE_PROJECT = "compositekeys"
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
@@ -51,18 +53,13 @@ hoe = Hoe.new(GEM_NAME, VER) do |p|
   #p.spec_extras    - A hash of extra values to set in the gemspec.
 end
 
-PKG_BUILD     = ENV['PKG_BUILD'] ? '.' + ENV['PKG_BUILD'] : ''
-PKG_NAME      = 'composite_primary_keys'
-PKG_VERSION   = CompositePrimaryKeys::VERSION::STRING + PKG_BUILD
-PKG_FILE_NAME = "#{PKG_NAME}-#{PKG_VERSION}"
-
-RELEASE_NAME  = "REL #{PKG_VERSION}"
-
-RUBY_FORGE_PROJECT = "compositekeys"
-RUBY_FORGE_USER    = "nicwilliams"
+CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
+PATH    = RUBYFORGE_PROJECT
+hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
 
 
-for adapter in %w( mysql sqlite oracle postgresql ) # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase )
+# UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase
+for adapter in %w( mysql sqlite oracle postgresql ) 
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
     t.pattern = "test/test_*.rb"
@@ -145,8 +142,20 @@ task :website_upload do
   host = "#{config["username"]}@rubyforge.org"
   remote_dir = "/var/www/gforge-projects/#{RUBYFORGE_PROJECT}/"
   local_dir = 'website'
-  sh %{rsync -av #{local_dir}/ #{host}:#{remote_dir}}
+  sh %{rsync -aCv #{local_dir}/ #{host}:#{remote_dir}}
 end
 
 desc 'Generate and upload website files'
 task :website => [:website_generate, :website_upload]
+
+desc 'Release the website and new gem version'
+task :deploy => [:check_version, :website, :publish_docs, :release] do
+  puts "Remember to create SVN tag:"
+  puts "svn copy svn+ssh://#{RUBYFORGE_USERNAME}@rubyforge.org/var/svn/#{PATH}/trunk " +
+    "svn+ssh://#{RUBYFORGE_USERNAME}@rubyforge.org/var/svn/#{PATH}/tags/REL-#{VERS} "
+  puts "Suggested comment:"
+  puts "Tagging release #{CHANGES}"
+end
+
+desc 'Runs tasks website_generate and install_gem as a local deployment of the gem'
+task :local_deploy => [:website_generate, :install_gem]
