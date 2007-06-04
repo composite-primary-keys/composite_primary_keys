@@ -2,12 +2,13 @@
 
 * 1 change due to Rails Core change
   * Can no longer use RAILS_CONNECTION_ADAPTERS from Rails core
-* 5 dev improvement:
+* 6 dev improvement:
   * Changed History.txt syntax to rdoc format
   * Added deploy tasks
   * Removed CHANGELOG + migrated into History.txt
   * Changed PKG_NAME -> GEM_NAME in Rakefile
   * Renamed README -> README.txt for :publish_docs task
+  * Added :check_version task
 * 1 website improvement:
   * website/index.txt includes link to "8 steps to fix other ppls code"
 
