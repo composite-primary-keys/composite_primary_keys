@@ -21,7 +21,7 @@ RUBYFORGE_PROJECT = "compositekeys"
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 REV = nil #File.read(".svn/entries")[/committed-rev="(\d+)"/, 1] rescue nil
-VER = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV}" : ""))
+VERS = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV}" : ""))
 CLEAN.include ['**/.*.sw?', '*.gem', '.config','debug.log','*.db','logfile','.DS_Store']
 RDOC_OPTS = ['--quiet', '--title', "newgem documentation",
     "--opname", "index.html",
@@ -45,7 +45,7 @@ hoe = Hoe.new(GEM_NAME, VER) do |p|
   p.url = HOMEPATH
   p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
   p.test_globs = ["test/**/test*.rb"]
-  p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
+  p.clean_globs |= CLEAN  #An array of file patterns to delete on clean.
 
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
