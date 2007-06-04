@@ -8,6 +8,8 @@ db1 = 'composite_primary_keys_unittest'
 connection_options = {
   :adapter  => "mysql",
   :username => "root",
+  :password => "root",
+  :socket   => '/Applications/MAMP/tmp/mysql/mysql.sock',
   :encoding => "utf8",
   :database => db1
 }
