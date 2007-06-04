@@ -1,4 +1,4 @@
-== 0.8.5 / 2007-06-05
+== 0.8.5 / 2007-6-5
 
 * 1 change due to Rails Core change
   * Can no longer use RAILS_CONNECTION_ADAPTERS from Rails core
