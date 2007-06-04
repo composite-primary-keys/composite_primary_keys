@@ -1,7 +1,6 @@
-CHANGELOG
 History.txt
 Manifest.txt
-README
+README.txt
 Rakefile
 install.rb
 lib/composite_primary_keys.rb
