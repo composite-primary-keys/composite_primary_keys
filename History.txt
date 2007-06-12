@@ -1,3 +1,8 @@
+== 0.8.6 / 2007-6-12
+
+* 1 emergency fix due to Rails Core change
+  * Rails v7004 removed #quote; fixed with connection.quote_column_name [thx nerdrew]
+
 == 0.8.5 / 2007-6-5
 
 * 1 change due to Rails Core change
