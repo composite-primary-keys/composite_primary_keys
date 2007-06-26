@@ -19,3 +19,6 @@ drop sequence groups_seq;
 drop table memberships;
 drop table membership_statuses;
 drop sequence membership_statuses_seq;
+drop table departments;
+drop table employees;
+drop sequence employees_seq;

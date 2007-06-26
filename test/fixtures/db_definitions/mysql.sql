@@ -90,3 +90,16 @@ CREATE TABLE membership_statuses (
   PRIMARY KEY (id)
 ) TYPE=InnoDB;
 
+CREATE TABLE departments (
+  department_id int(11) NOT NULL,
+  location_id int(11) NOT NULL,
+  PRIMARY KEY (department_id, location_id)
+);
+
+CREATE TABLE employees (
+ id int(11) NOT NULL auto_increment,
+ department_id int(11) DEFAULT NULL,
+ location_id int(11) DEFAULT NULL,
+ PRIMARY KEY (id)
+);
+

@@ -108,4 +108,18 @@ create table membership_statuses (
 
 create sequence membership_statuses_seq
   start with 1000;
-  
+
+CREATE TABLE departments (
+  department_id number(11) NOT NULL,
+  location_id number(11) NOT NULL,
+  constraint departments_pk primary key(department_id, location_id)
+);
+
+CREATE TABLE employees (
+ id number(11) NOT NULL primary key,
+ department_id number(11) DEFAULT NULL,
+ location_id number(11) DEFAULT NULL 
+);
+
+create sequence employees_seq
+  start with 1000;

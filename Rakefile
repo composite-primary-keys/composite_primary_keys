@@ -69,69 +69,77 @@ end
 
 SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions))
 
-desc 'Build the MySQL test databases'
-task :build_mysql_databases do 
-  puts File.join(SCHEMA_PATH, 'mysql.sql')
-  socket = '/Applications/MAMP/tmp/mysql/mysql.sock'
-  user   = 'root'
-  sh %{ mysqladmin -u #{user} -S #{socket} -p create "#{GEM_NAME}_unittest" }
-  sh %{ mysql -u #{user} -S #{socket} -p "#{GEM_NAME}_unittest" < #{File.join(SCHEMA_PATH, 'mysql.sql')} }
+namespace :mysql do
+  desc 'Build the MySQL test databases'
+  task :build_databases do 
+    puts File.join(SCHEMA_PATH, 'mysql.sql')
+    socket = '/Applications/MAMP/tmp/mysql/mysql.sock'
+    user   = 'root'
+    sh %{ mysqladmin -u #{user} -S #{socket} -p create "#{GEM_NAME}_unittest" }
+    sh %{ mysql -u #{user} -S #{socket} -p "#{GEM_NAME}_unittest" < #{File.join(SCHEMA_PATH, 'mysql.sql')} }
+  end
+
+  desc 'Drop the MySQL test databases'
+  task :drop_databases do 
+    socket = '/Applications/MAMP/tmp/mysql/mysql.sock'
+    user   = 'root'
+    sh %{ mysqladmin -u #{user} -S #{socket} -p -f drop "#{GEM_NAME}_unittest" }
+  end
+
+  desc 'Rebuild the MySQL test databases'
+
+  task :rebuild_databases => [:drop_databases, :build_databases]
 end
 
-desc 'Drop the MySQL test databases'
-task :drop_mysql_databases do 
-  socket = '/Applications/MAMP/tmp/mysql/mysql.sock'
-  user   = 'root'
-  sh %{ mysqladmin -u #{user} -S #{socket} -p -f drop "#{GEM_NAME}_unittest" }
+namespace :sqlite do
+  desc 'Build the sqlite test databases'
+  task :build_databases do 
+    file = File.join(SCHEMA_PATH, 'sqlite.sql')
+    cmd = "sqlite3 test.db < #{file}"
+    puts cmd
+    sh %{ #{cmd} }
+  end
+
+  desc 'Drop the sqlite test databases'
+  task :drop_databases do 
+    sh %{ rm -f test.db }
+  end
+
+  desc 'Rebuild the sqlite test databases'
+  task :rebuild_databases => [:drop_databases, :build_databases]
 end
 
-desc 'Rebuild the MySQL test databases'
+namespace :postgresql do
+  desc 'Build the PostgreSQL test databases'
+  task :build_databases do 
+    sh %{ createdb "#{GEM_NAME}_unittest" }
+    sh %{ psql "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
+  end
 
-task :rebuild_mysql_databases => [:drop_mysql_databases, :build_mysql_databases]
+  desc 'Drop the PostgreSQL test databases'
+  task :drop_databases do 
+    sh %{ dropdb "#{GEM_NAME}_unittest" }
+  end
 
-desc 'Build the sqlite test databases'
-task :build_sqlite_databases do 
-  file = File.join(SCHEMA_PATH, 'sqlite.sql')
-  cmd = "sqlite3 test.db < #{file}"
-  puts cmd
-  sh %{ #{cmd} }
+  desc 'Rebuild the PostgreSQL test databases'
+  task :rebuild_databases => [:drop_databases, :build_databases]
 end
 
-desc 'Drop the sqlite test databases'
-task :drop_sqlite_databases do 
-  sh %{ rm -f test.db }
+namespace :oracle do
+  desc 'Build the Oracle test databases'
+  task :build_databases do 
+    puts File.join(SCHEMA_PATH, 'oracle.sql')
+    sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.sql')} )
+  end
+
+  desc 'Drop the Oracle test databases'
+  task :drop_databases do 
+    sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.drop.sql')} )
+  end
+
+  desc 'Rebuild the Oracle test databases'
+  task :rebuild_databases => [:drop_databases, :build_databases]
 end
-
-desc 'Rebuild the sqlite test databases'
-task :rebuild_sqlite_databases => [:drop_sqlite_databases, :build_sqlite_databases]
-
-desc 'Build the PostgreSQL test databases'
-task :build_postgresql_databases do 
-  sh %{ createdb "#{GEM_NAME}_unittest" }
-  sh %{ psql "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
-end
-
-desc 'Drop the PostgreSQL test databases'
-task :drop_postgresql_databases do 
-  sh %{ dropdb "#{GEM_NAME}_unittest" }
-end
-
-desc 'Rebuild the PostgreSQL test databases'
-task :rebuild_postgresql_databases => [:drop_postgresql_databases, :build_postgresql_databases]
-
-desc 'Build the Oracle test databases'
-task :build_oracle_databases do 
-  puts File.join(SCHEMA_PATH, 'oracle.sql')
-  sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.sql')} )
-end
-
-desc 'Drop the Oracle test databases'
-task :drop_oracle_databases do 
-  sh %( sqlplus holstdl/holstdl@test < #{File.join(SCHEMA_PATH, 'oracle.drop.sql')} )
-end
-
-desc 'Rebuild the Oracle test databases'
-task :rebuild_oracle_databases => [:drop_oracle_databases, :build_oracle_databases]
 
 desc 'Generate website files'
 task :website_generate do

@@ -1,6 +1,8 @@
 require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
+require 'fixtures/department'
+require 'fixtures/employee'
 
 class TestDelete < Test::Unit::TestCase
 
@@ -16,7 +18,7 @@ class TestDelete < Test::Unit::TestCase
   }
   
   def setup
-    create_fixtures :reference_types, :reference_codes
+    create_fixtures :reference_types, :reference_codes, :departments, :employees
     self.class.classes = CLASSES
   end
   
@@ -62,5 +64,24 @@ class TestDelete < Test::Unit::TestCase
     testing_with do
       @klass.delete_all
     end
+  end
+  
+  def test_clear_association
+      department = Department.find(1,1)
+      assert_equal 2, department.employees.size, "Employee count for department should be 2 before clear"
+      department.employees.clear
+      assert_equal 0, department.employees.size, "After clear size should 0"
+      department.reload
+      assert_equal 0, department.employees.size, "After clear count in database should have been 0"
+  end
+  
+  def test_delete_association
+      department = Department.find(1,1)
+      assert_equal 2, department.employees.size , "Employee count for department should be 2 before delete"
+	  first_employee = department.employees[0]
+      department.employees.delete(first_employee) 
+      assert_equal 1, department.employees.size, "After delete employees count should be 1."
+      department.reload
+      assert_equal 1, department.employees.size, "After delete employees count should be 1 after reload from DB."
   end
 end
