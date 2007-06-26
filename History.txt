@@ -1,3 +1,7 @@
+== TRUNK 2007-06-26
+
+* Added ibm_db support [thx K Venkatasubramaniyan]
+
 == 0.8.6 / 2007-6-12
 
 * 1 emergency fix due to Rails Core change

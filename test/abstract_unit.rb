@@ -5,8 +5,6 @@ require 'test/unit'
 require 'hash_tricks'
 require 'active_record'
 require 'active_record/fixtures'
-require 'active_support/binding_of_caller'
-require 'active_support/breakpoint'
 begin
   require 'connection'
 rescue MissingSourceFile => e

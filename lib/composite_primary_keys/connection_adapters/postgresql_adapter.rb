@@ -4,7 +4,7 @@ module ActiveRecord
       
       # This mightn't be in Core, but count(distinct x,y) doesn't work for me
       def supports_count_distinct? #:nodoc:
-        false
+        true
       end
     end
   end

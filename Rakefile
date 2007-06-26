@@ -59,7 +59,7 @@ hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc'
 
 
 # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase
-for adapter in %w( mysql sqlite oracle postgresql ) 
+for adapter in %w( mysql sqlite oracle postgresql ibm_db ) 
   Rake::TestTask.new("test_#{adapter}") { |t|
     t.libs << "test" << "test/connections/native_#{adapter}"
     t.pattern = "test/test_*.rb"

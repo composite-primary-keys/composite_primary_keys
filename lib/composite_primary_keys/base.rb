@@ -293,7 +293,10 @@ module CompositePrimaryKeys
           
           conditions = ids.map do |id_set|
             [primary_keys, id_set].transpose.map do |key, id|
-              "#{table_name}.#{key.to_s}=#{sanitize(id)}"
+			   col = columns_hash[key.to_s]
+			   val = quote_value(id, col)
+			   
+              "#{table_name}.#{key.to_s}=#{val}"
               end.join(" AND ")
               end.join(") OR (")
               options.update :conditions => "(#{conditions})"
