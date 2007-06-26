@@ -1,6 +1,7 @@
 == TRUNK 2007-06-26
 
 * Added ibm_db support [thx K Venkatasubramaniyan]
+* Support for cleaning dependents [thx K Venkatasubramaniyan]
 * Rafactored db rake tasks into namespaces
 
 == 0.8.6 / 2007-6-12

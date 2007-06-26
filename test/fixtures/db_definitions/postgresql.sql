@@ -98,3 +98,15 @@ CREATE TABLE membership_statuses (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE departments (
+  department_id int NOT NULL,
+  location_id int NOT NULL,
+  PRIMARY KEY (department_id, location_id)
+);
+
+CREATE TABLE employees (
+ id int NOT NULL,
+ department_id int DEFAULT NULL,
+ location_id int DEFAULT NULL,
+ PRIMARY KEY (id)
+);

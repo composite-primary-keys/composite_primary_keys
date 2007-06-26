@@ -82,3 +82,14 @@ CREATE TABLE membership_statuses (
 	status varchar(50) NOT NULL
 );
 
+CREATE TABLE departments (
+  department_id INTEGER NOT NULL,
+  location_id INTEGER NOT NULL,
+  PRIMARY KEY (department_id, location_id)
+);
+
+CREATE TABLE employees (
+ id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+ department_id INTEGER NULL,
+ location_id INTEGER NULL
+);
