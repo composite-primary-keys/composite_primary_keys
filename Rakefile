@@ -141,6 +141,23 @@ namespace :oracle do
   task :rebuild_databases => [:drop_databases, :build_databases]
 end
 
+namespace :idm_db do
+  desc 'Create the db2 test tables'
+  task :create_databases do
+    sh %( db2 connect to ocdpdev user db2inst1 using password)
+    sh %( db2 -tvf #{File.join(SCHEMA_PATH, 'db2-create-tables.sql')} )
+  end
+  
+  desc 'Drop the db2 test tables'
+  task :drop_databases do
+    sh %( db2 connect to ocdpdev user db2inst1 using password)
+    sh %( db2 -tvf #{File.join(SCHEMA_PATH, 'db2-drop-tables.sql')} )
+  end
+  
+  desc 'Rebuild the db2 test databases'
+  task :rebuild_databases => [:drop_databases, :create_databases]
+end
+
 desc 'Generate website files'
 task :website_generate do
   sh %{ ruby scripts/txt2html website/index.txt > website/index.html }
