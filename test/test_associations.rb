@@ -75,9 +75,13 @@ class TestAssociations < Test::Unit::TestCase
   def test_find_includes_product
     assert @product_tariffs = ProductTariff.find(:all, :include => :product)
     assert_equal 3, @product_tariffs.length
-    require 'pp'
-    pp @product_tariffs.first
     assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
+  end
+  
+  def test_find_includes_comp_belongs_to_tariff
+    assert @product_tariffs = ProductTariff.find(:all, :include => :tariff)
+    assert_equal 3, @product_tariffs.length
+    assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
   end
   
   def test_find_includes_extended
