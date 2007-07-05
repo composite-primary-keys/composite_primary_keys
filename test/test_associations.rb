@@ -75,16 +75,17 @@ class TestAssociations < Test::Unit::TestCase
   def test_find_includes_product
     assert @product_tariffs = ProductTariff.find(:all, :include => :product)
     assert_equal 3, @product_tariffs.length
+    require 'pp'
+    pp @product_tariffs.first
     assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
   end
   
-  def XXX_test_find_includes_extended
-    # TODO - what's the correct syntax?
-    assert @products = Product.find(:all, :include => {:product_tariffs => :tariffs})
-    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
+  def test_find_includes_extended
+    assert @products = Product.find(:all, :include => {:product_tariffs => :tariff})
+    assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@product_tariffs').length},
       "Incorrect number of product_tariffs returned"
     
-    assert @tariffs = Tariff.find(:all, :include => {:product_tariffs => :products})
+    assert @tariffs = Tariff.find(:all, :include => {:product_tariffs => :product})
     assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length}, 
       "Incorrect number of product_tariffs returned"
   end
@@ -97,4 +98,23 @@ class TestAssociations < Test::Unit::TestCase
     assert_equal('(foo=1 AND bar=2)', where_clause)
   end
   
+  def test_has_many_through
+    @products = Product.find(:all, :include => :tariffs)
+    assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@tariffs').length},
+      "Incorrect number of tariffs returned"
+  end
+
+  def test_associations_with_conditions
+    @suburb = Suburb.find([2, 1])
+    assert_equal 2, @suburb.streets.size
+
+    @suburb = Suburb.find([2, 1])
+    assert_equal 1, @suburb.first_streets.size
+
+    @suburb = Suburb.find([2, 1], :include => :streets)
+    assert_equal 2, @suburb.streets.size
+
+    @suburb = Suburb.find([2, 1], :include => :first_streets)
+    assert_equal 1, @suburb.first_streets.size
+  end
 end
