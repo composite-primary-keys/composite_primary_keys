@@ -65,6 +65,9 @@ for adapter in %w( mysql sqlite oracle postgresql ibm_db )
     t.pattern = "test/test_*.rb"
     t.verbose = true
   }
+  namespace adapter do
+    task :test => "test_#{adapter}"
+  end
 end
 
 SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(test fixtures db_definitions))
