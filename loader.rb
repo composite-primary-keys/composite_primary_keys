@@ -1,3 +1,4 @@
+# Load local config files in /local
 begin
   local_file_supported = %w[paths tasks database_connections]
   local_file_supported.each do |file|
@@ -15,3 +16,8 @@ rescue LoadError
   
   EOS
 end
+
+
+# Now load Rake tasks from /tasks
+rakefiles = Dir[File.join(File.dirname(__FILE__), "tasks/**/*.rake")]
+rakefiles.each { |rakefile| load File.expand_path(rakefile) }
