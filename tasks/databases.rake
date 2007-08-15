@@ -7,4 +7,4 @@ for adapter in %w( mysql sqlite oracle postgresql ibm_db )
   }
 end
 
-SCHEMA_PATH = File.join(File.dirname(__FILE__), *%w(.. test fixtures db_definitions))
+SCHEMA_PATH = File.join(PROJECT_ROOT, *%w(test fixtures db_definitions))

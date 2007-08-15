@@ -57,4 +57,6 @@ CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
 PATH    = RUBYFORGE_PROJECT
 hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
 
+PROJECT_ROOT = File.expand_path(".")
+
 require 'loader'

@@ -14,7 +14,7 @@ namespace :postgresql do
   task :rebuild_databases => [:drop_databases, :build_databases]
 
   task :load_connection do
-    require File.join(File.dirname(__FILE__), %w[.. lib adapter_helper postgresql])
+    require File.join(PROJECT_ROOT, %w[lib adapter_helper postgresql])
     spec = AdapterHelper::Postgresql.load_connection_from_env
     options = {}
     options['u'] = spec[:username]  if spec[:username]
