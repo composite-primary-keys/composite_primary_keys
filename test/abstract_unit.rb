@@ -1,8 +1,8 @@
-$:.unshift(File.dirname(__FILE__) + '/../lib')
+$:.unshift(ENV['AR_LOAD_PATH']) if ENV['AR_LOAD_PATH']
 
-require 'rubygems'
 require 'test/unit'
 require 'hash_tricks'
+require 'rubygems'
 require 'active_record'
 require 'active_record/fixtures'
 begin

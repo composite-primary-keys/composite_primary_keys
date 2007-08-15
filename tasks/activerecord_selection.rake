@@ -14,11 +14,7 @@ Need to define env var EDGE_RAILS_DIR or EDGE_RAILS- root of edge rails on your 
       exit
     end
     
-    USING_EDGE = true
-    ar_path = File.join(path, "activerecord/lib")
-    $LOAD_PATH.insert(0, ar_path)
-    require "#{ar_path}/active_record.rb"
-    puts "Using active_record locally from #{ar_path}"
+    ENV['AR_LOAD_PATH'] = File.join(path, "activerecord/lib")
   end
   
   desc 'Pre-load ActiveRecord using VERSION=X.Y.Z, instead of latest'
@@ -34,8 +30,7 @@ Usage: rake ar:get_version VERSION=1.15.3
     begin
       version ? gem('activerecord', version) : gem('activerecord')
       require 'active_record'
-      require 'active_record/version'
-      puts "Using active_record #{ActiveRecord::VERSION::STRING}"
+      ENV['AR_LOAD_PATH'] = $:.reverse.find { |path| /activerecord/ =~ path }
     rescue LoadError
       puts <<-EOS
 Missing: Cannot find activerecord #{version} installed.

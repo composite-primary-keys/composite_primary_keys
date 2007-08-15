@@ -26,7 +26,6 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   begin
-    $:.unshift(File.dirname(__FILE__) + "/../../activerecord/lib")  
     require 'active_record'  
   rescue LoadError
     require 'rubygems'
