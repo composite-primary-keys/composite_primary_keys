@@ -1,10 +1,10 @@
 require File.join(File.dirname(__FILE__), 'base')
 
 module AdapterHelper
-  class MySQL < Base
+  class Postgresql < Base
     class << self
       def load_connection_from_env
-        super('mysql')
+        super('postgresql')
       end
     end
   end

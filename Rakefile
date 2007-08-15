@@ -10,7 +10,6 @@ require 'fileutils'
 require 'hoe'
 include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'composite_primary_keys', 'version')
-require 'local/rakefile_loader'
 
 AUTHOR = "Dr Nic Williams"
 EMAIL = "drnicwilliams@gmail.com"
@@ -58,4 +57,4 @@ CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
 PATH    = RUBYFORGE_PROJECT
 hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
 
-require 'tasks/loader'
+require 'loader'
