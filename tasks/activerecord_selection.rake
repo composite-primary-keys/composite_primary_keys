@@ -17,6 +17,7 @@ Need to define env var EDGE_RAILS_DIR or EDGE_RAILS- root of edge rails on your 
     USING_EDGE = true
     ar_path = File.join(path, "activerecord/lib")
     $LOAD_PATH.insert(0, ar_path)
+    require "#{ar_path}/active_record.rb"
     puts "Using active_record locally from #{ar_path}"
   end
   
