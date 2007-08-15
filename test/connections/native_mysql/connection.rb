@@ -1,18 +1,17 @@
 print "Using native MySQL\n"
 require 'logger'
+require 'adapter_helper/mysql'
 
 ActiveRecord::Base.logger = Logger.new("debug.log")
 
-db1 = 'composite_primary_keys_unittest'
+# ENV['cpk_adapters] should be setup in locals/database_connections.rb
+adapters = YAML.load(ENV['cpk_adapters'])
+connection_options = adapters["mysql"]
 
-connection_options = {
-  :adapter  => "mysql",
-  :username => "root",
-  :password => "root",
-  :socket   => '/Applications/MAMP/tmp/mysql/mysql.sock',
-  :encoding => "utf8",
-  :database => db1
-}
+# Setup some defaults
+connection_options[:adapter]    = 'mysql'
+connection_options[:database] ||= 'composite_primary_keys_unittest'
+db_name = connection_options[:database]
 
-ActiveRecord::Base.configurations = { db1 => connection_options }
+ActiveRecord::Base.configurations = { db_name => connection_options }
 ActiveRecord::Base.establish_connection(connection_options)

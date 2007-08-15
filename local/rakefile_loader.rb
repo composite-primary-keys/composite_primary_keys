@@ -1,5 +1,5 @@
 begin
-  local_file_supported = %w[paths tasks]
+  local_file_supported = %w[paths tasks database_connections]
   local_file_supported.each do |file|
     require "local/#{file}"
   end
