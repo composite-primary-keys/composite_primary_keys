@@ -198,7 +198,7 @@ module ActiveRecord::Associations::ClassMethods
         join << %(AND %s.%s = %s ) % [
           aliased_table_name, 
           reflection.active_record.connection.quote_column_name(reflection.active_record.inheritance_column), 
-          klass.quote(klass.name)] unless klass.descends_from_active_record?
+          klass.connection.quote(klass.name)] unless klass.descends_from_active_record?
         join << "AND #{interpolate_sql(sanitize_sql(reflection.options[:conditions]))} " if reflection.options[:conditions]
         join
       end

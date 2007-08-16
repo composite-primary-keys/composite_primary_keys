@@ -103,3 +103,14 @@ CREATE TABLE employees (
  PRIMARY KEY (id)
 );
 
+CREATE TABLE comments (
+	id int(11) NOT NULL auto_increment,
+	person_id int(11) DEFAULT NULL,
+	person_type varchar(100) DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE hacks (
+ name varchar(50) NOT NULL,
+ PRIMARY KEY (name)
+);

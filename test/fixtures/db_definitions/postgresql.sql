@@ -110,3 +110,15 @@ CREATE TABLE employees (
  location_id int DEFAULT NULL,
  PRIMARY KEY (id)
 );
+
+CREATE TABLE comments (
+	id int NOT NULL,
+	person_id int DEFAULT NULL,
+	person_type varchar(100) DEFAULT NULL,
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE hacks (
+ name varchar(50) NOT NULL,
+ PRIMARY KEY (name)
+);

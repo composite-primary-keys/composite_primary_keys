@@ -15,8 +15,11 @@ AUTHOR = "Dr Nic Williams"
 EMAIL = "drnicwilliams@gmail.com"
 DESCRIPTION = "Composite key support for ActiveRecords"
 GEM_NAME = "composite_primary_keys" # what ppl will type to install your gem
-config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
-RUBYFORGE_USERNAME = config["username"]
+if File.exists?("~/.rubyforge/user-config.yml")
+  # TODO this should prob go in a local/ file
+  config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
+  RUBYFORGE_USERNAME = config["username"]
+end
 RUBYFORGE_PROJECT = "compositekeys"
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 

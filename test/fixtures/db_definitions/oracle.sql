@@ -123,3 +123,16 @@ CREATE TABLE employees (
 
 create sequence employees_seq
   start with 1000;
+
+CREATE TABLE comments (
+	id number(11) NOT NULL PRIMARY KEY,
+	person_id number(11) DEFAULT NULL,
+	person_type varchar(100) DEFAULT NULL
+);
+
+create sequence comments_seq
+  start with 1000;
+
+CREATE TABLE hacks (
+ name varchar(50) NOT NULL PRIMARY KEY
+);

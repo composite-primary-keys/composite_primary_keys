@@ -93,3 +93,13 @@ CREATE TABLE employees (
  department_id INTEGER NULL,
  location_id INTEGER NULL
 );
+
+CREATE TABLE comments (
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	person_id INTEGER NULL,
+	person_type varchar(100) NULL
+);
+
+CREATE TABLE hacks (
+ name varchar(50) NOT NULL PRIMARY KEY
+);
