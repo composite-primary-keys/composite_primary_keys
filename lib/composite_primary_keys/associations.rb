@@ -274,7 +274,7 @@ module ActiveRecord::Associations
         when @reflection.options[:as]
           @finder_sql = 
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.connection.quote_column_name(@owner.class.base_class.name.to_s)}"
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
           @finder_sql << " AND (#{conditions})" if conditions
             
         else
@@ -321,7 +321,7 @@ module ActiveRecord::Associations
         when @reflection.options[:as]
           @finder_sql = 
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.connection.quote_column_name(@owner.class.base_class.name.to_s)}"          
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"          
         else
           @finder_sql = full_columns_equals(@reflection.klass.table_name, 
                                   @reflection.primary_key_name, @owner.quoted_id)
@@ -334,7 +334,7 @@ module ActiveRecord::Associations
     def construct_conditions
       conditions = if @reflection.through_reflection.options[:as]
           "#{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_id = #{@owner.quoted_id} " + 
-          "AND #{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_type = #{@owner.class.connection.quote_column_name(@owner.class.base_class.name.to_s)}"
+          "AND #{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
       else
         @finder_sql = full_columns_equals(@reflection.through_reflection.table_name, 
                                   @reflection.through_reflection.primary_key_name, @owner.quoted_id)
@@ -355,7 +355,7 @@ module ActiveRecord::Associations
         if @reflection.source_reflection.options[:as]
           polymorphic_join = "AND %s.%s = %s" % [
             @reflection.table_name, "#{@reflection.source_reflection.options[:as]}_type",
-                @owner.class.connection.quote_column_name(@reflection.through_reflection.klass.name)
+                @owner.class.quote_value(@reflection.through_reflection.klass.name)
               ]
             end
           end
