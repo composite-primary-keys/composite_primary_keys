@@ -1,6 +1,6 @@
 # Load local config files in /local
 begin
-  local_file_supported = %w[paths tasks database_connections]
+  local_file_supported = Dir[File.join(PROJECT_ROOT, 'local/*.sample')].map { |path| File.basename(path).sub(".sample","") }
   local_file_supported.each do |file|
     require "local/#{file}"
   end
@@ -9,10 +9,11 @@ rescue LoadError
   This Gem supports local developer extensions in local/ folder. 
   Supported files:
     #{local_file_supported.map { |f| "local/#{f}"}.join(', ')}
-  Samples available:
-    #{local_file_supported.map { |f| "cp local/#{f}.rb.sample local/#{f}.rb"}.join("\n    ")}
 
-  Current error: #{$!}
+  Setup default sample files:
+    rake local:setup
+
+  Current warning: #{$!}
   
   EOS
 end
