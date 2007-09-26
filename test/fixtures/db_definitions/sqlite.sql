@@ -96,7 +96,7 @@ CREATE TABLE employees (
 
 CREATE TABLE comments (
 	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	person_id INTEGER NULL,
+	person_id varchar(100) NULL,
 	person_type varchar(100) NULL
 );
 

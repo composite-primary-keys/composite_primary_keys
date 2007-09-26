@@ -126,17 +126,20 @@ module ActiveRecord::Associations::ClassMethods
       def composite_association_join
         join = case reflection.macro
           when :has_and_belongs_to_many
-            # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-            " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
-               table_alias_for(options[:join_table], aliased_join_table_name),
-               full_keys(aliased_join_table_name, options[:foreign_key] || reflection.active_record.to_s.classify.foreign_key),
-               full_keys(reflection.active_record.table_name, reflection.active_record.primary_key)] +
-           # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-            " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
-               table_name_and_alias, 
-               full_keys(aliased_table_name, klass.primary_key),
-               full_keys(aliased_join_table_name, options[:association_foreign_key] || klass.table_name.classify.foreign_key)
-               ]
+            " LEFT OUTER JOIN %s ON %s " % [
+              table_alias_for(options[:join_table], aliased_join_table_name),
+                composite_join_clause(
+                  full_keys(aliased_join_table_name, options[:foreign_key] || reflection.active_record.to_s.classify.foreign_key),
+                  full_keys(reflection.active_record.table_name, reflection.active_record.primary_key)
+                )
+              ] +
+             " LEFT OUTER JOIN %s ON %s " % [
+                table_name_and_alias,
+                composite_join_clause(
+                  full_keys(aliased_table_name, klass.primary_key),
+                  full_keys(aliased_join_table_name, options[:association_foreign_key] || klass.table_name.classify.foreign_key)
+                )
+              ]
           when :has_many, :has_one
             case
               when reflection.macro == :has_many && reflection.options[:through]
@@ -156,16 +159,19 @@ module ActiveRecord::Associations::ClassMethods
                         second_key = options[:foreign_key] || primary_key
                     end
                     
-                    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-                    " LEFT OUTER JOIN %s ON (%s) = (%s) "  % [
+                    " LEFT OUTER JOIN %s ON %s "  % [
                       table_alias_for(through_reflection.klass.table_name, aliased_join_table_name), 
-                      full_keys(aliased_join_table_name, through_reflection.primary_key_name),
-                      full_keys(parent.aliased_table_name, parent.primary_key)] +
-                    # TODO replace (keys) = (ids), with key1=id1 and key2=id2
-                    " LEFT OUTER JOIN %s ON (%s) = (%s) " % [
-                      table_name_and_alias,
-                      full_keys(aliased_table_name, first_key), 
-                      full_keys(aliased_join_table_name, second_key)
+                       composite_join_clause(
+                         full_keys(aliased_join_table_name, through_reflection.primary_key_name),
+                         full_keys(parent.aliased_table_name, parent.primary_key)
+                       )
+                     ] +
+                     " LEFT OUTER JOIN %s ON %s " % [
+                       table_name_and_alias,
+                       composite_join_clause(
+                         full_keys(aliased_table_name, first_key), 
+                         full_keys(aliased_join_table_name, second_key)
+                       )
                     ]
                   end
                 end
@@ -176,7 +182,6 @@ module ActiveRecord::Associations::ClassMethods
                 raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
               else
                 foreign_key = options[:foreign_key] || reflection.active_record.name.foreign_key
-                # TODO replace (keys) = (ids), with key1=id1 and key2=id2
                 " LEFT OUTER JOIN %s ON %s " % [
                   table_name_and_alias,
                   composite_join_clause(
@@ -185,7 +190,6 @@ module ActiveRecord::Associations::ClassMethods
                 ]
             end
           when :belongs_to
-            # TODO replace (keys) = (ids), with key1=id1 and key2=id2
             " LEFT OUTER JOIN %s ON %s " % [
                table_name_and_alias, 
                composite_join_clause(

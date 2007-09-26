@@ -47,7 +47,7 @@ end
 
 Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
   begin
-    require "composite_primary_keys/connection_adapters/" + adapter.gsub('.rb','')
+    require adapter.gsub('.rb','')
   rescue MissingSourceFile
   end
 end

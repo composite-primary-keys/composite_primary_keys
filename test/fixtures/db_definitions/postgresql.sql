@@ -113,7 +113,7 @@ CREATE TABLE employees (
 
 CREATE TABLE comments (
 	id int NOT NULL,
-	person_id int DEFAULT NULL,
+	person_id varchar(100) DEFAULT NULL,
 	person_type varchar(100) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
