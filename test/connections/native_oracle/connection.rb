@@ -1,16 +1,13 @@
 print "Using native Oracle\n"
+require 'fileutils'
 require 'logger'
+require 'adapter_helper/oracle'
 
-ActiveRecord::Base.logger = Logger.new("debug.log")
+log_path = File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. .. log]))
+FileUtils.mkdir_p log_path
+puts "Logging to #{log_path}/debug.log"
+ActiveRecord::Base.logger = Logger.new("#{log_path}/debug.log")
 
-db1 = 'composite_primary_keys_unittest'
-
-connection_options = {
-  :adapter  => 'oci',
-  :username => 'holstdl',
-  :password => 'holstdl',
-  :host     => 'test'
-}
-
-ActiveRecord::Base.configurations = { db1 => connection_options }
+# Adapter config setup in locals/database_connections.rb
+connection_options = AdapterHelper::MySQL.load_connection_from_env
 ActiveRecord::Base.establish_connection(connection_options)
