@@ -10,8 +10,6 @@ namespace :mysql do
 
   desc 'Drop the MySQL test databases'
   task :drop_databases => :load_connection do 
-    socket = '/Applications/MAMP/tmp/mysql/mysql.sock'
-    user   = 'root'
     options_str = ENV['cpk_adapter_options_str']
     sh %{ mysqladmin #{options_str} -f drop "#{GEM_NAME}_unittest" }
   end
