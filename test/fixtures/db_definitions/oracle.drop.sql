@@ -22,3 +22,6 @@ drop sequence membership_statuses_seq;
 drop table departments;
 drop table employees;
 drop sequence employees_seq;
+drop table comments;
+drop sequence comments_seq;
+drop table hacks;
