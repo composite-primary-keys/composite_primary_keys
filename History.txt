@@ -1,12 +1,11 @@
-== TRUNK 2007-07-05
+== 0.9.0 2007-09-28
 
-* Added namespaced tests (e.g. mysql:test for test_mysql)
-
-== 0.9.0 2007-06-26
-
+* Added support for polymorphs [thx nerdrew]
+* init.rb file so gem can be installed as a plugin for Rails [thx nerdrew]
 * Added ibm_db support [thx K Venkatasubramaniyan]
 * Support for cleaning dependents [thx K Venkatasubramaniyan]
 * Rafactored db rake tasks into namespaces
+* Added namespaced tests (e.g. mysql:test for test_mysql)
 
 == 0.8.6 / 2007-6-12
 
