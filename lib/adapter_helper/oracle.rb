@@ -4,8 +4,10 @@ module AdapterHelper
   class Oracle < Base
     class << self
       def load_connection_from_env
-        spec = super('oracle')
-        spec[:database] ||= 'composite_primary_keys_unittest'
+        spec = super('oci')
+        spec[:username] ||= 'scott'
+        spec[:password] ||= 'tiger'
+        spec[:host] ||= 'xe'
         spec
       end
     end
