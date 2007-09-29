@@ -5,9 +5,6 @@ module AdapterHelper
     class << self
       def load_connection_from_env
         spec = super('oci')
-        spec[:username] ||= 'scott'
-        spec[:password] ||= 'tiger'
-        spec[:host] ||= 'xe'
         spec
       end
     end
