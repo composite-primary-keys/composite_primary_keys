@@ -10,4 +10,11 @@ ActiveRecord::ConnectionAdapters::ColumnDefinition.class_eval <<-'EOF'
   end
 EOF
 
-
+ActiveRecord::ConnectionAdapters::TableDefinition.class_eval <<-'EOF'
+  def [](name)
+    @columns.find { |column|
+      !column.name.is_a?(Array) && column.name.to_s == name.to_s
+    }
+  end
+EOF
+ 
