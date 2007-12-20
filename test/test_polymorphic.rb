@@ -5,11 +5,7 @@ require 'fixtures/employee'
 require 'fixtures/hack'
 
 class TestPolymorphic < Test::Unit::TestCase
-
-  def setup
-    create_fixtures :users, :employees, :comments, :hacks
-  end
-  
+  fixtures :users, :employees, :comments, :hacks
   
   def test_polymorphic_has_many
     comments = Hack.find('andrew').comments

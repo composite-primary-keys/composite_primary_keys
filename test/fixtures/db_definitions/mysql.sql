@@ -94,23 +94,23 @@ CREATE TABLE departments (
   department_id int(11) NOT NULL,
   location_id int(11) NOT NULL,
   PRIMARY KEY (department_id, location_id)
-);
+) TYPE=InnoDB;
 
 CREATE TABLE employees (
  id int(11) NOT NULL auto_increment,
  department_id int(11) DEFAULT NULL,
  location_id int(11) DEFAULT NULL,
  PRIMARY KEY (id)
-);
+) TYPE=InnoDB;
 
 CREATE TABLE comments (
 	id int(11) NOT NULL auto_increment,
 	person_id varchar(100) DEFAULT NULL,
 	person_type varchar(100) DEFAULT NULL,
 	PRIMARY KEY (id)
-);
+) TYPE=InnoDB;
 
 CREATE TABLE hacks (
  name varchar(50) NOT NULL,
  PRIMARY KEY (name)
-);
+) TYPE=InnoDB;

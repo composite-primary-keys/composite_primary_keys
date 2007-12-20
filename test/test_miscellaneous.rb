@@ -3,6 +3,7 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
 class TestMiscellaneous < Test::Unit::TestCase
+  fixtures :reference_types, :reference_codes, :products
   
   CLASSES = {
     :single => {
@@ -16,7 +17,6 @@ class TestMiscellaneous < Test::Unit::TestCase
   }
   
   def setup
-    create_fixtures :reference_types, :reference_codes, :products
     self.class.classes = CLASSES
   end
 

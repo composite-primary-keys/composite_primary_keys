@@ -5,7 +5,8 @@ require 'fixtures/department'
 require 'fixtures/employee'
 
 class TestDelete < Test::Unit::TestCase
-
+  fixtures :reference_types, :reference_codes, :departments, :employees
+  
   CLASSES = {
     :single => {
       :class => ReferenceType,
@@ -18,7 +19,6 @@ class TestDelete < Test::Unit::TestCase
   }
   
   def setup
-    create_fixtures :reference_types, :reference_codes, :departments, :employees
     self.class.classes = CLASSES
   end
   
@@ -78,7 +78,7 @@ class TestDelete < Test::Unit::TestCase
   def test_delete_association
       department = Department.find(1,1)
       assert_equal 2, department.employees.size , "Employee count for department should be 2 before delete"
-	  first_employee = department.employees[0]
+	    first_employee = department.employees[0]
       department.employees.delete(first_employee) 
       assert_equal 1, department.employees.size, "After delete employees count should be 1."
       department.reload

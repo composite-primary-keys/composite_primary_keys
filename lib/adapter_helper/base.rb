@@ -10,8 +10,8 @@ module AdapterHelper
           exit
         end
 
-        all_specs = YAML.load(ENV['cpk_adapters'])
-        unless spec = all_specs[adapter]
+        ActiveRecord::Base.configurations = YAML.load(ENV['cpk_adapters'])
+        unless spec = ActiveRecord::Base.configurations[adapter]
           puts error_msg_adapter_helper
           exit
         end

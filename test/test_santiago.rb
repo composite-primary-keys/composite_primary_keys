@@ -7,9 +7,7 @@ require 'fixtures/article'
 require 'fixtures/reading'
 
 class TestSantiago < Test::Unit::TestCase
-  def setup
-    create_fixtures :suburbs, :streets, :users, :articles, :readings
-  end
+  fixtures :suburbs, :streets, :users, :articles, :readings
   
   def test_normal_and_composite_associations
     assert_not_nil @suburb = Suburb.find(1,1)

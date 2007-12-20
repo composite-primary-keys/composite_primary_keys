@@ -1,3 +1,5 @@
+require 'active_record'
+
 # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase
 for adapter in %w( mysql sqlite oracle postgresql ibm_db ) 
   Rake::TestTask.new("test_#{adapter}") { |t|
