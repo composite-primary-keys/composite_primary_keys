@@ -12,12 +12,14 @@ lib/adapter_helper/postgresql.rb
 lib/adapter_helper/sqlite3.rb
 lib/composite_primary_keys.rb
 lib/composite_primary_keys/associations.rb
+lib/composite_primary_keys/attribute_methods.rb
 lib/composite_primary_keys/base.rb
 lib/composite_primary_keys/calculations.rb
 lib/composite_primary_keys/composite_arrays.rb
 lib/composite_primary_keys/connection_adapters/ibm_db_adapter.rb
 lib/composite_primary_keys/connection_adapters/oracle_adapter.rb
 lib/composite_primary_keys/connection_adapters/postgresql_adapter.rb
+lib/composite_primary_keys/connection_adapters/sqlite3_adapter.rb
 lib/composite_primary_keys/fixtures.rb
 lib/composite_primary_keys/migration.rb
 lib/composite_primary_keys/reflection.rb
@@ -40,7 +42,6 @@ tasks/local_setup.rake
 tasks/website.rake
 test/README_tests.txt
 test/abstract_unit.rb
-test/composite_arrays_test.rb
 test/connections/native_ibm_db/connection.rb
 test/connections/native_mysql/connection.rb
 test/connections/native_oracle/connection.rb
@@ -88,9 +89,13 @@ test/fixtures/tariffs.yml
 test/fixtures/user.rb
 test/fixtures/users.yml
 test/hash_tricks.rb
+test/plugins/pagination.rb
+test/plugins/pagination_helper.rb
 test/test_associations.rb
+test/test_attribute_methods.rb
 test/test_attributes.rb
 test/test_clone.rb
+test/test_composite_arrays.rb
 test/test_create.rb
 test/test_delete.rb
 test/test_dummy.rb
