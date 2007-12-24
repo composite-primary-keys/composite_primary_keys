@@ -40,6 +40,7 @@ require 'composite_primary_keys/reflection'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/calculations'
 require 'composite_primary_keys/migration'
+require 'composite_primary_keys/attribute_methods'
 
 ActiveRecord::Base.class_eval do
   include CompositePrimaryKeys::ActiveRecord::Base

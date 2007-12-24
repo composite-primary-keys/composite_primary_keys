@@ -22,10 +22,12 @@ module CompositePrimaryKeys
           self.primary_keys = keys.to_composite_keys
           
           class_eval <<-EOV
-            extend CompositePrimaryKeys::ActiveRecord::Base::CompositeClassMethods
-            include CompositePrimaryKeys::ActiveRecord::Base::CompositeInstanceMethods
+            extend CompositeClassMethods
+            include CompositeInstanceMethods
+                     
             include CompositePrimaryKeys::ActiveRecord::Associations
-            extend CompositePrimaryKeys::ActiveRecord::Calculations::ClassMethods
+            include CompositePrimaryKeys::ActiveRecord::Calculations
+            include CompositePrimaryKeys::ActiveRecord::AttributeMethods
           EOV
         end
         
@@ -89,44 +91,6 @@ module CompositePrimaryKeys
           end
         end
         
-        # Define an attribute reader method.  Cope with nil column.
-        def define_read_method(symbol, attr_name, column)
-          cast_code = column.type_cast_code('v') if column
-          access_code = cast_code ? "(v=@attributes['#{attr_name}']) && #{cast_code}" : "@attributes['#{attr_name}']"
-          
-          unless self.class.primary_keys.include? attr_name.to_sym
-            access_code = access_code.insert(0, "raise NoMethodError, 'missing attribute: #{attr_name}', caller unless @attributes.has_key?('#{attr_name}'); ")
-            self.class.read_methods << attr_name
-          end
-          
-          evaluate_read_method attr_name, "def #{symbol}; #{access_code}; end"
-        end
-        
-        def method_missing(method_id, *args, &block)
-          method_name = method_id.to_s
-          if @attributes.include?(method_name) or
-           (md = /\?$/.match(method_name) and
-            @attributes.include?(method_name = md.pre_match))
-            define_read_methods if self.class.read_methods.empty? && self.class.generate_read_methods
-            md ? query_attribute(method_name) : read_attribute(method_name)
-          elsif self.class.primary_keys.include? method_name.to_sym
-            get_attr(method_name.to_sym)
-          elsif md = /(=|_before_type_cast)$/.match(method_name)
-            attribute_name, method_type = md.pre_match, md.to_s
-            if @attributes.include?(attribute_name)
-              case method_type
-              when '='
-                write_attribute(attribute_name, args.first)
-              when '_before_type_cast'
-                read_attribute_before_type_cast(attribute_name)
-              end
-            else
-              super
-            end
-          else
-            super
-          end
-        end
         
         private
         # The xx_without_callbacks methods are overwritten as that is the end of the alias chain

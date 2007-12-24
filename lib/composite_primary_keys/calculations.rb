@@ -1,6 +1,11 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Calculations
+      def self.append_features(base)
+        super
+        base.send(:extend, ClassMethods)
+      end
+      
       module ClassMethods
         def construct_calculation_sql(operation, column_name, options) #:nodoc:
           operation = operation.to_s.downcase
