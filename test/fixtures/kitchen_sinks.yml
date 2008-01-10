@@ -1,0 +1,5 @@
+first:
+  id_1: 1
+  id_2: 2
+  a_date: <%= Date.today.to_s(:db) %>
+  a_string: 'string'

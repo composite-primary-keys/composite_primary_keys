@@ -114,3 +114,11 @@ CREATE TABLE hacks (
  name varchar(50) NOT NULL,
  PRIMARY KEY (name)
 ) TYPE=InnoDB;
+
+create table kitchen_sinks (
+	id_1 int(11) not null,
+	id_2 int(11) not null,
+	a_date date,
+	a_string varchar(100),
+	primary key (id_1, id_2)
+) TYPE=InnoDB

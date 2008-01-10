@@ -90,3 +90,10 @@ CREATE TABLE membership_statuses (
   PRIMARY KEY (id)
 );
 
+create table kitchen_sinks (
+	id_1 integer not null,
+	id_2 integer not null,
+	a_date date,
+	a_string varchar(100),
+	primary key (id_1, id_2)
+);

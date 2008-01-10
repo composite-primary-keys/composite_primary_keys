@@ -11,3 +11,4 @@ drop table PRODUCTS;
 drop table USERS;                                                                                                                           
 drop table SUBURBS;                                                                                                                         
 drop table PRODUCT_TARIFFS; 
+drop table KITCHEN_SINK;

@@ -25,3 +25,4 @@ drop sequence employees_seq;
 drop table comments;
 drop sequence comments_seq;
 drop table hacks;
+drop table kitchen_sinks;

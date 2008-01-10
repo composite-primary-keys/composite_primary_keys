@@ -10,6 +10,7 @@ module CompositePrimaryKeys
         # Define an attribute reader method.  Cope with nil column.
         def define_read_method(symbol, attr_name, column)
           cast_code = column.type_cast_code('v') if column
+          cast_code = "::#{cast_code}" if cast_code && cast_code.match('ActiveRecord::.*')
           access_code = cast_code ? "(v=@attributes['#{attr_name}']) && #{cast_code}" : "@attributes['#{attr_name}']"
 
           unless self.primary_keys.include?(attr_name.to_sym)

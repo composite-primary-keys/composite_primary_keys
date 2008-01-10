@@ -136,3 +136,11 @@ create sequence comments_seq
 CREATE TABLE hacks (
  name varchar(50) NOT NULL PRIMARY KEY
 );
+
+create table kitchen_sinks (
+	id_1 number(11) not null,
+	id_2 number(11) not null,
+	a_date date,
+	a_string varchar(100),
+	constraint kitchen_sinks_pk primary key(id_1, id_2)
+);
