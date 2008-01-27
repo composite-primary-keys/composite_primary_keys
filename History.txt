@@ -1,3 +1,7 @@
+== 0.9.90 2008-01-27
+
+* Trial release for rails/activerecord 2.0.2 supported
+
 == 0.9.1 2007-10-28
 
 * Migrations fix - allow :primary_key => [:name] to work [no unit test] [thx Shugo Maeda]
