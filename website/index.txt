@@ -33,7 +33,7 @@ A model with composite primary keys would look like...
   set_primary_keys :user_id, :group_id
   belongs_to :user
   belongs_to :group
-  has_many :statuses, :class => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
+  has_many :statuses, :class_name => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
 end</pre>
 
 A model associated with a composite key model would be defined like...

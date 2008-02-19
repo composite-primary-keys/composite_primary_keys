@@ -33,7 +33,7 @@
     <h1>Composite Primary Keys</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.9.90</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">0.9.91</a>
     </div>
     <h1>&#x2192; Ruby on Rails</h1>
 
@@ -81,7 +81,7 @@ to the database layer of Rails &#8211; <a href="http://wiki.rubyonrails.com/rail
   <span class="ident">set_primary_keys</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
   <span class="ident">belongs_to</span> <span class="symbol">:user</span>
   <span class="ident">belongs_to</span> <span class="symbol">:group</span>
-  <span class="ident">has_many</span> <span class="symbol">:statuses</span><span class="punct">,</span> <span class="symbol">:class</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">MembershipStatus</span><span class="punct">',</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
+  <span class="ident">has_many</span> <span class="symbol">:statuses</span><span class="punct">,</span> <span class="symbol">:class_name</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">MembershipStatus</span><span class="punct">',</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
 <span class="keyword">end</span></pre></p>
 
 
@@ -291,7 +291,7 @@ other stories and things.</p>
 
 	<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 18th December 2007<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 20th February 2008<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
