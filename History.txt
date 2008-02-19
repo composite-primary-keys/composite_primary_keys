@@ -1,3 +1,7 @@
+== 0.9.91 2008-01-27
+
+* Incremented activerecord dependency to 2.0.2 [thx emmanuel.pirsch]
+
 == 0.9.90 2008-01-27
 
 * Trial release for rails/activerecord 2.0.2 supported
