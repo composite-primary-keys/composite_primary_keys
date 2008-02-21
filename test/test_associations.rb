@@ -4,9 +4,10 @@ require 'fixtures/tariff'
 require 'fixtures/product_tariff'
 require 'fixtures/suburb'
 require 'fixtures/street'
+require 'fixtures/restaurant'
 
 class TestAssociations < Test::Unit::TestCase
-  fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets
+  fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs
   
   def test_quoted_table_columns
     assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
@@ -106,5 +107,13 @@ class TestAssociations < Test::Unit::TestCase
 
     @suburb = Suburb.find([2, 1], :include => :first_streets)
     assert_equal 1, @suburb.first_streets.size
+  end
+  
+  def test_has_and_belongs_to_many
+    @restaurant = Restaurant.find([1,1])
+    assert_equal 2, @restaurant.suburbs.size
+    
+    @restaurant = Restaurant.find([1,1], :include => :suburbs)
+    assert_equal 2, @restaurant.suburbs.size  
   end
 end

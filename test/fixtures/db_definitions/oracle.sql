@@ -144,3 +144,17 @@ create table kitchen_sinks (
 	a_string varchar(100),
 	constraint kitchen_sinks_pk primary key(id_1, id_2)
 );
+
+create table restaurants (
+	franchise_id number(11) not null,
+	store_id number(11) not null,
+	name varchar(100),
+	constraint restaurants_pk primary key (franchise_id, store_id)
+);
+
+create table restaurants_suburbs (
+	franchise_id number(11) not null,
+	store_id number(11) not null,
+	city_id number(11) not null,
+	suburb_id number(11) not null
+);

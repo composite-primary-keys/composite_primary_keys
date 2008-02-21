@@ -26,3 +26,5 @@ drop table comments;
 drop sequence comments_seq;
 drop table hacks;
 drop table kitchen_sinks;
+drop table restaurants;
+drop table restaurants_suburbs;

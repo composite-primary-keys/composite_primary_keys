@@ -251,6 +251,15 @@ module ActiveRecord::Associations
       "(#{where_clause})"
     end
 
+    def full_composite_join_clause(table1, full_keys1, table2, full_keys2)
+      full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
+      full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
+      where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
+        "#{table1}.#{key_pair.first}=#{table2}.#{key_pair.last}"
+      end.join(" AND ")
+      "(#{where_clause})"
+    end
+    
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ?
@@ -269,6 +278,25 @@ module ActiveRecord::Associations
     end  
   end
 
+  class HasAndBelongsToManyAssociation < AssociationCollection #:nodoc:
+    def construct_sql
+      interpolate_sql_options!(@reflection.options, :finder_sql)
+
+      if @reflection.options[:finder_sql]
+        @finder_sql = @reflection.options[:finder_sql]
+      else
+        @finder_sql = full_columns_equals(  
+          @reflection.options[:join_table],
+          @reflection.primary_key_name, 
+          @owner.quoted_id)
+        @finder_sql << " AND (#{conditions})" if conditions
+      end
+
+      @join_sql = "INNER JOIN #{@reflection.options[:join_table]} ON " +
+      full_composite_join_clause(@reflection.klass.table_name, @reflection.klass.primary_key, @reflection.options[:join_table], @reflection.association_foreign_key)
+    end    
+  end
+  
   class HasManyAssociation < AssociationCollection #:nodoc:
     def construct_sql
       case

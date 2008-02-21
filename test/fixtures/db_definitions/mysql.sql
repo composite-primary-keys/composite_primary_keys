@@ -121,4 +121,18 @@ create table kitchen_sinks (
 	a_date date,
 	a_string varchar(100),
 	primary key (id_1, id_2)
-) TYPE=InnoDB
+) TYPE=InnoDB;
+
+create table restaurants (
+	franchise_id int(11) not null,
+	store_id int(11) not null,
+	name varchar(100),
+	primary key (franchise_id, store_id)
+) TYPE=InnoDB;
+
+create table restaurants_suburbs (
+	franchise_id int(11) not null,
+	store_id int(11) not null,
+	city_id int(11) not null,
+	suburb_id int(11) not null
+) TYPE=InnoDB;
