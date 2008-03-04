@@ -152,7 +152,7 @@ Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/
 
 The source for this project is available via git. You can "browse and/or fork the source":http://github.com/drnic/composite_primary_keys/tree/master, or to clone the project locally:
   
-<pre>git clone git@github.com:composite_primary_keys/newgem.git</pre>
+<pre>git clone git://github.com/drnic/composite_primary_keys.git</pre>
 
 The original Subversion repository is <code>svn://rubyforge.org/var/svn/compositekeys/trunk</code> for anonymous access.
 
