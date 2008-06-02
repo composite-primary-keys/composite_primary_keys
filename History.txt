@@ -1,3 +1,7 @@
+== 0.9.93 2008-06-01
+
+* set fixed dependency on activerecord 2.0.2
+
 == 0.9.92 2008-02-22
 
 * Support for has_and_belongs_to_many
