@@ -26,6 +26,7 @@ module CompositePrimaryKeys
             include CompositeInstanceMethods
                      
             include CompositePrimaryKeys::ActiveRecord::Associations
+            include CompositePrimaryKeys::ActiveRecord::AssociationPreload
             include CompositePrimaryKeys::ActiveRecord::Calculations
             include CompositePrimaryKeys::ActiveRecord::AttributeMethods
           EOV

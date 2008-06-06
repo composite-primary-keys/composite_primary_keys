@@ -43,4 +43,9 @@ class CompositeArraysTest < Test::Unit::TestCase
     assert_equal CompositePrimaryKeys::CompositeIds, keys.class
     assert_equal '1,2,3', keys.to_s
   end
+  
+  def test_flatten
+    keys = [CompositePrimaryKeys::CompositeIds.new([1,2,3]), CompositePrimaryKeys::CompositeIds.new([4,5,6])]
+    assert_equal 6, keys.flatten.size
+  end
 end

@@ -6,6 +6,10 @@ module ActiveRecord
       def supports_count_distinct? #:nodoc:
         false
       end
+      
+      def concat(*columns)
+        "(#{columns.join('||')})"
+      end
     end
   end
 end

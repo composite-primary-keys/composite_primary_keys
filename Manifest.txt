@@ -11,6 +11,7 @@ lib/adapter_helper/oracle.rb
 lib/adapter_helper/postgresql.rb
 lib/adapter_helper/sqlite3.rb
 lib/composite_primary_keys.rb
+lib/composite_primary_keys/association_preload.rb
 lib/composite_primary_keys/associations.rb
 lib/composite_primary_keys/attribute_methods.rb
 lib/composite_primary_keys/base.rb

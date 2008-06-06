@@ -362,7 +362,7 @@ module ActiveRecord::Associations
     end
   end
   
-  class HasManyThroughAssociation < AssociationProxy #:nodoc:
+  class HasManyThroughAssociation < HasManyAssociation #:nodoc:
     def construct_conditions
       conditions = if @reflection.through_reflection.options[:as]
           "#{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_id = #{@owner.quoted_id} " + 
