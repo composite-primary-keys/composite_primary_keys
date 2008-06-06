@@ -21,12 +21,12 @@ module CompositePrimaryKeys
             end.join(" OR ")
             
             conditions = [where, ids].flatten
-            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} as t0 ON #{full_composite_join_clause(reflection.klass.quoted_table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
+            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection.klass.quoted_table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
             parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|k| "t0.#{k}"}
             parent_record_id = connection.concat(parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
           else
             conditions = ["t0.#{reflection.primary_key_name}  IN (?)", ids]
-            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} as t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}"
+            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}"
             parent_record_id = reflection.primary_key_name
           end
           
@@ -36,10 +36,10 @@ module CompositePrimaryKeys
             :conditions => conditions,
             :include => options[:include],
             :joins => joins,
-            :select => "#{options[:select] || table_name+'.*'}, #{parent_record_id} as _parent_record_id",
+            :select => "#{options[:select] || table_name+'.*'}, #{parent_record_id} as parent_record_id_",
             :order => options[:order])
             
-          set_association_collection_records(id_to_record_map, reflection.name, associated_records, '_parent_record_id')
+          set_association_collection_records(id_to_record_map, reflection.name, associated_records, 'parent_record_id_')
         end
                 
         def preload_has_many_association(records, reflection, preload_options={})
@@ -106,14 +106,23 @@ module CompositePrimaryKeys
           if options[:polymorphic]
             raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
           else
+          	# I need to keep the original ids for each record (as opposed to the stringified) so
+          	# that they get properly converted for each db so the id_map ends up looking like:
+          	#
+          	# { '1,2' => {:id => [1,2], :records => [...records...]}}
             id_map = {}
+            
             records.each do |record|
-              key = primary_key_name.map{|k| record.send(k)}.join(CompositePrimaryKeys::ID_SEP)
-              if key
-                mapped_records = (id_map[key.to_s] ||= [])
-                mapped_records << record
+              key = primary_key_name.map{|k| record.send(k)}
+              key_as_string = key.join(CompositePrimaryKeys::ID_SEP)
+              
+              if key_as_string
+                mapped_records = (id_map[key_as_string] ||= {:id => key, :records => []})
+                mapped_records[:records] << record
               end
             end
+            
+            
             klasses_and_ids = [[reflection.klass.name, id_map]]
           end
 
@@ -124,7 +133,7 @@ module CompositePrimaryKeys
             
             if(composite?)
               primary_key = klass.primary_key.to_s.split(CompositePrimaryKeys::ID_SEP)
-              ids = id_map.keys.uniq.map {|id| id.to_s.split(CompositePrimaryKeys::ID_SEP)}
+              ids = id_map.keys.uniq.map {|id| id_map[id][:id]}
 
               where = (primary_key * ids.size).in_groups_of(primary_key.size).map do |keys|
                  "(" + keys.map{|key| "#{table_name}.#{key} = ?"}.join(" AND ") + ")"
@@ -167,7 +176,7 @@ module CompositePrimaryKeys
             # only one row per distinct foo_id' so this where we enforce that
             next if seen_keys[associated_record_key]
             seen_keys[associated_record_key] = true
-            mapped_records = id_to_record_map[associated_record_key]
+            mapped_records = id_to_record_map[associated_record_key][:records]
             mapped_records.each do |mapped_record|
               mapped_record.send("set_#{reflection_name}_target", associated_record)
             end

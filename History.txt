@@ -1,3 +1,7 @@
+== 1.0.1 2008-06-06
+
+* Oracle fixes
+
 == 1.0.0 2008-06-05
 
 * Support for Rails 2.1
