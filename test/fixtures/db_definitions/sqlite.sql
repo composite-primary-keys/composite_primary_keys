@@ -125,3 +125,24 @@ create table restaurants_suburbs (
 	city_id integer not null,
 	suburb_id integer not null
 );
+
+create table dorms (
+	id integer not null primary key autoincrement
+);
+
+create table rooms (
+	dorm_id integer not null,
+	room_id integer not null,
+	primary key (dorm_id, room_id)
+);
+
+create table room_attributes (
+	id integer not null primary key autoincrement,
+	name varchar(50)
+);
+
+create table room_attribute_assignments (
+	dorm_id integer not null,
+	room_id integer not null,
+	room_attribute_id integer not null
+);

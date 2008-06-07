@@ -1,3 +1,3 @@
 // Announcement JS file
-var version = "0.9.92";
+var version = "1.0.2";
 MagicAnnouncement.show('compositekeys', version);

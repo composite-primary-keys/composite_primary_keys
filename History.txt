@@ -1,3 +1,7 @@
+== 1.0.2 2008-06-07
+
+* fix for has many through when through association has composite keys
+
 == 1.0.1 2008-06-06
 
 * Oracle fixes

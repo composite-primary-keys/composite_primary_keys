@@ -57,7 +57,8 @@ module CompositePrimaryKeys
               #add conditions from reflection!
               through_records.first.class.preload_associations(through_records, source, reflection.options)
               through_records.each do |through_record|
-                add_preloaded_records_to_collection(id_to_record_map[through_record[through_primary_key].to_s], reflection.name, through_record.send(source))
+                key = through_primary_key.to_s.split(CompositePrimaryKeys::ID_SEP).map{|k| through_record.send(k)}.join(CompositePrimaryKeys::ID_SEP)
+                add_preloaded_records_to_collection(id_to_record_map[key], reflection.name, through_record.send(source))
               end
             end
           else 

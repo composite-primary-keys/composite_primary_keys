@@ -136,3 +136,26 @@ create table restaurants_suburbs (
 	city_id int(11) not null,
 	suburb_id int(11) not null
 ) TYPE=InnoDB;
+
+create table dorms (
+	id int(11) not null auto_increment,
+	primary key(id)
+) TYPE=InnoDB;
+
+create table rooms (
+	dorm_id int(11) not null,
+	room_id int(11) not null,
+	primary key (dorm_id, room_id)
+) TYPE=InnoDB;
+
+create table room_attributes (
+	id int(11) not null auto_increment,
+	name varchar(50),
+	primary key(id)
+) TYPE=InnoDB;
+
+create table room_attribute_assignments (
+	dorm_id int(11) not null,
+	room_id int(11) not null,
+	room_attribute_id integer not null
+) TYPE=InnoDB;
