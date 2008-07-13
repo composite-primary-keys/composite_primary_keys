@@ -9,10 +9,12 @@ require 'fixtures/dorm'
 require 'fixtures/room'
 require 'fixtures/room_attribute'
 require 'fixtures/room_attribute_assignment'
+require 'fixtures/student'
+require 'fixtures/room_assignment'
 
 class TestAssociations < Test::Unit::TestCase
   fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
-           :dorms, :rooms, :room_attributes, :room_attribute_assignments
+           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments
   
   def test_quoted_table_columns
     assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
@@ -98,6 +100,14 @@ class TestAssociations < Test::Unit::TestCase
     @products = Product.find(:all, :include => :tariffs)
     assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@tariffs').length},
       "Incorrect number of tariffs returned"
+  end
+  
+  def test_has_many_through_when_not_pre_loaded
+  	student = Student.find(:first)
+  	rooms = student.rooms
+  	assert_equal 1, rooms.size
+  	assert_equal 1, rooms.first.dorm_id
+  	assert_equal 1, rooms.first.room_id
   end
   
   def test_has_many_through_when_through_association_is_composite

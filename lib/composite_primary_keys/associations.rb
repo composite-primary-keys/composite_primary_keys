@@ -228,43 +228,48 @@ module ActiveRecord::Associations
     
     def composite_where_clause(full_keys, ids)
       full_keys = full_keys.split(CompositePrimaryKeys::ID_SEP) if full_keys.is_a?(String)
+      
       if ids.is_a?(String)
         ids = [[ids]]
       elsif not ids.first.is_a?(Array) # if single comp key passed, turn into an array of 1
         ids = [ids.to_composite_ids]
       end
+      
       where_clause = ids.map do |id_set|
         transposed = id_set.size == 1 ? [[full_keys, id_set.first]] : [full_keys, id_set].transpose
         transposed.map do |full_key, id|
           "#{full_key.to_s}=#{@reflection.klass.sanitize(id)}"
         end.join(" AND ")
       end.join(") OR (")
+      
       "(#{where_clause})"
     end
 
     def composite_join_clause(full_keys1, full_keys2)
       full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
       full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
+      
       where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
         "#{key_pair.first}=#{key_pair.last}"
       end.join(" AND ")
+      
       "(#{where_clause})"
     end
 
     def full_composite_join_clause(table1, full_keys1, table2, full_keys2)
       full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
       full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
+      
       where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
         "#{table1}.#{key_pair.first}=#{table2}.#{key_pair.last}"
       end.join(" AND ")
+      
       "(#{where_clause})"
     end
     
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
-      keys.is_a?(Array) ?
-        keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : 
-        "#{table_name}.#{keys}"
+      keys.is_a?(Array) ? keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : "#{table_name}.#{keys}"
     end
     
     def full_columns_equals(table_name, keys, quoted_ids)
@@ -285,10 +290,7 @@ module ActiveRecord::Associations
       if @reflection.options[:finder_sql]
         @finder_sql = @reflection.options[:finder_sql]
       else
-        @finder_sql = full_columns_equals(  
-          @reflection.options[:join_table],
-          @reflection.primary_key_name, 
-          @owner.quoted_id)
+        @finder_sql = full_columns_equals(@reflection.options[:join_table], @reflection.primary_key_name, @owner.quoted_id)
         @finder_sql << " AND (#{conditions})" if conditions
       end
 
@@ -310,8 +312,7 @@ module ActiveRecord::Associations
           @finder_sql << " AND (#{conditions})" if conditions
             
         else
-          @finder_sql = full_columns_equals(@reflection.klass.table_name, 
-                                  @reflection.primary_key_name, @owner.quoted_id)
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
           @finder_sql << " AND (#{conditions})" if conditions
       end
 
@@ -331,18 +332,18 @@ module ActiveRecord::Associations
 		records.each { |r| r.destroy }
 	  else
 		field_names = @reflection.primary_key_name.split(',')
-		field_names.collect! {|n|
-			n + " = NULL"
-		}
-		records.each { |r|
-			where_class = nil
-			if r.quoted_id.include?(',')
-				where_class = [@reflection.klass.primary_key, r.quoted_id].transpose.map {|pair| "(#{pair[0]} = #{pair[1]})"}.join(" AND ")
-			else
-				where_class = @reflection.klass.primary_key + ' = ' +  r.quoted_id
-			end
-			@reflection.klass.update_all(  field_names.join(',') , where_class)
-		}
+		field_names.collect! {|n| n + " = NULL"}
+		records.each do |r|
+		  where_class = nil
+		  
+		  if r.quoted_id.include?(',')
+		    where_class = [@reflection.klass.primary_key, r.quoted_id].transpose.map {|pair| "(#{pair[0]} = #{pair[1]})"}.join(" AND ")
+		  else
+		    where_class = @reflection.klass.primary_key + ' = ' +  r.quoted_id
+		  end
+		  
+		  @reflection.klass.update_all(  field_names.join(',') , where_class)
+		end
 	  end
 	end
   end
@@ -355,79 +356,37 @@ module ActiveRecord::Associations
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"          
         else
-          @finder_sql = full_columns_equals(@reflection.klass.table_name, 
-                                  @reflection.primary_key_name, @owner.quoted_id)
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
       end
+      
       @finder_sql << " AND (#{conditions})" if conditions
     end
   end
+
   
   class HasManyThroughAssociation < HasManyAssociation #:nodoc:
     def construct_conditions
-      conditions = if @reflection.through_reflection.options[:as]
-          "#{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_id = #{@owner.quoted_id} " + 
-          "AND #{@reflection.through_reflection.table_name}.#{@reflection.through_reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
-      else
-        @finder_sql = full_columns_equals(@reflection.through_reflection.table_name, 
-                                  @reflection.through_reflection.primary_key_name, @owner.quoted_id)
-      end
+      raise 'polymorphic joins are not supported by composite_primary_keys' if @reflection.through_reflection.options[:as]
+      conditions = full_columns_equals(@reflection.through_reflection.table_name, @reflection.through_reflection.primary_key_name, @owner.quoted_id)
       conditions << " AND (#{sql_conditions})" if sql_conditions
-      
-      return conditions
+      conditions
     end
     
-    def construct_joins(custom_joins = nil)          
-      polymorphic_join = nil
-      if @reflection.through_reflection.options[:as] || @reflection.source_reflection.macro == :belongs_to
+    def construct_joins(custom_joins = nil)
+      raise 'polymorphic joins are not supported by composite_primary_keys' if @reflection.through_reflection.options[:as] || @reflection.source_reflection.options[:as]
+      
+      if @reflection.source_reflection.macro == :belongs_to
         reflection_primary_key = @reflection.klass.primary_key
         source_primary_key     = @reflection.source_reflection.primary_key_name
       else
         reflection_primary_key = @reflection.source_reflection.primary_key_name
         source_primary_key     = @reflection.klass.primary_key
-        if @reflection.source_reflection.options[:as]
-          polymorphic_join = "AND %s.%s = %s" % [
-            @reflection.table_name, "#{@reflection.source_reflection.options[:as]}_type",
-                @owner.class.quote_value(@reflection.through_reflection.klass.name)
-              ]
-            end
-          end
-
-          "INNER JOIN %s ON %s %s #{@reflection.options[:joins]} #{custom_joins}" % [
-            @reflection.through_reflection.table_name,
-            composite_join_clause(
-              full_keys(@reflection.table_name, reflection_primary_key), 
-              full_keys(@reflection.through_reflection.table_name, source_primary_key)),
-            polymorphic_join
-          ]
-    end
-    
-    def construct_sql
-      case
-        when @reflection.options[:finder_sql]
-          @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
-
-          @finder_sql << " AND (#{conditions})" if conditions
-        when @reflection.options[:as]
-          @finder_sql = 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
-          @finder_sql << " AND (#{conditions})" if conditions
-        
-        else
-          @finder_sql = composite_where_clause(
-            full_keys(@reflection.klass.table_name, @reflection.primary_key_name), @owner.quoted_id),
-          @finder_sql << " AND (#{conditions})" if conditions
       end
 
-      if @reflection.options[:counter_sql]
-        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
-      elsif @reflection.options[:finder_sql]
-        # replace the SELECT clause with COUNT(*), preserving any hints within /* ... */
-        @reflection.options[:counter_sql] = @reflection.options[:finder_sql].sub(/SELECT (\/\*.*?\*\/ )?(.*)\bFROM\b/im) { "SELECT #{$1}COUNT(*) FROM" }
-        @counter_sql = interpolate_sql(@reflection.options[:counter_sql])
-      else
-        @counter_sql = @finder_sql
-      end
+      "INNER JOIN %s ON %s #{@reflection.options[:joins]} #{custom_joins}" % [
+        @reflection.through_reflection.table_name,
+        composite_join_clause(full_keys(@reflection.table_name, reflection_primary_key), full_keys(@reflection.through_reflection.table_name, source_primary_key))
+      ]
     end
   end
 end

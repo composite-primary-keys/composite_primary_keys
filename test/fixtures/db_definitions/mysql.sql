@@ -157,5 +157,16 @@ create table room_attributes (
 create table room_attribute_assignments (
 	dorm_id int(11) not null,
 	room_id int(11) not null,
-	room_attribute_id integer not null
+	room_attribute_id int(11) not null
+) TYPE=InnoDB;
+
+create table students (
+	id int(11) not null auto_increment,
+	primary key(id)
+) TYPE=InnoDB;
+
+create table room_assignments (
+	student_id int(11) not null,
+	dorm_id int(11) not null,
+	room_id int(11) not null	
 ) TYPE=InnoDB;

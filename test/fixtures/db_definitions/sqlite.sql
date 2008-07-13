@@ -146,3 +146,13 @@ create table room_attribute_assignments (
 	room_id integer not null,
 	room_attribute_id integer not null
 );
+
+create table students (
+	id integer not null primary key autoincrement
+);
+
+create table room_assignments (
+	student_id integer not null,
+	dorm_id integer not null,
+	room_id integer not null	
+);
