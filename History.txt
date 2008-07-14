@@ -1,3 +1,7 @@
+== 1.0.3 2008-07-13
+
+* more fixes and tests for has many through [thx Menno van der Sman]
+
 == 1.0.2 2008-06-07
 
 * fix for has many through when through association has composite keys

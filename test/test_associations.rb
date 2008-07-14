@@ -21,6 +21,26 @@ class TestAssociations < Test::Unit::TestCase
         ProductTariff.send(:quoted_table_columns, ProductTariff.primary_key)
   end
   
+  def test_has_many_through_with_conditions_when_through_association_is_not_composite
+    user = User.find(:first)
+    assert_equal 1, user.articles.find(:all, :conditions => ["articles.name = ?", "Article One"]).size
+  end
+
+  def test_has_many_through_with_conditions_when_through_association_is_composite
+    room = Room.find(:first)
+    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "keg"]).size
+  end
+
+  def test_has_many_through_on_custom_finder_when_through_association_is_not_composite
+    user = User.find(:first)
+    assert_equal 1, user.find_custom_articles.size
+  end
+
+  def test_has_many_through_on_custom_finder_when_through_association_is_composite
+    room = Room.find(:first)
+    assert_equal 0, room.find_custom_room_attributes.size
+  end
+  
   def test_count
     assert_equal 2, Product.count(:include => :product_tariffs)
     assert_equal 3, Tariff.count(:include => :product_tariffs)
