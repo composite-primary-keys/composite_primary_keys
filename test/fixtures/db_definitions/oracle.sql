@@ -158,3 +158,32 @@ create table restaurants_suburbs (
 	city_id number(11) not null,
 	suburb_id number(11) not null
 );
+
+create table dorms (
+	id number(11) not null,
+	constraint dorms_pk primary key (id)
+);
+
+create sequence dorms_seq
+  start with 1000;
+
+create table rooms (
+	dorm_id number(11) not null,
+	room_id number(11) not null,
+	constraint rooms_pk primary key (dorm_id, room_id)
+);
+
+create table room_attributes (
+	id number(11) not null,
+	name varchar(50),
+	constraint room_attributes_pk primary key (id)
+);
+
+create sequence room_attributes_seq
+  start with 1000;
+
+create table room_attribute_assignments (
+	dorm_id number(11) not null,
+	room_id number(11) not null,
+	room_attribute_id number(11) not null
+);
