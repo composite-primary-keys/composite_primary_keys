@@ -11,10 +11,11 @@ require 'fixtures/room_attribute'
 require 'fixtures/room_attribute_assignment'
 require 'fixtures/student'
 require 'fixtures/room_assignment'
+require 'fixtures/user'
 
 class TestAssociations < Test::Unit::TestCase
   fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
-           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments
+           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users
   
   def test_quoted_table_columns
     assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
@@ -31,7 +32,7 @@ class TestAssociations < Test::Unit::TestCase
     assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "keg"]).size
   end
 
-  def test_has_many_through_on_custom_finder_when_through_association_is_not_composite
+  def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
     user = User.find(:first)
     assert_equal 1, user.find_custom_articles.size
   end
