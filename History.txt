@@ -1,3 +1,7 @@
+== 1.0.4 2008-07-15
+
+* support for oracle_enhanced adapter [thx Raimonds Simanovskis] 
+
 == 1.0.3 2008-07-13
 
 * more fixes and tests for has many through [thx Menno van der Sman]
