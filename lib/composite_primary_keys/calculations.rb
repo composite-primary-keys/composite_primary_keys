@@ -43,13 +43,13 @@ module CompositePrimaryKeys
             ((scope && scope[:limit]) || options[:limit])
 
           if options[:group]
-            group_key = Base.connection.adapter_name == 'FrontBase' ?  :group_alias : :group_field
+            group_key = connection.adapter_name == 'FrontBase' ?  :group_alias : :group_field
             sql << " GROUP BY #{options[group_key]} "
           end
 
           if options[:group] && options[:having]
             # FrontBase requires identifiers in the HAVING clause and chokes on function calls
-            if Base.connection.adapter_name == 'FrontBase'
+            if connection.adapter_name == 'FrontBase'
               options[:having].downcase!
               options[:having].gsub!(/#{operation}\s*\(\s*#{column_name}\s*\)/, aggregate_alias)
             end
