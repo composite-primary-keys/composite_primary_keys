@@ -1,9 +1,11 @@
 require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
+require 'fixtures/street'
+require 'fixtures/suburb'
 
 class TestCreate < Test::Unit::TestCase
-  fixtures :reference_types, :reference_codes
+  fixtures :reference_types, :reference_codes, :streets, :suburbs
   
   CLASSES = {
     :single => {
@@ -47,5 +49,13 @@ class TestCreate < Test::Unit::TestCase
       end
       assert_equal composite?, !@successful, "Create should have failed for composites; #{@obj.inspect}"
     end
+  end
+  
+  def test_create_on_association
+    suburb = Suburb.find(:first)
+    suburb.streets.create(:city_id => suburb.city_id, :suburb_id => suburb.suburb_id, :name => "my street")
+    street = Street.find_by_name('my street')
+    assert_equal(suburb.city_id, street.city_id)
+    assert_equal(suburb.suburb_id, street.suburb_id)
   end
 end

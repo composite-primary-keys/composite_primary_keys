@@ -280,7 +280,16 @@ module ActiveRecord::Associations
       quoted_ids = quoted_ids.split(CompositePrimaryKeys::ID_SEP) if quoted_ids.is_a?(String)
       keys_ids = [keys, quoted_ids].transpose
       keys_ids.collect {|key, id| "(#{table_name}.#{key} = #{id})"}.join(' AND ')
-    end  
+    end 
+    
+    def set_belongs_to_association_for(record)
+      if @reflection.options[:as]
+        raise 'polymorphic joins are not supported by composite_primary_keys'
+      else
+        key_values = @reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).zip(@owner.id)
+        key_values.each{|kv| record[kv.first] = kv.last} unless @owner.new_record?
+      end
+    end    
   end
 
   class HasAndBelongsToManyAssociation < AssociationCollection #:nodoc:

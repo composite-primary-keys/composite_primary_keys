@@ -1,3 +1,7 @@
+== 1.0.6 2008-08-06
+
+* fix associations create
+
 == 1.0.5 2008-07-25
 
 * fix for calculations with a group by clause [thx Sirius Black]

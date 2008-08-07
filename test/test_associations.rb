@@ -1,4 +1,5 @@
 require 'abstract_unit'
+require 'fixtures/article'
 require 'fixtures/product'
 require 'fixtures/tariff'
 require 'fixtures/product_tariff'
@@ -12,10 +13,11 @@ require 'fixtures/room_attribute_assignment'
 require 'fixtures/student'
 require 'fixtures/room_assignment'
 require 'fixtures/user'
+require 'fixtures/reading'
 
 class TestAssociations < Test::Unit::TestCase
-  fixtures :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
-           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users
+  fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
+           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings
   
   def test_quoted_table_columns
     assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
