@@ -1,3 +1,7 @@
+== 1.0.7 2008-08-12
+
+* fix for the last fix -- when has_many is composite and belongs_to is single
+
 == 1.0.6 2008-08-06
 
 * fix associations create

@@ -58,4 +58,11 @@ class TestCreate < Test::Unit::TestCase
     assert_equal(suburb.city_id, street.city_id)
     assert_equal(suburb.suburb_id, street.suburb_id)
   end
+  
+  def test_create_on_association_when_belongs_to_is_single_key
+    rt = ReferenceType.find(:first)
+    rt.reference_codes.create(:reference_type_id => 1234, :reference_code => 4321, :code_label => 'foo', :abbreviation => 'bar')
+    rc = ReferenceCode.find_by_reference_code(4321)
+    assert_equal(rc.reference_type_id, rt.reference_type_id)
+  end
 end
