@@ -2,13 +2,17 @@ comment1:
   id: 1
   person_id: 1
   person_type: Employee
+  hack_id: andrew
   
 comment2:
   id: 2
   person_id: 1
   person_type: User
+  hack_id: andrew
   
 comment3:
   id: 3
   person_id: andrew
   person_type: Hack
+  hack_id: andrew
+  

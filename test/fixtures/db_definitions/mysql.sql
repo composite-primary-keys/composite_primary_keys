@@ -107,6 +107,7 @@ CREATE TABLE comments (
 	id int(11) NOT NULL auto_increment,
 	person_id varchar(100) DEFAULT NULL,
 	person_type varchar(100) DEFAULT NULL,
+	hack_id varchar(100) DEFAULT NULL,
 	PRIMARY KEY (id)
 ) TYPE=InnoDB;
 
