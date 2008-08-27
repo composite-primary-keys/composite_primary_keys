@@ -127,7 +127,8 @@ create sequence employees_seq
 CREATE TABLE comments (
 	id number(11) NOT NULL PRIMARY KEY,
 	person_id varchar(100) DEFAULT NULL,
-	person_type varchar(100) DEFAULT NULL
+	person_type varchar(100) DEFAULT NULL,
+	hack_id varchar(100) DEFAULT NULL
 );
 
 create sequence comments_seq

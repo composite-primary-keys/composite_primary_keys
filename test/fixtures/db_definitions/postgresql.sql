@@ -115,6 +115,7 @@ CREATE TABLE comments (
 	id int NOT NULL,
 	person_id varchar(100) DEFAULT NULL,
 	person_type varchar(100) DEFAULT NULL,
+	hack_id varchar(100) DEFAULT NULL,
 	PRIMARY KEY (id)
 );
 
