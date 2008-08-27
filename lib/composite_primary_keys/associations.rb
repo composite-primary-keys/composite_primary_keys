@@ -372,31 +372,38 @@ module ActiveRecord::Associations
       @finder_sql << " AND (#{conditions})" if conditions
     end
   end
-
   
   class HasManyThroughAssociation < HasManyAssociation #:nodoc:
-    def construct_conditions
-      raise 'polymorphic joins are not supported by composite_primary_keys' if @reflection.through_reflection.options[:as]
-      conditions = full_columns_equals(@reflection.through_reflection.table_name, @reflection.through_reflection.primary_key_name, @owner.quoted_id)
-      conditions << " AND (#{sql_conditions})" if sql_conditions
-      conditions
-    end
-    
-    def construct_joins(custom_joins = nil)
-      raise 'polymorphic joins are not supported by composite_primary_keys' if @reflection.through_reflection.options[:as] || @reflection.source_reflection.options[:as]
-      
-      if @reflection.source_reflection.macro == :belongs_to
-        reflection_primary_key = @reflection.klass.primary_key
-        source_primary_key     = @reflection.source_reflection.primary_key_name
+    def construct_conditions_with_composite_keys
+      if @reflection.through_reflection.options[:as]
+        construct_conditions_without_composite_keys;
       else
-        reflection_primary_key = @reflection.source_reflection.primary_key_name
-        source_primary_key     = @reflection.klass.primary_key
+        conditions = full_columns_equals(@reflection.through_reflection.table_name, @reflection.through_reflection.primary_key_name, @owner.quoted_id)
+        conditions << " AND (#{sql_conditions})" if sql_conditions
+        conditions
       end
-
-      "INNER JOIN %s ON %s #{@reflection.options[:joins]} #{custom_joins}" % [
-        @reflection.through_reflection.table_name,
-        composite_join_clause(full_keys(@reflection.table_name, reflection_primary_key), full_keys(@reflection.through_reflection.table_name, source_primary_key))
-      ]
     end
+    alias_method_chain :construct_conditions, :composite_keys
+    
+    def construct_joins_with_composite_keys(custom_joins = nil)
+      if @reflection.through_reflection.options[:as] || @reflection.source_reflection.options[:as]
+        construct_joins_without_composite_keys(custom_joins)
+      else
+        if @reflection.source_reflection.macro == :belongs_to
+          reflection_primary_key = @reflection.klass.primary_key
+          source_primary_key     = @reflection.source_reflection.primary_key_name
+        else
+          reflection_primary_key = @reflection.source_reflection.primary_key_name
+          source_primary_key     = @reflection.klass.primary_key
+        end
+
+        "INNER JOIN %s ON %s #{@reflection.options[:joins]} #{custom_joins}" % [
+          @reflection.through_reflection.table_name,
+          composite_join_clause(full_keys(@reflection.table_name, reflection_primary_key), full_keys(@reflection.through_reflection.table_name, source_primary_key))
+        ]
+      end
+    end
+    alias_method_chain :construct_joins, :composite_keys    
   end
+  
 end
