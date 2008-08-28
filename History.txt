@@ -1,3 +1,7 @@
+== 1.0.8 2008-08-27
+
+* fix has_many :through for non composite models [thx rcarver]
+
 == 1.0.7 2008-08-12
 
 * fix for the last fix -- when has_many is composite and belongs_to is single
