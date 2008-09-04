@@ -53,7 +53,7 @@ class TestCreate < Test::Unit::TestCase
   
   def test_create_on_association
     suburb = Suburb.find(:first)
-    suburb.streets.create(:suburb => suburb, :name => "my street")
+    suburb.streets.create(:name => "my street")
     street = Street.find_by_name('my street')
     assert_equal(suburb.city_id, street.city_id)
     assert_equal(suburb.suburb_id, street.suburb_id)
@@ -61,7 +61,7 @@ class TestCreate < Test::Unit::TestCase
   
   def test_create_on_association_when_belongs_to_is_single_key
     rt = ReferenceType.find(:first)
-    rt.reference_codes.create(:reference_type => rt, :reference_code => 4321, :code_label => 'foo', :abbreviation => 'bar')
+    rt.reference_codes.create(:reference_code => 4321, :code_label => 'foo', :abbreviation => 'bar')
     rc = ReferenceCode.find_by_reference_code(4321)
     assert_equal(rc.reference_type_id, rt.reference_type_id)
   end
