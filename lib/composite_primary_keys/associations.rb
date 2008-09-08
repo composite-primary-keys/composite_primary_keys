@@ -346,13 +346,12 @@ module ActiveRecord::Associations
 		records.each do |r|
 		  where_class = nil
 		  
-		  if r.quoted_id.include?(',')
+		  if r.quoted_id.to_s.include?(CompositePrimaryKeys::ID_SEP)
 		    where_class = [@reflection.klass.primary_key, r.quoted_id].transpose.map {|pair| "(#{pair[0]} = #{pair[1]})"}.join(" AND ")
 		  else
 		    where_class = @reflection.klass.primary_key + ' = ' +  r.quoted_id
 		  end
-		  
-		  @reflection.klass.update_all(  field_names.join(',') , where_class)
+		  @reflection.klass.update_all(field_names.join(',') , where_class)
 		end
 	  end
 	end

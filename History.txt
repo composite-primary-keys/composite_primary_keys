@@ -1,3 +1,7 @@
+== 1.0.9 2008-09-08
+
+* fix for delete_records when has_many association has composite keys
+
 == 1.0.8 2008-08-27
 
 * fix has_many :through for non composite models [thx rcarver]
