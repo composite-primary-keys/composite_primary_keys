@@ -295,7 +295,7 @@ module ActiveRecord::Associations
 
   class HasAndBelongsToManyAssociation < AssociationCollection #:nodoc:
     def construct_sql
-      interpolate_sql_options!(@reflection.options, :finder_sql)
+      @reflection.options[:finder_sql] &&= interpolate_sql(@reflection.options[:finder_sql])
 
       if @reflection.options[:finder_sql]
         @finder_sql = @reflection.options[:finder_sql]
