@@ -124,10 +124,62 @@ CREATE TABLE hacks (
  PRIMARY KEY (name)
 );
 
-create table kitchen_sinks (
+CREATE TABLE kitchen_sinks (
 	id_1 int not null,
 	id_2 int not null,
 	a_date date,
 	a_string varchar(100),
 	primary key (id_1, id_2)
 );
+
+CREATE TABLE restaurants (
+	franchise_id int not null,
+	store_id int not null,
+	name varchar(100),
+	primary key (franchise_id, store_id)
+);
+
+CREATE TABLE restaurants_suburbs (
+	franchise_id int not null,
+	store_id int not null,
+	city_id int not null,
+	suburb_id int not null
+);
+
+CREATE SEQUENCE public.dorms_seq START 100;
+CREATE TABLE dorms (
+	id int not null DEFAULT nextval('public.dorms_seq'),
+	primary key(id)
+);
+
+CREATE TABLE rooms (
+	dorm_id int not null,
+	room_id int not null,
+	primary key (dorm_id, room_id)
+);
+
+CREATE SEQUENCE public.room_attributes_seq START 100;
+CREATE TABLE room_attributes (
+	id int not null DEFAULT nextval('public.room_attributes_seq'),
+	name varchar(50),
+	primary key(id)
+);
+
+CREATE TABLE room_attribute_assignments (
+	dorm_id int not null,
+	room_id int not null,
+	room_attribute_id int not null
+);
+
+CREATE SEQUENCE public.students_seq START 100;
+CREATE TABLE students (
+	id int not null DEFAULT nextval('public.students_seq'),
+	primary key(id)
+);
+
+CREATE TABLE room_assignments (
+	student_id int not null,
+	dorm_id int not null,
+	room_id int not null
+);
+

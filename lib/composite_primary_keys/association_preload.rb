@@ -23,7 +23,7 @@ module CompositePrimaryKeys
             conditions = [where, ids].flatten
             joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection.klass.quoted_table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
             parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|k| "t0.#{k}"}
-            parent_record_id = connection.concat(parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
+            parent_record_id = connection.concat(*parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
           else
             conditions = ["t0.#{reflection.primary_key_name}  IN (?)", ids]
             joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}"

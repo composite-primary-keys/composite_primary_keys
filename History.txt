@@ -1,3 +1,5 @@
+* fix postgres tests
+
 == 1.0.8 2008-08-27
 
 * fix has_many :through for non composite models [thx rcarver]
