@@ -16,7 +16,7 @@ class TestAttributeMethods < Test::Unit::TestCase
     sink = KitchenSink.find(1,2)
     assert_equal(1, sink.id_1)
     assert_equal(2, sink.id_2)
-    assert_equal(Date.today, sink.a_date)
+    assert_equal(Date.today, sink.a_date.to_date)
     assert_equal('string', sink.a_string)
   end
 end
