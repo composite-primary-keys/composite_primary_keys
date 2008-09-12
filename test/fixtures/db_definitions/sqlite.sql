@@ -1,108 +1,108 @@
-CREATE TABLE reference_types (
-  reference_type_id INTEGER PRIMARY KEY,
-  type_label varchar(50) default NULL,
-  abbreviation varchar(50) default NULL,
-  description varchar(50) default NULL
+create table reference_types (
+    reference_type_id integer primary key,
+    type_label varchar(50) default null,
+    abbreviation varchar(50) default null,
+    description varchar(50) default null
 );
 
-CREATE TABLE reference_codes (
-  reference_type_id int(11) NOT NULL,
-  reference_code int(11) NOT NULL,
-  code_label varchar(50) default NULL,
-  abbreviation varchar(50) default NULL,
-  description varchar(50) default NULL,
-  PRIMARY KEY  (reference_type_id,reference_code)
+create table reference_codes (
+    reference_type_id int(11),
+    reference_code int(11) not null,
+    code_label varchar(50) default null,
+    abbreviation varchar(50) default null,
+    description varchar(50) default null,
+    primary key (reference_type_id, reference_code)
 );
 
-CREATE TABLE products (
-  id int(11) NOT NULL PRIMARY KEY,
-  name varchar(50) default NULL
+create table products (
+    id int(11) not null primary key,
+    name varchar(50) default null
 );
 
-CREATE TABLE tariffs (
-  tariff_id int(11) NOT NULL,
-  start_date date NOT NULL,
-  amount integer(11) default NULL,
-  PRIMARY KEY  (tariff_id,start_date)
+create table tariffs (
+    tariff_id int(11) not null,
+    start_date date not null,
+    amount integer(11) default null,
+    primary key (tariff_id, start_date)
 );
 
-CREATE TABLE product_tariffs (
-  product_id int(11) NOT NULL,
-  tariff_id int(11) NOT NULL,
-  tariff_start_date date NOT NULL,
-  PRIMARY KEY  (product_id,tariff_id,tariff_start_date)
+create table product_tariffs (
+    product_id int(11) not null,
+    tariff_id int(11) not null,
+    tariff_start_date date not null,
+    primary key (product_id, tariff_id, tariff_start_date)
 );
 
-CREATE TABLE suburbs (
-  city_id int(11) NOT NULL,
-  suburb_id int(11) NOT NULL,
-  name varchar(50) NOT NULL,
-  PRIMARY KEY  (city_id,suburb_id)
+create table suburbs (
+    city_id int(11) not null,
+    suburb_id int(11) not null,
+    name varchar(50) not null,
+    primary key (city_id, suburb_id)
 );
 
-CREATE TABLE streets (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  city_id int(11) NOT NULL,
-  suburb_id int(11) NOT NULL,
-  name varchar(50) NOT NULL
+create table streets (
+    id integer not null primary key autoincrement,
+    city_id int(11) not null,
+    suburb_id int(11) not null,
+    name varchar(50) not null
 );
 
-CREATE TABLE users (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name varchar(50) NOT NULL
+create table users (
+    id integer not null primary key autoincrement,
+    name varchar(50) not null
 );
 
-CREATE TABLE articles (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name varchar(50) NOT NULL
+create table articles (
+    id integer not null primary key autoincrement,
+    name varchar(50) not null
 );
 
-CREATE TABLE readings (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  user_id int(11) NOT NULL,
-  article_id int(11) NOT NULL,
-  rating int(11) NOT NULL
+create table readings (
+    id integer not null primary key autoincrement,
+    user_id int(11) not null,
+    article_id int(11) not null,
+    rating int(11) not null
 );
 
-CREATE TABLE groups (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name varchar(50) NOT NULL
+create table groups (
+    id integer not null primary key autoincrement,
+    name varchar(50) not null
 );
 
-CREATE TABLE memberships (
-  user_id int NOT NULL,
-  group_id int NOT NULL,
-  PRIMARY KEY  (user_id,group_id)
+create table memberships (
+    user_id int not null,
+    group_id int not null,
+    primary key (user_id, group_id)
 );
 
-CREATE TABLE membership_statuses (
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  user_id int NOT NULL,
-  group_id int NOT NULL,
-	status varchar(50) NOT NULL
+create table membership_statuses (
+    id integer not null primary key autoincrement,
+    user_id int not null,
+    group_id int not null,
+	status varchar(50) not null
 );
 
-CREATE TABLE departments (
-  department_id INTEGER NOT NULL,
-  location_id INTEGER NOT NULL,
-  PRIMARY KEY (department_id, location_id)
+create table departments (
+    department_id integer not null,
+    location_id integer not null,
+    primary key (department_id, location_id)
 );
 
-CREATE TABLE employees (
- id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
- department_id INTEGER NULL,
- location_id INTEGER NULL
+create table employees (
+    id integer not null primary key autoincrement,
+    department_id integer null,
+    location_id integer null
 );
 
-CREATE TABLE comments (
-	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	person_id varchar(100) NULL,
-	person_type varchar(100) NULL,
-	hack_id varchar(100) NULL
+create table comments (
+	id integer not null primary key autoincrement,
+	person_id varchar(100) null,
+	person_type varchar(100) null,
+	hack_id varchar(100) null
 );
 
-CREATE TABLE hacks (
- name varchar(50) NOT NULL PRIMARY KEY
+create table hacks (
+    name varchar(50) not null primary key
 );
 
 create table kitchen_sinks (
@@ -157,3 +157,4 @@ create table room_assignments (
 	dorm_id integer not null,
 	room_id integer not null	
 );
+

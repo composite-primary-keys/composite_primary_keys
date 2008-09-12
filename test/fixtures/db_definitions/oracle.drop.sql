@@ -34,3 +34,6 @@ drop table rooms;
 drop table room_attributes;
 drop sequence room_attributes_seq;
 drop table room_attribute_assignments;
+drop table room_assignments;
+drop table students;
+drop sequence students_seq;
