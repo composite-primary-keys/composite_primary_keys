@@ -86,7 +86,7 @@ class TestDelete < Test::Unit::TestCase
   end
 
   def test_delete_records_for_has_many_association_with_composite_primary_key
-      reference_type  = ReferenceType.first
+      reference_type  = ReferenceType.find(1)
       codes_to_delete = reference_type.reference_codes[0..1]
       assert_equal 3, reference_type.reference_codes.size, "Before deleting records reference_code count should be 3."
       reference_type.reference_codes.delete_records(codes_to_delete)
