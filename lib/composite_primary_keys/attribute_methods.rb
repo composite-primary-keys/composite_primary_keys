@@ -5,7 +5,7 @@ module CompositePrimaryKeys
         super
         base.send(:extend, ClassMethods)
       end
-      
+
       module ClassMethods
         # Define an attribute reader method.  Cope with nil column.
         def define_read_method(symbol, attr_name, column)
@@ -16,7 +16,7 @@ module CompositePrimaryKeys
           unless self.primary_keys.include?(attr_name.to_sym)
             access_code = access_code.insert(0, "missing_attribute('#{attr_name}', caller) unless @attributes.has_key?('#{attr_name}'); ")
           end
-          
+
           if cache_attribute?(attr_name)
             access_code = "@attributes_cache['#{attr_name}'] ||= (#{access_code})"
           end

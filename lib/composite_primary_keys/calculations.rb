@@ -5,7 +5,7 @@ module CompositePrimaryKeys
         super
         base.send(:extend, ClassMethods)
       end
-      
+
       module ClassMethods
         def construct_calculation_sql(operation, column_name, options) #:nodoc:
           operation = operation.to_s.downcase
@@ -38,8 +38,8 @@ module CompositePrimaryKeys
           add_joins!(sql, options, scope)
           add_conditions!(sql, options[:conditions], scope)
           add_limited_ids_condition!(sql, options, join_dependency) if \
-            join_dependency && 
-            !using_limitable_reflections?(join_dependency.reflections) && 
+            join_dependency &&
+            !using_limitable_reflections?(join_dependency.reflections) &&
             ((scope && scope[:limit]) || options[:limit])
 
           if options[:group]
@@ -57,7 +57,7 @@ module CompositePrimaryKeys
             sql << " HAVING #{options[:having]} "
           end
 
-          sql << " ORDER BY #{options[:order]} "       if options[:order]
+          sql << " ORDER BY #{options[:order]} " if options[:order]
           add_limit!(sql, options, scope)
           sql << ') w1' if use_workaround # assign a dummy table name as required for postgresql
           sql

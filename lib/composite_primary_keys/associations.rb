@@ -5,22 +5,22 @@ module CompositePrimaryKeys
         super
         base.send(:extend, ClassMethods)
       end
-      
+
       # Composite key versions of Association functions
       module ClassMethods
-        
+
         def construct_counter_sql_with_included_associations(options, join_dependency)
           scope = scope(:find)
           sql = "SELECT COUNT(DISTINCT #{quoted_table_columns(primary_key)})"
-          
+
           # A (slower) workaround if we're using a backend, like sqlite, that doesn't support COUNT DISTINCT.
           if !self.connection.supports_count_distinct?
             sql = "SELECT COUNT(*) FROM (SELECT DISTINCT #{quoted_table_columns(primary_key)}"
           end
-          
+
           sql << " FROM #{table_name} "
           sql << join_dependency.join_associations.collect{|join| join.association_join }.join
-          
+
           add_joins!(sql, options, scope)
           add_conditions!(sql, options[:conditions], scope)
           add_limited_ids_condition!(sql, options, join_dependency) if !using_limitable_reflections?(join_dependency.reflections) && ((scope && scope[:limit]) || options[:limit])
@@ -31,35 +31,35 @@ module CompositePrimaryKeys
             sql << ")"
           end
 
-          return sanitize_sql(sql)          
+          return sanitize_sql(sql)
         end
 
         def construct_finder_sql_with_included_associations(options, join_dependency)
           scope = scope(:find)
           sql = "SELECT #{column_aliases(join_dependency)} FROM #{(scope && scope[:from]) || options[:from] || table_name} "
           sql << join_dependency.join_associations.collect{|join| join.association_join }.join
- 
+
           add_joins!(sql, options, scope)
           add_conditions!(sql, options[:conditions], scope)
           add_limited_ids_condition!(sql, options, join_dependency) if !using_limitable_reflections?(join_dependency.reflections) && options[:limit]
 
           sql << "ORDER BY #{options[:order]} " if options[:order]
- 
+
           add_limit!(sql, options, scope) if using_limitable_reflections?(join_dependency.reflections)
- 
+
           return sanitize_sql(sql)
         end
-        
+
         def table_columns(columns)
           columns.collect {|column| "#{self.table_name}.#{column}"}
         end
-        
+
         def quoted_table_columns(columns)
           table_columns(columns).join(ID_SEP)
         end
-        
+
       end
-      
+
     end
   end
 end
@@ -72,9 +72,9 @@ module ActiveRecord::Associations::ClassMethods
           collection = record.send(join.reflection.name)
           collection.loaded
 
-          join_aliased_primary_keys = join.active_record.composite? ? 
+          join_aliased_primary_keys = join.active_record.composite? ?
             join.aliased_primary_key : [join.aliased_primary_key]
-          return nil if 
+          return nil if
             record.id.to_s != join.parent.record_id(row).to_s or not
             join_aliased_primary_keys.select {|key| row[key].nil?}.blank?
           association = join.instantiate(row)
@@ -89,11 +89,11 @@ module ActiveRecord::Associations::ClassMethods
       end
       return association
     end
-    
+
     class JoinBase
       def aliased_primary_key
-        active_record.composite? ? 
-          primary_key.inject([]) {|aliased_keys, key| aliased_keys << "#{ aliased_prefix }_r#{aliased_keys.length}"} : 
+        active_record.composite? ?
+          primary_key.inject([]) {|aliased_keys, key| aliased_keys << "#{ aliased_prefix }_r#{aliased_keys.length}"} :
           "#{ aliased_prefix }_r0"
       end
 
@@ -114,15 +114,13 @@ module ActiveRecord::Associations::ClassMethods
         return @column_names_with_alias
       end
     end
-    
+
     class JoinAssociation < JoinBase
       alias single_association_join association_join
       def association_join
-        reflection.active_record.composite? ?
-          composite_association_join :
-          single_association_join
+        reflection.active_record.composite? ? composite_association_join : single_association_join
       end
-      
+
       def composite_association_join
         join = case reflection.macro
           when :has_and_belongs_to_many
@@ -158,9 +156,9 @@ module ActiveRecord::Associations::ClassMethods
                         first_key  = through_reflection.klass.to_s.classify.foreign_key
                         second_key = options[:foreign_key] || primary_key
                     end
-                    
+
                     " LEFT OUTER JOIN %s ON %s "  % [
-                      table_alias_for(through_reflection.klass.table_name, aliased_join_table_name), 
+                      table_alias_for(through_reflection.klass.table_name, aliased_join_table_name),
                        composite_join_clause(
                          full_keys(aliased_join_table_name, through_reflection.primary_key_name),
                          full_keys(parent.aliased_table_name, parent.primary_key)
@@ -169,13 +167,13 @@ module ActiveRecord::Associations::ClassMethods
                      " LEFT OUTER JOIN %s ON %s " % [
                        table_name_and_alias,
                        composite_join_clause(
-                         full_keys(aliased_table_name, first_key), 
+                         full_keys(aliased_table_name, first_key),
                          full_keys(aliased_join_table_name, second_key)
                        )
                     ]
                   end
                 end
-              
+
               when reflection.macro == :has_many && reflection.options[:as]
                 raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
               when reflection.macro == :has_one && reflection.options[:as]
@@ -185,28 +183,28 @@ module ActiveRecord::Associations::ClassMethods
                 " LEFT OUTER JOIN %s ON %s " % [
                   table_name_and_alias,
                   composite_join_clause(
-                    full_keys(aliased_table_name, foreign_key), 
+                    full_keys(aliased_table_name, foreign_key),
                     full_keys(parent.aliased_table_name, parent.primary_key)),
                 ]
             end
           when :belongs_to
             " LEFT OUTER JOIN %s ON %s " % [
-               table_name_and_alias, 
+               table_name_and_alias,
                composite_join_clause(
-                 full_keys(aliased_table_name, reflection.klass.primary_key), 
+                 full_keys(aliased_table_name, reflection.klass.primary_key),
                  full_keys(parent.aliased_table_name, options[:foreign_key] || klass.to_s.foreign_key)),
               ]
           else
             ""
         end || ''
         join << %(AND %s.%s = %s ) % [
-          aliased_table_name, 
-          reflection.active_record.connection.quote_column_name(reflection.active_record.inheritance_column), 
+          aliased_table_name,
+          reflection.active_record.connection.quote_column_name(reflection.active_record.inheritance_column),
           klass.connection.quote(klass.name)] unless klass.descends_from_active_record?
         join << "AND #{interpolate_sql(sanitize_sql(reflection.options[:conditions]))} " if reflection.options[:conditions]
         join
       end
-      
+
       def full_keys(table_name, keys)
         keys.is_a?(Array) ? keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : "#{table_name}.#{keys}"
       end
@@ -214,8 +212,8 @@ module ActiveRecord::Associations::ClassMethods
       def composite_join_clause(full_keys1, full_keys2)
         full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
         full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
-        where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
-          "#{key_pair.first}=#{key_pair.last}"
+        where_clause = [full_keys1, full_keys2].transpose.map do |key1, key2|
+          "#{key1}=#{key2}"
         end.join(" AND ")
         "(#{where_clause})"
       end
@@ -225,53 +223,53 @@ end
 
 module ActiveRecord::Associations
   class AssociationProxy #:nodoc:
-    
+
     def composite_where_clause(full_keys, ids)
       full_keys = full_keys.split(CompositePrimaryKeys::ID_SEP) if full_keys.is_a?(String)
-      
+
       if ids.is_a?(String)
         ids = [[ids]]
       elsif not ids.first.is_a?(Array) # if single comp key passed, turn into an array of 1
         ids = [ids.to_composite_ids]
       end
-      
+
       where_clause = ids.map do |id_set|
         transposed = id_set.size == 1 ? [[full_keys, id_set.first]] : [full_keys, id_set].transpose
         transposed.map do |full_key, id|
           "#{full_key.to_s}=#{@reflection.klass.sanitize(id)}"
         end.join(" AND ")
       end.join(") OR (")
-      
+
       "(#{where_clause})"
     end
 
     def composite_join_clause(full_keys1, full_keys2)
       full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
       full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
-      
-      where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
-        "#{key_pair.first}=#{key_pair.last}"
+
+      where_clause = [full_keys1, full_keys2].transpose.map do |key1, key2|
+        "#{key1}=#{key2}"
       end.join(" AND ")
-      
+
       "(#{where_clause})"
     end
 
     def full_composite_join_clause(table1, full_keys1, table2, full_keys2)
       full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
       full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
-      
-      where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
-        "#{table1}.#{key_pair.first}=#{table2}.#{key_pair.last}"
+
+      where_clause = [full_keys1, full_keys2].transpose.map do |key1, key2|
+        "#{table1}.#{key1}=#{table2}.#{key2}"
       end.join(" AND ")
-      
+
       "(#{where_clause})"
     end
-    
+
     def full_keys(table_name, keys)
       keys = keys.split(CompositePrimaryKeys::ID_SEP) if keys.is_a?(String)
       keys.is_a?(Array) ? keys.collect {|key| "#{table_name}.#{key}"}.join(CompositePrimaryKeys::ID_SEP) : "#{table_name}.#{keys}"
     end
-    
+
     def full_columns_equals(table_name, keys, quoted_ids)
       if keys.is_a?(Symbol) or (keys.is_a?(String) and keys == keys.to_s.split(CompositePrimaryKeys::ID_SEP))
         return "#{table_name}.#{keys} = #{quoted_ids}"
@@ -280,7 +278,7 @@ module ActiveRecord::Associations
       quoted_ids = quoted_ids.split(CompositePrimaryKeys::ID_SEP) if quoted_ids.is_a?(String)
       keys_ids = [keys, quoted_ids].transpose
       keys_ids.collect {|key, id| "(#{table_name}.#{key} = #{id})"}.join(' AND ')
-    end 
+    end
 
     def set_belongs_to_association_for(record)
       if @reflection.options[:as]
@@ -288,9 +286,9 @@ module ActiveRecord::Associations
         record["#{@reflection.options[:as]}_type"] = @owner.class.base_class.name.to_s
       else
         key_values = @reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).zip([@owner.id].flatten)
-        key_values.each{|kv| record[kv.first] = kv.last} unless @owner.new_record?
-      end    
-    end    
+        key_values.each{|key, value| record[key] = value} unless @owner.new_record?
+      end
+    end
   end
 
   class HasAndBelongsToManyAssociation < AssociationCollection #:nodoc:
@@ -306,9 +304,9 @@ module ActiveRecord::Associations
 
       @join_sql = "INNER JOIN #{@reflection.options[:join_table]} ON " +
       full_composite_join_clause(@reflection.klass.table_name, @reflection.klass.primary_key, @reflection.options[:join_table], @reflection.association_foreign_key)
-    end    
+    end
   end
-  
+
   class HasManyAssociation < AssociationCollection #:nodoc:
     def construct_sql
       case
@@ -316,11 +314,11 @@ module ActiveRecord::Associations
           @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
 
         when @reflection.options[:as]
-          @finder_sql = 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
+          @finder_sql =
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id   = #{@owner.quoted_id} AND " +
             "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
           @finder_sql << " AND (#{conditions})" if conditions
-            
+
         else
           @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
           @finder_sql << " AND (#{conditions})" if conditions
@@ -336,43 +334,42 @@ module ActiveRecord::Associations
         @counter_sql = @finder_sql
       end
     end
-    
-	def delete_records(records)
-	  if @reflection.options[:dependent]
-		records.each { |r| r.destroy }
-	  else
-		field_names = @reflection.primary_key_name.split(',')
-		field_names.collect! {|n| n + " = NULL"}
-		records.each do |r|
-		  where_class = nil
-		  
-		  if r.quoted_id.include?(',')
-		    where_class = [@reflection.klass.primary_key, r.quoted_id].transpose.map {|pair| "(#{pair[0]} = #{pair[1]})"}.join(" AND ")
-		  else
-		    where_class = @reflection.klass.primary_key + ' = ' +  r.quoted_id
-		  end
-		  
-		  @reflection.klass.update_all(  field_names.join(',') , where_class)
-		end
-	  end
-	end
+
+    def delete_records(records)
+      if @reflection.options[:dependent]
+        records.each { |r| r.destroy }
+      else
+        field_names = @reflection.primary_key_name.split(',')
+        field_names.collect! {|n| n + " = NULL"}
+        records.each do |r|
+          where_class = nil
+
+          if r.quoted_id.to_s.include?(CompositePrimaryKeys::ID_SEP)
+            where_class = [@reflection.klass.primary_key, r.quoted_id].transpose.map {|key, id| "(#{key}=#{id})"}.join(" AND ")
+          else
+            where_class = @reflection.klass.primary_key + ' = ' +  r.quoted_id
+          end
+          @reflection.klass.update_all(field_names.join(',') , where_class)
+        end
+      end
+    end
   end
-  
+
   class HasOneAssociation < BelongsToAssociation #:nodoc:
     def construct_sql
       case
         when @reflection.options[:as]
-          @finder_sql = 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
-            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"          
+          @finder_sql =
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " +
+            "#{@reflection.klass.table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
         else
           @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
       end
-      
+
       @finder_sql << " AND (#{conditions})" if conditions
     end
   end
-  
+
   class HasManyThroughAssociation < HasManyAssociation #:nodoc:
     def construct_conditions_with_composite_keys
       if @reflection.through_reflection.options[:as]
@@ -384,7 +381,7 @@ module ActiveRecord::Associations
       end
     end
     alias_method_chain :construct_conditions, :composite_keys
-    
+
     def construct_joins_with_composite_keys(custom_joins = nil)
       if @reflection.through_reflection.options[:as] || @reflection.source_reflection.options[:as]
         construct_joins_without_composite_keys(custom_joins)
@@ -403,7 +400,6 @@ module ActiveRecord::Associations
         ]
       end
     end
-    alias_method_chain :construct_joins, :composite_keys    
+    alias_method_chain :construct_joins, :composite_keys
   end
-  
 end

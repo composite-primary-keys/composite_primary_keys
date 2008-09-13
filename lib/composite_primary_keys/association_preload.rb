@@ -5,43 +5,43 @@ module CompositePrimaryKeys
         super
         base.send(:extend, ClassMethods)
       end
-      
+
       # Composite key versions of Association functions
-      module ClassMethods    
+      module ClassMethods
         def preload_has_and_belongs_to_many_association(records, reflection, preload_options={})
           table_name = reflection.klass.quoted_table_name
           id_to_record_map, ids = construct_id_map(records)
           records.each {|record| record.send(reflection.name).loaded}
           options = reflection.options
 
-          if(composite?)
+          if composite?
             primary_key = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP)
             where = (primary_key * ids.size).in_groups_of(primary_key.size).map do |keys|
               "(" + keys.map{|key| "t0.#{key} = ?"}.join(" AND ") + ")"
             end.join(" OR ")
-            
+
             conditions = [where, ids].flatten
             joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection.klass.quoted_table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
-            parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|k| "t0.#{k}"}
-            parent_record_id = connection.concat(*parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
+            parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|key| "t0.#{key}"}
+            parent_record_id = connection.concat(parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
           else
-            conditions = ["t0.#{reflection.primary_key_name}  IN (?)", ids]
+            conditions = ["t0.#{reflection.primary_key_name} IN (?)", ids]
             joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}"
             parent_record_id = reflection.primary_key_name
           end
-          
+
           conditions.first << append_conditions(options, preload_options)
 
-          associated_records = reflection.klass.find(:all, 
+          associated_records = reflection.klass.find(:all,
             :conditions => conditions,
-            :include => options[:include],
-            :joins => joins,
-            :select => "#{options[:select] || table_name+'.*'}, #{parent_record_id} as parent_record_id_",
-            :order => options[:order])
-            
+            :include    => options[:include],
+            :joins      => joins,
+            :select     => "#{options[:select] || table_name+'.*'}, #{parent_record_id} as parent_record_id_",
+            :order      => options[:order])
+
           set_association_collection_records(id_to_record_map, reflection.name, associated_records, 'parent_record_id_')
         end
-                
+
         def preload_has_many_association(records, reflection, preload_options={})
           id_to_record_map, ids = construct_id_map(records)
           records.each {|record| record.send(reflection.name).loaded}
@@ -51,7 +51,7 @@ module CompositePrimaryKeys
             through_records = preload_through_records(records, reflection, options[:through])
             through_reflection = reflections[options[:through]]
             through_primary_key = through_reflection.primary_key_name
-            
+
             unless through_records.empty?
               source = reflection.source_reflection.name
               #add conditions from reflection!
@@ -61,7 +61,7 @@ module CompositePrimaryKeys
                 add_preloaded_records_to_collection(id_to_record_map[key], reflection.name, through_record.send(source))
               end
             end
-          else 
+          else
             associated_records = find_associated_records(ids, reflection, preload_options)
             set_association_collection_records(id_to_record_map, reflection.name, associated_records, reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP))
           end
@@ -95,7 +95,7 @@ module CompositePrimaryKeys
             records.first.class.preload_associations(records, through_association)
             through_records = records.map {|record| record.send(through_association)}.flatten
           end
-          
+
           through_records.compact!
           through_records
         end
@@ -107,23 +107,23 @@ module CompositePrimaryKeys
           if options[:polymorphic]
             raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
           else
-          	# I need to keep the original ids for each record (as opposed to the stringified) so
-          	# that they get properly converted for each db so the id_map ends up looking like:
-          	#
-          	# { '1,2' => {:id => [1,2], :records => [...records...]}}
+            # I need to keep the original ids for each record (as opposed to the stringified) so
+            # that they get properly converted for each db so the id_map ends up looking like:
+            #
+            # { '1,2' => {:id => [1,2], :records => [...records...]}}
             id_map = {}
-            
+
             records.each do |record|
               key = primary_key_name.map{|k| record.send(k)}
               key_as_string = key.join(CompositePrimaryKeys::ID_SEP)
-              
+
               if key_as_string
                 mapped_records = (id_map[key_as_string] ||= {:id => key, :records => []})
                 mapped_records[:records] << record
               end
             end
-            
-            
+
+
             klasses_and_ids = [[reflection.klass.name, id_map]]
           end
 
@@ -131,28 +131,29 @@ module CompositePrimaryKeys
             klass_name, id_map = *klass_and_id
             klass = klass_name.constantize
             table_name = klass.quoted_table_name
-            
-            if(composite?)
+
+            if composite?
               primary_key = klass.primary_key.to_s.split(CompositePrimaryKeys::ID_SEP)
               ids = id_map.keys.uniq.map {|id| id_map[id][:id]}
 
               where = (primary_key * ids.size).in_groups_of(primary_key.size).map do |keys|
                  "(" + keys.map{|key| "#{table_name}.#{key} = ?"}.join(" AND ") + ")"
               end.join(" OR ")
-              
+
               conditions = [where, ids].flatten
             else
               conditions = ["#{table_name}.#{primary_key} IN (?)", id_map.keys.uniq]
             end
-                                  
+
             conditions.first << append_conditions(options, preload_options)
-            
-            associated_records = klass.find(:all, :conditions => conditions,
-                                            :include => options[:include],
-                                            :select => options[:select],
-                                            :joins => options[:joins],
-                                            :order => options[:order])
-                                            
+
+            associated_records = klass.find(:all,
+              :conditions => conditions,
+              :include    => options[:include],
+              :select     => options[:select],
+              :joins      => options[:joins],
+              :order      => options[:order])
+
             set_association_single_records(id_map, reflection.name, associated_records, primary_key)
           end
         end
@@ -165,13 +166,13 @@ module CompositePrimaryKeys
             add_preloaded_records_to_collection(mapped_records, reflection_name, associated_record)
           end
         end
-        
+
         def set_association_single_records(id_to_record_map, reflection_name, associated_records, key)
           seen_keys = {}
           associated_records.each do |associated_record|
             associated_record_key = associated_record[key]
             associated_record_key = associated_record_key.is_a?(Array) ? associated_record_key.join(CompositePrimaryKeys::ID_SEP) : associated_record_key.to_s
-            
+
             #this is a has_one or belongs_to: there should only be one record.
             #Unfortunately we can't (in portable way) ask the database for 'all records where foo_id in (x,y,z), but please
             # only one row per distinct foo_id' so this where we enforce that
@@ -183,7 +184,7 @@ module CompositePrimaryKeys
             end
           end
         end
-              
+
         def find_associated_records(ids, reflection, preload_options)
           options = reflection.options
           table_name = reflection.klass.quoted_table_name
@@ -193,34 +194,34 @@ module CompositePrimaryKeys
           else
             foreign_key = reflection.primary_key_name
             conditions = ["#{reflection.klass.quoted_table_name}.#{foreign_key} IN (?)", ids]
-            
-            if(composite?)
+
+            if composite?
               foreign_keys = foreign_key.to_s.split(CompositePrimaryKeys::ID_SEP)
-            
-            where = (foreign_keys * ids.size).in_groups_of(foreign_keys.size).map do |keys|
-              "(" + keys.map{|key| "#{reflection.klass.quoted_table_name}.#{key} = ?"}.join(" AND ") + ")"
+
+              where = (foreign_keys * ids.size).in_groups_of(foreign_keys.size).map do |keys|
+                "(" + keys.map{|key| "#{reflection.klass.quoted_table_name}.#{key} = ?"}.join(" AND ") + ")"
               end.join(" OR ")
-                
+
               conditions = [where, ids].flatten
+            end
           end
-          end
-  
+
           conditions.first << append_conditions(options, preload_options)
 
           reflection.klass.find(:all,
-                                :select => (preload_options[:select] || options[:select] || "#{table_name}.*"),
-                                :include => preload_options[:include] || options[:include],
-                                :conditions => conditions,
-                                :joins => options[:joins],
-                                :group => preload_options[:group] || options[:group],
-                                :order => preload_options[:order] || options[:order])
-        end        
-        
+            :select     => (preload_options[:select] || options[:select] || "#{table_name}.*"),
+            :include    => preload_options[:include] || options[:include],
+            :conditions => conditions,
+            :joins      => options[:joins],
+            :group      => preload_options[:group] || options[:group],
+            :order      => preload_options[:order] || options[:order])
+        end
+
         def full_composite_join_clause(table1, full_keys1, table2, full_keys2)
           full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
           full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
-          where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
-            "#{table1}.#{key_pair.first}=#{table2}.#{key_pair.last}"
+          where_clause = [full_keys1, full_keys2].transpose.map do |key1, key2|
+            "#{table1}.#{key1}=#{table2}.#{key2}"
           end.join(" AND ")
           "(#{where_clause})"
         end
