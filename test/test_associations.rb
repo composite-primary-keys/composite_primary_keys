@@ -19,11 +19,6 @@ class TestAssociations < Test::Unit::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings
   
-  def test_quoted_table_columns
-    assert_equal "product_tariffs.product_id,product_tariffs.tariff_id,product_tariffs.tariff_start_date", 
-        ProductTariff.send(:quoted_table_columns, ProductTariff.primary_key)
-  end
-  
   def test_has_many_through_with_conditions_when_through_association_is_not_composite
     user = User.find(:first)
     assert_equal 1, user.articles.find(:all, :conditions => ["articles.name = ?", "Article One"]).size

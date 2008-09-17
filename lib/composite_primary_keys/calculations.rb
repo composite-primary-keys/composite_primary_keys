@@ -20,7 +20,7 @@ module CompositePrimaryKeys
           if merged_includes.any? && operation.to_s.downcase == 'count'
             options[:distinct] = true
             use_workaround  = !connection.supports_count_distinct?
-            column_name = options[:select] || primary_key.map{ |part| "#{table_name}.#{part}"}.join(',')
+            column_name = options[:select] || primary_key.map{ |part| "#{quoted_table_name}.#{connection.quote_column_name(part)}"}.join(',')
           end
 
           sql  = "SELECT #{operation}(#{'DISTINCT ' if options[:distinct]}#{column_name}) AS #{aggregate_alias}"
@@ -28,9 +28,9 @@ module CompositePrimaryKeys
           # A (slower) workaround if we're using a backend, like sqlite, that doesn't support COUNT DISTINCT.
           sql = "SELECT COUNT(*) AS #{aggregate_alias}" if use_workaround
 
-          sql << ", #{options[:group_field]} AS #{options[:group_alias]}" if options[:group]
+          sql << ", #{connection.quote_column_name(options[:group_field])} AS #{options[:group_alias]}" if options[:group]
           sql << " FROM (SELECT DISTINCT #{column_name}" if use_workaround
-          sql << " FROM #{table_name} "
+          sql << " FROM #{quoted_table_name} "
           if merged_includes.any?
             join_dependency = ::ActiveRecord::Associations::ClassMethods::JoinDependency.new(self, merged_includes, options[:joins])
             sql << join_dependency.join_associations.collect{|join| join.association_join }.join
@@ -44,7 +44,7 @@ module CompositePrimaryKeys
 
           if options[:group]
             group_key = connection.adapter_name == 'FrontBase' ?  :group_alias : :group_field
-            sql << " GROUP BY #{options[group_key]} "
+            sql << " GROUP BY #{connection.quote_column_name(options[group_key])} "
           end
 
           if options[:group] && options[:having]

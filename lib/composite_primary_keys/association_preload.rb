@@ -17,16 +17,16 @@ module CompositePrimaryKeys
           if composite?
             primary_key = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP)
             where = (primary_key * ids.size).in_groups_of(primary_key.size).map do |keys|
-              "(" + keys.map{|key| "t0.#{key} = ?"}.join(" AND ") + ")"
+              "(" + keys.map{|key| "t0.#{connection.quote_column_name(key)} = ?"}.join(" AND ") + ")"
             end.join(" OR ")
 
             conditions = [where, ids].flatten
-            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection.klass.quoted_table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
-            parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|key| "t0.#{key}"}
-            parent_record_id = connection.concat(parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
+            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection, reflection.klass.table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
+            parent_primary_keys = reflection.primary_key_name.to_s.split(CompositePrimaryKeys::ID_SEP).map{|k| "t0.#{connection.quote_column_name(k)}"}
+            parent_record_id = connection.concat(*parent_primary_keys.zip(["','"] * (parent_primary_keys.size - 1)).flatten.compact)
           else
-            conditions = ["t0.#{reflection.primary_key_name} IN (?)", ids]
-            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{reflection.klass.quoted_table_name}.#{reflection.klass.primary_key} = t0.#{reflection.association_foreign_key}"
+            conditions = ["t0.#{connection.quote_column_name(reflection.primary_key_name)}  IN (?)", ids]
+            joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{reflection.klass.quoted_table_name}.#{connection.quote_column_name(reflection.klass.primary_key)} = t0.#{connection.quote_column_name(reflection.association_foreign_key)})"
             parent_record_id = reflection.primary_key_name
           end
 
@@ -131,18 +131,19 @@ module CompositePrimaryKeys
             klass_name, id_map = *klass_and_id
             klass = klass_name.constantize
             table_name = klass.quoted_table_name
+            connection = reflection.active_record.connection
 
             if composite?
               primary_key = klass.primary_key.to_s.split(CompositePrimaryKeys::ID_SEP)
               ids = id_map.keys.uniq.map {|id| id_map[id][:id]}
 
               where = (primary_key * ids.size).in_groups_of(primary_key.size).map do |keys|
-                 "(" + keys.map{|key| "#{table_name}.#{key} = ?"}.join(" AND ") + ")"
+                 "(" + keys.map{|key| "#{table_name}.#{connection.quote_column_name(key)} = ?"}.join(" AND ") + ")"
               end.join(" OR ")
 
               conditions = [where, ids].flatten
             else
-              conditions = ["#{table_name}.#{primary_key} IN (?)", id_map.keys.uniq]
+              conditions = ["#{table_name}.#{connection.quote_column_name(primary_key)} IN (?)", id_map.keys.uniq]
             end
 
             conditions.first << append_conditions(options, preload_options)
@@ -192,14 +193,15 @@ module CompositePrimaryKeys
           if interface = reflection.options[:as]
             raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
           else
+            connection = reflection.active_record.connection
             foreign_key = reflection.primary_key_name
-            conditions = ["#{reflection.klass.quoted_table_name}.#{foreign_key} IN (?)", ids]
-
+            conditions = ["#{table_name}.#{connection.quote_column_name(foreign_key)} IN (?)", ids]
+            
             if composite?
               foreign_keys = foreign_key.to_s.split(CompositePrimaryKeys::ID_SEP)
-
+            
               where = (foreign_keys * ids.size).in_groups_of(foreign_keys.size).map do |keys|
-                "(" + keys.map{|key| "#{reflection.klass.quoted_table_name}.#{key} = ?"}.join(" AND ") + ")"
+                "(" + keys.map{|key| "#{table_name}.#{connection.quote_column_name(key)} = ?"}.join(" AND ") + ")"
               end.join(" OR ")
 
               conditions = [where, ids].flatten
@@ -215,13 +217,16 @@ module CompositePrimaryKeys
             :joins      => options[:joins],
             :group      => preload_options[:group] || options[:group],
             :order      => preload_options[:order] || options[:order])
-        end
-
-        def full_composite_join_clause(table1, full_keys1, table2, full_keys2)
+        end        
+        
+        def full_composite_join_clause(reflection, table1, full_keys1, table2, full_keys2)
+          connection = reflection.active_record.connection
           full_keys1 = full_keys1.split(CompositePrimaryKeys::ID_SEP) if full_keys1.is_a?(String)
           full_keys2 = full_keys2.split(CompositePrimaryKeys::ID_SEP) if full_keys2.is_a?(String)
-          where_clause = [full_keys1, full_keys2].transpose.map do |key1, key2|
-            "#{table1}.#{key1}=#{table2}.#{key2}"
+          where_clause = [full_keys1, full_keys2].transpose.map do |key_pair|
+            quoted1 = connection.quote_table_name(table1)
+            quoted2 = connection.quote_table_name(table2)
+            "#{quoted1}.#{connection.quote_column_name(key_pair.first)}=#{quoted2}.#{connection.quote_column_name(key_pair.last)}"
           end.join(" AND ")
           "(#{where_clause})"
         end

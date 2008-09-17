@@ -100,10 +100,11 @@ module CompositePrimaryKeys
             raise CompositeKeyError, "Composite keys do not generated ids from sequences, you must provide id values"
           end
           attributes_minus_pks = attributes_with_quotes(false)
-          cols = quoted_column_names(attributes_minus_pks) << self.class.primary_key
+          quoted_pk_columns = self.class.primary_key.map { |col| connection.quote_column_name(col) }
+          cols = quoted_column_names(attributes_minus_pks) << quoted_pk_columns
           vals = attributes_minus_pks.values << quoted_id
           connection.insert(
-            "INSERT INTO #{self.class.table_name} " +
+            "INSERT INTO #{self.class.quoted_table_name} " +
             "(#{cols.join(', ')}) " +
             "VALUES (#{vals.join(', ')})",
             "#{self.class.name} Create",
@@ -114,14 +115,16 @@ module CompositePrimaryKeys
           return true
         end
 
-
         # Updates the associated record with values matching those of the instance attributes.
         def update_without_callbacks
-          where_class = [self.class.primary_key, quoted_id].transpose.map{ |key, id| "(#{key}=#{id})" }.join(" AND ")
+          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair| 
+            "(#{connection.quote_column_name(pair[0])} = #{pair[1]})"
+          end
+          where_clause = where_clause_terms.join(" AND ")
           connection.update(
-            "UPDATE #{self.class.table_name} " +
+            "UPDATE #{self.class.quoted_table_name} " +
             "SET #{quoted_comma_pair_list(connection, attributes_with_quotes(false))} " +
-            "WHERE #{where_class}",
+            "WHERE #{where_clause}",
             "#{self.class.name} Update"
           )
           return true
@@ -130,11 +133,14 @@ module CompositePrimaryKeys
         # Deletes the record in the database and freezes this instance to reflect that no changes should
         # be made (since they can't be persisted).
         def destroy_without_callbacks
-          where_class = [self.class.primary_key, quoted_id].transpose.map{ |key, id| "(#{key}=#{id})" }.join(" AND ")
+          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair| 
+            "(#{connection.quote_column_name(pair[0])} = #{pair[1]})"
+          end
+          where_clause = where_clause_terms.join(" AND ")
           unless new_record?
             connection.delete(
-              "DELETE FROM #{self.class.table_name} " +
-              "WHERE #{where_class}",
+              "DELETE FROM #{self.class.quoted_table_name} " +
+              "WHERE #{where_clause}",
               "#{self.class.name} Destroy"
             )
           end
@@ -170,12 +176,12 @@ module CompositePrimaryKeys
         def delete(*ids)
           unless ids.is_a?(Array); raise "*ids must be an Array"; end
           ids = [ids.to_composite_ids] if not ids.first.is_a?(Array)
-          where_class = ids.map do |id_set|
+          where_clause = ids.map do |id_set|
             [primary_keys, id_set].transpose.map do |key, id|
-              "#{table_name}.#{key.to_s}=#{sanitize(id)}"
+              "#{quoted_table_name}.#{connection.quote_column_name(key.to_s)}=#{sanitize(id)}"
             end.join(" AND ")
           end.join(") OR (")
-          delete_all([ "(#{where_class})" ])
+          delete_all([ "(#{where_clause})" ])
         end
 
         # Destroys the record with the given +ids+ by instantiating the object and calling #destroy (all the callbacks are the triggered).
@@ -248,18 +254,17 @@ module CompositePrimaryKeys
           end
 
           # Let keys = [:a, :b]
-          # If ids = [[10, 50], [11, 51]], then :conditions =>
-          #   "(#{table_name}.a, #{table_name}.b) IN ((10, 50), (11, 51))"
+          # If ids = [[10, 50], [11, 51]], then :conditions => 
+          #   "(#{quoted_table_name}.a, #{quoted_table_name}.b) IN ((10, 50), (11, 51))"
 
           conditions = ids.map do |id_set|
             [primary_keys, id_set].transpose.map do |key, id|
-               col = columns_hash[key.to_s]
-               val = quote_value(id, col)
-            
-              "#{table_name}.#{key.to_s}=#{val}"
+			        col = columns_hash[key.to_s]
+			        val = quote_value(id, col)
+              "#{quoted_table_name}.#{connection.quote_column_name(key.to_s)}=#{val}"
             end.join(" AND ")
           end.join(") OR (")
-
+              
           options.update :conditions => "(#{conditions})"
 
           result = find_every(options)
@@ -274,6 +279,7 @@ module CompositePrimaryKeys
     end
   end
 end
+
 
 module ActiveRecord
   ID_SEP     = ','
