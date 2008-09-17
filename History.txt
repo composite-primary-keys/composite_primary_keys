@@ -1,7 +1,8 @@
 == 1.0.9 2008-09-08
 
 * fix postgres tests
-* fix for delete_records when has_many association has composite keys
+* fix for delete_records when has_many association has composite keys [darxriggs]
+* more consistent table/column name quoting [pbrant]
 
 == 1.0.8 2008-08-27
 
