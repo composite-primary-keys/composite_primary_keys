@@ -81,7 +81,7 @@ module ActiveRecord::Associations::ClassMethods
           collection.target.push(association) unless collection.target.include?(association)
         when :has_one, :belongs_to
           return if record.id.to_s != join.parent.record_id(row).to_s or
-                    join.aliased_primary_key.to_a.any? { |key| row[key].nil? }
+                    [*join.aliased_primary_key].any? { |key| row[key].nil? }
           association = join.instantiate(row)
           record.send("set_#{join.reflection.name}_target", association)
         else
