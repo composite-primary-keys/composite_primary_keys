@@ -46,6 +46,13 @@ class TestIds < Test::Unit::TestCase
     end
   end
   
+  def test_composite_where_clause
+    testing_with do
+      where = 'reference_codes.reference_type_id=1 AND reference_codes.reference_code=2) OR (reference_codes.reference_type_id=2 AND reference_codes.reference_code=2'
+      assert_equal(where, @klass.composite_where_clause([[1, 2], [2, 2]])) if @key_test == :dual
+    end
+  end
+  
   def test_set_ids_string
     testing_with do
       array = @primary_keys.collect {|key| 5}

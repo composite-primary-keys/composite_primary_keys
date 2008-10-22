@@ -161,6 +161,23 @@ module CompositePrimaryKeys
         def ids_to_s(many_ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
           many_ids.map {|ids| "#{left_bracket}#{ids}#{right_bracket}"}.join(list_sep)
         end
+        
+        # Creates WHERE condition from list of composited ids
+        #   User.update_all({:role => 'admin'}, :conditions => composite_where_clause([[1, 2], [2, 2]])) #=> UPDATE admins SET admin.role='admin' WHERE (admin.type=1 AND admin.type2=2) OR (admin.type=2 AND admin.type2=2)
+        #   User.find(:all, :conditions => composite_where_clause([[1, 2], [2, 2]])) #=> SELECT * FROM admins WHERE (admin.type=1 AND admin.type2=2) OR (admin.type=2 AND admin.type2=2)
+        def composite_where_clause(ids)
+          if ids.is_a?(String)
+            ids = [[ids]]
+          elsif not ids.first.is_a?(Array) # if single comp key passed, turn into an array of 1
+            ids = [ids.to_composite_ids]
+          end
+          
+          ids.map do |id_set|
+            [primary_keys, id_set].transpose.map do |key, id|
+              "#{table_name}.#{key.to_s}=#{sanitize(id)}"
+            end.join(" AND ")
+          end.join(") OR (")       
+        end
 
         # Returns true if the given +ids+ represents the primary keys of a record in the database, false otherwise.
         # Example:
