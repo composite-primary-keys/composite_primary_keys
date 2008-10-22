@@ -35,7 +35,8 @@ module CompositePrimaryKeys
             join_dependency = ::ActiveRecord::Associations::ClassMethods::JoinDependency.new(self, merged_includes, options[:joins])
             sql << join_dependency.join_associations.collect{|join| join.association_join }.join
           end
-          add_joins!(sql, options, scope)
+
+          add_joins!(sql, options[:joins], scope)
           add_conditions!(sql, options[:conditions], scope)
           add_limited_ids_condition!(sql, options, join_dependency) if \
             join_dependency &&
