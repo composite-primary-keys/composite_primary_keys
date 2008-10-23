@@ -1,3 +1,7 @@
+== 1.0.10 2008-10-22
+
+* add composite key where clause creator method [timurv]
+
 == 1.0.9 2008-09-08
 
 * fix postgres tests
