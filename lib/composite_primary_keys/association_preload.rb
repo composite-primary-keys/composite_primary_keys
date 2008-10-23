@@ -10,7 +10,7 @@ module CompositePrimaryKeys
       module ClassMethods
         def preload_has_and_belongs_to_many_association(records, reflection, preload_options={})
           table_name = reflection.klass.quoted_table_name
-          id_to_record_map, ids = construct_id_map(records)
+          id_to_record_map, ids = construct_id_map_for_composite(records)
           records.each {|record| record.send(reflection.name).loaded}
           options = reflection.options
 
@@ -43,7 +43,7 @@ module CompositePrimaryKeys
         end
 
         def preload_has_many_association(records, reflection, preload_options={})
-          id_to_record_map, ids = construct_id_map(records)
+          id_to_record_map, ids = construct_id_map_for_composite(records)
           records.each {|record| record.send(reflection.name).loaded}
           options = reflection.options
 
@@ -218,6 +218,23 @@ module CompositePrimaryKeys
             :group      => preload_options[:group] || options[:group],
             :order      => preload_options[:order] || options[:order])
         end        
+        
+        # Given a collection of ActiveRecord objects, constructs a Hash which maps
+        # the objects' IDs to the relevant objects. Returns a 2-tuple
+        # <tt>(id_to_record_map, ids)</tt> where +id_to_record_map+ is the Hash,
+        # and +ids+ is an Array of record IDs.
+        def construct_id_map_for_composite(records)
+          id_to_record_map = {}
+          ids = []
+          records.each do |record|
+            primary_key ||= record.class.primary_key
+            ids << record.id
+            mapped_records = (id_to_record_map[record.id.to_s] ||= [])
+            mapped_records << record
+          end
+          ids.uniq!
+          return id_to_record_map, ids
+        end
         
         def full_composite_join_clause(reflection, table1, full_keys1, table2, full_keys2)
           connection = reflection.active_record.connection
