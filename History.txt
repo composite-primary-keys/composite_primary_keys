@@ -1,3 +1,7 @@
+== 2.2.0 2008-10-29
+
+* Rails 2.2.0 compatibility
+
 == 1.1.0 2008-10-29
 
 * fixes to get cpk working for Rails 2.1.2

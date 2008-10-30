@@ -52,7 +52,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
 
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  p.extra_deps = [['activerecord', '>= 2.1.2']]  #An array of rubygem dependencies.
+  p.extra_deps = [['activerecord', '>= 2.2.0']]  #An array of rubygem dependencies.
   #p.spec_extras    - A hash of extra values to set in the gemspec.
 end
 
