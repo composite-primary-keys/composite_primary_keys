@@ -1,8 +1,8 @@
 h1. Composite Primary Keys
 
-h1. &#x2192; Ruby on Rails
+h1. -> Ruby on Rails
 
-h1. &#x2192; ActiveRecords
+h1. -> ActiveRecords
 
 h2. What
 
