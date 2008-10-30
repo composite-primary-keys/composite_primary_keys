@@ -1,3 +1,7 @@
+== 1.1.0 2008-10-29
+
+* fixes to get cpk working for Rails 2.1.2
+
 == 1.0.10 2008-10-22
 
 * add composite key where clause creator method [timurv]
