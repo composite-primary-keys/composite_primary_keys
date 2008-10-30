@@ -30,7 +30,7 @@ module CompositePrimaryKeys
             parent_record_id = reflection.primary_key_name
           end
 
-          conditions.first << append_conditions(options, preload_options)
+          conditions.first << append_conditions(reflection, preload_options)
 
           associated_records = reflection.klass.find(:all,
             :conditions => conditions,
@@ -146,7 +146,7 @@ module CompositePrimaryKeys
               conditions = ["#{table_name}.#{connection.quote_column_name(primary_key)} IN (?)", id_map.keys.uniq]
             end
 
-            conditions.first << append_conditions(options, preload_options)
+            conditions.first << append_conditions(reflection, preload_options)
 
             associated_records = klass.find(:all,
               :conditions => conditions,
@@ -208,7 +208,7 @@ module CompositePrimaryKeys
             end
           end
 
-          conditions.first << append_conditions(options, preload_options)
+          conditions.first << append_conditions(reflection, preload_options)
 
           reflection.klass.find(:all,
             :select     => (preload_options[:select] || options[:select] || "#{table_name}.*"),
