@@ -183,8 +183,12 @@ module CompositePrimaryKeys
         # Example:
         #   Person.exists?(5,7)
         def exists?(ids)
-          obj = find(ids) rescue false
-          !obj.nil? and obj.is_a?(self)
+          if ids.is_a?(Array) && ids.first.is_a?(String)
+            count(:conditions => ids).size > 0
+          else
+            obj = find(ids) rescue false
+            !obj.nil? and obj.is_a?(self)            
+          end
         end
 
         # Deletes the record with the given +ids+ without instantiating an object first, e.g. delete(1,2)

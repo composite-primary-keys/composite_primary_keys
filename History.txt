@@ -1,3 +1,7 @@
+== 2.2.1 2009-01-21
+
+* fix ActiveRecord#exists? to work when passing conditions instead of ids
+
 == 2.2.0 2008-10-29
 
 * Rails 2.2.0 compatibility
