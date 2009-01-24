@@ -184,7 +184,7 @@ module CompositePrimaryKeys
         #   Person.exists?(5,7)
         def exists?(ids)
           if ids.is_a?(Array) && ids.first.is_a?(String)
-            count(:conditions => ids).size > 0
+            count(:conditions => ids) > 0
           else
             obj = find(ids) rescue false
             !obj.nil? and obj.is_a?(self)            
