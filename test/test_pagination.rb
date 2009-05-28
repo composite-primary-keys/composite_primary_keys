@@ -3,7 +3,7 @@ require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 require 'plugins/pagination'
 
-class TestPagination < Test::Unit::TestCase
+class TestPagination < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes
   
   include ActionController::Pagination

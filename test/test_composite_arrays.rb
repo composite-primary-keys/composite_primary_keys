@@ -2,7 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class CompositeArraysTest < Test::Unit::TestCase
+class CompositeArraysTest < ActiveSupport::TestCase
 
   def test_new_primary_keys
     keys = CompositePrimaryKeys::CompositeKeys.new

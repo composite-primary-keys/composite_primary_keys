@@ -6,7 +6,7 @@ require 'fixtures/user'
 require 'fixtures/article'
 require 'fixtures/reading'
 
-class TestSantiago < Test::Unit::TestCase
+class TestSantiago < ActiveSupport::TestCase
   fixtures :suburbs, :streets, :users, :articles, :readings
   
   def test_normal_and_composite_associations

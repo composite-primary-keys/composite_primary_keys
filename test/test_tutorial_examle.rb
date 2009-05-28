@@ -4,7 +4,7 @@ require 'fixtures/group'
 require 'fixtures/membership_status'
 require 'fixtures/membership'
 
-class TestTutorialExample < Test::Unit::TestCase
+class TestTutorialExample < ActiveSupport::TestCase
   fixtures :users, :groups, :memberships, :membership_statuses
   
   def test_membership

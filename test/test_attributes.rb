@@ -5,7 +5,7 @@ require 'fixtures/product'
 require 'fixtures/tariff'
 require 'fixtures/product_tariff'
 
-class TestAttributes < Test::Unit::TestCase
+class TestAttributes < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs
   
   CLASSES = {

@@ -15,7 +15,7 @@ require 'fixtures/room_assignment'
 require 'fixtures/user'
 require 'fixtures/reading'
 
-class TestAssociations < Test::Unit::TestCase
+class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings
   

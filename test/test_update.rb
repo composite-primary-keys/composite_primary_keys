@@ -2,7 +2,7 @@ require 'abstract_unit'
 require 'fixtures/reference_type'
 require 'fixtures/reference_code'
 
-class TestUpdate < Test::Unit::TestCase
+class TestUpdate < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes
   
   CLASSES = {

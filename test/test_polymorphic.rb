@@ -4,7 +4,7 @@ require 'fixtures/user'
 require 'fixtures/employee'
 require 'fixtures/hack'
 
-class TestPolymorphic < Test::Unit::TestCase
+class TestPolymorphic < ActiveSupport::TestCase
   fixtures :users, :employees, :comments, :hacks
   
   def test_polymorphic_has_many

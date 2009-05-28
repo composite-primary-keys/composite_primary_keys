@@ -1,3 +1,7 @@
+== 2.3.2 2009-05-28
+
+* get tests working again with AR 2.3.2
+
 == 2.2.1 2009-01-21
 
 * fix ActiveRecord#exists? to work when passing conditions instead of ids

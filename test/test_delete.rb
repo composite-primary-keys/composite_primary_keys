@@ -4,7 +4,7 @@ require 'fixtures/reference_code'
 require 'fixtures/department'
 require 'fixtures/employee'
 
-class TestDelete < Test::Unit::TestCase
+class TestDelete < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :departments, :employees
   
   CLASSES = {
