@@ -33,7 +33,7 @@
     <h1>Composite Primary Keys</h1>
     <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">2.2.2</a>
+      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">2.3.21</a>
     </div>
     <h1>&#8594; Ruby on Rails</h1>
 <h1>&#8594; ActiveRecords</h1>
@@ -98,15 +98,12 @@ throughout your application. Just like a normal ActiveRecord.</p>
 	and I	didn&#8217;t see any information about what I should do to address it in the<br />
 	documentation (might have missed it).</p>
 <p>The problem was that the urls being generated for a &#8216;show&#8217; action (for<br />
-	example) had a syntax like:<br />
-	<br />
-	<pre>/controller/show/123000,Bu70</pre></p>
+	example) had a syntax like:</p>
+<p><pre>/controller/show/123000,Bu70</pre></p>
 <p>for a two-field composite PK. The default routing would not match that,<br />
-	so after working out how to do the routing I added:<br />
-	<br />
-	<pre class="syntax"><span class="ident">map</span><span class="punct">.</span><span class="ident">connect</span> <span class="punct">'</span><span class="string">:controller/:action/:id</span><span class="punct">',</span> <span class="symbol">:id</span> <span class="punct">=&gt;</span> <span class="punct">/</span><span class="regex"><span class="escape">\w</span>+(,<span class="escape">\w</span>+)*</span><span class="punct">/</span></pre><br />
-	<br />
-	to my <code>route.rb</code> file.</p>
+	so after working out how to do the routing I added:</p>
+<p><pre class="syntax"><span class="ident">map</span><span class="punct">.</span><span class="ident">connect</span> <span class="punct">'</span><span class="string">:controller/:action/:id</span><span class="punct">',</span> <span class="symbol">:id</span> <span class="punct">=&gt;</span> <span class="punct">/</span><span class="regex"><span class="escape">\w</span>+(,<span class="escape">\w</span>+)*</span><span class="punct">/</span></pre></p>
+<p>to my <code>route.rb</code> file.</p>
 </blockquote>
 <p><a name="dbs"></a></p>
 <h2>Which databases?</h2>
@@ -175,15 +172,14 @@ other stories and things.</p>
 <p><a href="http://groups.google.com/group/compositekeys">http://groups.google.com/group/compositekeys</a></p>
 <h2>How to submit patches</h2>
 <p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a> and for section <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/#8b-google-groups">8b: Submit patch to Google Groups</a>, use the Google Group above.</p>
-<p>The source for this project is available via git. You can <a href="http://github.com/drnic/composite_primary_keys/tree/master">browse and/or fork the source</a>, or to clone the project locally:<br />
-  <br />
-<pre>git clone git://github.com/drnic/composite_primary_keys.git</pre></p>
+<p>The source for this project is available via git. You can <a href="http://github.com/drnic/composite_primary_keys/tree/master">browse and/or fork the source</a>, or to clone the project locally:</p>
+<pre>git clone git://github.com/drnic/composite_primary_keys.git</pre>
 <h2>Licence</h2>
 <p>This code is free to use under the terms of the <span class="caps">MIT</span> licence.</p>
 <h2>Contact</h2>
 <p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 21st January 2009<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 16th July 2009<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
