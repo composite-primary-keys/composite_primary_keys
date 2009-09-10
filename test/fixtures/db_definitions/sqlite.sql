@@ -158,3 +158,9 @@ create table room_assignments (
 	room_id integer not null	
 );
 
+create table seats (
+  flight_number integer not_null,
+  seat integer not_null,
+  customer integer,
+  primary key (flight_number, seat)
+);

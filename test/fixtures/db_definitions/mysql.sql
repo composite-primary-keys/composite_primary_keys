@@ -172,3 +172,10 @@ create table room_assignments (
     room_id int(11) not null
 ) type=InnoDB;
 
+create table seats (
+  flight_number int(11) not null,
+  seat          int(11) not null,
+  customer      int,
+  primary key (flight_number, seat)
+) type=InnoDB;
+

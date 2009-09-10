@@ -29,6 +29,8 @@ module CompositePrimaryKeys
             include CompositePrimaryKeys::ActiveRecord::AssociationPreload
             include CompositePrimaryKeys::ActiveRecord::Calculations
             include CompositePrimaryKeys::ActiveRecord::AttributeMethods
+
+            extend CompositePrimaryKeys::ActiveRecord::Validations::Uniqueness::ClassMethods
           EOV
         end
 

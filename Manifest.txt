@@ -24,6 +24,7 @@ lib/composite_primary_keys/connection_adapters/sqlite3_adapter.rb
 lib/composite_primary_keys/fixtures.rb
 lib/composite_primary_keys/migration.rb
 lib/composite_primary_keys/reflection.rb
+lib/composite_primary_keys/validations/uniqueness.rb
 lib/composite_primary_keys/version.rb
 loader.rb
 local/database_connections.rb.sample

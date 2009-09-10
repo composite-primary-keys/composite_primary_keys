@@ -44,6 +44,7 @@ require 'composite_primary_keys/base'
 require 'composite_primary_keys/calculations'
 require 'composite_primary_keys/migration'
 require 'composite_primary_keys/attribute_methods'
+require 'composite_primary_keys/validations/uniqueness'
 
 ActiveRecord::Base.class_eval do
   include CompositePrimaryKeys::ActiveRecord::Base
