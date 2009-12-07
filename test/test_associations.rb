@@ -17,7 +17,8 @@ require 'fixtures/reading'
 
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
-           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings
+           :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
+           :memberships
   
   def test_has_many_through_with_conditions_when_through_association_is_not_composite
     user = User.find(:first)
@@ -156,5 +157,29 @@ class TestAssociations < ActiveSupport::TestCase
     
     @restaurant = Restaurant.find([1,1], :include => :suburbs)
     assert_equal 2, @restaurant.suburbs.size  
+  end
+  
+  def test_has_many_with_primary_key
+    @membership = Membership.find([1, 1])
+    
+    assert_equal 2, @membership.readings.size
+  end
+
+  def test_has_one_with_primary_key
+    @membership = Membership.find([1, 1])
+    
+    assert_equal 2, @membership.reading.id
+  end
+
+  def test_joins_has_many_with_primary_key
+    @membership = Membership.find(:first, :joins => :readings, :conditions => { :readings => { :id => 1 } })
+    
+    assert_equal [1, 1], @membership.id
+  end
+
+  def test_joins_has_one_with_primary_key
+    @membership = Membership.find(:first, :joins => :reading, :conditions => { :readings => { :id => 2 } })
+    
+    assert_equal [1, 1], @membership.id
   end
 end

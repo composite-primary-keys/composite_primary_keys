@@ -180,11 +180,12 @@ module ActiveRecord::Associations::ClassMethods
                 raise AssociationNotSupported, "Polymorphic joins not supported for composite keys"
               else
                 foreign_key = options[:foreign_key] || reflection.active_record.name.foreign_key
+                primary_key = options[:primary_key] || parent.primary_key
                 " LEFT OUTER JOIN %s ON %s " % [
                   table_name_and_alias,
                   composite_join_clause(
                     full_keys(aliased_table_name, foreign_key),
-                    full_keys(parent.aliased_table_name, parent.primary_key)),
+                    full_keys(parent.aliased_table_name, primary_key)),
                 ]
             end
           when :belongs_to
@@ -338,7 +339,7 @@ module ActiveRecord::Associations
           @finder_sql << " AND (#{conditions})" if conditions
 
         else
-          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, owner_quoted_id)
           @finder_sql << " AND (#{conditions})" if conditions
       end
 
@@ -386,7 +387,7 @@ module ActiveRecord::Associations
             "#{@reflection.klass.quoted_table_name}.#{@reflection.options[:as]}_id = #{@owner.quoted_id} AND " + 
             "#{@reflection.klass.quoted_table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
         else
-          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, @owner.quoted_id)
+          @finder_sql = full_columns_equals(@reflection.klass.table_name, @reflection.primary_key_name, owner_quoted_id)
       end
 
       @finder_sql << " AND (#{conditions})" if conditions
