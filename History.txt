@@ -1,3 +1,7 @@
+== 2.3.5 2009-12-16
+
+* Fixed several bugs in has_one and has_many associations when :primary_key specified [kpumuk]
+
 == 2.3.2 2009-07-16
 
 * explicitly load associations.rb due to some getting an unitialized constant error
@@ -46,7 +50,7 @@
 
 == 1.0.4 2008-07-15
 
-* support for oracle_enhanced adapter [thx Raimonds Simanovskis] 
+* support for oracle_enhanced adapter [thx Raimonds Simanovskis]
 
 == 1.0.3 2008-07-13
 
@@ -116,7 +120,7 @@
 == 0.8.4 / 2007-5-3
 
 * 1 bugfix
-  * Corrected ids_list => ids in the exception message. That'll teach me for not adding unit tests before fixing bugs. 
+  * Corrected ids_list => ids in the exception message. That'll teach me for not adding unit tests before fixing bugs.
 
 == 0.8.3 / 2007-5-3
 
@@ -154,11 +158,11 @@
 == 0.1.4
 * it was important that #{primary_key} for composites --> 'key1,key2' and not 'key1key2' so created PrimaryKeys class
 
-== 0.0.1 
+== 0.0.1
 * Initial version
 * set_primary_keys(*keys) is the activation class method to transform an ActiveRecord into a composite primary key AR
-* find(*ids) supports the passing of 
-  * id sets: Foo.find(2,1), 
-  * lists of id sets: Foo.find([2,1], [7,3], [8,12]), 
+* find(*ids) supports the passing of
+  * id sets: Foo.find(2,1),
+  * lists of id sets: Foo.find([2,1], [7,3], [8,12]),
   * and even stringified versions of the above:
   * Foo.find '2,1' or Foo.find '2,1;7,3'

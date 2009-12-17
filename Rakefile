@@ -28,20 +28,20 @@ VERS = ENV['VERSION'] || (CompositePrimaryKeys::VERSION::STRING + (REV ? ".#{REV
 CLEAN.include ['**/.*.sw?', '*.gem', '.config','debug.log','*.db','logfile','log/**/*','**/.DS_Store', '.project']
 RDOC_OPTS = ['--quiet', '--title', "newgem documentation",
     "--opname", "index.html",
-    "--line-numbers", 
+    "--line-numbers",
     "--main", "README",
     "--inline-source"]
 
 class Hoe
-  def extra_deps 
-    @extra_deps.reject { |x| Array(x).first == 'hoe' } 
-  end 
+  def extra_deps
+    @extra_deps.reject { |x| Array(x).first == 'hoe' }
+  end
 end
 
 # Generate all the Rake tasks
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
 hoe = Hoe.new(GEM_NAME, VERS) do |p|
-  p.author = AUTHOR 
+  p.author = AUTHOR
   p.description = DESCRIPTION
   p.email = EMAIL
   p.summary = DESCRIPTION
@@ -52,7 +52,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
 
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  p.extra_deps = [['activerecord', '>= 2.3.2']]  #An array of rubygem dependencies.
+  p.extra_deps = [['activerecord', '>= 2.3.5']]  #An array of rubygem dependencies.
   #p.spec_extras    - A hash of extra values to set in the gemspec.
 end
 
