@@ -33,7 +33,7 @@ unless defined?(ActiveRecord)
   end
 end
 
-load 'active_record/associations.rb'
+require 'active_record/associations.rb'
 
 require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/composite_arrays'
