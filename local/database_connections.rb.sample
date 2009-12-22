@@ -4,7 +4,9 @@ ENV['cpk_adapters'] = {
   "mysql" => {
     :adapter  => "mysql",
     :username => "root",
-    :password => "root",
-    # ...
+  },
+
+  "sqlite3" => {
+    :adapter => "sqlite3"
   }
 }.to_yaml
