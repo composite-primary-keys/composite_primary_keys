@@ -1,3 +1,7 @@
+== 2.3.5.1 2010-02-13
+
+* Resolved "warning: already initialized constant HasManyThroughCantAssociateThroughHasManyReflection" [Titi Ala'ilima]
+
 == 2.3.5 2009-12-16
 
 * Fixed several bugs in has_one and has_many associations when :primary_key specified [kpumuk]
