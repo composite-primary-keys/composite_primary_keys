@@ -1,3 +1,30 @@
+== 3.0.0.0 2010-05-02
+
+* Port to Rails 3.0 and Ruby 1.9.2
+
+* Backwards compatability issues
+  + You can no longer define a composite primary key with a single field.  If you
+    try, your model will just default to a standard active record model.  Removing
+    this corner case simplified the code.
+  + Removed CompositePrimaryKeys::CompositeKeys.  This was done so that the #to_s
+    method on composite ids, such as [1,2], returns "[1, 2]".  This in turns
+    reduces the amount of core Rails code that needs to be overridden.
+  + Setting attribute values by string is no longer supported. For example, this
+    no longer works:
+      my_record[[:main_id, :secondary_id]] = '1,2'
+    Instead, do  this:
+      my_record[[:main_id, :secondary_id]] = [1,2]
+    Once again, this was done to reduce the amount of overridden Rails code
+  + At the moment, complex finds with nested arrays do not work.  For example
+    find([[1,2], [3,4]))
+  + Count methods no longer work.  For example, Tariff.count(:include => :product_tariffs)
+    in the TestAssociations#test_count test returns an error.  This is because Rails 3.0
+    uses Arel to perform such calculations, and its not obvious (at least to me) how to
+    hook into this new mechanism to support tables with composite keys.
+  + The TestPolymorphic#test_polymorphic_has_many_through is currently failing, but this
+    looks like an ActiveRecord 3.0 bug to me.
+
+
 == 2.3.5.1 2010-02-13
 
 * Resolved "warning: already initialized constant HasManyThroughCantAssociateThroughHasManyReflection" [Titi Ala'ilima]
