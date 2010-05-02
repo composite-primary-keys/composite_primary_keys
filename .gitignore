@@ -1,4 +1,5 @@
 log
+nbproject
 tmp
 debug.log
 local/*.rb
