@@ -22,7 +22,7 @@ module ActiveRecord
           pk, sequence_name = *pk_and_sequence_for(table) unless pk
           if pk
             quoted_pk = if pk.is_a?(Array)
-                          pk.map { |col| quote_column_name(col) }.join(ID_SEP)
+                          pk.map { |col| quote_column_name(col) }.join(CompositePrimaryKeys::ID_SEP)
                         else
                           quote_column_name(pk)
                         end

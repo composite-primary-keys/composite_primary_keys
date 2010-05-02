@@ -30,7 +30,7 @@ class TestAttributes < ActiveSupport::TestCase
       end
     end
   end
-    
+
   def test_brackets_primary_key
     testing_with do
       assert_equal @first.id, @first[@primary_keys], "[] failing for #{@klass}"
@@ -51,26 +51,22 @@ class TestAttributes < ActiveSupport::TestCase
     @flat = Tariff.find(1, Date.today.to_s(:db))
     @second_free = ProductTariff.find(2,2,Date.today.to_s(:db))
     @second_free_fk = [:tariff_id, :tariff_start_date]
+
     @second_free[key = @second_free_fk] = @flat.id
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-      assert_equal @flat.id, @second_free[key]
-    @second_free[key = @second_free_fk.to_composite_ids] = @flat.id
-      assert_equal @flat.id, @second_free[key]
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-    @second_free[key = @second_free_fk.to_composite_ids] = @flat.id.to_s
-      assert_equal @flat.id, @second_free[key]
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-    @second_free[key = @second_free_fk.to_composite_ids] = @flat.id.to_s
-      assert_equal @flat.id, @second_free[key]
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-    @second_free[key = @second_free_fk.to_composite_ids.to_s] = @flat.id
-      assert_equal @flat.id, @second_free[key]
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-    @second_free[key = @second_free_fk.to_composite_ids.to_s] = @flat.id.to_s
-      assert_equal @flat.id, @second_free[key]
-      compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
+    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
+    assert_equal @flat.id, @second_free[key]
+
+    @second_free[key = @second_free_fk.to_composite_keys] = @flat.id
+    assert_equal @flat.id, @second_free[key]
+    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
+
+    @second_free[key = @second_free_fk.to_composite_keys.to_s] = @flat.id
+    assert_equal @flat.id, @second_free[key]
+    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
   end
-private
+  
+  private
+
   def compare_indexes(obj_name1, indexes1, obj_name2, indexes2)
     obj1, obj2 = eval "[#{obj_name1}, #{obj_name2}]"
     indexes1.length.times do |key_index|

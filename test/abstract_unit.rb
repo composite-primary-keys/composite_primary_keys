@@ -1,15 +1,21 @@
 $:.unshift(ENV['AR_LOAD_PATH']) if ENV['AR_LOAD_PATH']
 
+dir = File.dirname(__FILE__)
+cpk_top = File.expand_path(File.join(dir, '..'))
+cpk_root = File.join(cpk_top, 'lib')
+$:.unshift(cpk_root)
+
 require 'test/unit'
 require 'hash_tricks'
 require 'rubygems'
 require 'active_record'
 require 'active_record/fixtures'
+require File.join(cpk_top, 'local', 'database_connections')
 begin
   require 'connection'
 rescue MissingSourceFile => e
   adapter = 'postgresql' #'sqlite'
-  require "#{File.dirname(__FILE__)}/connections/native_#{adapter}/connection"
+  require File.join(cpk_top, "test", "connections", "native_#{adapter}", "connection")
 end
 require 'composite_primary_keys'
 
@@ -55,7 +61,8 @@ class ActiveSupport::TestCase #:nodoc:
 protected
   
   def testing_with(&block)
-    classes.keys.each do |@key_test|
+    classes.keys.each do |key_test|
+      @key_test = key_test
       @klass_info = classes[@key_test]
       @klass, @primary_keys = @klass_info[:class], @klass_info[:primary_keys]
       order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
@@ -70,7 +77,7 @@ protected
   end
   
   def first_id_str
-    composite? ? first_id.join(CompositePrimaryKeys::ID_SEP) : first_id.to_s
+    first_id.to_s
   end
   
   def composite?

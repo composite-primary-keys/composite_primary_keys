@@ -1,8 +1,8 @@
 namespace :postgresql do
   desc 'Build the PostgreSQL test databases'
-  task :build_databases => :load_connection do 
-    sh %{ createdb "#{GEM_NAME}_unittest" }
-    sh %{ psql "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
+  task :build_databases => :load_connection do
+    sh %{ createdb #{ENV['cpk_adapter_options_str']} "#{GEM_NAME}_unittest" }
+    sh %{ psql #{ENV['cpk_adapter_options_str']} "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
   end
 
   desc 'Drop the PostgreSQL test databases'
@@ -17,10 +17,9 @@ namespace :postgresql do
     require File.join(PROJECT_ROOT, %w[lib adapter_helper postgresql])
     spec = AdapterHelper::Postgresql.load_connection_from_env
     options = {}
-    options['u'] = spec[:username]  if spec[:username]
+    options['U'] = spec[:username]  if spec[:username]
     options['p'] = spec[:password]  if spec[:password]
-    options_str = options.map { |key, value| "-#{key}#{value}" }.join(" ")
+    options_str = options.map { |key, value| "-#{key} #{value}" }.join(" ")
     ENV['cpk_adapter_options_str'] = options_str
   end
 end
-

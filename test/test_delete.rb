@@ -24,26 +24,13 @@ class TestDelete < ActiveSupport::TestCase
   
   def test_destroy_one
     testing_with do
-      #assert @first.destroy
-      assert true
-    end
-  end
-  
-  def test_destroy_one_via_class
-    testing_with do
-      assert @klass.destroy(*@first.id)
+      assert @first.destroy
     end
   end
   
   def test_destroy_one_alone_via_class
     testing_with do
       assert @klass.destroy(@first.id)
-    end
-  end
-  
-  def test_delete_one
-    testing_with do
-      assert @klass.delete(*@first.id) if composite?
     end
   end
   
@@ -67,12 +54,12 @@ class TestDelete < ActiveSupport::TestCase
   end
 
   def test_clear_association
-      department = Department.find(1,1)
-      assert_equal 2, department.employees.size, "Before clear employee count should be 2."
-      department.employees.clear
-      assert_equal 0, department.employees.size, "After clear employee count should be 0."
-      department.reload
-      assert_equal 0, department.employees.size, "After clear and a reload from DB employee count should be 0."
+    department = Department.find(1,1)
+    assert_equal 2, department.employees.size, "Before clear employee count should be 2."
+    department.employees.clear
+    assert_equal 0, department.employees.size, "After clear employee count should be 0."
+    department.reload
+    assert_equal 0, department.employees.size, "After clear and a reload from DB employee count should be 0."
   end
 
   def test_delete_association

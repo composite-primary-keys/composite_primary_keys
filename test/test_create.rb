@@ -29,14 +29,14 @@ class TestCreate < ActiveSupport::TestCase
       assert_not_nil @klass_info[:create]
     end
   end
-  
+
   def test_create
     testing_with do
       assert new_obj = @klass.create(@klass_info[:create])
       assert !new_obj.new_record?
     end
   end
-  
+
   def test_create_no_id
     testing_with do
       begin
@@ -50,7 +50,7 @@ class TestCreate < ActiveSupport::TestCase
       assert_equal composite?, !@successful, "Create should have failed for composites; #{@obj.inspect}"
     end
   end
-  
+
   def test_create_on_association
     suburb = Suburb.find(:first)
     suburb.streets.create(:name => "my street")

@@ -34,21 +34,27 @@ unless defined?(ActiveRecord)
 end
 
 require 'active_record/associations.rb'
+require 'active_record/associations/association_collection'
+require 'active_record/associations/association_proxy'
+require 'active_record/associations/belongs_to_association'
+require 'active_record/associations/belongs_to_polymorphic_association'
+require 'active_record/associations/has_and_belongs_to_many_association'
+require 'active_record/associations/has_many_association'
+require 'active_record/associations/has_one_association'
+require 'active_record/associations/has_one_through_association'
 
 require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/composite_arrays'
-require 'composite_primary_keys/associations'
+require 'composite_primary_keys/joins'
+require 'composite_primary_keys/association_proxy'
+require 'composite_primary_keys/through_association_scope'
 require 'composite_primary_keys/association_preload'
 require 'composite_primary_keys/reflection'
+require 'composite_primary_keys/relation'
+require 'composite_primary_keys/read'
+require 'composite_primary_keys/finder_methods'
 require 'composite_primary_keys/base'
-require 'composite_primary_keys/calculations'
-require 'composite_primary_keys/migration'
-require 'composite_primary_keys/attribute_methods'
 require 'composite_primary_keys/validations/uniqueness'
-
-ActiveRecord::Base.class_eval do
-  include CompositePrimaryKeys::ActiveRecord::Base
-end
 
 Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
   begin

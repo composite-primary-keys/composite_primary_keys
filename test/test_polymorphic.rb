@@ -1,5 +1,7 @@
 require 'abstract_unit'
 require 'fixtures/comment'
+require 'fixtures/article'
+require 'fixtures/reading'
 require 'fixtures/user'
 require 'fixtures/employee'
 require 'fixtures/hack'
@@ -22,10 +24,9 @@ class TestPolymorphic < ActiveSupport::TestCase
     article_names = user.articles.collect { |a| a.name }.sort
     assert_equal ['Article One', 'Article Two'], article_names
   end
-  
+
   def test_polymorphic_has_many_through
     user = users(:santiago)
     assert_equal ['andrew'], user.hacks.collect { |a| a.name }.sort
   end
-
 end

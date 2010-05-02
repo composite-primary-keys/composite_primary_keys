@@ -62,4 +62,4 @@ hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc'
 
 PROJECT_ROOT = File.expand_path(".")
 
-require 'loader'
+require_relative 'loader'
