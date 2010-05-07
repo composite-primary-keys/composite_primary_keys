@@ -8,7 +8,7 @@ module ActiveRecord
         ids = [quoted_ids].flatten
 
         [keys,ids].transpose.map do |key, id|
-        "(#{quoted_table_name}.#{connection.quote_column_name(key)} = #{id})"
+        "(#{quoted_table_name}.#{@owner.connection.quote_column_name(key)} = #{id})"
         end.join(' AND ')
       end
   

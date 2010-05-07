@@ -2,7 +2,7 @@
 begin
   local_file_supported = Dir[File.join(PROJECT_ROOT, 'local/*.sample')].map { |path| File.basename(path).sub(".sample","") }
   local_file_supported.each do |file|
-    require_relative "local/#{file}"
+    require "local/#{file}"
   end
 rescue LoadError
   puts <<-EOS
