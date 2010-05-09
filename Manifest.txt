@@ -12,7 +12,7 @@ lib/adapter_helper/postgresql.rb
 lib/adapter_helper/sqlite3.rb
 lib/composite_primary_keys.rb
 lib/composite_primary_keys/association_preload.rb
-lib/composite_primary_keys/association_proxy.rb
+lib/composite_primary_keys/associations.rb
 lib/composite_primary_keys/attribute_methods.rb
 lib/composite_primary_keys/base.rb
 lib/composite_primary_keys/composite_arrays.rb
@@ -22,12 +22,10 @@ lib/composite_primary_keys/connection_adapters/postgresql_adapter.rb
 lib/composite_primary_keys/connection_adapters/sqlite3_adapter.rb
 lib/composite_primary_keys/finder_methods.rb
 lib/composite_primary_keys/fixtures.rb
-lib/composite_primary_keys/joins.rb
 lib/composite_primary_keys/read.rb
 lib/composite_primary_keys/reflection.rb
 lib/composite_primary_keys/relation.rb
 lib/composite_primary_keys/through_association_scope.rb
-lib/composite_primary_keys/validations/uniqueness.rb
 lib/composite_primary_keys/version.rb
 loader.rb
 local/database_connections.rb.sample
