@@ -140,5 +140,20 @@ module ActiveRecord
         @finder_sql << " AND (#{conditions})" if conditions
       end
     end
+
+    class JoinDependency
+      class JoinBase
+        def column_names_with_alias
+          unless defined?(@column_names_with_alias)
+            @column_names_with_alias = []
+            keys = active_record.composite? ? primary_key.map(&:to_s) : [primary_key]
+            (keys + (column_names - keys)).each_with_index do |column_name, i|
+              @column_names_with_alias << [column_name, "#{ aliased_prefix }_r#{ i }"]
+            end
+          end
+          @column_names_with_alias
+        end
+      end
+    end
   end
 end
