@@ -10,9 +10,8 @@ ActiveRecord::Base.logger = Logger.new("#{log_path}/debug.log")
 ActiveRecord::Base.logger.level = Logger::DEBUG
 
 # Adapter config setup in locals/database_connections.rb
-connection_options = AdapterHelper::OracleEnhanced.load_connection_from_env
-puts connection_options.inspect
-ActiveRecord::Base.establish_connection(connection_options)
+spec = CompositePrimaryKeys::ConnectionSpec[:oracle]
+ActiveRecord::Base.establish_connection(spec)
 
 # Change default options for Oracle Enhanced adapter
 ActiveRecord::ConnectionAdapters::OracleEnhancedAdapter.emulate_dates_by_column_name = true

@@ -16,8 +16,11 @@ namespace :oracle do
   desc 'Rebuild the Oracle test databases'
   task :rebuild_databases => [:drop_databases, :build_databases]
   
+  def connection_spec
+    CompositePrimaryKeys::ConnectionSpec[:oracle]
+  end
+
   def connection_string
-    spec = CompositePrimaryKeys::ConnectionSpec[:oracle]
-    "#{spec['username'']}/#{spec['password']}@#{spec['host']}"
+    "#{connection_spec['username']}/#{connection_spec['password']}@#{connection_spec['host']}"
   end
 end

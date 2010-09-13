@@ -20,8 +20,11 @@ namespace :sqlite3 do
   desc 'Rebuild the sqlite test databases'
   task :rebuild_databases => [:drop_databases, :build_databases]
 
+  def connection_spec
+    CompositePrimaryKeys::ConnectionSpec[:sqlite3]
+  end
+
   def connection_string
-    spec = CompositePrimaryKeys::ConnectionSpec[:sqlite3]
-    spec['dbfile']
+    connection_spec['dbfile']
   end
 end

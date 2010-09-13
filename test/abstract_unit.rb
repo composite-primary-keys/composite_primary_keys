@@ -1,22 +1,15 @@
-$:.unshift(ENV['AR_LOAD_PATH']) if ENV['AR_LOAD_PATH']
-
 dir = File.dirname(__FILE__)
-cpk_top = File.expand_path(File.join(dir, '..'))
-cpk_root = File.join(cpk_top, 'lib')
-$:.unshift(cpk_root)
+PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
+
+adapter ||= 'postgresql'
 
 require 'test/unit'
 require 'hash_tricks'
 require 'rubygems'
 require 'active_record'
 require 'active_record/fixtures'
-require File.join(cpk_top, 'local', 'database_connections')
-begin
-  require 'connection'
-rescue MissingSourceFile => e
-  adapter = 'postgresql' #'sqlite'
-  require File.join(cpk_top, "test", "connections", "native_#{adapter}", "connection")
-end
+require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
+require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
 require 'composite_primary_keys'
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)

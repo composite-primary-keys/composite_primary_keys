@@ -9,6 +9,5 @@ puts "Logging to #{log_path}/debug.log"
 ActiveRecord::Base.logger = Logger.new("#{log_path}/debug.log")
 
 # Adapter config setup in locals/database_connections.rb
-connection_options = AdapterHelper::Oracle.load_connection_from_env
-puts connection_options.inspect
-ActiveRecord::Base.establish_connection(connection_options)
+spec = CompositePrimaryKeys::ConnectionSpec[:oracle]
+ActiveRecord::Base.establish_connection(spec)
