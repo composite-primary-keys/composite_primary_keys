@@ -1,0 +1,11 @@
+mysql:
+  adapter: mysql
+  username: root
+
+sqlite3:
+  adapter: sqlite3
+
+postgresql:
+  adapter: postgresql
+  username: postgres
+  host: localhost

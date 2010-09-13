@@ -1,8 +1,9 @@
 namespace :postgresql do
   desc 'Build the PostgreSQL test databases'
-  task :build_databases => :load_connection do
-    sh %{ createdb #{ENV['cpk_adapter_options_str']} "#{GEM_NAME}_unittest" }
-    sh %{ psql #{ENV['cpk_adapter_options_str']} "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
+  task :build_databases do
+    puts %{ createdb #{connection_string} "#{GEM_NAME}_unittest" }
+    sh %{ createdb #{connection_string} "#{GEM_NAME}_unittest" }
+    sh %{ psql #{connection_string} "#{GEM_NAME}_unittest" -f #{File.join(SCHEMA_PATH, 'postgresql.sql')} }
   end
 
   desc 'Drop the PostgreSQL test databases'
@@ -13,13 +14,11 @@ namespace :postgresql do
   desc 'Rebuild the PostgreSQL test databases'
   task :rebuild_databases => [:drop_databases, :build_databases]
 
-  task :load_connection do
-    require File.join(PROJECT_ROOT, %w[lib adapter_helper postgresql])
-    spec = AdapterHelper::Postgresql.load_connection_from_env
+  def connection_string
+    spec = CompositePrimaryKeys::ConnectionSpec[:postgresql]
     options = {}
-    options['U'] = spec[:username]  if spec[:username]
-    options['p'] = spec[:password]  if spec[:password]
-    options_str = options.map { |key, value| "-#{key} #{value}" }.join(" ")
-    ENV['cpk_adapter_options_str'] = options_str
+    options['U'] = spec['username']  if spec['username']
+    options['p'] = spec['password']  if spec['password']
+    options.map { |key, value| "-#{key} #{value}" }.join(" ")
   end
 end

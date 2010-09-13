@@ -1,4 +1,4 @@
-require 'active_record'
+
 
 # UNTESTED - firebird sqlserver sqlserver_odbc db2 sybase openbase
 for adapter in %w( mysql sqlite oracle oracle_enhanced postgresql ibm_db ) 
