@@ -119,7 +119,7 @@ module CompositePrimaryKeys
 
         # Updates the associated record with values matching those of the instance attributes.
         def update_without_callbacks
-          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair| 
+          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair|
             "(#{connection.quote_column_name(pair[0])} = #{pair[1]})"
           end
           where_clause = where_clause_terms.join(" AND ")
@@ -135,7 +135,7 @@ module CompositePrimaryKeys
         # Deletes the record in the database and freezes this instance to reflect that no changes should
         # be made (since they can't be persisted).
         def destroy_without_callbacks
-          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair| 
+          where_clause_terms = [self.class.primary_key, quoted_id].transpose.map do |pair|
             "(#{connection.quote_column_name(pair[0])} = #{pair[1]})"
           end
           where_clause = where_clause_terms.join(" AND ")
@@ -163,7 +163,7 @@ module CompositePrimaryKeys
         def ids_to_s(many_ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
           many_ids.map {|ids| "#{left_bracket}#{ids}#{right_bracket}"}.join(list_sep)
         end
-        
+
         # Creates WHERE condition from list of composited ids
         #   User.update_all({:role => 'admin'}, :conditions => composite_where_clause([[1, 2], [2, 2]])) #=> UPDATE admins SET admin.role='admin' WHERE (admin.type=1 AND admin.type2=2) OR (admin.type=2 AND admin.type2=2)
         #   User.find(:all, :conditions => composite_where_clause([[1, 2], [2, 2]])) #=> SELECT * FROM admins WHERE (admin.type=1 AND admin.type2=2) OR (admin.type=2 AND admin.type2=2)
@@ -173,12 +173,12 @@ module CompositePrimaryKeys
           elsif not ids.first.is_a?(Array) # if single comp key passed, turn into an array of 1
             ids = [ids.to_composite_ids]
           end
-          
+
           ids.map do |id_set|
             [primary_keys, id_set].transpose.map do |key, id|
               "#{table_name}.#{key.to_s}=#{sanitize(id)}"
             end.join(" AND ")
-          end.join(") OR (")       
+          end.join(") OR (")
         end
 
         # Returns true if the given +ids+ represents the primary keys of a record in the database, false otherwise.
@@ -189,7 +189,7 @@ module CompositePrimaryKeys
             count(:conditions => ids) > 0
           else
             obj = find(ids) rescue false
-            !obj.nil? and obj.is_a?(self)            
+            !obj.nil? and obj.is_a?(self)
           end
         end
 
@@ -260,7 +260,7 @@ module CompositePrimaryKeys
           conditions = " AND (#{sanitize_sql(options[:conditions])})" if options[:conditions]
           # if ids is just a flat list, then its size must = primary_key.length (one id per primary key, in order)
           # if ids is list of lists, then each inner list must follow rule above
-          if ids.first.is_a? String
+          if ids.first.is_a? String and ids.length == 1
             # find '2,1' -> ids = ['2,1']
             # find '2,1;7,3' -> ids = ['2,1;7,3']
             ids = ids.first.split(ID_SET_SEP).map {|id_set| id_set.split(ID_SEP).to_composite_ids}
@@ -277,7 +277,7 @@ module CompositePrimaryKeys
           end
 
           # Let keys = [:a, :b]
-          # If ids = [[10, 50], [11, 51]], then :conditions => 
+          # If ids = [[10, 50], [11, 51]], then :conditions =>
           #   "(#{quoted_table_name}.a, #{quoted_table_name}.b) IN ((10, 50), (11, 51))"
 
           conditions = ids.map do |id_set|
@@ -287,7 +287,7 @@ module CompositePrimaryKeys
               "#{quoted_table_name}.#{connection.quote_column_name(key.to_s)}=#{val}"
             end.join(" AND ")
           end.join(") OR (")
-              
+
           options.update :conditions => "(#{conditions})"
 
           result = find_every(options)
