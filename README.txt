@@ -36,6 +36,6 @@ http://groups.google.com/compositekeys
 
 == Author
 
-Written by Dr Nic Williams, drnicwilliams@gmail
+Written by Dr Nic Williams, drnicwilliams@gmail.
 Contributions by many!
 

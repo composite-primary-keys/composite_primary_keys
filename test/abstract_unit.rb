@@ -11,8 +11,7 @@ require 'active_record'
 require 'active_record/fixtures'
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
-#require 'composite_primary_keys'
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
+require 'composite_primary_keys'
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')

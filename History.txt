@@ -1,4 +1,4 @@
-== 3.0.0.0 2010-05-02
+== 3.0.1.b 2010-12-06
 
 * Port to Rails 3.0 and Ruby 1.9.2
 
@@ -23,7 +23,6 @@
     hook into this new mechanism to support tables with composite keys.
   + The TestPolymorphic#test_polymorphic_has_many_through is currently failing, but this
     looks like an ActiveRecord 3.0 bug to me.
-
 
 == 2.3.5.1 2010-02-13
 

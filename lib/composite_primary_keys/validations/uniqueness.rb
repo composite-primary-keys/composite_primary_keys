@@ -17,16 +17,15 @@ module ActiveRecord
 
         unless record.new_record?
           # CPK
-          # TODO : This should be in Arel
-          #relation = relation.where("#{record.class.quoted_table_name}.#{record.class.primary_key} <> ?", record.send(:id))
           if record.composite?
             predicate = nil
             record.ids_hash.each do |key, value|
-              neq = relation.table[key].not(value)
+              neq = relation.table[key].not_eq(value)
               predicate = predicate ? predicate.and(neq) : neq
             end
             relation = relation.where(predicate)
           else
+            # TODO : This should be in Arel
             relation = relation.where("#{record.class.quoted_table_name}.#{record.class.primary_key} <> ?", record.send(:id))
           end
         end

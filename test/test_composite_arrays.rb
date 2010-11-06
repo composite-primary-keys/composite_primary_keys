@@ -27,6 +27,6 @@ class CompositeArraysTest < ActiveSupport::TestCase
   def test_to_composite_ids
     keys = [1,2,3].to_composite_ids
     assert_equal Array, keys.class
-    assert_equal '[1, 2, 3]', keys.to_s
+    assert_equal '123', keys.to_s
   end
 end

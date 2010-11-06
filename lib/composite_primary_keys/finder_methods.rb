@@ -14,9 +14,11 @@ module CompositePrimaryKeys
           when Hash
             where(id).exists?
           else
-            relation = select(primary_key).limit(1)
             # CPK
+            #relation = select(primary_key).limit(1)
             #relation = relation.where(primary_key.eq(id)) if id
+
+            relation = select(primary_keys).limit(1)
             relation = relation.where(ids_predicate(id)) if id
             relation.first ? true : false
           end

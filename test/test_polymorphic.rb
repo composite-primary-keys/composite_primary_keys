@@ -13,12 +13,12 @@ class TestPolymorphic < ActiveSupport::TestCase
     comments = Hack.find('andrew').comments
     assert_equal 'andrew', comments[0].person_id
   end
-  
+
   def test_polymorphic_has_one
     first_comment = Hack.find('andrew').first_comment
     assert_equal 'andrew', first_comment.person_id
   end
-  
+
   def test_has_many_through
     user = users(:santiago)
     article_names = user.articles.collect { |a| a.name }.sort
