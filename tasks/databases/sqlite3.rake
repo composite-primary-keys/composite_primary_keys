@@ -1,12 +1,14 @@
+require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
+
 namespace :sqlite3 do
   desc 'Build the sqlite test databases'
-  task :build_databases do 
-    file = File.join(SCHEMA_PATH, 'sqlite.sql')
+  task :build_databases => :load_connection do
+    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlite.sql')
     dbfile = File.join(PROJECT_ROOT, connection_string)
     cmd = "mkdir -p #{File.dirname(dbfile)}"
     puts cmd
     sh %{ #{cmd} }
-    cmd = "sqlite3 #{dbfile} < #{file}"
+    cmd = "sqlite3 #{dbfile} < #{schema}"
     puts cmd
     sh %{ #{cmd} }
   end
@@ -20,11 +22,7 @@ namespace :sqlite3 do
   desc 'Rebuild the sqlite test databases'
   task :rebuild_databases => [:drop_databases, :build_databases]
 
-  def connection_spec
-    CompositePrimaryKeys::ConnectionSpec[:sqlite3]
-  end
-
-  def connection_string
-    connection_spec['dbfile']
+  task :load_connection do
+    require File.join(PROJECT_ROOT, "test", "connections", "native_sqlite3", "connection")
   end
 end
