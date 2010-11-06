@@ -3,6 +3,7 @@ PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
 
 adapter ||= 'postgresql'
 
+require 'pp'
 require 'test/unit'
 require 'hash_tricks'
 require 'rubygems'
@@ -10,9 +11,15 @@ require 'active_record'
 require 'active_record/fixtures'
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
-require 'composite_primary_keys'
+#require 'composite_primary_keys'
+require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
+
+# Tell ActiveRecord where to find models
+ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)
+
+ActiveRecord::Base.configurations[:test] = CompositePrimaryKeys::ConnectionSpec[adapter]
 
 class ActiveSupport::TestCase #:nodoc:
   include ActiveRecord::TestFixtures
@@ -51,7 +58,8 @@ class ActiveSupport::TestCase #:nodoc:
   end
   
   cattr_accessor :classes
-protected
+
+  protected
   
   def testing_with(&block)
     classes.keys.each do |key_test|
@@ -67,10 +75,6 @@ protected
   def first_id
     ids = (1..@primary_keys.length).map {|num| 1}
     composite? ? ids.to_composite_ids : ids.first
-  end
-  
-  def first_id_str
-    first_id.to_s
   end
   
   def composite?
@@ -92,5 +96,5 @@ ActiveRecord::Base.connection.class.class_eval do
   end
 end
 
-#ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger = Logger.new(STDOUT)
 #ActiveRecord::Base.colorize_logging = false

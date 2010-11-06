@@ -22,11 +22,7 @@ module CompositePrimaryKeys
             conditions = [where, ids].flatten
             joins = "INNER JOIN #{connection.quote_table_name options[:join_table]} t0 ON #{full_composite_join_clause(reflection, reflection.klass.table_name, reflection.klass.primary_key, 't0', reflection.association_foreign_key)}"
             parent_primary_keys = reflection.cpk_primary_key.map{|k| "t0.#{connection.quote_column_name(k)}"}
-
-            concat_arr = ["'['"] +
-                         parent_primary_keys.zip(["', '"] * (parent_primary_keys.size - 1)).flatten.compact +
-                         ["']'"]
-
+            concat_arr = parent_primary_keys.zip(["'#{CompositePrimaryKeys::ID_SEP}'"] * (parent_primary_keys.size - 1)).flatten.compact
             parent_record_id = connection.concat(*concat_arr)
           else
             conditions = "t0.#{reflection.primary_key_name} #{in_or_equals_for_ids(ids)}"
@@ -77,7 +73,7 @@ module CompositePrimaryKeys
             id_map = {}
 
             records.each do |record|
-              keys = reflection.cpk_primary_key.map{|k| record.send(k)}
+              keys = record[reflection.cpk_primary_key]
               ids << keys
 
               mapped_records = (id_map[keys.to_s] ||= [])

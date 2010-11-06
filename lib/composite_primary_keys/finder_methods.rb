@@ -38,12 +38,13 @@ module CompositePrimaryKeys
           end
 
           ids = [ids.to_composite_ids] if not ids.first.kind_of?(Array)
+
           ids.each do |id_set|
             unless id_set.is_a?(Array)
               raise "Ids must be in an Array, instead received: #{id_set.inspect}"
             end
             unless id_set.length == @klass.primary_keys.length
-              raise "#{id_set.inspect}: Incorrect number of primary keys for #{class_name}: #{primary_keys.inspect}"
+              raise "#{id_set.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
             end
           end
 

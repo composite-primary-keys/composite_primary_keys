@@ -32,7 +32,7 @@ $LOAD_PATH.unshift 'lib'
 
 begin
   require 'local/paths'
-  $LOAD_PATH.unshift "#{ENV['EDGE_RAILS_DIR']}/activerecord/lib"  if ENV['EDGE_RAILS_DIR']
+  $LOAD_PATH.unshift "#{ENV['EDGE_RAILS_DIR']}/active_record/lib"  if ENV['EDGE_RAILS_DIR']
   $LOAD_PATH.unshift "#{ENV['EDGE_RAILS_DIR']}/activesupport/lib" if ENV['EDGE_RAILS_DIR']
 rescue
 end

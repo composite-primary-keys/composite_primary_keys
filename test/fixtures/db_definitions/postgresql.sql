@@ -13,7 +13,8 @@ create table reference_codes (
     reference_code    int         not null,
     code_label        varchar(50) default null,
     abbreviation      varchar(50) default null,
-    description       varchar(50) default null
+    description       varchar(50) default null,
+    primary key (reference_type_id, reference_code)
 );
 
 create sequence public.products_seq start 1000;

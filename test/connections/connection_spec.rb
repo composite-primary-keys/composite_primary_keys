@@ -11,6 +11,7 @@ module CompositePrimaryKeys
     def self.config
       @config ||= begin
         path = File.join(PROJECT_ROOT, 'test', 'connections', 'databases.yml')
+        puts path
         YAML.load_file(path)
       end
     end

@@ -1,6 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/reference_type'
-require 'fixtures/reference_code'
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
@@ -50,12 +48,6 @@ class TestFind < ActiveSupport::TestCase
       assert_equal @klass, found.class
       assert_equal found, @klass.find(found.id)
       assert_equal found, @klass.find(found.to_param)
-    end
-  end
-  
-  def test_to_param
-    testing_with do
-      assert_equal first_id_str, @first.to_param.to_s
     end
   end
   
