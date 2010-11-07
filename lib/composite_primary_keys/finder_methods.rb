@@ -2,6 +2,35 @@ module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
       module InstanceMethods
+        def construct_limited_ids_condition(relation)
+          orders = relation.order_values.join(", ")
+
+          # CPK
+          # values = @klass.connection.distinct("#{@klass.connection.quote_table_name @klass.table_name}.#{@klass.primary_key}", orders)
+
+          keys = @klass.primary_keys.map do |key|
+            "#{@klass.connection.quote_table_name @klass.table_name}.#{key}"
+          end
+          values = @klass.connection.distinct(keys.join(', '), orders)
+
+          ids_array = relation.select(values).collect {|row| row[@klass.primary_key]}
+
+          # CPK
+          # ids_array.empty? ? raise(ThrowResult) : primary_key.in(ids_array)
+
+          # OR together each and expression (key=value and key=value) that matches an id set
+          # since we only need to match 0 or more records
+          or_expressions = ids_array.map do |id_set|
+            # AND together "key=value" exprssios to match each id set
+            and_expressions = [self.primary_keys, id_set].transpose.map do |key, id|
+              table[key].eq(id)
+            end
+            Arel::Predicates::All.new(*and_expressions)
+          end
+
+          Arel::Predicates::Any.new(*or_expressions).to_sql
+        end
+        
         def exists?(id = nil)
           case id
           when Array

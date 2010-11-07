@@ -170,4 +170,12 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal([1,1], memberships[0].id)
   end
 
+  def test_limitable_reflections
+    memberships = Membership.find(:all, :include => :statuses,
+                                        :conditions => ["membership_statuses.status = ?",
+                                                        'Active'],
+                                        :limit => 1)
+    assert_equal(1, memberships.length)
+    assert_equal([1,1], memberships[0].id)
+  end
 end
