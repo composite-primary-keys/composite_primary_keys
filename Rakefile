@@ -21,7 +21,9 @@ spec = Gem::Specification.new do |s|
   s.authors     = ["Dr Nic Williams", "Charlie Savage"]
   s.email       = ["drnicwilliams@gmail.com"]
   s.homepage    = "http://github.com/cfis/composite_primary_keys"
-  s.summary     = "Composite key support for ActiveRecords"
+  s.summary     = "Composite key support for ActiveRecord"
+  s.rubyforge_project = 'compositekeys'
+  s.description = "Composite key support for ActiveRecord 3"
   s.files        = FileList['Rakefile',
                             '*.txt',
                             '*.rb',
@@ -38,7 +40,7 @@ spec = Gem::Specification.new do |s|
 
   # Dependencies
   s.required_ruby_version = '>= 1.8.7'
-  s.add_dependency('active_record', '>= 3.0.1')
+  s.add_dependency('activerecord', '>= 3.0.1')
   s.add_development_dependency "rspec"
 end
 
@@ -51,14 +53,3 @@ end
 Dir.glob('tasks/**/*.rake').each do |rake_file|
   load File.join(File.dirname(__FILE__), rake_file)
 end
-
-## Set up for testing
-#require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-#for adapter in %w( mysql sqlite oracle oracle_enhanced postgresql ibm_db )
-#  Rake::TestTask.new("test_#{adapter}") do |t|
-#    t.libs << "test" << "test/connections/native_#{adapter}"
-#    t.pattern = "test/test_*.rb"
-#    t.verbose = true
-#  end
-#end
-#require 'pp'
