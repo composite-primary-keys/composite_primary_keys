@@ -9,20 +9,20 @@ class TestFind < ActiveSupport::TestCase
       :class => ReferenceType,
       :primary_keys => [:reference_type_id],
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
-    :dual_strs   => { 
+    :dual_strs   => {
       :class => ReferenceCode,
       :primary_keys => ['reference_type_id', 'reference_code'],
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_find_first
     testing_with do
       obj = @klass.find(:first)
@@ -30,7 +30,7 @@ class TestFind < ActiveSupport::TestCase
       assert_equal @klass, obj.class
     end
   end
-  
+
   def test_find
     testing_with do
       found = @klass.find(*first_id) # e.g. find(1,1) or find 1,1
@@ -40,7 +40,7 @@ class TestFind < ActiveSupport::TestCase
       assert_equal found, @klass.find(found.to_param)
     end
   end
-  
+
   def test_find_composite_ids
     testing_with do
       found = @klass.find(first_id) # e.g. find([1,1].to_composite_ids)
@@ -50,16 +50,27 @@ class TestFind < ActiveSupport::TestCase
       assert_equal found, @klass.find(found.to_param)
     end
   end
-  
+
   def things_to_look_at
     testing_with do
       assert_equal found, @klass.find(found.id.to_s) # fails for 2+ keys
     end
   end
-  
+
   def test_not_found
     assert_raise(::ActiveRecord::RecordNotFound) do
       ReferenceCode.send :find, '999,999'
     end
+  end
+
+  def test_find_last_suburb
+    suburb = Suburb.find(:last)
+    assert_equal([2,1], suburb.id)
+  end
+
+  def test_find_last_suburb_with_order
+    # Rails actually changes city_id DESC to city_id ASC
+    suburb = Suburb.find(:last, :order => 'suburbs.city_id DESC')
+    assert_equal([1,1], suburb.id)
   end
 end
