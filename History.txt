@@ -1,3 +1,7 @@
+== 3.0.1 2010-11-19
+*  Fix double quoting issue with table names - thanks to Kevin Motschiedler for a patch.
+
+
 == 3.0.1.b3 2010-11-07
 
 * Fix bug in joining to :has_one association
