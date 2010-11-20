@@ -10,7 +10,7 @@ module ActiveRecord
           else
             # CPK
             #@finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{owner_quoted_id}"
-            @finder_sql = full_columns_equals(@reflection.quoted_table_name, @reflection.cpk_primary_key, owner_quoted_id)
+            @finder_sql = full_columns_equals(@reflection.table_name, @reflection.cpk_primary_key, owner_quoted_id)
         end
         @finder_sql << " AND (#{conditions})" if conditions
       end
