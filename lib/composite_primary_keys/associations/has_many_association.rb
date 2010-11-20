@@ -22,7 +22,6 @@ module ActiveRecord
         construct_counter_sql
       end
 
-      # Deletes the records according to the <tt>:dependent</tt> option.
       def delete_records(records)
         case @reflection.options[:dependent]
           when :destroy
@@ -32,9 +31,10 @@ module ActiveRecord
           else
             relation = Arel::Table.new(@reflection.table_name)
             # CPK
-            # relation.where(relation[@reflection.primary_key_name].eq(@owner.id).
-            #    and(Arel::Predicates::In.new(relation[@reflection.klass.primary_key], records.map(&:id)))
-            # ).update(relation[@reflection.primary_key_name] => nil)
+            #relation.where(relation[@reflection.primary_key_name].eq(@owner.id).
+            #    and(relation[@reflection.klass.primary_key].in(records.map { |r| r.id }))
+            #).update(relation[@reflection.primary_key_name] => nil)
+
             id_predicate = nil
             owner_key_values = @reflection.cpk_primary_key.zip([@owner.id].flatten)
             owner_key_values.each do |key, value|
@@ -57,8 +57,9 @@ module ActiveRecord
 
             relation = relation.where(id_predicate.and(record_predicates))
 
+            nullify_relation = Arel::Table.new(@reflection.table_name)
             nullify = @reflection.cpk_primary_key.inject(Hash.new) do |hash, key|
-              hash[relation[key]] = nil
+              hash[nullify_relation[key]] = nil
               hash
             end
 

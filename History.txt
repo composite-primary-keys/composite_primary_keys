@@ -1,4 +1,6 @@
 == 3.0.1 2010-11-19
+* Support ActiveRecord 3.0.3 and Arel 2+
+* Require ActiveRecord 3.0.3 as minimum dependency
 * Fix double quoting issue with table names - thanks to Kevin Motschiedler for a patch.
 * Fix SQLiteAdapter class inheritance issue - thanks to Brandon Hauff for a patch.
 

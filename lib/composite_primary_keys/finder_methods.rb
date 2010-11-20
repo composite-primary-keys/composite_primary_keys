@@ -7,10 +7,10 @@ module CompositePrimaryKeys
 
           # CPK
           # values = @klass.connection.distinct("#{@klass.connection.quote_table_name @klass.table_name}.#{@klass.primary_key}", orders)
-
           keys = @klass.primary_keys.map do |key|
             "#{@klass.connection.quote_table_name @klass.table_name}.#{key}"
           end
+
           values = @klass.connection.distinct(keys.join(', '), orders)
 
           ids_array = relation.select(values).collect {|row| row[@klass.primary_key]}
@@ -25,10 +25,18 @@ module CompositePrimaryKeys
             and_expressions = [self.primary_keys, id_set].transpose.map do |key, id|
               table[key].eq(id)
             end
-            Arel::Predicates::All.new(*and_expressions)
+
+            # Merge all the ands together
+            first = and_expressions.shift
+            Arel::Nodes::Grouping.new(and_expressions.inject(first) do |memo, expr|
+                Arel::Nodes::And.new(memo, expr)
+            end)
           end
 
-          Arel::Predicates::Any.new(*or_expressions).to_sql
+          first = or_expressions.shift
+          Arel::Nodes::Grouping.new(or_expressions.inject(first) do |memo, expr|
+              Arel::Nodes::Or.new(memo, expr)
+          end)
         end
         
         def exists?(id = nil)
