@@ -40,23 +40,35 @@ module CompositePrimaryKeys
         end
         
         def exists?(id = nil)
+          # ID can be:
+          #   Array - ['department_id = ? and location_id = ?', 1, 1]
+          #   Array -> [1,2]
+          #   CompositeKeys -> [1,2]
+
+          id = id.id if ::ActiveRecord::Base === id
+
           case id
+          # CPK
+          when CompositePrimaryKeys::CompositeKeys
+            relation = select(primary_keys).limit(1)
+            relation = relation.where(ids_predicate(id)) if id
+            relation.first ? true : false
           when Array
             # CPK
             if id.first.is_a?(String) and id.first.match(/\?/)
               where(id).exists?
             else
-              where(ids_predicate(id)).exists?
+              exists?(id.to_composite_keys)
             end
           when Hash
             where(id).exists?
           else
-            # CPK
-            #relation = select(primary_key).limit(1)
-            #relation = relation.where(primary_key.eq(id)) if id
+             # CPK
+             #relation = select(primary_key).limit(1)
+             #relation = relation.where(primary_key.eq(id)) if id
+             relation = select(primary_keys).limit(1)
+             relation = relation.where(ids_predicate(id)) if id
 
-            relation = select(primary_keys).limit(1)
-            relation = relation.where(ids_predicate(id)) if id
             relation.first ? true : false
           end
         end

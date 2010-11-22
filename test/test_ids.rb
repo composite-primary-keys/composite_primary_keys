@@ -27,6 +27,7 @@ class TestIds < ActiveSupport::TestCase
   def test_id
     testing_with do
       assert_equal @first.id, @first.ids if composite?
+      assert_kind_of(CompositePrimaryKeys::CompositeKeys, @first.id) if composite?
     end
   end
   

@@ -4,9 +4,16 @@ module CompositePrimaryKeys
       module InstanceMethods
         def ids_predicate(id)
           predicate = nil
-          self.primary_keys.zip(id).each do |key, value|
-            eq = table[key].eq(value)
-            predicate = predicate ? predicate.and(eq) : eq
+
+          if id.kind_of?(CompositePrimaryKeys::CompositeKeys)
+            id = [id]
+          end
+
+          id.each do |composite_id|
+            self.primary_keys.zip(composite_id).each do |key, value|
+              eq = table[key].eq(value)
+              predicate = predicate ? predicate.and(eq) : eq
+            end
           end
           predicate
         end
