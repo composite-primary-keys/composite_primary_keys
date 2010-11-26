@@ -4,6 +4,7 @@ mysql:
 
 sqlite3:
   adapter: sqlite3
+  dbfile: db/composite_primary_keys_unittest.sqlite3
 
 postgresql:
   adapter: postgresql
