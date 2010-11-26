@@ -4,3 +4,4 @@ tmp
 debug.log
 local/*.rb
 pkg
+db
