@@ -1,4 +1,4 @@
-require 'active_record/connection_adapters/sqlite_adapter'
+require 'active_record/connection_adapters/sqlite3_adapter'
 
 module ActiveRecord
   module ConnectionAdapters #:nodoc:
