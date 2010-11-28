@@ -13,17 +13,17 @@ class TestCreate < ActiveSupport::TestCase
       :primary_keys => :reference_type_id,
       :create => {:reference_type_id => 10, :type_label => 'NEW_TYPE', :abbreviation => 'New Type'}
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
       :create => {:reference_type_id => 1, :reference_code => 20, :code_label => 'NEW_CODE', :abbreviation => 'New Code'}
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_setup
     testing_with do
       assert_not_nil @klass_info[:create]
@@ -58,11 +58,37 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(suburb.city_id, street.city_id)
     assert_equal(suburb.suburb_id, street.suburb_id)
   end
-  
+
   def test_create_on_association_when_belongs_to_is_single_key
     rt = ReferenceType.find(:first)
     rt.reference_codes.create(:reference_code => 4321, :code_label => 'foo', :abbreviation => 'bar')
     rc = ReferenceCode.find_by_reference_code(4321)
     assert_equal(rc.reference_type_id, rt.reference_type_id)
+  end
+
+  def test_create_habtm
+    restaurant = Restaurant.new(:franchise_id => 22,
+                                :store_id => 23,
+                                :name => "My Store")
+
+    restaurant.suburbs << Suburb.new(:city_id => 24,
+                                     :suburb_id => 25,
+                                     :name => "My Suburb")
+
+    restaurant.save!
+
+    restaurant.reload
+
+    # Test restaurant
+    assert_equal(22, restaurant.franchise_id)
+    assert_equal(23, restaurant.store_id)
+    assert_equal("My Store", restaurant.name)
+    assert_equal(1, restaurant.suburbs.length)
+
+    # Test suburbs
+    suburb = restaurant.suburbs[0]
+    assert_equal(24, suburb.city_id)
+    assert_equal(25, suburb.suburb_id)
+    assert_equal("My Suburb", suburb.name)
   end
 end
