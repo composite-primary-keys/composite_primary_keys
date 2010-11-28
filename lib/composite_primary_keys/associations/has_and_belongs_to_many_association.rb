@@ -64,7 +64,7 @@ module ActiveRecord
             value = case
               when @reflection.cpk_primary_key.include?(name)
                 @owner[name]
-              when @reflection.association_foreign_key.include?(name)
+              when Array(@reflection.association_foreign_key).include?(name)
                 record[name]
               when *timestamps
                 timezone
