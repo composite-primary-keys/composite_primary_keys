@@ -1,8 +1,12 @@
-== 3.0.6 2010-11-29
+== 3.0.7 2010-11-29
+* Fix has and belongs to many associations implementation.
+
+
+== 3.0.6 2010-11-29  (yanked)
 * Add full support for has and belongs to many associations.
 
 
-== 3.0.5 2010-11-28
+== 3.0.5 2010-11-28 (yanked)
 * Apply patch from Marian Rudzynski for fixing up attribute_methods/primary_key
 * Apply patch from Toby Cabot to fix up various sqlite3 issues
 * Add partial support for has and belongs to many associations.  Currently a cpk model
