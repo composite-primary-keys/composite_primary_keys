@@ -1,3 +1,7 @@
+== 3.0.6 2010-11-29
+* Add full support for has and belongs to many associations.
+
+
 == 3.0.5 2010-11-28
 * Apply patch from Marian Rudzynski for fixing up attribute_methods/primary_key
 * Apply patch from Toby Cabot to fix up various sqlite3 issues

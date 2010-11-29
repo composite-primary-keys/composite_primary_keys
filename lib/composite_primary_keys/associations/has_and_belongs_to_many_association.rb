@@ -60,13 +60,13 @@ module ActiveRecord
 
           # CPK
           attributes = Hash[columns.map do |column|
-            name = column.name.to_sym
+            name = column.name.to_s
             value = case
-              when @reflection.cpk_primary_key.include?(name)
+              when @reflection.cpk_primary_key.map{|key| key.to_s}.include?(name)
                 @owner[name]
-              when Array(@reflection.association_foreign_key).include?(name)
+              when Array(@reflection.association_foreign_key).map{|key| key.to_s}.include?(name)
                 record[name]
-              when *timestamps
+              when timestamps.include?(name)
                 timezone
               else
                 @owner.send(:quote_value, record[name], column) if record.has_attribute?(name)
