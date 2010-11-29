@@ -5,3 +5,5 @@ debug.log
 local/*.rb
 pkg
 db
+
+/doc
