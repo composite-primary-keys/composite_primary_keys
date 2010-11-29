@@ -1,3 +1,11 @@
+== 3.0.5 2010-11-28
+* Apply patch from Marian Rudzynski for fixing up attribute_methods/primary_key
+* Apply patch from Toby Cabot to fix up various sqlite3 issues
+* Add partial support for has and belongs to many associations.  Currently a cpk model
+  can have a habtm, but a normal model cannot have a habtm to a cpk model (its actually
+  not too hard to add, but one step at a time...)
+
+
 == 3.0.4 2010-11-21
 * Support deleting records when dependent is set to :delete_all
 * Switch the method #id to return a CompositeKeys instance (thus going back to how
