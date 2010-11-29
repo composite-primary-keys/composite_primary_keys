@@ -8,7 +8,7 @@ require 'active_support'
 require File.dirname(__FILE__) + '/../lib/composite_primary_keys/version.rb'
 
 version  = CompositePrimaryKeys::VERSION::STRING
-download = 'http://rubyforge.org/projects/compositekeys'
+download = 'http://rubygems.org/gems/composite_primary_keys'
 
 class Fixnum
   def ordinal

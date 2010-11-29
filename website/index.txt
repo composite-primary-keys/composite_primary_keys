@@ -11,13 +11,20 @@ to the database layer of Rails - "ActiveRecords":http://wiki.rubyonrails.com/rai
 
 Any Ruby script using ActiveRecords can use Composite Primary Keys with this library.
 
+h2. Versions
+
+Version 3.x and above are designed to work with ActiveRecord 3.0.3 and above.
+ActiveRecord 3.0.0 and 3.0.2 are not supported due to incompatible changes in Arel.
+
+Version 2.5.x is designed to work with ActiveRecord 2.x.  Older version are available on "rubygems.org":http://rubygems.org/gems/composite_primary_keys
+
 h2. Installing
 
 <pre syntax="ruby">sudo gem install composite_primary_keys</pre>
 
-Rails: Add the following to the bottom of your <code>environment.rb</code> file
+Rails: Add the following to your <code>Gemfile</code>
 
-<pre syntax="ruby">require 'composite_primary_keys'</pre>
+<pre syntax="ruby">gem 'composite_primary_keys', '=3.0.5'</pre>
 
 Ruby scripts: Add the following to the top of your script
 
@@ -77,14 +84,6 @@ throughout your application. Just like a normal ActiveRecord.
 
 
 h2. Other tricks
-
-h3. Pass a list of composite ids to the <code>#find</code> method
-
-<pre syntax="ruby">Membership.find [1,1], [2,1]
-=> [
-  <Membership:0x394ade8 @attributes={"user_id"=>"1", "group_id"=>"1"}>, 
-  <Membership:0x394ada0 @attributes={"user_id"=>"2", "group_id"=>"1"}>
-]</pre>
 
 Perform <code>#count</code> operations
 
@@ -156,4 +155,4 @@ This code is free to use under the terms of the MIT licence.
 
 h2. Contact
 
-Comments are welcome. Send an email to "Dr Nic Williams":mailto:drnicwilliams@gmail.com.
+Comments are welcome. Please Send them to "Dr Nic Williams" or "Charlie Savage" via the "github":http://github.com/drnic/composite_primary_keys/tree/master project.

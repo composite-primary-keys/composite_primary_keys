@@ -1,3 +1,3 @@
 // <%= title %>
-var version = <%= version.to_json %>;
+var version = <%= version %>;
 <%= body %>

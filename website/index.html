@@ -31,9 +31,9 @@
 <div id="main">
 
     <h1>Composite Primary Keys</h1>
-    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/compositekeys"; return false'>
+    <div id="version" class="clickable" onclick='document.location = "http://rubygems.org/gems/composite_primary_keys"; return false'>
       Get Version
-      <a href="http://rubyforge.org/projects/compositekeys" class="numbers">2.3.5.1</a>
+      <a href="http://rubygems.org/gems/composite_primary_keys" class="numbers">3.0.4</a>
     </div>
     <h1>&#8594; Ruby on Rails</h1>
 <h1>&#8594; ActiveRecords</h1>
@@ -41,10 +41,14 @@
 <p>Ruby on Rails does not support composite primary keys. This free software is an extension <br />
 to the database layer of Rails &#8211; <a href="http://wiki.rubyonrails.com/rails/pages/ActiveRecord">ActiveRecords</a> &#8211; to support composite primary keys as transparently as possible.</p>
 <p>Any Ruby script using ActiveRecords can use Composite Primary Keys with this library.</p>
+<h2>Versions</h2>
+<p>Version 3.x and above are designed to work with ActiveRecord 3.0.3 and above.<br />
+ActiveRecord 3.0.0 and 3.0.2 are not supported due to incompatible changes in Arel.</p>
+<p>Version 2.5.x is designed to work with ActiveRecord 2.&#215;.  Older version are available on <a href="http://rubygems.org/gems/composite_primary_keys">rubygems.org</a></p>
 <h2>Installing</h2>
 <p><pre class="syntax"><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
-<p>Rails: Add the following to the bottom of your <code>environment.rb</code> file</p>
-<p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
+<p>Rails: Add the following to your <code>Gemfile</code></p>
+<p><pre class="syntax"><span class="ident">gem</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">',</span> <span class="punct">'</span><span class="string">=3.0.5</span><span class="punct">'</span></pre></p>
 <p>Ruby scripts: Add the following to the top of your script</p>
 <p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
@@ -83,12 +87,6 @@ to convert composite keys into strings and back again&#8230;</p>
 <p>That is, an ActiveRecord supporting composite keys behaves transparently<br />
 throughout your application. Just like a normal ActiveRecord.</p>
 <h2>Other tricks</h2>
-<h3>Pass a list of composite ids to the <code>#find</code> method</h3>
-<p><pre class="syntax"><span class="constant">Membership</span><span class="punct">.</span><span class="ident">find</span> <span class="punct">[</span><span class="number">1</span><span class="punct">,</span><span class="number">1</span><span class="punct">],</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span><span class="number">1</span><span class="punct">]</span>
-<span class="punct">=&gt;</span> <span class="punct">[</span>
-  <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x394ade8</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;,</span> 
-  <span class="punct">&lt;</span><span class="constant">Membership</span><span class="punct">:</span><span class="number">0x394ada0</span> <span class="attribute">@attributes</span><span class="punct">={&quot;</span><span class="string">user_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">2</span><span class="punct">&quot;,</span> <span class="punct">&quot;</span><span class="string">group_id</span><span class="punct">&quot;=&gt;&quot;</span><span class="string">1</span><span class="punct">&quot;}&gt;</span>
-<span class="punct">]</span></pre></p>
 <p>Perform <code>#count</code> operations</p>
 <p><pre class="syntax"><span class="constant">MembershipStatus</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">).</span><span class="ident">memberships</span><span class="punct">.</span><span class="ident">count</span> <span class="comment"># =&gt; 1</span></pre></p>
 <h3>Routes with Rails</h3>
@@ -177,9 +175,9 @@ other stories and things.</p>
 <h2>Licence</h2>
 <p>This code is free to use under the terms of the <span class="caps">MIT</span> licence.</p>
 <h2>Contact</h2>
-<p>Comments are welcome. Send an email to <a href="mailto:drnicwilliams@gmail.com">Dr Nic Williams</a>.</p>
+<p>Comments are welcome. Please Send them to &#8220;Dr Nic Williams&#8221; or &#8220;Charlie Savage&#8221; via the <a href="http://github.com/drnic/composite_primary_keys/tree/master">github</a> project.</p>
     <p class="coda">
-      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 13th February 2010<br>
+      <a href="mailto:drnicwilliams@gmail.com">Dr Nic</a>, 28th November 2010<br>
       Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
     </p>
 </div>
