@@ -24,7 +24,7 @@ h2. Installing
 
 Rails: Add the following to your <code>Gemfile</code>
 
-<pre syntax="ruby">gem 'composite_primary_keys', '=3.0.5'</pre>
+<pre syntax="ruby">gem 'composite_primary_keys', '=3.0.6'</pre>
 
 Ruby scripts: Add the following to the top of your script
 

@@ -9,11 +9,10 @@ desc 'Upload website files to rubyforge'
 task :website_upload do
   config = YAML.load(File.read(File.expand_path("~/.rubyforge/user-config.yml")))
   host = "cfis@rubyforge.org"
-  remote_dir = "/var/www/gforge-projects/compositekeys/"
+  remote_dir = "/var/www/gforge-projects/compositekeys"
   local_dir = 'website'
-  puts "scp -r #{local_dir}/ #{host}:#{remote_dir}"
-  sh %{scp -r #{local_dir}/ #{host}:#{remote_dir}}
+  sh %{scp -r #{local_dir}/* #{host}:#{remote_dir}}
 end
 
 desc 'Generate and upload website files'
-task :website => [:website_generate, :website_upload, :publish_docs]
+task :website => [:website_generate, :website_upload]
