@@ -23,6 +23,6 @@ namespace :sqlite3 do
   task :rebuild_databases => [:drop_databases, :build_databases]
 
   task :load_connection do
-    require File.join(PROJECT_ROOT, "test", "connections", "native_sqlite3", "connection")
+    require File.join(PROJECT_ROOT, "test", "connections", "native_sqlite", "connection")
   end
 end
