@@ -59,13 +59,22 @@ module ActiveRecord
           #end]
 
           # CPK
+          owner_foreign_keys = @reflection.cpk_primary_key.map{|key| key.to_s}
+          association_foreign_keys = Array(@reflection.association_foreign_key).map{|key| key.to_s}
+
           attributes = Hash[columns.map do |column|
             name = column.name.to_s
             value = case
-              when @reflection.cpk_primary_key.map{|key| key.to_s}.include?(name)
-                @owner[name]
-              when Array(@reflection.association_foreign_key).map{|key| key.to_s}.include?(name)
-                record[name]
+              when owner_foreign_keys.include?(name)
+                index = owner_foreign_keys.index(name)
+                primary_keys = Array(@owner.class.primary_key)
+                primary_key = primary_keys[index]
+                @owner[primary_key]
+              when association_foreign_keys.include?(name)
+                index = association_foreign_keys.index(name)
+                primary_keys = Array(@reflection.klass.primary_key)
+                primary_key = primary_keys[index]
+                record[primary_key]
               when timestamps.include?(name)
                 timezone
               else
