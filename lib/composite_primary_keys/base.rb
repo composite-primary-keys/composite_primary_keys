@@ -23,11 +23,6 @@ module ActiveRecord
           include CompositeInstanceMethods
           include CompositePrimaryKeys::ActiveRecord::AssociationPreload
         EOV
-
-        class << unscoped
-          include CompositePrimaryKeys::ActiveRecord::FinderMethods::InstanceMethods
-          include CompositePrimaryKeys::ActiveRecord::Relation::InstanceMethods
-        end
       end
 
       def composite?
@@ -88,6 +83,20 @@ module ActiveRecord
       #ids_to_s([[1,2],[7,3]], ',', ';') -> "1,2;7,3"
       def ids_to_s(many_ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
         many_ids.map {|ids| "#{left_bracket}#{CompositePrimaryKeys::CompositeKeys.new(ids)}#{right_bracket}"}.join(list_sep)
+      end
+
+      def relation #:nodoc:
+        @relation ||= begin
+          result = Relation.new(self, arel_table)
+          # CPK
+          class << result
+            include CompositePrimaryKeys::ActiveRecord::FinderMethods::InstanceMethods
+            include CompositePrimaryKeys::ActiveRecord::Relation::InstanceMethods
+          end
+          result
+        end
+
+        finder_needs_type_condition? ? @relation.where(type_condition) : @relation
       end
     end
 
