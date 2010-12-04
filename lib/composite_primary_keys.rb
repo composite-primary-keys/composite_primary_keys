@@ -46,8 +46,8 @@ require 'active_record/associations/has_one_through_association'
 require 'active_record/associations/through_association_scope'
 require 'active_record/relation/query_methods'
 require 'active_record/attribute_methods/primary_key'
+require 'active_record/fixtures'
 
-require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/associations'
 require 'composite_primary_keys/associations/association_proxy'
@@ -65,6 +65,7 @@ require 'composite_primary_keys/calculations'
 require 'composite_primary_keys/validations/uniqueness'
 require 'composite_primary_keys/query_methods'
 require 'composite_primary_keys/primary_key'
+require 'composite_primary_keys/fixtures'
 
 Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
   begin
