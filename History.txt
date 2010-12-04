@@ -1,3 +1,8 @@
+== 3.0.8 2010-12-04
+* Fix for translation issue in unique validation.  Thanks to Daniel Berger for the patch.
+* Fix to support child classes of composite primary key models
+
+
 == 3.0.7 2010-11-29
 * Fix has and belongs to many associations implementation.
 
