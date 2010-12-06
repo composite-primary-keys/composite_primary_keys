@@ -1,8 +1,6 @@
 dir = File.dirname(__FILE__)
 PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
 
-adapter ||= 'postgresql'
-
 require 'pp'
 require 'test/unit'
 require 'hash_tricks'
@@ -10,7 +8,7 @@ require 'rubygems'
 require 'active_record'
 require 'active_record/fixtures'
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
+require 'connection'
 
 # To make debugging easier, test within this source tree versus an installed gem
 #require 'composite_primary_keys'
@@ -21,7 +19,7 @@ ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'f
 
 QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)
 
-ActiveRecord::Base.configurations[:test] = CompositePrimaryKeys::ConnectionSpec[adapter]
+ActiveRecord::Base.configurations[:test] = SPEC
 
 class ActiveSupport::TestCase #:nodoc:
   include ActiveRecord::TestFixtures
