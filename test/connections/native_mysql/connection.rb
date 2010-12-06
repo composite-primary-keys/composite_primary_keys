@@ -1,6 +1,5 @@
 print "Using native MySQL\n"
 
-require 'adapter_helper/mysql'
 require 'active_record'
 
 def connection_string
@@ -12,5 +11,5 @@ def connection_string
 end
 
   # Adapter config setup in locals/database_connections.rb
-connection_options = AdapterHelper::MySQL.load_connection_from_env
-ActiveRecord::Base.establish_connection(connection_options)
+SPEC = CompositePrimaryKeys::ConnectionSpec[:mysql]
+ActiveRecord::Base.establish_connection(SPEC)
