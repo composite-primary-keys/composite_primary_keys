@@ -1,0 +1,21 @@
+require 'abstract_unit'
+
+class TestEqual < ActiveSupport::TestCase
+  fixtures :capitols
+
+  def test_new
+    assert_not_equal(Capitol.new, Capitol.new)
+  end
+
+  def test_same
+    first = Capitol.find('Canada', 'Ottawa')
+    second = Capitol.find('Canada', 'Ottawa')
+    assert_equal(first, second)
+  end
+
+  def test_different
+    first = Capitol.find('Mexico', 'Mexico City')
+    second = Capitol.find('Canada', 'Ottawa')
+    assert_not_equal(first, second)
+  end
+end
