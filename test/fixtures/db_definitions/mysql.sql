@@ -179,3 +179,8 @@ create table seats (
   primary key (flight_number, seat)
 ) type=InnoDB;
 
+create table capitols (
+  country varchar(100) default null,
+  city varchar(100) default null,
+  primary key (country, city)
+) type=InnoDB;

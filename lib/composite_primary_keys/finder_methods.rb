@@ -77,17 +77,6 @@ module CompositePrimaryKeys
           return to_a.find(&block) if block_given?
 
           ids = ids.first if ids.last == nil
-
-          # if ids is just a flat list, then its size must = primary_key.length (one id per primary key, in order)
-          # if ids is list of lists, then each inner list must follow rule above
-          if ids.first.is_a? String
-            # find '2,1' -> ids = ['2,1']
-            # find '2,1;7,3' -> ids = ['2,1;7,3']
-            match = ids.first.match(/^\[(.*)\]$/)
-            ids = (match ? match[1] : ids.first).split(ID_SET_SEP).map {|id_set| id_set.split(CompositePrimaryKeys::ID_SEP).to_composite_ids}
-            # find '2,1;7,3' -> ids = [['2','1'],['7','3']], inner [] are CompositeIds
-          end
-
           ids = [ids.to_composite_ids] if not ids.first.kind_of?(Array)
 
           ids.each do |id_set|

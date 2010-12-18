@@ -1,9 +1,10 @@
 require 'abstract_unit'
+require 'fixtures/capitol'
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes
-  
+  fixtures :capitols, :reference_types, :reference_codes, :suburbs
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
@@ -37,7 +38,6 @@ class TestFind < ActiveSupport::TestCase
       assert found
       assert_equal @klass, found.class
       assert_equal found, @klass.find(found.id)
-      assert_equal found, @klass.find(found.to_param)
     end
   end
 
@@ -47,7 +47,6 @@ class TestFind < ActiveSupport::TestCase
       assert found
       assert_equal @klass, found.class
       assert_equal found, @klass.find(found.id)
-      assert_equal found, @klass.find(found.to_param)
     end
   end
 
@@ -57,9 +56,14 @@ class TestFind < ActiveSupport::TestCase
     end
   end
 
+  def test_find_with_strings_as_composite_keys
+    found = Capitol.find('The Netherlands', 'Amsterdam')
+    assert found
+  end
+
   def test_not_found
     assert_raise(::ActiveRecord::RecordNotFound) do
-      ReferenceCode.send :find, '999,999'
+      ReferenceCode.find(['999', '999'])
     end
   end
 

@@ -116,10 +116,6 @@ module ActiveRecord
         end
       end
 
-      def to_param
-        id.join(CompositePrimaryKeys::ID_SEP)
-      end
-
       def id_before_type_cast #:nodoc:
         raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
       end
