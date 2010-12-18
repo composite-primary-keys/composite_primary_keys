@@ -1,6 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/kitchen_sink'
-require 'fixtures/reference_type'
 
 class TestAttributeMethods < ActiveSupport::TestCase
   fixtures :kitchen_sinks, :reference_types

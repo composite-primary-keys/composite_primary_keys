@@ -1,9 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/reference_type'
-require 'fixtures/reference_code'
-require 'fixtures/product'
-require 'fixtures/tariff'
-require 'fixtures/product_tariff'
 
 class TestAttributes < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs

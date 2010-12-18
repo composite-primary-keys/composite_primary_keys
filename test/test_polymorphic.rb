@@ -1,10 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/comment'
-require 'fixtures/article'
-require 'fixtures/reading'
-require 'fixtures/user'
-require 'fixtures/employee'
-require 'fixtures/hack'
 
 class TestPolymorphic < ActiveSupport::TestCase
   fixtures :users, :employees, :comments, :hacks

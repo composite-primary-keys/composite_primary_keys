@@ -1,5 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/seat'
 
 class TestValidations < ActiveSupport::TestCase
   fixtures :seats

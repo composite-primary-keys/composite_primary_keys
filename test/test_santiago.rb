@@ -1,10 +1,6 @@
 # Test cases devised by Santiago that broke the Composite Primary Keys
 # code at one point in time. But no more!!!
-
 require 'abstract_unit'
-require 'fixtures/user'
-require 'fixtures/article'
-require 'fixtures/reading'
 
 class TestSantiago < ActiveSupport::TestCase
   fixtures :suburbs, :streets, :users, :articles, :readings

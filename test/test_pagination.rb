@@ -1,6 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/reference_type'
-require 'fixtures/reference_code'
 require 'plugins/pagination'
 
 class TestPagination < ActiveSupport::TestCase

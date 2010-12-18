@@ -1,8 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/user'
-require 'fixtures/group'
-require 'fixtures/membership_status'
-require 'fixtures/membership'
 
 class TestTutorialExample < ActiveSupport::TestCase
   fixtures :users, :groups, :memberships, :membership_statuses

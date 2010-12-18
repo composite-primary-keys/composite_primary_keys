@@ -1,8 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/reference_type'
-require 'fixtures/reference_code'
-require 'fixtures/department'
-require 'fixtures/employee'
 
 class TestDelete < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :departments, :employees

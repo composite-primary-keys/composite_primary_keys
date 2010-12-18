@@ -1,5 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/capitol'
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
