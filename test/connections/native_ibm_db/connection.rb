@@ -1,13 +1,10 @@
 print "Using IBM2 \n"
-require 'logger'
 
 gem 'ibm_db'
 require 'IBM_DB'
 
 RAILS_CONNECTION_ADAPTERS = %w( mysql postgresql sqlite firebird sqlserver db2 oracle sybase openbase frontbase ibm_db )
 
-
-ActiveRecord::Base.logger = Logger.new("debug.log")
 
 db1 = 'composite_primary_keys_unittest'
 
