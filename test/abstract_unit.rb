@@ -1,7 +1,7 @@
 dir = File.dirname(__FILE__)
 PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
 
-adapter = 'postgresql'
+adapter = ENV["ADAPTER"] || 'postgresql'
 
 require 'pp'
 require 'test/unit'
@@ -10,7 +10,7 @@ require 'rubygems'
 require 'active_record'
 require 'active_record/fixtures'
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-require 'connection'
+require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
 
 
 # To make debugging easier, test within this source tree versus an installed gem
