@@ -32,7 +32,7 @@ http://compositekeys.rubyforge.org
 
 == Questions, Discussion and Contributions
 
-http://groups.google.com/compositekeys
+http://groups.google.com/group/compositekeys
 
 == Author
 
