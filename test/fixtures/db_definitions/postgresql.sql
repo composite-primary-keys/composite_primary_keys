@@ -205,3 +205,8 @@ create table seats (
   primary key (flight_number, seat)
 );
 
+create table capitols (
+  country text not null,
+  city text not null,
+  primary key (country, city)
+);

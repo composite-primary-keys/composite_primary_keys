@@ -1,6 +1,8 @@
 dir = File.dirname(__FILE__)
 PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
 
+adapter = 'postgresql'
+
 require 'pp'
 require 'test/unit'
 require 'hash_tricks'
@@ -9,6 +11,7 @@ require 'active_record'
 require 'active_record/fixtures'
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 require 'connection'
+
 
 # To make debugging easier, test within this source tree versus an installed gem
 #require 'composite_primary_keys'

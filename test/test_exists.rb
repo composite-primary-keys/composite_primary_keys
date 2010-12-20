@@ -1,6 +1,4 @@
 require 'abstract_unit'
-require 'fixtures/article'
-require 'fixtures/department'
 
 class TestExists < ActiveSupport::TestCase
   fixtures :articles, :departments

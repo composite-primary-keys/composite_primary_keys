@@ -1,3 +1,9 @@
+== 3.1.0 2010-12-17
+* Add back in rake test tasks (Toby Cabot)
+* Add support for multiple string composite keys (wouter)
+* Remove support for find('3,3').  Instead use find([3,3])
+
+
 == 3.0.9 2010-12-04
 * Fix up support for composite key fixtures.
 
