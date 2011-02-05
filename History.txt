@@ -1,3 +1,10 @@
+== 3.1.1 2010-02-07
+* Implement id_before_type_cast based on patch from Jason Lewis
+* Add in tests for Model.includes(:other_model)
+
+
+Jason Lewis
+
 == 3.1.0 2010-12-17
 * Add back in rake test tasks (Toby Cabot)
 * Add support for multiple string composite keys (wouter)

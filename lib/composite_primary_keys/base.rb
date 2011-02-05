@@ -116,8 +116,10 @@ module ActiveRecord
         end
       end
 
-      def id_before_type_cast #:nodoc:
-        raise CompositeKeyError, CompositePrimaryKeys::ActiveRecord::Base::NOT_IMPLEMENTED_YET
+      def id_before_type_cast
+        self.class.primary_keys.map do |key|
+          self.send("#{key.to_s}_before_type_cast")
+        end
       end
 
       def quoted_id #:nodoc:
