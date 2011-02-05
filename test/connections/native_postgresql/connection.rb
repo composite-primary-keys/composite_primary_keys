@@ -7,7 +7,6 @@ require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys', 'connection_ada
 def connection_string
   options = Hash.new
   options['U'] = SPEC['username']  if SPEC['username']
-  options['p'] = SPEC['password']  if SPEC['password']
   options.map { |key, value| "-#{key} #{value}" }.join(" ")
 end
 

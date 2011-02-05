@@ -1,7 +1,7 @@
 dir = File.dirname(__FILE__)
 PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
 
-adapter = 'postgresql'
+adapter = ENV["ADAPTER"] || 'postgresql'
 
 require 'pp'
 require 'test/unit'
