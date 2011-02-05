@@ -3,6 +3,7 @@
 * Add in tests for Model.includes(:other_model)
 * Fix object comparison with nil in composite primary keys (StackNG)
 * Make it easier to run tests with different database adapters (Toby Cabot)
+* Fix AssociationReflection#primary_key_name for polymorphic relationships (Dave Doan)
 
 
 == 3.1.0 2010-12-17

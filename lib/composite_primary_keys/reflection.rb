@@ -9,7 +9,7 @@ module ActiveRecord
           #"#{name}_id"
           class_name.foreign_key
         elsif options[:as]
-          options[:as]
+          "#{options[:as]}_id"
         else
           active_record.name.foreign_key
         end
