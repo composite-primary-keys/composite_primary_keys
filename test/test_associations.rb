@@ -56,7 +56,15 @@ class TestAssociations < ActiveSupport::TestCase
 
   # Its not generating the instances of associated classes from the rows
   def test_find_includes_products
+    # Old style
     assert @products = Product.find(:all, :include => :product_tariffs)
+    assert_equal 2, @products.length
+    assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
+    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
+      "Incorrect number of product_tariffs returned"
+
+    # New style
+    assert @products = Product.includes(:product_tariffs)
     assert_equal 2, @products.length
     assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
     assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
@@ -64,21 +72,41 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_find_includes_tariffs
+    # Old style
     assert @tariffs = Tariff.find(:all, :include => :product_tariffs)
+    assert_equal 3, @tariffs.length
+    assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
+    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
+      "Incorrect number of product_tariffs returnedturned"
+
+    # New style
+    assert @tariffs = Tariff.includes(:product_tariffs)
     assert_equal 3, @tariffs.length
     assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
     assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
       "Incorrect number of product_tariffs returnedturned"
   end
 
-  def test_find_includes_product
+  def test_find_includes_product_tariffs
+    # Old style
     assert @product_tariffs = ProductTariff.find(:all, :include => :product)
+    assert_equal 3, @product_tariffs.length
+    assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
+
+    # New style
+    assert @product_tariffs = ProductTariff.includes(:product)
     assert_equal 3, @product_tariffs.length
     assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
   end
 
   def test_find_includes_comp_belongs_to_tariff
+    # Old style
     assert @product_tariffs = ProductTariff.find(:all, :include => :tariff)
+    assert_equal 3, @product_tariffs.length
+    assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
+
+    # New style
+    assert @product_tariffs = ProductTariff.includes(:tariff)
     assert_equal 3, @product_tariffs.length
     assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
   end
