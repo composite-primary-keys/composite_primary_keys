@@ -1,9 +1,8 @@
 == 3.1.1 2010-02-07
-* Implement id_before_type_cast based on patch from Jason Lewis
+* Implement id_before_type_cast (Jason Lewis)
 * Add in tests for Model.includes(:other_model)
+* Fix object comparison with nil in composite primary keys (StackNG)
 
-
-Jason Lewis
 
 == 3.1.0 2010-12-17
 * Add back in rake test tasks (Toby Cabot)
