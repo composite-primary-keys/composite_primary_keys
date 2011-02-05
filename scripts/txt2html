@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+gem 'RedCloth'
+gem 'syntax'
+
 require 'redcloth'
 require 'syntax/convertors/html'
 require 'erb'
