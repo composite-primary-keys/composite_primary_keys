@@ -140,6 +140,10 @@ module ActiveRecord
         id
       end
 
+      def ==(comparison_object)
+        ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| id.present?} : super(comparison_object)
+      end
+
       # Cloned objects have no id assigned and are treated as new records. Note that this is a "shallow" clone
       # as it copies the object's attributes only, not its associations. The extent of a "deep" clone is
       # application specific and is therefore left to the application to implement according to its need.
