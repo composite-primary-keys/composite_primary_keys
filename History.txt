@@ -1,12 +1,12 @@
-== 3.1.2 ??
+== 3.1.2 2011-02-26
 * Add back in support for find('3,3') which makes it possible to
   do find(params[id]).  This implementation is simpler than earlier version
   improving code readability.
-* Support for finding multiple records either via find([1,2], [3,4]) or
-  find{'1,2', '3,4')
+* Support for finding multiple records either via find([1,2], [3,4])
+* Remove to_composite_ids method which is no longer needed
 
 
-== 3.1.1 2010-02-07
+== 3.1.1 2011-02-07
 * Implement id_before_type_cast (Jason Lewis)
 * Add in tests for Model.includes(:other_model)
 * Fix object comparison with nil in composite primary keys (StackNG)
