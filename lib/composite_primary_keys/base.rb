@@ -125,8 +125,7 @@ module ActiveRecord
       def quoted_id #:nodoc:
         [self.class.primary_keys, ids].
           transpose.
-          map {|attr_name,id| quote_value(id, column_for_attribute(attr_name))}.
-          to_composite_ids
+          map {|attr_name,id| quote_value(id, column_for_attribute(attr_name))}
       end
 
       # Sets the primary ID.

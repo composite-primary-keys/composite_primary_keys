@@ -26,9 +26,9 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_count
-    assert_equal 2, Product.count(:include => :product_tariffs)
-    assert_equal 3, Tariff.count(:include => :product_tariffs)
-    assert_equal 2, Tariff.count(:group => :start_date).size
+    assert_equal(2, Product.count(:include => :product_tariffs))
+    assert_equal(3, Tariff.count(:include => :product_tariffs))
+    assert_equal(2, Tariff.count(:group => :start_date))
   end
 
   def test_products

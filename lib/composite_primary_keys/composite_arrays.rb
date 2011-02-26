@@ -6,10 +6,6 @@ module CompositePrimaryKeys
     def to_composite_keys
       CompositeKeys.new(self)
     end
-
-    def to_composite_ids
-      Array.new(self)
-    end
   end
 
   class CompositeKeys < Array

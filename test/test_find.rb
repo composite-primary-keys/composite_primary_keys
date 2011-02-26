@@ -4,66 +4,54 @@ require 'abstract_unit'
 class TestFind < ActiveSupport::TestCase
   fixtures :capitols, :reference_types, :reference_codes, :suburbs
 
-  CLASSES = {
-    :single => {
-      :class => ReferenceType,
-      :primary_keys => [:reference_type_id],
-    },
-    :dual   => {
-      :class => ReferenceCode,
-      :primary_keys => [:reference_type_id, :reference_code],
-    },
-    :dual_strs   => {
-      :class => ReferenceCode,
-      :primary_keys => ['reference_type_id', 'reference_code'],
-    },
-  }
-
-  def setup
-    self.class.classes = CLASSES
-  end
-
   def test_find_first
-    testing_with do
-      obj = @klass.find(:first)
-      assert obj
-      assert_equal @klass, obj.class
-    end
+    ref_code = ReferenceCode.find(:first, :order => 'reference_type_id, reference_code')
+    assert_kind_of(ReferenceCode, ref_code)
+    assert_equal([1,1], ref_code.id)
   end
 
-  def test_find
-    testing_with do
-      found = @klass.find(*first_id) # e.g. find(1,1) or find 1,1
-      assert found
-      assert_equal @klass, found.class
-      assert_equal found, @klass.find(found.id)
-    end
+  def test_find_last
+    ref_code = ReferenceCode.find(:last, :order => 'reference_type_id, reference_code')
+    assert_kind_of(ReferenceCode, ref_code)
+    assert_equal([2,2], ref_code.id)
   end
 
-  def test_find_composite_ids
-    testing_with do
-      found = @klass.find(first_id) # e.g. find([1,1].to_composite_ids)
-      assert found
-      assert_equal @klass, found.class
-      assert_equal found, @klass.find(found.id)
-    end
+  def test_find_one
+    ref_code = ReferenceCode.find([1,3])
+    assert_not_nil(ref_code)
+    assert_equal([1,3], ref_code.id)
   end
 
-  def things_to_look_at
-    testing_with do
-      assert_equal found, @klass.find(found.id.to_s) # fails for 2+ keys
-    end
+  def test_find_one_string
+    ref_code = ReferenceCode.find('1,3')
+    assert_kind_of(ReferenceCode, ref_code)
+    assert_equal([1,3], ref_code.id)
+  end
+
+  def test_find_some
+    ref_codes = ReferenceCode.find([1,3], [2,1])
+    assert_kind_of(Array, ref_codes)
+    assert_equal(2, ref_codes.length)
+
+    ref_code = ref_codes[0]
+    assert_equal([1,3], ref_code.id)
+
+    ref_code = ref_codes[1]
+    assert_equal([2,1], ref_code.id)
   end
 
   def test_find_with_strings_as_composite_keys
-    found = Capitol.find('The Netherlands', 'Amsterdam')
-    assert found
+    capitol = Capitol.find(['The Netherlands', 'Amsterdam'])
+    assert_kind_of(Capitol, capitol)
+    assert_equal(['The Netherlands', 'Amsterdam'], capitol.id)
   end
 
   def test_not_found
-    assert_raise(::ActiveRecord::RecordNotFound) do
+    error = assert_raise(::ActiveRecord::RecordNotFound) do
       ReferenceCode.find(['999', '999'])
     end
+    assert_equal("Couldn't find ReferenceCode with ID=999,999 WHERE \"reference_codes\".\"reference_type_id\" = 999 AND \"reference_codes\".\"reference_code\" = 999",
+                 error.message)
   end
 
   def test_find_last_suburb

@@ -74,34 +74,49 @@ module CompositePrimaryKeys
         end
 
         def find_with_ids(*ids, &block)
-          return to_a.find(&block) if block_given?
+          return to_a.find { |*block_args| yield(*block_args) } if block_given?
 
-          ids = ids.first if ids.last == nil
-          ids = [ids.to_composite_ids] if not ids.first.kind_of?(Array)
+          # Supports:
+          #   find('1,2')             ->  ['1,2']
+          #   find(1,2)               ->  [1,2]
+          #   find([1,2])             -> [['1,2']]
+          #   find([1,2], [3,4])      -> [[1,2],[3,4]]
+          #
+          # Does *not* support:
+          #   find('1,2', '3,4')      ->  ['1,2','3,4']
 
-          ids.each do |id_set|
-            unless id_set.is_a?(Array)
-              raise "Ids must be in an Array, instead received: #{id_set.inspect}"
+          # Normalize incoming data.  Note the last arg can be nil.  Happens
+          # when find is called with nil options like the reload method does.
+          ids.compact!
+          ids = [ids] unless ids.first.kind_of?(Array)
+
+          results = ids.map do |cpk_ids|
+            cpk_ids = if cpk_ids.length == 1
+              cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
+            else
+              cpk_ids.to_composite_keys
             end
-            unless id_set.length == @klass.primary_keys.length
-              raise "#{id_set.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
-            end
-          end
 
-          new_relation = clone
-          ids.each do |id_set|
-            [@klass.primary_keys, id_set].transpose.map do |key, id|
+            unless cpk_ids.length == @klass.primary_keys.length
+              raise "#{cpk_ids.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
+            end
+
+            new_relation = clone
+            [@klass.primary_keys, cpk_ids].transpose.map do |key, id|
               new_relation = new_relation.where(key => id)
             end
-          end
+            
+            records = new_relation.to_a
 
-          result = new_relation.to_a
+            if records.empty?
+              conditions = new_relation.arel.where_sql
+              raise(::ActiveRecord::RecordNotFound,
+                    "Couldn't find #{@klass.name} with ID=#{cpk_ids} #{conditions}")
+            end
+            records
+          end.flatten
 
-          if result.size == ids.size
-            ids.size == 1 ? result[0] : result
-          else
-            raise ::ActiveRecord::RecordNotFound, "Couldn't find all #{@klass.name} with IDs (#{ids.inspect})"
-          end
+          ids.length == 1 ? results.first : results
         end
       end
     end
