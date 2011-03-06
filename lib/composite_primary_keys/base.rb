@@ -172,25 +172,6 @@ module ActiveRecord
           create_with.each { |att,value| self.send("#{att}=", value) } if create_with
         end
       end
-
-      def destroy
-        if persisted?
-          # CPK
-          # self.class.unscoped.where(self.class.arel_table[self.class.primary_key].eq(id)).delete_all
-          self.class.unscoped.where(ids_hash).delete_all
-        end
-
-        @destroyed = true
-        freeze
-      end
-
-      def update(attribute_names = @attributes.keys)
-        attributes_with_values = arel_attributes_values(false, false, attribute_names)
-        return 0 if attributes_with_values.empty?
-        # CPK
-        # self.class.unscoped.where(self.class.arel_table[self.class.primary_key].eq(id)).arel.update(attributes_with_values)
-        self.class.unscoped.where(ids_hash).arel.update(attributes_with_values)
-      end
     end
   end
 end

@@ -3,7 +3,7 @@ module ActiveRecord
     class HasAndBelongsToManyAssociation
       def construct_sql
         if @reflection.options[:finder_sql]
-          @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
+          @finder_sql = interpolate_and_sanitize_sql(@reflection.options[:finder_sql])
         else
           # CPK
           # @finder_sql = "#{@owner.connection.quote_table_name @reflection.options[:join_table]}.#{@reflection.primary_key_name} = #{owner_quoted_id} "
@@ -36,7 +36,7 @@ module ActiveRecord
         end
 
         if @reflection.options[:insert_sql]
-          @owner.connection.insert(interpolate_sql(@reflection.options[:insert_sql], record))
+          @owner.connection.insert(interpolate_and_sanitize_sql(@reflection.options[:insert_sql], record))
         else
           relation   = Arel::Table.new(@reflection.options[:join_table])
           timestamps = record_timestamp_columns(record)

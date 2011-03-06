@@ -4,4 +4,9 @@ class ReferenceType < ActiveRecord::Base
   
   validates_presence_of :type_label, :abbreviation
   validates_uniqueness_of :type_label
+
+  before_destroy do |record|
+    a = record
+    puts a
+  end
 end

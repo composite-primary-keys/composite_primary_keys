@@ -1,3 +1,9 @@
+== 3.1.3 2011-03-05
+* Support ActiveRecord 3.0.5 (interpolate_sql was removed and
+  replaced by interpolate_and_sanitize_sql)
+* Fix persistence methods to support destroy callbacks
+
+
 == 3.1.2 2011-02-26
 * Add back in support for find('3,3') which makes it possible to
   do find(params[id]).  This implementation is simpler than earlier version

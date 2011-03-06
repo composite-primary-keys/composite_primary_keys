@@ -4,7 +4,7 @@ module ActiveRecord
       def construct_sql
         case
           when @reflection.options[:finder_sql]
-            @finder_sql = interpolate_sql(@reflection.options[:finder_sql])
+            @finder_sql = interpolate_and_sanitize_sql(@reflection.options[:finder_sql])
 
           when @reflection.options[:as]
             @finder_sql =
