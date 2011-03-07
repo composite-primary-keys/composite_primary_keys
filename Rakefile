@@ -7,8 +7,8 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 
 # Set global variable so other tasks can access them
-PROJECT_ROOT = File.expand_path(".")
-GEM_NAME = 'composite_primary_keys'
+::PROJECT_ROOT = File.expand_path(".")
+::GEM_NAME = 'composite_primary_keys'
 
 # Read the spec file
 spec = Gem::Specification.load("#{GEM_NAME}.gemspec")
