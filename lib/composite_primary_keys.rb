@@ -49,6 +49,7 @@ require 'active_record/relation/query_methods'
 require 'active_record/attribute_methods/primary_key'
 require 'active_record/fixtures'
 
+require 'composite_primary_keys/arel_extensions'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/associations'
 require 'composite_primary_keys/associations/association_proxy'
