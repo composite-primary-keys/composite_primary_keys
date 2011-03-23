@@ -1,3 +1,7 @@
+== 3.1.5 2011-??-??
+* Fix simple calculation methods
+* Fix instantiation of cpk records via associations.
+
 == 3.1.4 2011-03-06
 * Support ActiveRecord 3.0.5 (interpolate_sql was removed and
   replaced by interpolate_and_sanitize_sql)
