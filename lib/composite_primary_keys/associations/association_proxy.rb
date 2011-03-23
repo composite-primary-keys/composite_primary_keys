@@ -21,7 +21,7 @@ module ActiveRecord
             primary_key = @reflection.options[:primary_key] || :id
             # CPK
             # record[@reflection.primary_key_name] = @owner.send(primary_key)
-            values = [@owner.send(primary_key)].flatten
+            values = (primary_key.is_a?(Array) ? primary_key.each {|k| @owner.send(k) } : [@owner.send(primary_key)]).flatten
             key_values = @reflection.cpk_primary_key.zip(values)
             key_values.each {|key, value| record[key] = value}
           end

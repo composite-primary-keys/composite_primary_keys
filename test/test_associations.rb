@@ -4,6 +4,15 @@ class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
            :memberships
+
+  def test_has_many_specifying_both_foreign_and_primary_keys_as_arrays
+    restaurant = Restaurant.find(:first)
+    streets = restaurant.streets.find(:all)
+
+    assert_equal 1, streets.size
+    assert_equal 1, streets.first.city_id
+    assert_equal 1, streets.first.suburb_id
+  end
   
   def test_has_many_through_with_conditions_when_through_association_is_not_composite
     user = User.find(:first)
