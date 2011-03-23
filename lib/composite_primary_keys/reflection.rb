@@ -2,7 +2,7 @@ module ActiveRecord
   module Reflection
     class AssociationReflection
       def derive_primary_key
-        result = if options[:foreign_key]
+        if options[:foreign_key]
           options[:foreign_key]
         elsif belongs_to?
           #CPK
