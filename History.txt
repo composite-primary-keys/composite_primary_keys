@@ -1,7 +1,7 @@
 == 3.1.5 2011-03-24
 * Fix simple calculation methods
 * Fix instantiation of cpk records via associations.
-* Fix Relation#delete_all
+* Fix Relation#delete
 * Fix Relation#destroy
 
 == 3.1.4 2011-03-06
