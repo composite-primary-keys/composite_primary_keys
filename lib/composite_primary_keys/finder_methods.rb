@@ -51,7 +51,7 @@ module CompositePrimaryKeys
           # CPK
           when CompositePrimaryKeys::CompositeKeys
             relation = select(primary_keys).limit(1)
-            relation = relation.where(ids_predicate(id)) if id
+            relation = relation.where_cpk_id(id) if id
             relation.first ? true : false
           when Array
             # CPK
@@ -63,12 +63,11 @@ module CompositePrimaryKeys
           when Hash
             where(id).exists?
           else
-             # CPK
-             #relation = select(primary_key).limit(1)
-             #relation = relation.where(primary_key.eq(id)) if id
-             relation = select(primary_keys).limit(1)
-             relation = relation.where(ids_predicate(id)) if id
-
+            # CPK
+            #relation = select(primary_key).limit(1)
+            #relation = relation.where(primary_key.eq(id)) if id
+            relation = select(primary_keys).limit(1)
+            relation = relation.where_cpk_id(id) if id
             relation.first ? true : false
           end
         end

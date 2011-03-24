@@ -2,35 +2,49 @@ module CompositePrimaryKeys
   module ActiveRecord
     module Relation
       module InstanceMethods
-        def ids_predicate(id)
-          predicate = nil
+        def where_cpk_id(id)
+          relation = clone
 
-          if id.kind_of?(CompositePrimaryKeys::CompositeKeys)
-            id = [id]
+          predicates = self.primary_keys.zip(Array(id)).map do |key, value|
+            table[key].eq(value)
           end
-
-          id.each do |composite_id|
-            self.primary_keys.zip(composite_id).each do |key, value|
-              eq = table[key].eq(value)
-              predicate = predicate ? predicate.and(eq) : eq
-            end
-          end
-          predicate
+          relation.where_values += predicates
+          relation
         end
 
         def delete(id_or_array)
           # CPK
           # where(@klass.primary_key => id_or_array).delete_all
-          where(ids_predicate(id_or_array)).delete_all
+
+          id_or_array = if id_or_array.kind_of?(CompositePrimaryKeys::CompositeKeys)
+            [id_or_array]
+          else
+            Array(id_or_array)
+          end
+
+          id_or_array.each do |id|
+            where_cpk_id(id).delete_all
+          end
         end
 
-        def destroy(id)
+        def destroy(id_or_array)
           # CPK
           #if id.is_a?(Array)
           #  id.map { |one_id| destroy(one_id) }
           #else
-            find(id).destroy
+          #  find(id).destroy
           #end
+          id_or_array = if id_or_array.kind_of?(CompositePrimaryKeys::CompositeKeys)
+            [id_or_array]
+          else
+            Array(id_or_array)
+          end
+
+          id_or_array.each do |id|
+            where_cpk_id(id).each do |record|
+              record.destroy
+            end
+          end
         end
       end
     end
