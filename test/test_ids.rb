@@ -8,27 +8,27 @@ class TestIds < ActiveSupport::TestCase
       :class => ReferenceType,
       :primary_keys => [:reference_type_id],
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
-    :dual_strs   => { 
+    :dual_strs   => {
       :class => ReferenceCode,
       :primary_keys => ['reference_type_id', 'reference_code'],
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_id
     testing_with do
       assert_equal @first.id, @first.ids if composite?
       assert_kind_of(CompositePrimaryKeys::CompositeKeys, @first.id) if composite?
     end
   end
-  
+
   def test_ids_to_s
     testing_with do
       order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
@@ -37,7 +37,7 @@ class TestIds < ActiveSupport::TestCase
       assert_equal '1,1;1,2', @klass.ids_to_s(to_test, ',', ';', '', '') if @key_test == :dual
     end
   end
-  
+
   def test_set_ids_string
     testing_with do
       array = @primary_keys.collect {|key| 5}
@@ -46,7 +46,7 @@ class TestIds < ActiveSupport::TestCase
       assert_equal expected, @first.id
     end
   end
-  
+
   def test_set_ids_array
     testing_with do
       array = @primary_keys.collect {|key| 5}
@@ -55,7 +55,7 @@ class TestIds < ActiveSupport::TestCase
       assert_equal expected, @first.id
     end
   end
-  
+
   def test_set_ids_comp
     testing_with do
       array = @primary_keys.collect {|key| 5}
@@ -64,7 +64,7 @@ class TestIds < ActiveSupport::TestCase
       assert_equal expected, @first.id
     end
   end
-  
+
   def test_primary_keys
     testing_with do
       if composite?
@@ -78,5 +78,13 @@ class TestIds < ActiveSupport::TestCase
         assert_equal @primary_keys.first.to_s, @klass.primary_key.to_s
       end
     end
+  end
+
+  def test_assign_ids
+    ref_code = ReferenceCode.new
+    assert_equal([nil, nil], ref_code.id)
+
+    ref_code.id = [2,1]
+    assert_equal([2,1], ref_code.id)
   end
 end
