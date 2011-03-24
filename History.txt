@@ -1,6 +1,8 @@
-== 3.1.5 2011-??-??
+== 3.1.5 2011-03-24
 * Fix simple calculation methods
 * Fix instantiation of cpk records via associations.
+* Fix Relation#delete_all
+* Fix Relation#destroy
 
 == 3.1.4 2011-03-06
 * Support ActiveRecord 3.0.5 (interpolate_sql was removed and
