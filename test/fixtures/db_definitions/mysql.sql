@@ -184,3 +184,10 @@ create table capitols (
   city varchar(100) default null,
   primary key (country, city)
 ) type=InnoDB;
+
+create table way_nodes (
+  id int(11) not null,
+  node_id int(11) not null,
+  sequence_id int(11) not null,
+  primary key (id, sequence_id)
+) type=InnoDB;

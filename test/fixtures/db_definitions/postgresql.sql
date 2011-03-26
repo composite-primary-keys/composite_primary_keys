@@ -210,3 +210,10 @@ create table capitols (
   city text not null,
   primary key (country, city)
 );
+
+create table way_nodes (
+  id int not null,
+  node_id int not null,
+  sequence_id int not null,
+  primary key (id, sequence_id)
+);
