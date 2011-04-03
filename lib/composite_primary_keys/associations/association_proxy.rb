@@ -18,10 +18,11 @@ module ActiveRecord
           record["#{@reflection.options[:as]}_type"] = @owner.class.base_class.name.to_s
         else
           unless @owner.new_record?
-            primary_key = @reflection.options[:primary_key] || :id
+            primary_keys = Array(@reflection.options[:primary_key] || :id)
             # CPK
             # record[@reflection.primary_key_name] = @owner.send(primary_key)
-            values = [@owner.send(primary_key)].flatten
+            # Need to flatten because a key may be :id giving a composite key
+            values = primary_keys.map {|key| @owner.send(key)}.flatten
             key_values = @reflection.cpk_primary_key.zip(values)
             key_values.each {|key, value| record[key] = value}
           end
