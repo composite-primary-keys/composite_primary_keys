@@ -186,3 +186,9 @@ create table room_assignments (
     room_id    number(11) not null
 );
 
+create table way_nodes (
+    id number(11) not null,
+    node_id number(11) not null,
+    sequence_id number(11) not null,
+    constraint way_nodes_pk primary key (id, sequence_id)
+);

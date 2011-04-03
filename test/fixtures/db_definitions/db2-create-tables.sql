@@ -111,3 +111,10 @@ create table restaurants_suburbs (
 	city_id integer not null,
 	suburb_id integer not null
 );
+
+create table way_nodes (
+  id integer not null,
+  node_id integer not null,
+  sequence_id integer not null,
+  primary key (id, sequence_id)
+);
