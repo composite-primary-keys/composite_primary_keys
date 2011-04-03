@@ -26,7 +26,7 @@ module ActiveRecord
             predicate = nil
             record.ids_hash.each do |key, value|
               neq = relation.table[key].not_eq(value)
-              predicate = predicate ? predicate.and(neq) : neq
+              predicate = predicate ? predicate.or(neq) : neq
             end
             relation = relation.where(predicate)
           else
