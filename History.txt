@@ -1,6 +1,9 @@
 == 3.1.6 2011-04-??
-* Updated belongs_to association to be a bit more flexible (Jacques Fuentes)
+* Updated belongs_to association to be a bit more flexible with non-CPK
+  base models (Jacques Fuentes)
 * Fix uniqueness check (David Rueck)
+* Fix write issue when one of they keys in a composite key is
+  called id (Tom Hughes)
 
 == 3.1.5 2011-03-24
 * Fix simple calculation methods
