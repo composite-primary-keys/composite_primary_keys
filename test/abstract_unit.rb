@@ -7,15 +7,14 @@ require 'pp'
 require 'test/unit'
 require 'hash_tricks'
 require 'rubygems'
-require 'active_record'
-require 'active_record/fixtures'
-require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
-
 
 # To make debugging easier, test within this source tree versus an installed gem
 #require 'composite_primary_keys'
 require File.join(PROJECT_ROOT, "lib", "composite_primary_keys")
+
+require 'active_record/fixtures'
+require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
+require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
