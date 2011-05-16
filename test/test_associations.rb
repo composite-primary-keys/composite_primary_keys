@@ -141,9 +141,9 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through_when_through_association_is_composite
     dorm = Dorm.find(:first)
-    assert_equal 1, dorm.rooms.length
-    assert_equal 1, dorm.rooms.first.room_attributes.length
-    assert_equal 'keg', dorm.rooms.first.room_attributes.first.name
+    assert_equal(2, dorm.rooms.length)
+    assert_equal(1, dorm.rooms.first.room_attributes.length)
+    assert_equal('keg', dorm.rooms.first.room_attributes.first.name)
   end
 
   def test_associations_with_conditions
@@ -168,16 +168,29 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 2, @restaurant.suburbs.size
   end
 
+  def test_has_one_with_primary_key
+    @membership = Membership.find([1, 1])
+    assert_equal 2, @membership.reading.id
+  end
+
+  def test_has_one_with_composite
+    # In this case a regular model has_one composite model
+    product = products(:first_product)
+    assert_not_nil(product.product_tariff)
+  end
+
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
 
     assert_equal 2, @membership.readings.size
   end
 
-  def test_has_one_with_primary_key
-    @membership = Membership.find([1, 1])
-
-    assert_equal 2, @membership.reading.id
+  def test_has_many_with_composite_key
+    # In this case a regular model has_many composite models
+    dorm = dorms(:branner)
+    assert_equal(2, dorm.rooms.length)
+    assert_equal(1, dorm.rooms[0].room_id)
+    assert_equal(2, dorm.rooms[1].room_id)
   end
 
   def test_joins_has_many_with_primary_key

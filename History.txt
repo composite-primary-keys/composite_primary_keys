@@ -1,3 +1,6 @@
+== 3.1.7 2011-05-?
+* Support regular AR models having one or many composite models (Jacques Fuentes)
+
 == 3.1.6 2011-04-03
 * Updated belongs_to association to be a bit more flexible with non-CPK
   base models (Jacques Fuentes)
