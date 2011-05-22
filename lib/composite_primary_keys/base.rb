@@ -21,6 +21,7 @@ module ActiveRecord
         class_eval <<-EOV
           extend CompositeClassMethods
           include CompositeInstanceMethods
+          extend CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
           include CompositePrimaryKeys::ActiveRecord::AssociationPreload
         EOV
       end
@@ -84,20 +85,6 @@ module ActiveRecord
       def ids_to_s(many_ids, id_sep = CompositePrimaryKeys::ID_SEP, list_sep = ',', left_bracket = '(', right_bracket = ')')
         many_ids.map {|ids| "#{left_bracket}#{CompositePrimaryKeys::CompositeKeys.new(ids)}#{right_bracket}"}.join(list_sep)
       end
-
-      def relation #:nodoc:
-        @relation ||= begin
-          result = Relation.new(self, arel_table)
-          # CPK
-          class << result
-            include CompositePrimaryKeys::ActiveRecord::FinderMethods::InstanceMethods
-            include CompositePrimaryKeys::ActiveRecord::Relation::InstanceMethods
-          end
-          result
-        end
-
-        finder_needs_type_condition? ? @relation.where(type_condition) : @relation
-      end
     end
 
     module CompositeInstanceMethods
@@ -143,34 +130,29 @@ module ActiveRecord
         ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| id.present?} : super(comparison_object)
       end
 
-      # Cloned objects have no id assigned and are treated as new records. Note that this is a "shallow" clone
-      # as it copies the object's attributes only, not its associations. The extent of a "deep" clone is
-      # application specific and is therefore left to the application to implement according to its need.
-      def initialize_copy(other)
-        # Think the assertion which fails if the after_initialize callback goes at the end of the method is wrong. The
-        # deleted clone method called new which therefore called the after_initialize callback. It then went on to copy
-        # over the attributes. But if it's copying the attributes afterwards then it hasn't finished initializing right?
-        # For example in the test suite the topic model's after_initialize method sets the author_email_address to
-        # test@test.com. I would have thought this would mean that all cloned models would have an author email address
-        # of test@test.com. However the test_clone test method seems to test that this is not the case. As a result the
-        # after_initialize callback has to be run *before* the copying of the atrributes rather than afterwards in order
-        # for all tests to pass. This makes no sense to me.
-        callback(:after_initialize) if respond_to_without_attributes?(:after_initialize)
+      def initialize_dup(other)
         cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
         # CPK
         #cloned_attributes.delete(self.class.primary_key)
         self.class.primary_key.each {|key| cloned_attributes.delete(key.to_s)}
 
         @attributes = cloned_attributes
-        clear_aggregation_cache
-        @attributes_cache = {}
-        @new_record = true
-        ensure_proper_type
 
-        if scope = self.class.send(:current_scoped_methods)
-          create_with = scope.scope_for_create
-          create_with.each { |att,value| self.send("#{att}=", value) } if create_with
+        _run_after_initialize_callbacks if respond_to?(:_run_after_initialize_callbacks)
+
+        @changed_attributes = {}
+        attributes_from_column_definition.each do |attr, orig_value|
+          @changed_attributes[attr] = orig_value if field_changed?(attr, orig_value, @attributes[attr])
         end
+
+        @aggregation_cache = {}
+        @association_cache = {}
+        @attributes_cache = {}
+        @new_record  = true
+
+        ensure_proper_type
+        populate_with_current_scope_attributes
+        clear_timestamp_attributes
       end
     end
   end

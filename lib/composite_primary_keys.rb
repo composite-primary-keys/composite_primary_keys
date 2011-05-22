@@ -25,35 +25,49 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 unless defined?(ActiveRecord)
-  gem 'arel', '~> 2.0.0'
-  gem 'activerecord', '>= 3.0.5', '~> 3.0.0'
+  require "bundler/setup"
+  #gem 'arel', '~> 2.1.0'
+  #gem 'rails', '~> 3.1.0'
   require 'active_record'
 end
 
-require 'active_record/associations.rb'
-require 'active_record/associations/association_proxy.rb'
-require 'active_record/associations/association_collection'
-require 'active_record/associations/association_proxy'
+require 'active_record/associations/association_scope'
 require 'active_record/associations/belongs_to_association'
 require 'active_record/associations/belongs_to_polymorphic_association'
+require 'active_record/associations/collection_association'
+require 'active_record/associations/collection_proxy.rb'
 require 'active_record/associations/has_and_belongs_to_many_association'
 require 'active_record/associations/has_many_association'
 require 'active_record/associations/has_one_association'
 require 'active_record/associations/has_one_through_association'
-require 'active_record/associations/through_association_scope'
+require 'active_record/associations/join_dependency/join_part'
+require 'active_record/associations/join_dependency/join_association'
+require 'active_record/associations/preloader/association'
 require 'active_record/persistence'
 require 'active_record/relation/query_methods'
 require 'active_record/attribute_methods/primary_key'
 require 'active_record/fixtures'
 
+Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
+  begin
+    basename = File.basename(adapter).gsub('.rb','')
+    require "active_record/connection_adapters/#{basename}"
+  rescue MissingSourceFile
+  end
+end
+
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/associations'
-require 'composite_primary_keys/associations/association_proxy'
+require 'composite_primary_keys/associations/association_scope'
 require 'composite_primary_keys/associations/has_one_association'
 require 'composite_primary_keys/associations/has_many_association'
 require 'composite_primary_keys/associations/has_and_belongs_to_many_association'
 require 'composite_primary_keys/associations/through_association_scope'
+require 'composite_primary_keys/associations/join_dependency/join_part'
+require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/association_preload'
+require 'composite_primary_keys/associations/preloader/association'
+require 'composite_primary_keys/named_scope'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/reflection'
 require 'composite_primary_keys/relation'
@@ -61,7 +75,6 @@ require 'composite_primary_keys/read'
 require 'composite_primary_keys/write'
 require 'composite_primary_keys/finder_methods'
 require 'composite_primary_keys/base'
-require 'composite_primary_keys/calculations'
 require 'composite_primary_keys/validations/uniqueness'
 require 'composite_primary_keys/query_methods'
 require 'composite_primary_keys/primary_key'

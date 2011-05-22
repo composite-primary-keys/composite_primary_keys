@@ -18,14 +18,17 @@ class TestClone < ActiveSupport::TestCase
     self.class.classes = CLASSES
   end
   
-  def test_truth
+  def test_dup
     testing_with do
-      clone = @first.clone
-      assert_equal @first.attributes.block(@klass.primary_key), clone.attributes
+      clone = @first.dup
+      assert_equal(@first.attributes.block(@klass.primary_key), clone.attributes)
+
       if composite?
-        @klass.primary_key.each {|key| assert_nil clone[key], "Primary key '#{key}' should be nil"} 
+        @klass.primary_key.each do |key|
+          assert_nil(clone[key], "Primary key '#{key}' should be nil")
+        end
       else
-        assert_nil clone[@klass.primary_key], "Sole primary key should be nil"
+        assert_nil(clone[@klass.primary_key], "Sole primary key should be nil")
       end
     end
   end

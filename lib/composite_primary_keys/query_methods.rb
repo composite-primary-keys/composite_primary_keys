@@ -1,24 +1,22 @@
 module ActiveRecord
   module QueryMethods
     def reverse_order
-      order_clause = arel.order_clauses.join(', ')
-      relation = except(:order)
+      order_clause = arel.order_clauses
 
       # CPK
-      # order = order_clause.blank? ?
-      #  "#{@klass.table_name}.#{@klass.primary_key} DESC" :
-      #  reverse_sql_order(order_clause)
+      # order = order_clause.empty? ?
+      #  "#{table_name}.#{primary_key} DESC" :
+      #  reverse_sql_order(order_clause).join(', ')
 
-      order = unless order_clause.blank?
-        reverse_sql_order(order_clause)
+      order = unless order_clause.empty?
+        reverse_sql_order(order_clause).join(', ')
       else
-        primary_keys = composite? ? @klass.primary_keys : [@klass.primary_key]
-        primary_keys.map do |key|
-          "#{@klass.table_name}.#{key} DESC"
+        Array(klass.primary_key).map do |key|
+          "#{table_name}.#{key} DESC"
         end.join(", ")
       end
-
-      relation.order Arel::SqlLiteral.new order
+      
+      except(:order).order(Arel.sql(order))
     end
   end
 end

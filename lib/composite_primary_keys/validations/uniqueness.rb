@@ -3,39 +3,35 @@ module ActiveRecord
     class UniquenessValidator
       def validate_each(record, attribute, value)
         finder_class = find_finder_class_for(record)
-        table = finder_class.unscoped
+        table = finder_class.arel_table
 
-        table_name   = record.class.quoted_table_name
+        coder = record.class.serialized_attributes[attribute.to_s]
 
-        if value && record.class.serialized_attributes.key?(attribute.to_s)
-          value = YAML.dump value
+        if value && coder
+          value = coder.dump value
         end
 
-        sql, params  = mount_sql_and_params(finder_class, table_name, attribute, value)
+        relation = build_relation(finder_class, table, attribute, value)
+        # CPK
+        # relation = relation.and(table[finder_class.primary_key.to_sym].not_eq(record.send(:id))) if record.persisted?
+        if record.persisted?
+          not_eq_conditions = Array(finder_class.primary_key).zip(Array(record.send(:id))).map do |name, value|
+            table[name.to_sym].not_eq(value)
+          end
 
-        relation = table.where(sql, *params)
+          condition = not_eq_conditions.shift
+          not_eq_conditions.each do |not_eq_condition|
+            condition = condition.or(not_eq_conditions)
+          end
+          relation = relation.and(condition)
+        end
 
         Array.wrap(options[:scope]).each do |scope_item|
           scope_value = record.send(scope_item)
-          relation = relation.where(scope_item => scope_value)
+          relation = relation.and(table[scope_item].eq(scope_value))
         end
 
-        if record.persisted?
-          # CPK
-          if record.composite?
-            predicate = nil
-            record.ids_hash.each do |key, value|
-              neq = relation.table[key].not_eq(value)
-              predicate = predicate ? predicate.or(neq) : neq
-            end
-            relation = relation.where(predicate)
-          else
-            # TODO : This should be in Arel
-            relation = relation.where("#{record.class.quoted_table_name}.#{record.class.primary_key} <> ?", record.send(:id))
-          end
-        end
-
-        if relation.exists?
+        if finder_class.unscoped.where(relation).exists?
           record.errors.add(attribute, :taken, options.except(:case_sensitive, :scope).merge(:value => value))
         end
       end

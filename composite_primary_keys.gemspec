@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
 
   # Dependencies
   s.required_ruby_version = '>= 1.8.7'
-  s.add_dependency('arel', '~> 2.0.0')
-  s.add_dependency('activerecord', '>= 3.0.5', '~> 3.0.0')
-  s.add_development_dependency "rspec"
+  s.add_dependency('arel', '~> 2.1.0')
+  s.add_dependency('activerecord', '~> 3.1.0')
 end

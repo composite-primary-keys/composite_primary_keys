@@ -1,8 +1,10 @@
-== 3.1.7 2011-05-?
+== 3.1.7 2011-05-19
 * Support regular AR models having one or many composite models (Jacques Fuentes)
 * Minor test cleanup
 * Make version requirements more explicit
 * Remove Arel extensions used for calculations
+* Fix test that included wrong error constant
+
 
 == 3.1.6 2011-04-03
 * Updated belongs_to association to be a bit more flexible with non-CPK
@@ -11,11 +13,13 @@
 * Fix write issue when one of they keys in a composite key is
   called id (Tom Hughes)
 
+
 == 3.1.5 2011-03-24
 * Fix simple calculation methods
 * Fix instantiation of cpk records via associations.
 * Fix Relation#delete
 * Fix Relation#destroy
+
 
 == 3.1.4 2011-03-06
 * Support ActiveRecord 3.0.5 (interpolate_sql was removed and

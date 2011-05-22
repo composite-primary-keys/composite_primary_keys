@@ -51,11 +51,13 @@ class TestDelete < ActiveSupport::TestCase
 
   def test_clear_association
     department = Department.find(1,1)
-    assert_equal 2, department.employees.size, "Before clear employee count should be 2."
+    assert_equal(2, department.employees.size, "Before clear employee count should be 2.")
+
     department.employees.clear
-    assert_equal 0, department.employees.size, "After clear employee count should be 0."
+    assert_equal(0, department.employees.size, "After clear employee count should be 0.")
+
     department.reload
-    assert_equal 0, department.employees.size, "After clear and a reload from DB employee count should be 0."
+    assert_equal(0, department.employees.size, "After clear and a reload from DB employee count should be 0.")
   end
 
   def test_delete_association
@@ -84,9 +86,10 @@ class TestDelete < ActiveSupport::TestCase
   def test_delete_records_for_has_many_association_with_composite_primary_key
     reference_type  = ReferenceType.find(1)
     codes_to_delete = reference_type.reference_codes[0..1]
-    assert_equal 3, reference_type.reference_codes.size, "Before deleting records reference_code count should be 3."
-    reference_type.reference_codes.delete_records(codes_to_delete)
+    assert_equal(3, reference_type.reference_codes.size, "Before deleting records reference_code count should be 3.")
+
+    reference_type.reference_codes.delete(codes_to_delete)
     reference_type.reload
-    assert_equal 1, reference_type.reference_codes.size, "After deleting 2 records and a reload from DB reference_code count should be 1."
+    assert_equal(1, reference_type.reference_codes.size, "After deleting 2 records and a reload from DB reference_code count should be 1.")
   end
 end

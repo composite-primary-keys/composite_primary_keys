@@ -13,7 +13,7 @@ class TestCreate < ActiveSupport::TestCase
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
       :create => {:reference_type_id => 1, :reference_code => 20, :code_label => 'NEW_CODE', :abbreviation => 'New Code'}
-    },
+    }
   }
 
   def setup
@@ -38,7 +38,7 @@ class TestCreate < ActiveSupport::TestCase
       begin
         @obj = @klass.create(@klass_info[:create].block(@klass.primary_key))
         @successful = !composite?
-      rescue CompositePrimaryKeys::ActiveRecord::CompositeKeyError
+      rescue ActiveRecord::CompositeKeyError
         @successful = false
       rescue
         flunk "Incorrect exception raised: #{$!}, #{$!.class}"

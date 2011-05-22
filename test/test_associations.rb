@@ -11,7 +11,7 @@ class TestAssociations < ActiveSupport::TestCase
 
     expected = {Date.today => 2,
                 Date.today.next => 1}
-       
+
     assert_equal(expected, Tariff.count(:group => :start_date))
   end
 
@@ -41,82 +41,80 @@ class TestAssociations < ActiveSupport::TestCase
   # Its not generating the instances of associated classes from the rows
   def test_find_includes_products
     # Old style
-    assert @products = Product.find(:all, :include => :product_tariffs)
-    assert_equal 2, @products.length
-    assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returned"
+    products = Product.find(:all, :include => :product_tariffs)
+    assert_equal(2, products.length)
+    assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
 
     # New style
-    assert @products = Product.includes(:product_tariffs)
-    assert_equal 2, @products.length
-    assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returned"
+    products = Product.includes(:product_tariffs)
+    assert_equal(2, products.length)
+    assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
   end
 
   def test_find_includes_tariffs
     # Old style
-    assert @tariffs = Tariff.find(:all, :include => :product_tariffs)
-    assert_equal 3, @tariffs.length
-    assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returnedturned"
+    tariffs = Tariff.find(:all, :include => :product_tariffs)
+    assert_equal(3, tariffs.length)
+    assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
 
     # New style
-    assert @tariffs = Tariff.includes(:product_tariffs)
-    assert_equal 3, @tariffs.length
-    assert_not_nil @tariffs.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
-    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returnedturned"
+    tariffs = Tariff.includes(:product_tariffs)
+    assert_equal(3, tariffs.length)
+    assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
   end
 
-  def test_find_includes_product_tariffs
+  def test_find_includes_product_tariffs_product
     # Old style
-    assert @product_tariffs = ProductTariff.find(:all, :include => :product)
-    assert_equal 3, @product_tariffs.length
-    assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
+    product_tariffs = ProductTariff.find(:all, :include => :product)
+    assert_not_nil(product_tariffs)
+    assert_equal(3, product_tariffs.length)
 
     # New style
-    assert @product_tariffs = ProductTariff.includes(:product)
-    assert_equal 3, @product_tariffs.length
-    assert_not_nil @product_tariffs.first.instance_variable_get('@product'), '@product not set'
+    product_tariffs = ProductTariff.includes(:product)
+    assert_not_nil(product_tariffs)
+    assert_equal(3, product_tariffs.length)
   end
 
-  def test_find_includes_comp_belongs_to_tariff
+  def test_find_includes_product_tariffs_tariff
     # Old style
-    assert @product_tariffs = ProductTariff.find(:all, :include => :tariff)
-    assert_equal 3, @product_tariffs.length
-    assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
+    product_tariffs = ProductTariff.find(:all, :include => :tariff)
+    assert_equal(3, product_tariffs.length)
 
     # New style
-    assert @product_tariffs = ProductTariff.includes(:tariff)
-    assert_equal 3, @product_tariffs.length
-    assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
-  end
-
-  def test_find_includes_extended
-    assert @products = Product.find(:all, :include => {:product_tariffs => :tariff})
-    assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returned"
-
-    assert @tariffs = Tariff.find(:all, :include => {:product_tariffs => :product})
-    assert_equal 3, @tariffs.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
-      "Incorrect number of product_tariffs returned"
+    product_tariffs = ProductTariff.includes(:tariff)
+    assert_equal(3, product_tariffs.length)
   end
 
   def test_has_many_through
-    @products = Product.find(:all, :include => :tariffs)
-    assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@tariffs').length},
-      "Incorrect number of tariffs returned"
+    products = Product.find(:all, :include => :tariffs)
+    assert_equal(2, products.length)
+
+    tarrifs_length = products.inject(0) {|sum, product| sum + product.tariffs.length}
+    assert_equal(3, tarrifs_length)
+  end
+
+  def test_find_product_includes
+    products = Product.find(:all, :include => {:product_tariffs => :tariff})
+    assert_equal(2, products.length)
+
+    product_tariffs_length = products.inject(0) {|sum, product| sum + product.product_tariffs.length}
+    assert_equal(3, product_tariffs_length)
+  end
+
+  def test_find_tariffs_includes
+    tariffs = Tariff.find(:all, :include => {:product_tariffs => :product})
+    assert_equal(3, tariffs.length)
+
+    product_tariffs_length = tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length}
+    assert_equal(3, product_tariffs_length)
   end
 
   def test_has_many_through_when_not_pre_loaded
   	student = Student.find(:first)
   	rooms = student.rooms
-  	assert_equal 1, rooms.size
-  	assert_equal 1, rooms.first.dorm_id
-  	assert_equal 1, rooms.first.room_id
+  	assert_equal(1, rooms.size)
+  	assert_equal(1, rooms.first.dorm_id)
+  	assert_equal(1, rooms.first.room_id)
   end
 
   def test_has_many_through_when_through_association_is_composite
