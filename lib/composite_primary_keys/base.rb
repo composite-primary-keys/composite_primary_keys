@@ -19,10 +19,12 @@ module ActiveRecord
         self.primary_keys = keys.map { |k| k.to_sym }
 
         class_eval <<-EOV
-          extend CompositeClassMethods
+          extend  CompositeClassMethods
           include CompositeInstanceMethods
-          extend CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
-          include CompositePrimaryKeys::ActiveRecord::AssociationPreload
+          extend  CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
+          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Read
+          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Write
+          include CompositePrimaryKeys::ActiveRecord::Persistence
         EOV
       end
 
@@ -35,38 +37,6 @@ module ActiveRecord
       self.class.composite?
     end
 
-    def [](attr_name)
-      # CPK
-      if attr_name.is_a?(String) and attr_name != attr_name.split(CompositePrimaryKeys::ID_SEP).first
-        attr_name = attr_name.split(CompositePrimaryKeys::ID_SEP)
-      end
-
-      # CPK
-      if attr_name.is_a?(Array)
-        values = attr_name.map {|name| read_attribute(name)}
-        CompositePrimaryKeys::CompositeKeys.new(values)
-      else
-        read_attribute(attr_name)
-      end
-    end
-
-    def []=(attr_name, value)
-      # CPK
-      if attr_name.is_a?(String) and attr_name != attr_name.split(CompositePrimaryKeys::ID_SEP).first
-        attr_name = attr_name.split(CompositePrimaryKeys::ID_SEP)
-      end
-
-      if attr_name.is_a? Array
-        unless value.length == attr_name.length
-          raise "Number of attr_names and values do not match"
-        end
-        [attr_name, value].transpose.map {|name,val| write_attribute(name, val)}
-        value
-      else
-         write_attribute(attr_name, value)
-      end
-    end
-    
     module CompositeClassMethods
       def primary_key
         primary_keys

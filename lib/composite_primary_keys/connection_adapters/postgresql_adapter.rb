@@ -1,22 +1,30 @@
 module ActiveRecord
   module ConnectionAdapters
     class PostgreSQLAdapter
-#      # This mightn't be in Core, but count(distinct x,y) doesn't work for me
-#      def supports_count_distinct? #:nodoc:
-#        false
-#      end
-#
-#      def concat(*columns)
-#        columns = columns.map { |c| "CAST(#{c} AS varchar)" }
-#        "(#{columns.join('||')})"
-#      end
+      def insert_sql(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
+        # Extract the table from the insert sql. Yuck.
+        _, table = extract_schema_and_table(sql.split(" ", 4)[2])
 
-      def quote_column_name(name)
-        # CPK
-        # PGconn.quote_ident(name.to_s)
-        Array(name).map do |col|
-          PGconn.quote_ident(col.to_s)
-        end.join(CompositePrimaryKeys::ID_SEP)
+        pk ||= primary_key(table)
+
+        if pk
+          select_value("#{sql} RETURNING #{quote_column_names(pk)}")
+        else
+          super
+        end
+      end
+      alias :create :insert
+
+      def sql_for_insert(sql, pk, id_value, sequence_name, binds)
+        unless pk
+          _, table = extract_schema_and_table(sql.split(" ", 4)[2])
+
+          pk = primary_key(table)
+        end
+
+        sql = "#{sql} RETURNING #{quote_column_names(pk)}" if pk
+
+        [sql, binds]
       end
     end
   end

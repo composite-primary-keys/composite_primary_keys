@@ -1,35 +1,6 @@
 module ActiveRecord
   module Associations
     class HasManyAssociation
-#      def construct_sql
-#        case
-#          when @reflection.options[:finder_sql]
-#            @finder_sql = interpolate_and_sanitize_sql(@reflection.options[:finder_sql])
-#
-#          when @reflection.options[:as]
-#            @finder_sql =
-#              "#{@reflection.quoted_table_name}.#{@reflection.options[:as]}_id = #{owner_quoted_id} AND " +
-#              "#{@reflection.quoted_table_name}.#{@reflection.options[:as]}_type = #{@owner.class.quote_value(@owner.class.base_class.name.to_s)}"
-#            @finder_sql << " AND (#{conditions})" if conditions
-#
-#          else
-#            # CPK
-#            # @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} = #{owner_quoted_id}"
-#            @finder_sql = full_columns_equals(@reflection.table_name, @reflection.cpk_primary_key, owner_quoted_id)
-#            @finder_sql << " AND (#{conditions})" if conditions
-#        end
-#
-#        construct_counter_sql
-#      end
-#
-#      def owner_quoted_id
-#        if (keys = @reflection.options[:primary_key])
-#          keys.is_a?(Array) ? keys.collect {|k| quote_value(@owner.send(k)) } : quote_value(@owner.send(keys))
-#        else
-#          @owner.quoted_id
-#        end
-#      end
-#
       def delete_records(records, method)
         if method == :destroy
           records.each { |r| r.destroy }

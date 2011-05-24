@@ -28,8 +28,8 @@ class TestAttributes < ActiveSupport::TestCase
 
   def test_brackets_primary_key
     testing_with do
-      assert_equal @first.id, @first[@primary_keys], "[] failing for #{@klass}"
-      assert_equal @first.id, @first[@first.class.primary_key]
+      assert_equal(@first.id, @first[@primary_keys])
+      assert_equal(@first.id, @first[@first.class.primary_key])
     end
   end
 
@@ -43,33 +43,29 @@ class TestAttributes < ActiveSupport::TestCase
   end
     
   def test_brackets_foreign_key_assignment
-    @flat = Tariff.find(1, Date.today.to_s(:db))
-    @second_free = ProductTariff.find(2,2,Date.today.to_s(:db))
-    @second_free_fk = [:tariff_id, :tariff_start_date]
+    flat = Tariff.find(1, Date.today.to_s(:db))
+    second_free = ProductTariff.find(2, 2, Date.today.to_s(:db))
+    second_free_fk = [:tariff_id, :tariff_start_date]
 
-    @second_free[key = @second_free_fk] = @flat.id
-    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
-    assert_equal @flat.id, @second_free[key]
+    second_free[key = second_free_fk] = flat.id
+    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
+    assert_equal flat.id, second_free[key]
 
-    @second_free[key = @second_free_fk.to_composite_keys] = @flat.id
-    assert_equal @flat.id, @second_free[key]
-    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
+    second_free[key = second_free_fk.to_composite_keys] = flat.id
+    assert_equal flat.id, second_free[key]
+    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
 
-    @second_free[key = @second_free_fk.to_composite_keys.to_s] = @flat.id
-    assert_equal @flat.id, @second_free[key]
-    compare_indexes('@flat', @flat.class.primary_key, '@second_free', @second_free_fk)
+    second_free[key = second_free_fk.to_composite_keys.to_s] = flat.id
+    assert_equal flat.id, second_free[key]
+    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
   end
   
   private
 
-  def compare_indexes(obj_name1, indexes1, obj_name2, indexes2)
-    obj1, obj2 = eval "[#{obj_name1}, #{obj_name2}]"
+  def compare_indexes(obj1, indexes1, obj2, indexes2)
     indexes1.length.times do |key_index|
-      assert_equal obj1[indexes1[key_index].to_s], 
-                   obj2[indexes2[key_index].to_s],
-                   "#{obj_name1}[#{indexes1[key_index]}]=#{obj1[indexes1[key_index].to_s].inspect} != " +
-                   "#{obj_name2}[#{indexes2[key_index]}]=#{obj2[indexes2[key_index].to_s].inspect}; " +
-                   "#{obj_name2} = #{obj2.inspect}"
+      assert_equal(obj1[indexes1[key_index].to_s],
+                   obj2[indexes2[key_index].to_s])
     end
   end
 end

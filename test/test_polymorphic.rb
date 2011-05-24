@@ -21,6 +21,6 @@ class TestPolymorphic < ActiveSupport::TestCase
 
   def test_polymorphic_has_many_through
     user = users(:santiago)
-    assert_equal ['andrew'], user.hacks.collect { |a| a.name }.sort
+    assert_equal(['andrew'], user.hacks.collect { |a| a.name }.sort)
   end
 end

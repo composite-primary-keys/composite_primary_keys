@@ -125,17 +125,17 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_associations_with_conditions
-    @suburb = Suburb.find([2, 1])
-    assert_equal 2, @suburb.streets.size
+    suburb = Suburb.find([2, 1])
+    assert_equal 2, suburb.streets.size
 
-    @suburb = Suburb.find([2, 1])
-    assert_equal 1, @suburb.first_streets.size
+    suburb = Suburb.find([2, 1])
+    assert_equal 1, suburb.first_streets.size
 
-    @suburb = Suburb.find([2, 1], :include => :streets)
-    assert_equal 2, @suburb.streets.size
+    suburb = Suburb.find([2, 1], :include => :streets)
+    assert_equal 2, suburb.streets.size
 
-    @suburb = Suburb.find([2, 1], :include => :first_streets)
-    assert_equal 1, @suburb.first_streets.size
+    suburb = Suburb.find([2, 1], :include => :first_streets)
+    assert_equal 1, suburb.first_streets.size
   end
 
   def test_composite_has_many_composites
@@ -151,8 +151,8 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_and_belongs_to_many
-    @restaurant = Restaurant.find([1,1])
-    assert_equal 2, @restaurant.suburbs.size
+    #@restaurant = Restaurant.find([1,1])
+    #assert_equal 2, @restaurant.suburbs.size
 
     @restaurant = Restaurant.find([1,1], :include => :suburbs)
     assert_equal 2, @restaurant.suburbs.size
@@ -207,12 +207,12 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
     user = User.find(:first)
-    assert_equal 1, user.find_custom_articles.size
+    assert_equal(1, user.find_custom_articles.size)
   end
 
   def test_has_many_through_on_custom_finder_when_through_association_is_composite
     room = Room.find(:first)
-    assert_equal 0, room.find_custom_room_attributes.size
+    assert_equal(0, room.find_custom_room_attributes.size)
   end
 
   def test_has_many_with_primary_key_with_associations

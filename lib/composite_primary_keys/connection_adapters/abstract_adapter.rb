@@ -1,9 +1,11 @@
-#module ActiveRecord
-#  module ConnectionAdapters # :nodoc:
-#    class AbstractAdapter
-#      def concat(*columns)
-#        "CONCAT(#{columns.join(',')})"
-#      end
-#    end
-#  end
-#end
+module ActiveRecord
+  module ConnectionAdapters
+    class AbstractAdapter
+      def quote_column_names(name)
+        Array(name).map do |col|
+          quote_column_name(col.to_s)
+        end.join(CompositePrimaryKeys::ID_SEP)
+      end
+    end
+  end
+end

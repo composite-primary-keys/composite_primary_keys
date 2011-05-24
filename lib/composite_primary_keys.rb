@@ -31,58 +31,64 @@ unless defined?(ActiveRecord)
   require 'active_record'
 end
 
+# AR files we override
+require 'active_record/fixtures'
+require 'active_record/named_scope'
+require 'active_record/persistence'
+require 'active_record/relation'
+
+require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
-require 'active_record/associations/belongs_to_association'
-require 'active_record/associations/belongs_to_polymorphic_association'
-require 'active_record/associations/collection_association'
-require 'active_record/associations/collection_proxy.rb'
 require 'active_record/associations/has_and_belongs_to_many_association'
 require 'active_record/associations/has_many_association'
-require 'active_record/associations/has_one_association'
-require 'active_record/associations/has_one_through_association'
 require 'active_record/associations/join_dependency/join_part'
 require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
-require 'active_record/persistence'
-require 'active_record/relation/query_methods'
+require 'active_record/associations/preloader/belongs_to'
+require 'active_record/associations/preloader/has_and_belongs_to_many'
+
 require 'active_record/attribute_methods/primary_key'
-require 'active_record/fixtures'
+require 'active_record/attribute_methods/read'
+require 'active_record/attribute_methods/write'
 
-Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
-  begin
-    basename = File.basename(adapter).gsub('.rb','')
-    require "active_record/connection_adapters/#{basename}"
-  rescue MissingSourceFile
-  end
-end
+require 'active_record/connection_adapters/abstract_adapter'
+require 'active_record/connection_adapters/postgresql_adapter'
 
+require 'active_record/relation/finder_methods'
+require 'active_record/relation/query_methods'
+
+require 'active_record/validations/uniqueness'
+
+
+# CPK files
+require 'composite_primary_keys/base'
 require 'composite_primary_keys/composite_arrays'
-require 'composite_primary_keys/associations'
-require 'composite_primary_keys/associations/association_scope'
-require 'composite_primary_keys/associations/has_one_association'
-require 'composite_primary_keys/associations/has_many_association'
-require 'composite_primary_keys/associations/has_and_belongs_to_many_association'
-require 'composite_primary_keys/associations/through_association_scope'
-require 'composite_primary_keys/associations/join_dependency/join_part'
-require 'composite_primary_keys/associations/join_dependency/join_association'
-require 'composite_primary_keys/association_preload'
-require 'composite_primary_keys/associations/preloader/association'
+require 'composite_primary_keys/composite_predicates'
+require 'composite_primary_keys/finder_methods'
+require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/named_scope'
 require 'composite_primary_keys/persistence'
-require 'composite_primary_keys/reflection'
 require 'composite_primary_keys/relation'
-require 'composite_primary_keys/read'
-require 'composite_primary_keys/write'
-require 'composite_primary_keys/finder_methods'
-require 'composite_primary_keys/base'
-require 'composite_primary_keys/validations/uniqueness'
-require 'composite_primary_keys/query_methods'
-require 'composite_primary_keys/primary_key'
-require 'composite_primary_keys/fixtures'
+require 'composite_primary_keys/version'
 
-Dir[File.dirname(__FILE__) + '/composite_primary_keys/connection_adapters/*.rb'].each do |adapter|
-  begin
-    require adapter.gsub('.rb','')
-  rescue MissingSourceFile
-  end
-end
+require 'composite_primary_keys/associations/association'
+require 'composite_primary_keys/associations/association_scope'
+require 'composite_primary_keys/associations/has_and_belongs_to_many_association'
+require 'composite_primary_keys/associations/has_many_association'
+require 'composite_primary_keys/associations/join_dependency/join_part'
+require 'composite_primary_keys/associations/join_dependency/join_association'
+require 'composite_primary_keys/associations/preloader/association'
+require 'composite_primary_keys/associations/preloader/belongs_to'
+require 'composite_primary_keys/associations/preloader/has_and_belongs_to_many'
+
+require 'composite_primary_keys/attribute_methods/primary_key'
+require 'composite_primary_keys/attribute_methods/read'
+require 'composite_primary_keys/attribute_methods/write'
+
+require 'composite_primary_keys/connection_adapters/abstract_adapter'
+require 'composite_primary_keys/connection_adapters/postgresql_adapter'
+
+require 'composite_primary_keys/relation/finder_methods'
+require 'composite_primary_keys/relation/query_methods'
+
+require 'composite_primary_keys/validations/uniqueness'
