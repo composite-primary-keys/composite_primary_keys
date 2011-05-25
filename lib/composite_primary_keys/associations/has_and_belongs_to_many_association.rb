@@ -129,7 +129,7 @@ module ActiveRecord
             end
             association_conditions_arel = association_conditions.inject { |conds, cond| conds.or(cond) }
           else
-            association_conditions_arel << relation[@reflection.association_foreign_key].in(records.map { |x| x.id }.compact)
+            association_conditions_arel = relation[@reflection.association_foreign_key].in(records.map { |x| x.id }.compact)
           end
           
           all_conditions_arel = owner_conditions_arel.and(association_conditions_arel)
