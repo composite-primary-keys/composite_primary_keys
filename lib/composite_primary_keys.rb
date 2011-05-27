@@ -24,14 +24,9 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
-unless defined?(ActiveRecord)
-  begin
-    require 'active_record'  
-  rescue LoadError
-    require 'rubygems'
-    gem 'active_record'
-  end
-end
+require 'rubygems'
+gem 'activerecord', '~> 3.0.0', '>= 3.0.5'
+require 'active_record'  
 
 require 'active_record/associations.rb'
 require 'active_record/associations/association_proxy.rb'
