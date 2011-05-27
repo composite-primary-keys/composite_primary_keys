@@ -26,8 +26,6 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require "bundler/setup"
-  #gem 'arel', '~> 2.1.0'
-  #gem 'rails', '~> 3.1.0'
   require 'active_record'
 end
 
@@ -64,7 +62,6 @@ require 'active_record/validations/uniqueness'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/composite_predicates'
-require 'composite_primary_keys/finder_methods'
 require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/named_scope'
 require 'composite_primary_keys/persistence'

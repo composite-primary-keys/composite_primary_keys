@@ -1,5 +1,5 @@
 module CompositePrimaryKeys
-  module VERSION #:nodoc:
+  module VERSION
     MAJOR = 3
     MINOR = 2
     TINY  = 0
