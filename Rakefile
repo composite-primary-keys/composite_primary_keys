@@ -2,9 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 # Set global variable so other tasks can access them
 ::PROJECT_ROOT = File.expand_path(".")
@@ -14,7 +12,7 @@ require 'rake/gempackagetask'
 spec = Gem::Specification.load("#{GEM_NAME}.gemspec")
 
 # Setup Rake tasks for managing the gem
-Rake::GemPackageTask.new(spec).define
+Gem::PackageTask.new(spec).define
 
 # Now load in other task files
 Dir.glob('tasks/**/*.rake').each do |rake_file|
