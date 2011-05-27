@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
   s.summary      = "Composite key support for ActiveRecord"
   s.description  = "Composite key support for ActiveRecord 3"
   s.date         = Time.new
-  s.has_rdoc     = true
   s.files        = Dir['Rakefile',
                        '*.txt',
                        '*.rb',
