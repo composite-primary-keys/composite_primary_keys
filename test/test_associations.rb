@@ -158,7 +158,15 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 2, @restaurant.suburbs.size
   end
 
-  def test_has_one_with_primary_key
+  def test_habtm_clear
+    @restaurant = Restaurant.find([1,1])
+    assert_equal 2, @restaurant.suburbs.size
+    @restaurant.suburbs.clear
+    @restaurant = Restaurant.find([1,1])
+    assert_equal 0, @restaurant.suburbs.size
+  end
+
+  def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
     assert_equal 2, @membership.reading.id
   end

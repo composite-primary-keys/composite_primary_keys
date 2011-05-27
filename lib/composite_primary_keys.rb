@@ -25,7 +25,8 @@ $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 unless defined?(ActiveRecord)
-  require "bundler/setup"
+  require 'rubygems'
+  gem 'activerecord', '>= 3.0.5', '~> 3.0.0'
   require 'active_record'
 end
 
