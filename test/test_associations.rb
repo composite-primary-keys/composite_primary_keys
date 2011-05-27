@@ -5,26 +5,6 @@ class TestAssociations < ActiveSupport::TestCase
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
            :memberships
   
-  def test_has_many_through_with_conditions_when_through_association_is_not_composite
-    user = User.find(:first)
-    assert_equal 1, user.articles.find(:all, :conditions => ["articles.name = ?", "Article One"]).size
-  end
-
-  def test_has_many_through_with_conditions_when_through_association_is_composite
-    room = Room.find(:first)
-    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "keg"]).size
-  end
-
-  def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
-    user = User.find(:first)
-    assert_equal 1, user.find_custom_articles.size
-  end
-
-  def test_has_many_through_on_custom_finder_when_through_association_is_composite
-    room = Room.find(:first)
-    assert_equal 0, room.find_custom_room_attributes.size
-  end
-
   def test_count
     assert_equal(2, Product.count(:include => :product_tariffs))
     assert_equal(3, Tariff.count(:include => :product_tariffs))
@@ -141,9 +121,9 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through_when_through_association_is_composite
     dorm = Dorm.find(:first)
-    assert_equal 1, dorm.rooms.length
-    assert_equal 1, dorm.rooms.first.room_attributes.length
-    assert_equal 'keg', dorm.rooms.first.room_attributes.first.name
+    assert_equal(2, dorm.rooms.length)
+    assert_equal(1, dorm.rooms.first.room_attributes.length)
+    assert_equal('keg', dorm.rooms.first.room_attributes.first.name)
   end
 
   def test_associations_with_conditions
@@ -158,6 +138,18 @@ class TestAssociations < ActiveSupport::TestCase
 
     @suburb = Suburb.find([2, 1], :include => :first_streets)
     assert_equal 1, @suburb.first_streets.size
+  end
+
+  def test_composite_has_many_composites
+    room = rooms(:branner_room_1)
+    assert_equal(2, room.room_assignments.length)
+    assert_equal(room_assignments(:jacksons_room), room.room_assignments[0])
+    assert_equal(room_assignments(:bobs_room), room.room_assignments[1])
+  end
+
+  def test_composite_belongs_to_composite
+    room_assignment = room_assignments(:jacksons_room)
+    assert_equal(rooms(:branner_room_1), room_assignment.room)
   end
 
   def test_has_and_belongs_to_many
@@ -178,14 +170,27 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
+    assert_equal 2, @membership.reading.id
+  end
+
+  def test_has_one_with_composite
+    # In this case a regular model has_one composite model
+    product = products(:first_product)
+    assert_not_nil(product.product_tariff)
+  end
+
+  def test_has_many_with_primary_key
+    @membership = Membership.find([1, 1])
 
     assert_equal 2, @membership.readings.size
   end
 
-  def test_has_one_with_primary_key
-    @membership = Membership.find([1, 1])
-
-    assert_equal 2, @membership.reading.id
+  def test_has_many_with_composite_key
+    # In this case a regular model has_many composite models
+    dorm = dorms(:branner)
+    assert_equal(2, dorm.rooms.length)
+    assert_equal(1, dorm.rooms[0].room_id)
+    assert_equal(2, dorm.rooms[1].room_id)
   end
 
   def test_joins_has_many_with_primary_key
@@ -198,6 +203,26 @@ class TestAssociations < ActiveSupport::TestCase
     @membership = Membership.find(:first, :joins => :reading, :conditions => { :readings => { :id => 2 } })
 
     assert_equal [1, 1], @membership.id
+  end
+
+  def test_has_many_through_with_conditions_when_through_association_is_not_composite
+    user = User.find(:first)
+    assert_equal 1, user.articles.find(:all, :conditions => ["articles.name = ?", "Article One"]).size
+  end
+
+  def test_has_many_through_with_conditions_when_through_association_is_composite
+    room = Room.find(:first)
+    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "keg"]).size
+  end
+
+  def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
+    user = User.find(:first)
+    assert_equal 1, user.find_custom_articles.size
+  end
+
+  def test_has_many_through_on_custom_finder_when_through_association_is_composite
+    room = Room.find(:first)
+    assert_equal 0, room.find_custom_room_attributes.size
   end
 
   def test_has_many_with_primary_key_with_associations

@@ -14,6 +14,14 @@ module ActiveRecord
         end
         @finder_sql << " AND (#{conditions})" if conditions
       end
+
+      def owner_quoted_id
+        if (keys = @reflection.options[:primary_key])
+          keys.is_a?(Array) ? keys.collect {|k| @owner.class.quote_value(@owner.send(k)) } : @owner.class.quote_value(@owner.send(keys))
+        else
+          @owner.quoted_id
+        end
+      end
     end
   end
 end

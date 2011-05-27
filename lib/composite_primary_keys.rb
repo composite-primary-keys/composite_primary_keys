@@ -24,6 +24,9 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
+  gem 'arel', '~> 2.0.0'
+  gem 'activerecord', '>= 3.0.5', '~> 3.0.0'
+  require 'active_record'
 require 'rubygems'
 gem 'activerecord', '~> 3.0.0', '>= 3.0.5'
 require 'active_record'  
@@ -44,7 +47,6 @@ require 'active_record/relation/query_methods'
 require 'active_record/attribute_methods/primary_key'
 require 'active_record/fixtures'
 
-require 'composite_primary_keys/arel_extensions'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/associations'
 require 'composite_primary_keys/associations/association_proxy'
