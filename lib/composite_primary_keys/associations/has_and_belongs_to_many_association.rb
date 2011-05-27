@@ -31,55 +31,23 @@ module ActiveRecord
         record
       end
 
-      # CPK
-      #def delete_records(records)
-      #  if sql = @reflection.options[:delete_sql]
-      #    records.each { |record| @owner.connection.delete(interpolate_and_sanitize_sql(sql, record)) }
-      #  else
-      #    relation = Arel::Table.new(@reflection.options[:join_table])
-      #    relation.where(relation[@reflection.primary_key_name].eq(@owner.id).
-      #      and(relation[@reflection.association_foreign_key].in(records.map { |x| x.id }.compact))
-      #    ).delete
-      #  end
-      #end
-
-      # CPK
-      def delete_records(records)
-        if sql = @reflection.options[:delete_sql]
-          records.each { |record| @owner.connection.delete(interpolate_and_sanitize_sql(sql, record)) }
+      def delete_records(records, method)
+        if sql = options[:delete_sql]
+          records.each { |record| owner.connection.delete(interpolate(sql, record)) }
         else
-          relation = Arel::Table.new(@reflection.options[:join_table])
+          relation = join_table
+          # CPK
+          # stmt = relation.where(relation[reflection.foreign_key].eq(owner.id).
+          #  and(relation[reflection.association_foreign_key].in(records.map { |x| x.id }.compact))
+          #).compile_delete
 
-          if @reflection.cpk_primary_key 
-            owner_conditions = []
-            @reflection.cpk_primary_key.each_with_index do |column,i|
-              owner_conditions << relation[column.to_sym].eq(@owner.id[i])
-            end
-            owner_conditions_arel = owner_conditions.inject { |conds, cond| conds.and(cond) }
-          else
-            owner_conditions_arel = relation[@reflection.primary_key_name].eq(@owner.id)
-          end
+          predicate1 = cpk_id_predicate(relation, reflection.foreign_key, owner.id)
+          predicate2 = cpk_in_predicate(relation, reflection.association_foreign_key, records.map { |x| x.id })
+          stmt = relation.where(predicate1.and(predicate2)).compile_delete
 
-          if @reflection.association_foreign_key.kind_of?(Array)
-            association_conditions = []
-            records.each do |rec|
-              record_conditions = []
-              @reflection.association_foreign_key.each_with_index do |column,i|
-                record_conditions << relation[column.to_sym].eq(rec.id[i])
-              end
-              association_conditions << record_conditions.inject { |conds, cond| conds.and(cond) }
-            end
-            association_conditions_arel = association_conditions.inject { |conds, cond| conds.or(cond) }
-          else
-            association_conditions_arel = relation[@reflection.association_foreign_key].in(records.map { |x| x.id }.compact)
-          end
-          
-          all_conditions_arel = owner_conditions_arel.and(association_conditions_arel)
-          
-          relation.where(all_conditions_arel).delete
+          owner.connection.delete stmt.to_sql
         end
       end
-
     end    
   end
 end

@@ -151,8 +151,8 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_and_belongs_to_many
-    #@restaurant = Restaurant.find([1,1])
-    #assert_equal 2, @restaurant.suburbs.size
+    @restaurant = Restaurant.find([1,1])
+    assert_equal 2, @restaurant.suburbs.size
 
     @restaurant = Restaurant.find([1,1], :include => :suburbs)
     assert_equal 2, @restaurant.suburbs.size
