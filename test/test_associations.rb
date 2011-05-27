@@ -160,7 +160,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 2, @restaurant.suburbs.size
   end
 
-  def test_hbtm_clear
+  def test_habtm_clear
     @restaurant = Restaurant.find([1,1])
     assert_equal 2, @restaurant.suburbs.size
     @restaurant.suburbs.clear

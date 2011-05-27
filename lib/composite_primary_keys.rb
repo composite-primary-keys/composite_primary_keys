@@ -24,12 +24,11 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
-  gem 'arel', '~> 2.0.0'
+unless defined?(ActiveRecord)
+  require 'rubygems'
   gem 'activerecord', '>= 3.0.5', '~> 3.0.0'
   require 'active_record'
-require 'rubygems'
-gem 'activerecord', '~> 3.0.0', '>= 3.0.5'
-require 'active_record'  
+end
 
 require 'active_record/associations.rb'
 require 'active_record/associations/association_proxy.rb'

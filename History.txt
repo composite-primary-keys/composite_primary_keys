@@ -1,7 +1,7 @@
-== 3.1.7 2011-05-26
+== 3.1.8 2011-05-26
 * Fix calling clear on a HABTM associate (David Rueck)
 
-== 3.1.7 2011-05-?
+== 3.1.7 2011-05-26
 * Support regular AR models having one or many composite models (Jacques Fuentes)
 * Minor test cleanup
 * Make version requirements more explicit
