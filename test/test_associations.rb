@@ -3,7 +3,7 @@ require 'abstract_unit'
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
-           :memberships
+           :memberships, :product_component_roles, :product_components
   
   def test_has_many_through_with_conditions_when_through_association_is_not_composite
     user = User.find(:first)
@@ -168,12 +168,32 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 2, @restaurant.suburbs.size
   end
 
-  def test_hbtm_clear
+  def test_hbtm_clear_cpk_both_sides
     @restaurant = Restaurant.find([1,1])
     assert_equal 2, @restaurant.suburbs.size
     @restaurant.suburbs.clear
     @restaurant = Restaurant.find([1,1])
     assert_equal 0, @restaurant.suburbs.size
+  end
+
+  def test_hbtm_clear_cpk_owner_side_only
+    role = ProductComponentRole.find([1,1])
+    comp1 = ProductComponent.find(1)
+    comp2 = ProductComponent.find(2)
+    role.product_components << comp1 << comp2
+    assert_equal 2, role.product_components.size
+    role.product_components.clear
+    assert_equal 0, role.product_components.size
+  end
+
+  def test_hbtm_clear_cpk_association_side_only
+    comp = ProductComponent.find(1)
+    role1 = ProductComponentRole.find([1,1])
+    role2 = ProductComponentRole.find([2,1])
+    comp.product_component_roles << role1 << role2
+    assert_equal 2, comp.product_component_roles.size
+    comp.product_component_roles.clear
+    assert_equal 0, comp.product_component_roles.size
   end
 
   def test_has_many_with_primary_key

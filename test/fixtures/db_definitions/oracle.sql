@@ -192,3 +192,21 @@ create table way_nodes (
     sequence_id number(11) not null,
     constraint way_nodes_pk primary key (id, sequence_id)
 );
+
+create table product_component_roles (
+  product_id number(11) not null,
+  role_num number(11) not null,
+  constraint product_component_roles_pk primary key (product_id, role_num)
+);
+
+create sequence product_components_seq start 1000;
+
+create table product_components (
+  id number(11) not null primary key
+);
+
+create table product_roles_components (
+  product_id number(11) not null,
+  role_num number(11) not null,
+  product_component_id number(11) not null
+);

@@ -191,3 +191,21 @@ create table way_nodes (
   sequence_id int(11) not null,
   primary key (id, sequence_id)
 ) type=InnoDB;
+
+create table product_component_roles (
+  product_id int(11) not null,
+  role_num int(11) not null,
+  primary key (product_id, role_num)
+) type=InnoDB;
+
+create table product_components (
+  id int(11) not null auto_increment,
+  primary key(id) 
+) type=InnoDB;
+
+create table product_roles_components (
+  product_id int(11) not null,
+  role_num int(11) not null,
+  product_component_id int(11) not null,
+  primary key (product_id, role_num, product_component_id)
+) type=InnoDB;
