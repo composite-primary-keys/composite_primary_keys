@@ -218,22 +218,9 @@ create table way_nodes (
   primary key (id, sequence_id)
 );
 
-create table product_component_roles (
+create table products_restaurants (
   product_id int not null,
-  role_num int not null,
-  primary key (product_id, role_num)
+  franchise_id int not null,
+  store_id int not null
 );
-
-create sequence public.product_components_seq start 1000;
-
-create table product_components (
-  id int not null primary key default nextval('public.product_components_seq')
-);
-
-create table product_roles_components (
-  product_id int not null,
-  role_num int not null,
-  product_component_id int not null,
-  primary key (product_id, role_num, product_component_id)
-);
-
+  

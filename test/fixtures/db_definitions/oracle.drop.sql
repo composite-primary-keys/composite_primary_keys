@@ -38,7 +38,4 @@ drop table room_assignments;
 drop table students;
 drop sequence students_seq;
 drop table way_nodes;
-drop table product_component_roles;
-drop table product_components;
-drop sequence product_components_seq;
-drop table product_roles_components;
+drop table products_restaurants;

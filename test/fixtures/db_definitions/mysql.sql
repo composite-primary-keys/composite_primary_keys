@@ -192,20 +192,9 @@ create table way_nodes (
   primary key (id, sequence_id)
 ) type=InnoDB;
 
-create table product_component_roles (
+create table products_restaurants (
   product_id int(11) not null,
-  role_num int(11) not null,
-  primary key (product_id, role_num)
+  franchise_id int(11) not null,
+  store_id int(11) not null
 ) type=InnoDB;
 
-create table product_components (
-  id int(11) not null auto_increment,
-  primary key(id) 
-) type=InnoDB;
-
-create table product_roles_components (
-  product_id int(11) not null,
-  role_num int(11) not null,
-  product_component_id int(11) not null,
-  primary key (product_id, role_num, product_component_id)
-) type=InnoDB;
