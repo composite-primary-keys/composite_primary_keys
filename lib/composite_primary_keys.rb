@@ -53,6 +53,7 @@ require 'active_record/attribute_methods/write'
 require 'active_record/connection_adapters/abstract_adapter'
 require 'active_record/connection_adapters/postgresql_adapter'
 
+require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
 require 'active_record/relation/query_methods'
 
@@ -86,6 +87,7 @@ require 'composite_primary_keys/attribute_methods/write'
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
 require 'composite_primary_keys/connection_adapters/postgresql_adapter'
 
+require 'composite_primary_keys/relation/calculations'
 require 'composite_primary_keys/relation/finder_methods'
 require 'composite_primary_keys/relation/query_methods'
 
