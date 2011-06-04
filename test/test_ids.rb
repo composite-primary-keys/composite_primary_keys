@@ -71,7 +71,8 @@ class TestIds < ActiveSupport::TestCase
         assert_not_nil @klass.primary_keys
         assert_equal @primary_keys.map {|key| key.to_sym}, @klass.primary_keys
         assert_equal @klass.primary_keys, @klass.primary_key
-        assert_equal @primary_keys.map {|key| key.to_sym}.to_s, @klass.primary_key.to_s
+        assert_kind_of(CompositePrimaryKeys::CompositeKeys, @klass.primary_keys)
+        assert_equal @primary_keys.map {|key| key.to_sym}.join(','), @klass.primary_key.to_s
       else
         assert_not_nil @klass.primary_key
         assert_equal @primary_keys.first, @klass.primary_key.to_sym
