@@ -13,7 +13,7 @@ module CompositePrimaryKeys
           eq_predicates = Array.new
           self.class.primary_key.each_with_index do |key, i|
             column = self.class.columns_hash[key.to_s]
-            bind_values << [column.name, self[key]]
+            bind_values << [column, self[key]]
             substitute = connection.substitute_at(column, i)
             eq_predicates << self.class.arel_table[key].eq(substitute)
           end
