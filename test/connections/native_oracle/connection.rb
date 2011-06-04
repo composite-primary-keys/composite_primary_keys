@@ -1,6 +1,6 @@
 print "Using native Oracle\n"
 
-require 'active_record'
+require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 
 def connection_string
   "#{SPEC['username']}/#{SPEC['password']}@#{SPEC['host']}"
