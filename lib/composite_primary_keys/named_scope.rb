@@ -17,6 +17,7 @@ module CompositePrimaryKeys
 
           # CPK
           class << result
+            include CompositePrimaryKeys::ActiveRecord::Calculations
             include CompositePrimaryKeys::ActiveRecord::FinderMethods
             include CompositePrimaryKeys::ActiveRecord::QueryMethods
             include CompositePrimaryKeys::ActiveRecord::Relation
