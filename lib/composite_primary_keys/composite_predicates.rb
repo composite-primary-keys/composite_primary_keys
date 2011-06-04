@@ -4,7 +4,7 @@ module CompositePrimaryKeys
       if predicates.length == 1
         predicates.first
       else
-        Arel::Nodes::And.new(eq_predicates)
+        Arel::Nodes::And.new(predicates)
       end
     end
     
@@ -35,7 +35,7 @@ module CompositePrimaryKeys
 
     def cpk_in_predicate(table, primary_keys, ids)
       and_predicates = ids.map do |id_set|
-        eq_predicates = Array(primary_keys).zip(id_set).map do |primary_key, value|
+        eq_predicates = Array(primary_keys).zip(Array(id_set)).map do |primary_key, value|
           table[primary_key].eq(value)
         end
         cpk_and_predicate(eq_predicates)
