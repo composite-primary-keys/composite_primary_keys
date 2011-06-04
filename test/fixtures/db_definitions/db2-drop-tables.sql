@@ -15,3 +15,4 @@ drop table KITCHEN_SINK;
 drop table RESTAURANTS;
 drop table RESTAURANTS_SUBURBS;
 drop table WAY_NODES;
+drop table PRODUCTS_RESTAURANTS;

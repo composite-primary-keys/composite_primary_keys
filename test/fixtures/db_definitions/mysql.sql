@@ -191,3 +191,10 @@ create table way_nodes (
   sequence_id int(11) not null,
   primary key (id, sequence_id)
 ) type=InnoDB;
+
+create table products_restaurants (
+  product_id int(11) not null,
+  franchise_id int(11) not null,
+  store_id int(11) not null
+) type=InnoDB;
+

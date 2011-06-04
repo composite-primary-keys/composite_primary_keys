@@ -217,3 +217,10 @@ create table way_nodes (
   sequence_id int not null,
   primary key (id, sequence_id)
 );
+
+create table products_restaurants (
+  product_id int not null,
+  franchise_id int not null,
+  store_id int not null
+);
+  

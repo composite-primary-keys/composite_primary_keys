@@ -1,7 +1,7 @@
 require 'abstract_unit'
 
 class TestAssociations < ActiveSupport::TestCase
-  fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants, :restaurants_suburbs,
+  fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
            :memberships
   
@@ -153,22 +153,6 @@ class TestAssociations < ActiveSupport::TestCase
   def test_composite_belongs_to_composite
     room_assignment = room_assignments(:jacksons_room)
     assert_equal(rooms(:branner_room_1), room_assignment.room)
-  end
-
-  def test_has_and_belongs_to_many
-    @restaurant = Restaurant.find([1,1])
-    assert_equal 2, @restaurant.suburbs.size
-
-    @restaurant = Restaurant.find([1,1], :include => :suburbs)
-    assert_equal 2, @restaurant.suburbs.size
-  end
-
-  def test_habtm_clear
-    @restaurant = Restaurant.find([1,1])
-    assert_equal 2, @restaurant.suburbs.size
-    @restaurant.suburbs.clear
-    @restaurant = Restaurant.find([1,1])
-    assert_equal 0, @restaurant.suburbs.size
   end
 
   def test_has_many_with_primary_key
