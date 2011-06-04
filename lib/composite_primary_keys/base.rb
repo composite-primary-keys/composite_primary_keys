@@ -16,12 +16,13 @@ module ActiveRecord
         end
 
         cattr_accessor :primary_keys
-        self.primary_keys = keys.map { |k| k.to_sym }
+        self.primary_keys = keys.map { |k| k.to_sym }.to_composite_keys
 
         class_eval <<-EOV
           extend  CompositeClassMethods
           include CompositeInstanceMethods
           extend  CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
+          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::PrimaryKey
           include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Read
           include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Write
           include CompositePrimaryKeys::ActiveRecord::Persistence
