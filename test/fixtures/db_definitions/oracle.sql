@@ -192,3 +192,9 @@ create table way_nodes (
     sequence_id number(11) not null,
     constraint way_nodes_pk primary key (id, sequence_id)
 );
+
+create table products_restaurants (
+    product_id   number(11) not null,
+    franchise_id number(11) not null,
+    store_id     number(11) not null
+);
