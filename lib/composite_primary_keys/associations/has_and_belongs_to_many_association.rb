@@ -41,8 +41,8 @@ module ActiveRecord
           #  and(relation[reflection.association_foreign_key].in(records.map { |x| x.id }.compact))
           #).compile_delete
 
-          predicate1 = cpk_id_predicate(relation, reflection.foreign_key, owner.id)
-          predicate2 = cpk_in_predicate(relation, reflection.association_foreign_key, records.map { |x| x.id })
+          predicate1 = cpk_id_predicate(relation, Array(reflection.foreign_key), Array(owner.id))
+          predicate2 = cpk_in_predicate(relation, Array(reflection.association_foreign_key), records.map { |x| x.id })
           stmt = relation.where(predicate1.and(predicate2)).compile_delete
 
           owner.connection.delete stmt.to_sql
