@@ -15,6 +15,11 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(expected, Tariff.count(:group => :start_date))
   end
 
+  def test_count_distinct
+    product = products(:first_product)
+    assert_equal(2, product.product_tariffs.count(:distinct => true))
+  end
+
   def test_products
     assert_not_nil products(:first_product).product_tariffs
     assert_equal 2, products(:first_product).product_tariffs.length
