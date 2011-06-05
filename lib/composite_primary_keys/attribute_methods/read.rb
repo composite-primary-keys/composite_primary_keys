@@ -17,7 +17,8 @@ module ActiveRecord
           #   access_code.insert(0, "missing_attribute('#{attr_name}', caller) unless @attributes.has_key?('#{attr_name}'); ")
           # end
           primary_keys = Array(self.primary_key)
-          unless primary_keys.include?(attr_name.to_sym)
+
+          unless primary_keys.include?(attr_name.to_s)
             access_code = access_code.insert(0, "missing_attribute('#{attr_name}', caller) unless @attributes.has_key?('#{attr_name}'); ")
           end
 
