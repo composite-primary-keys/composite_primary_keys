@@ -1,7 +1,8 @@
 require 'abstract_unit'
 
 class TestDelete < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes, :departments, :employees
+  fixtures :departments, :employees, :products, :product_tariffs,
+           :reference_types, :reference_codes
   
   CLASSES = {
     :single => {
@@ -68,9 +69,41 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal 1, department.employees.size, "After delete and a reload from DB employee count should be 1."
   end
 
-  def test_delete_cpk_all_association
+  def test_destroy_has_one
+    # In this case the association is a has_one with
+    # dependent set to :destroy
+    department = departments(:engineering)
+    assert_not_nil(department.head)
+
+    # Get head employee id
+    head_id = department.head.id
+
+    # Delete department - should delete the head
+    department.destroy
+
+    # Verify the head is also
+    assert_raise(ActiveRecord::RecordNotFound) do
+      Employee.find(head_id)
+    end
+  end
+
+  def test_destroy_has_many_delete_all
     # In this case the association is a has_many composite key with
     # dependent set to :delete_all
+    product = Product.find(1)
+    assert_equal(2, product.product_tariffs.length)
+
+    # Get product_tariff length
+    product_tariff_size = ProductTariff.count
+
+    # Delete product - should delete 2 product tariffs
+    product.destroy
+
+    # Verify product_tariff are deleted
+    assert_equal(product_tariff_size - 2, ProductTariff.count)
+  end
+
+  def test_delete_cpk_association
     product = Product.find(1)
     assert_equal(2, product.product_tariffs.length)
 

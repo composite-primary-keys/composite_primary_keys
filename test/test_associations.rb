@@ -3,7 +3,7 @@ require 'abstract_unit'
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
-           :memberships
+           :departments, :memberships
   
   def test_count
     assert_equal(2, Product.count(:include => :product_tariffs))
@@ -20,7 +20,6 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 2, products(:first_product).product_tariffs.length
     assert_not_nil products(:first_product).tariffs
     assert_equal 2, products(:first_product).tariffs.length
-    assert_not_nil products(:first_product).product_tariff
   end
 
   def test_product_tariffs
@@ -158,8 +157,8 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_one_with_composite
     # In this case a regular model has_one composite model
-    product = products(:first_product)
-    assert_not_nil(product.product_tariff)
+    department = departments(:engineering)
+    assert_not_nil(department.head)
   end
 
   def test_has_many_with_primary_key
