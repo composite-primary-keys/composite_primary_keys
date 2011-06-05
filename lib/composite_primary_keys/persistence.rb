@@ -8,7 +8,7 @@ module ActiveRecord
         #pk         = self.class.primary_key
         #column     = self.class.columns_hash[pk]
         #substitute = connection.substitute_at(column, 0)
-        primary_keys = Array(self.class.primary_keys)
+        primary_keys = Array(self.class.primary_key)
         bind_values = Array.new
         eq_predicates = Array.new
         primary_keys.each_with_index do |key, i|
