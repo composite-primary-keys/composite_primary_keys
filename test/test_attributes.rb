@@ -43,8 +43,8 @@ class TestAttributes < ActiveSupport::TestCase
   end
     
   def test_brackets_foreign_key_assignment
-    flat = Tariff.find(1, Date.today.to_s(:db))
-    second_free = ProductTariff.find(2, 2, Date.today.to_s(:db))
+    flat = tariffs(:flat)
+    second_free = tariffs(:free)
     second_free_fk = [:tariff_id, :tariff_start_date]
 
     second_free[key = second_free_fk] = flat.id
@@ -64,8 +64,7 @@ class TestAttributes < ActiveSupport::TestCase
 
   def compare_indexes(obj1, indexes1, obj2, indexes2)
     indexes1.length.times do |key_index|
-      assert_equal(obj1[indexes1[key_index].to_s],
-                   obj2[indexes2[key_index].to_s])
+      assert_equal(obj1[indexes1[key_index].to_s], obj2[indexes2[key_index].to_s])
     end
   end
 end

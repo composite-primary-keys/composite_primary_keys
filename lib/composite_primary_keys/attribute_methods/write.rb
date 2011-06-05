@@ -22,7 +22,12 @@ module ActiveRecord
           end
         end
       end
-      alias_method :raw_write_attribute, :write_attribute
     end
   end
 end
+
+#ActiveRecord::Base.class_eval do
+#  alias :[]= :write_attribute
+#  alias :raw_write_attribute :write_attribute
+#  public :[]=
+#end

@@ -58,7 +58,7 @@ module ActiveRecord
           _read_attribute attr_name
         end
       end
-      alias :[] :read_attribute
+
 
       def _read_attribute(attr_name)
         attr_name = attr_name.to_s
@@ -80,4 +80,8 @@ module ActiveRecord
       end
     end
   end
+end
+
+ActiveRecord::Base.class_eval do
+  alias :[] :read_attribute
 end
