@@ -22,10 +22,6 @@ module ActiveRecord
           extend  CompositeClassMethods
           include CompositeInstanceMethods
           extend  CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
-          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::PrimaryKey
-          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Read
-          include CompositePrimaryKeys::ActiveRecord::AttributeMethods::Write
-          include CompositePrimaryKeys::ActiveRecord::Persistence
         EOV
       end
 

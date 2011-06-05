@@ -1,25 +1,15 @@
-module CompositePrimaryKeys
-  module ActiveRecord
-    module AttributeMethods
-      module Write
-        def self.included(base)
-          alias []= write_attribute
-          alias_method :raw_write_attribute, :write_attribute
-        end
-
-        def write_attribute(attr_name, value)
-          if attr_name.kind_of?(Array)
-            unless value.length == attr_name.length
-              raise "Number of attr_names and values do not match"
-            end
-            [attr_name, value].transpose.map {|name,val| _write_attribute(name, val)}
-            value
-          else
-            _write_attribute(attr_name, value)
+module ActiveRecord
+  module AttributeMethods
+    module Write
+      def write_attribute(attr_name, value)
+        # CPK
+        if attr_name.kind_of?(Array)
+          unless value.length == attr_name.length
+            raise "Number of attr_names and values do not match"
           end
-        end
-        
-        def _write_attribute(attr_name, value)
+          [attr_name, value].transpose.map {|name,val| _write_attribute(name, val)}
+          value
+        else
           attr_name = attr_name.to_s
           # CPK
           # attr_name = self.class.primary_key if attr_name == 'id'
@@ -31,10 +21,8 @@ module CompositePrimaryKeys
             @attributes[attr_name] = value
           end
         end
-
-
-
       end
+      alias_method :raw_write_attribute, :write_attribute
     end
   end
 end
