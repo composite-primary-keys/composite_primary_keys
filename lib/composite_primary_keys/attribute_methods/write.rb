@@ -7,7 +7,7 @@ module ActiveRecord
           unless value.length == attr_name.length
             raise "Number of attr_names and values do not match"
           end
-          [attr_name, value].transpose.map {|name,val| _write_attribute(name, val)}
+          [attr_name, value].transpose.map {|name,val| write_attribute(name, val)}
           value
         else
           attr_name = attr_name.to_s
