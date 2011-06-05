@@ -35,7 +35,6 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal 1, tariffs(:flat).product_tariffs.length
     assert_not_nil tariffs(:flat).products
     assert_equal 1, tariffs(:flat).products.length
-    assert_not_nil tariffs(:flat).product_tariff
   end
 
   # Its not generating the instances of associated classes from the rows
@@ -184,7 +183,8 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_joins_has_one_with_primary_key
-    @membership = Membership.find(:first, :joins => :reading, :conditions => { :readings => { :id => 2 } })
+    @membership = Membership.find(:first, :joins => :readings,
+                                          :conditions => { :readings => { :id => 2 } })
 
     assert_equal [1, 1], @membership.id
   end

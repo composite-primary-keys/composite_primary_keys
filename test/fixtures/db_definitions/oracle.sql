@@ -124,14 +124,6 @@ create table hacks (
     name varchar(50) not null primary key
 );
 
-create table kitchen_sinks (
-    id_1   number(11) not null,
-    id_2   number(11) not null,
-    a_date date,
-    a_string varchar(100),
-    constraint kitchen_sinks_pk primary key (id_1, id_2)
-);
-
 create table restaurants (
     franchise_id number(11) not null,
     store_id     number(11) not null,
@@ -184,13 +176,6 @@ create table room_assignments (
     student_id number(11) not null,
     dorm_id    number(11) not null,
     room_id    number(11) not null
-);
-
-create table way_nodes (
-    id number(11) not null,
-    node_id number(11) not null,
-    sequence_id number(11) not null,
-    constraint way_nodes_pk primary key (id, sequence_id)
 );
 
 create table products_restaurants (

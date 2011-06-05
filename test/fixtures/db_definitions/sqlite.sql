@@ -105,14 +105,6 @@ create table hacks (
     name varchar(50) not null primary key
 );
 
-create table kitchen_sinks (
-	id_1 integer not null,
-	id_2 integer not null,
-	a_date date,
-	a_string varchar(100),
-	primary key (id_1, id_2)
-);
-
 create table restaurants (
 	franchise_id integer not null,
 	store_id integer not null,
@@ -169,13 +161,6 @@ create table capitols (
   country text not null,
   city text not null,
   primary key (country, city)
-);
-
-create table way_nodes (
-  id integer not null,
-  node_id integer not null,
-  sequence_id integer not null,
-  primary key (id, sequence_id)
 );
 
 create table products_restaurants (
