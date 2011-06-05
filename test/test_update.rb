@@ -28,10 +28,10 @@ class TestUpdate < ActiveSupport::TestCase
   
   def test_update_attributes
     testing_with do
-      assert @first.update_attributes(@klass_info[:update])
-      assert @first.reload
+      assert(@first.update_attributes(@klass_info[:update]))
+      assert(@first.reload)
       @klass_info[:update].each_pair do |attr_name, new_value|
-        assert_equal new_value, @first[attr_name], "Attribute #{attr_name} is incorrect"
+        assert_equal(new_value, @first[attr_name])
       end
     end
   end

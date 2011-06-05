@@ -1,18 +1,22 @@
-== 3.2.0 2011-05-26
+== 4.0.0.beta1 2011-06-04
 * ActiveRecord 3.1 compatibility
+
+== 3.1.9 2011-06-04
+* Improve HABTM association tests (David Rueck)
+* Remove deprecated Rake tasks (Charlie Savage)
 
 == 3.1.8 2011-05-26
 * Fix calling clear on a HABTM associate (David Rueck)
 
 == 3.1.7 2011-05-26
 * Support regular AR models having one or many composite models (Jacques Fuentes)
-* Minor test cleanup
-* Make version requirements more explicit
-* Remove Arel extensions used for calculations
+* Minor test cleanup (Charlie Savage)
+* Make version requirements more explicit (Charlie Savage)
+* Remove Arel extensions used for calculations (Charlie Savage)
 * Fix test that included wrong error constant
 
 == 3.1.6 2011-04-03
-* Updated belongs_to association to be a bit more flexible with non-CPK
+* Updated belongs_to association to be a bit more flexible with non-CPK (Charlie Savage)
   base models (Jacques Fuentes)
 * Fix uniqueness check (David Rueck)
 * Fix write issue when one of they keys in a composite key is
@@ -20,17 +24,17 @@
 
 
 == 3.1.5 2011-03-24
-* Fix simple calculation methods
-* Fix instantiation of cpk records via associations.
-* Fix Relation#delete
-* Fix Relation#destroy
+* Fix simple calculation methods (Charlie Savage)
+* Fix instantiation of cpk records via associations  (Charlie Savage)
+* Fix Relation#delete (Charlie Savage)
+* Fix Relation#destroy (Charlie Savage)
 
 
 == 3.1.4 2011-03-06
-* Support ActiveRecord 3.0.5 (interpolate_sql was removed and
-  replaced by interpolate_and_sanitize_sql)
-* Fix persistence methods to support destroy callbacks
-* Support rake 0.9.0 beta
+* Support ActiveRecord 3.0.5 - interpolate_sql was removed and
+  replaced by interpolate_and_sanitize_sql (Charlie Savage)
+* Fix persistence methods to support destroy callbacks (Charlie Savage)
+* Support rake 0.9.0 beta (Charlie Savage)
 
 
 == 3.1.2 2011-02-26
