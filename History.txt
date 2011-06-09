@@ -1,5 +1,6 @@
-== 4.0.0.beta1 2011-06-04
-* ActiveRecord 3.1 compatibility
+== 4.0.0.beta1 2011-06-09
+* ActiveRecord 3.1 compatibility.  This required a significant rewrite due to
+  all the changes in AR 3.1 versus 3.0.
 
 == 3.1.9 2011-06-04
 * Improve HABTM association tests (David Rueck)
