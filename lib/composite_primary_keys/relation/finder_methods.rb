@@ -63,8 +63,6 @@ module CompositePrimaryKeys
           end
         when Hash
           relation = relation.where(id)
-        else
-          raise(ArgumentError, "Unsupported id sent to exists?")
         end
         connection.select_value(relation.to_sql) ? true : false
       end
