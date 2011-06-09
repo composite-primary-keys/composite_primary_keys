@@ -32,7 +32,6 @@ end
 
 # AR files we override
 require 'active_record/fixtures'
-require 'active_record/named_scope'
 require 'active_record/persistence'
 require 'active_record/relation'
 
@@ -65,7 +64,6 @@ require 'composite_primary_keys/base'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/composite_predicates'
 require 'composite_primary_keys/fixtures'
-require 'composite_primary_keys/named_scope'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/relation'
 require 'composite_primary_keys/version'

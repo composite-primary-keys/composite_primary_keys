@@ -21,7 +21,6 @@ module ActiveRecord
         class_eval <<-EOV
           extend  CompositeClassMethods
           include CompositeInstanceMethods
-          extend  CompositePrimaryKeys::ActiveRecord::NamedScope::ClassMethods
         EOV
       end
 
