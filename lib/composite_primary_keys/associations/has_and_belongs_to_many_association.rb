@@ -108,7 +108,7 @@ module ActiveRecord
         else
           relation = Arel::Table.new(@reflection.options[:join_table])
 
-          if @reflection.cpk_primary_key 
+          if @reflection.cpk_primary_key.size > 1 
             owner_conditions = []
             @reflection.cpk_primary_key.each_with_index do |column,i|
               owner_conditions << relation[column.to_sym].eq(@owner.id[i])
