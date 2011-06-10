@@ -116,14 +116,6 @@ create table hacks (
     primary key (name)
 ) type=InnoDB;
 
-create table kitchen_sinks (
-    id_1 int(11) not null,
-    id_2 int(11) not null,
-    a_date date,
-    a_string varchar(100),
-    primary key (id_1, id_2)
-) type=InnoDB;
-
 create table restaurants (
     franchise_id int(11) not null,
     store_id int(11) not null,
@@ -183,13 +175,6 @@ create table capitols (
   country varchar(100) default null,
   city varchar(100) default null,
   primary key (country, city)
-) type=InnoDB;
-
-create table way_nodes (
-  id int(11) not null,
-  node_id int(11) not null,
-  sequence_id int(11) not null,
-  primary key (id, sequence_id)
 ) type=InnoDB;
 
 create table products_restaurants (

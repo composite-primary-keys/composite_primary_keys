@@ -16,12 +16,16 @@ module ActiveRecord
         self.arel.visitor.accept(attribute)
       end.join(', ')
 
-      relation = self.clone
-      relation.select_values = ["DISTINCT #{projection}"]
+     # relation = self.clone
+     # relation.select_values = ["DISTINCT #{projection}"]
 
-      table = Arel::Table.new('dummy').project('count(*)')
-      relation = table.from(relation.arel, "foobar")
-      type_cast_calculated_value(@klass.connection.select_value(relation.to_sql), column_for(column_name), operation)
+      manager = Arel::SelectManager.new(arel_engine)
+      manager.project("DISTINCT #{projection}")
+      manager.from(arel_table)
+      
+      query = Arel::Table.new('dummy').project('count(*)')
+      query = query.from("(#{manager.to_sql}) AS subquery")
+      type_cast_calculated_value(@klass.connection.select_value(query.to_sql), column_for(column_name), operation)
     end
   end
 end

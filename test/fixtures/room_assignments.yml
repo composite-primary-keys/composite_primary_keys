@@ -2,3 +2,8 @@ jacksons_room:
     student_id: 1
     dorm_id: 1
     room_id: 1
+
+bobs_room:
+    student_id: 2
+    dorm_id: 1
+    room_id: 1

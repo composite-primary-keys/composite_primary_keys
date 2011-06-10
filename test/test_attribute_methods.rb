@@ -1,7 +1,7 @@
 require 'abstract_unit'
 
 class TestAttributeMethods < ActiveSupport::TestCase
-  fixtures :kitchen_sinks, :reference_types
+  fixtures :reference_types
   
   def test_read_attribute_with_single_key
     rt = ReferenceType.find(1)
@@ -11,10 +11,9 @@ class TestAttributeMethods < ActiveSupport::TestCase
   end
 
   def test_read_attribute_with_composite_keys
-    sink = KitchenSink.find(1,2)
-    assert_equal(1, sink.id_1)
-    assert_equal(2, sink.id_2)
-    assert_equal(Date.today, sink.a_date.to_date)
-    assert_equal('string', sink.a_string)
+    ref_code = ReferenceCode.find(1,1)
+    assert_equal(1, ref_code.id.first)
+    assert_equal(1, ref_code.id.last)
+    assert_equal('Mr', ref_code.abbreviation)
   end
 end

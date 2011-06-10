@@ -1,6 +1,6 @@
 print "Using native MySQL\n"
 
-require 'active_record'
+require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 
 def connection_string
   options = {}

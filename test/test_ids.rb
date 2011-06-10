@@ -87,12 +87,4 @@ class TestIds < ActiveSupport::TestCase
     ref_code.id = [2,1]
     assert_equal([2,1], ref_code.id)
   end
-
-  def test_id_as_component
-    way_node = WayNode.new
-    assert_equal([nil, nil], way_node.id)
-
-    way_node.id = [2,1]
-    assert_equal([2,1], way_node.id)
-  end
 end
