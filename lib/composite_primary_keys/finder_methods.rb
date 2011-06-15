@@ -50,7 +50,7 @@ module CompositePrimaryKeys
           case id
           # CPK
           when CompositePrimaryKeys::CompositeKeys
-            relation = select(primary_keys).limit(1)
+            relation = select("1").limit(1)
             relation = relation.where_cpk_id(id) if id
             relation.first ? true : false
           when Array
