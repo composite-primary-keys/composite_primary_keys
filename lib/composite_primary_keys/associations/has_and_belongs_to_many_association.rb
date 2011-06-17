@@ -1,6 +1,14 @@
 module ActiveRecord
   module Associations
     class HasAndBelongsToManyAssociation
+
+      def initialize(owner, reflection)
+        super
+        if (columns.size - reflection.cpk_primary_key.size - reflection.association_foreign_key.size) > 0
+          ActiveSupport::Deprecation.warn "Having additional attributes on the join table of a has_and_belongs_to_many association is deprecated and willbe removed in Rails 3.1. Please use a has_many :through association instead."
+        end
+      end
+
       def construct_sql
         if @reflection.options[:finder_sql]
           @finder_sql = interpolate_and_sanitize_sql(@reflection.options[:finder_sql])
