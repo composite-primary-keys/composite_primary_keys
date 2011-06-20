@@ -93,6 +93,11 @@ class TestAssociations < ActiveSupport::TestCase
     assert_not_nil @product_tariffs.first.instance_variable_get('@tariff'), '@tariff not set'
   end
 
+  def test_new_style_includes_with_conditions
+    product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').first
+    assert_equal(0, product_tariff.tariff.amount)
+  end
+
   def test_find_includes_extended
     assert @products = Product.find(:all, :include => {:product_tariffs => :tariff})
     assert_equal 3, @products.inject(0) {|sum, product| sum + product.instance_variable_get('@product_tariffs').length},
