@@ -96,6 +96,11 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tarrifs_length)
   end
 
+  def test_new_style_includes_with_conditions
+    product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').first
+    assert_equal(0, product_tariff.tariff.amount)
+  end
+
   def test_find_product_includes
     products = Product.find(:all, :include => {:product_tariffs => :tariff})
     assert_equal(2, products.length)
