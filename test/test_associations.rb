@@ -6,7 +6,7 @@ class TestAssociations < ActiveSupport::TestCase
            :departments, :memberships
   
   def test_count
-    assert_equal(2, Product.count(:include => :product_tariffs))
+    assert_equal(3, Product.count(:include => :product_tariffs))
     assert_equal(3, Tariff.count(:include => :product_tariffs))
 
     expected = {Date.today => 2,
@@ -45,12 +45,12 @@ class TestAssociations < ActiveSupport::TestCase
   def test_find_includes_products
     # Old style
     products = Product.find(:all, :include => :product_tariffs)
-    assert_equal(2, products.length)
+    assert_equal(3, products.length)
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
 
     # New style
     products = Product.includes(:product_tariffs)
-    assert_equal(2, products.length)
+    assert_equal(3, products.length)
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
   end
 
@@ -90,7 +90,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through
     products = Product.find(:all, :include => :tariffs)
-    assert_equal(2, products.length)
+    assert_equal(3, products.length)
 
     tarrifs_length = products.inject(0) {|sum, product| sum + product.tariffs.length}
     assert_equal(3, tarrifs_length)
@@ -103,7 +103,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_find_product_includes
     products = Product.find(:all, :include => {:product_tariffs => :tariff})
-    assert_equal(2, products.length)
+    assert_equal(3, products.length)
 
     product_tariffs_length = products.inject(0) {|sum, product| sum + product.product_tariffs.length}
     assert_equal(3, product_tariffs_length)
