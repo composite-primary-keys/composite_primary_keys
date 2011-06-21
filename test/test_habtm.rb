@@ -13,6 +13,48 @@ class TestHabtm < ActiveSupport::TestCase
     assert_equal 2, @restaurant.suburbs.size
   end
 
+  def test_include_cpk_both_sides
+    # assuming the association was set up in the fixtures
+    # file restaurants_suburbs.yml
+    mcdonalds = restaurants(:mcdonalds)
+    # check positive
+    suburb = mcdonalds.suburbs[0]
+    assert mcdonalds.suburbs.include?(suburb)
+    # check negative
+    suburb_with_no_mcdonalds = suburbs(:no_mcdonalds)
+    assert !mcdonalds.suburbs.include?(suburb_with_no_mcdonalds)
+  end
+
+  def test_include_cpk_owner_side_only
+    subway = restaurants(:subway_one)
+    product = products(:first_product)
+    subway.products << product
+
+    # reload
+    # test positive
+    subway = restaurants(:subway_one)
+    assert subway.products.include?(product)
+
+    # test negative
+    product_two = products(:second_product)
+    assert !subway.products.include?(product_two)
+  end
+
+  def test_include_cpk_association_side_only
+    product = products(:first_product)
+    subway = restaurants(:subway_one)
+    product.restaurants << subway
+    
+    # reload
+    # test positive
+    product = products(:first_product)
+    assert product.restaurants.include?(subway)
+
+    # test negative
+    mcdonalds = restaurants(:mcdonalds)
+    assert !product.restaurants.include?(mcdonalds)
+  end
+
   def test_habtm_clear_cpk_both_sides
     @restaurant = restaurants(:mcdonalds)
     assert_equal 2, @restaurant.suburbs.size
