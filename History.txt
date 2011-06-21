@@ -4,6 +4,8 @@
 
 == 3.1.10 Not released
 * Bugfix for belongs_to with includes (John Ash)
+* Improved tests for calling clear on a habtm association, which involved (David Rueck)
+* Fixed bug that resulted in unrelated records being deleted when calling (David Rueck)
 
 
 == 3.1.9 2011-06-04
