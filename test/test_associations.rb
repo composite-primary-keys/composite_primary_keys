@@ -6,7 +6,7 @@ class TestAssociations < ActiveSupport::TestCase
            :departments, :memberships
   
   def test_count
-    assert_equal(2, Product.count(:include => :product_tariffs))
+    assert_equal(3, Product.count(:include => :product_tariffs))
     assert_equal(3, Tariff.count(:include => :product_tariffs))
 
     expected = {Date.today => 2,
@@ -40,14 +40,14 @@ class TestAssociations < ActiveSupport::TestCase
   def test_find_includes_products
     # Old style
     assert @products = Product.find(:all, :include => :product_tariffs)
-    assert_equal 2, @products.length
+    assert_equal 3, @products.length
     assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
     assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
       "Incorrect number of product_tariffs returned"
 
     # New style
     assert @products = Product.includes(:product_tariffs)
-    assert_equal 2, @products.length
+    assert_equal 3, @products.length
     assert_not_nil @products.first.instance_variable_get('@product_tariffs'), '@product_tariffs not set; should be array'
     assert_equal 3, @products.inject(0) {|sum, tariff| sum + tariff.instance_variable_get('@product_tariffs').length},
       "Incorrect number of product_tariffs returned"
