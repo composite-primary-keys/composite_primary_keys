@@ -2,6 +2,10 @@
 * ActiveRecord 3.1 compatibility.  This required a significant rewrite due to
   all the changes in AR 3.1 versus 3.0.
 
+== 3.1.10 Not released
+* Bugfix for belongs_to with includes (John Ash)
+
+
 == 3.1.9 2011-06-04
 * Improve HABTM association tests (David Rueck)
 * Remove deprecated Rake tasks (Charlie Savage)
