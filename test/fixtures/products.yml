@@ -5,3 +5,6 @@ first_product:
 second_product:
   id: 2
   name: Product Two
+third_product:
+  id: 3
+  name: Product Three
