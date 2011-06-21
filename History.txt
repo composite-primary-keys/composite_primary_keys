@@ -1,5 +1,9 @@
+== 4.0.0.beta2 Not released
+* ActiveRecord 3.1 RC4 compatibility.
+* Fix instantiation of CPK models with included associations
+
 == 4.0.0.beta1 2011-06-09
-* ActiveRecord 3.1 compatibility.  This required a significant rewrite due to
+* ActiveRecord 3.1 RC1 compatibility.  This required a significant rewrite due to
   all the changes in AR 3.1 versus 3.0.
 
 == 3.1.10 Not released
