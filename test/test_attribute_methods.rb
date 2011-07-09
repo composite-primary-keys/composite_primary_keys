@@ -17,15 +17,10 @@ class TestAttributeMethods < ActiveSupport::TestCase
     assert_equal('Mr', ref_code.abbreviation)
   end
 
+  # to_key returns array even for single key
   def test_to_key_with_single_key
     rt = ReferenceType.find(1)
-    assert_equal(1, rt.to_key.count)
-    assert_equal(1, rt.to_key.first)
-  end
-
-  def test_to_key_with_single_key_unsaved
-
-    
+    assert_equal([1], rt.to_key)
   end
 
   def test_to_key_with_composite_keys
@@ -34,8 +29,31 @@ class TestAttributeMethods < ActiveSupport::TestCase
     assert_equal(1, ref_code.to_key.last)
   end
 
-  def test_to_key_with_composite_keys_unsaved
-
+  def test_to_key_with_single_key_unsaved
+    rt = ReferenceType.new
+    assert_nil(rt.to_key)
   end
+
+  def test_to_key_with_composite_keys_unsaved
+    ref_code = ReferenceCode.new
+    assert_nil(ref_code.to_key)
+  end
+
+  # Rails' documentation for to_key method is inconsistent
+  # with the test case (test_to_key_with_primary_key_after_destroy)
+  def test_to_key_with_single_key_destroyed
+    rt = ReferenceType.find(1)
+    rt.destroy
+      #assert_nil(rt.to_key)
+    assert_equal([1], rt.to_key)
+  end
+
+  def test_to_key_with_composite_key_destroyed
+    ref_code = ReferenceCode.find(1, 1)
+    ref_code.destroy
+      #assert_nil(rt.to_key)
+    assert_equal([1, 1], ref_code.to_key)
+  end
+
 
 end
