@@ -32,15 +32,22 @@ module ActiveRecord
     end
 
     def update(attribute_names = @attributes.keys)
-      attributes_with_values = arel_attributes_values(false, false, attribute_names)
-      return 0 if attributes_with_values.empty?
       klass = self.class
-      # CPK
       if !self.composite?
+        attributes_with_values = arel_attributes_values(false, false, attribute_names)
+        return 0 if attributes_with_values.empty?
         stmt = klass.unscoped.where(klass.arel_table[klass.primary_key].eq(id)).arel.compile_update(attributes_with_values)
       else
-        # CPK
-        stmt =  klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
+        attributes_with_values = arel_attributes_values(can_change_primary_key?, false, attribute_names)
+        return 0 if attributes_with_values.empty?
+
+        if !can_change_primary_key? and primary_key_changed?
+          raise ActiveRecord::CompositeKeyError, "Cannot update primary key values without ActiveModel::Dirty"
+        elsif primary_key_changed?
+          stmt = klass.unscoped.where(primary_key_was).arel.compile_update(attributes_with_values)
+        else
+          stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
+        end
       end
       klass.connection.update stmt.to_sql
     end
