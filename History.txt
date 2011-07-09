@@ -1,7 +1,8 @@
-== 3.1.10 Not released
+== 3.1.10 2011-07-08
 * Bugfix for belongs_to with includes (John Ash)
 * Improved tests for calling clear on a habtm association, which involved (David Rueck)
 * Fixed bug that resulted in unrelated records being deleted when calling (David Rueck)
+* Output deprecation warnings about extra columns in join table CPK-aware (David Rueck)
 
 == 3.1.9 2011-06-04
 * Improve HABTM association tests (David Rueck)
