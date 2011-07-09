@@ -46,6 +46,8 @@ require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
 require 'active_record/associations/preloader/has_and_belongs_to_many'
 
+require 'active_model/dirty'
+
 require 'active_record/attribute_methods/dirty'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
@@ -79,6 +81,8 @@ require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
 require 'composite_primary_keys/associations/preloader/has_and_belongs_to_many'
+
+require 'composite_primary_keys/dirty'
 
 require 'composite_primary_keys/attribute_methods/dirty'
 require 'composite_primary_keys/attribute_methods/read'
