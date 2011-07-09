@@ -120,6 +120,10 @@ module ActiveRecord
         populate_with_current_scope_attributes
         clear_timestamp_attributes
       end
+
+      def can_change_primary_key_values?
+        false
+      end
     end
   end
 end
