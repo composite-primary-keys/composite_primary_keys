@@ -1,3 +1,7 @@
+== 4.0.0.beta3 2011-07-08
+* Fix the ability to update the values of a primary key (Travis Warlick)
+* Support port and host configurations for postgres rake tasks (Travis Warlick)
+
 == 4.0.0.beta2 2011-06-21
 * ActiveRecord 3.1 RC4 compatibility.
 * Fix instantiation of CPK models with included associations
