@@ -124,6 +124,12 @@ module ActiveRecord
       def can_change_primary_key_values?
         false
       end
+
+      # Returns this record's primary keys values in an Array or nil if
+      # the record is not persisted? or has just been destroyed.
+      def to_key
+        ids.to_a if persisted? && !ids.compact.empty? # XXX Maybe use primary_keys with send instead of ids
+      end
     end
   end
 end
