@@ -5,9 +5,7 @@ module ActiveRecord
         if options[:foreign_key]
           options[:foreign_key]
         elsif belongs_to?
-          #CPK
-          #"#{name}_id"
-          class_name.foreign_key
+          "#{name}_id"
         elsif options[:as]
           "#{options[:as]}_id"
         else
