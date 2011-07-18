@@ -1,3 +1,4 @@
+require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 
 namespace :postgresql do

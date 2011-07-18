@@ -8,6 +8,8 @@ module ActiveRecord
         pk ||= primary_key(table)
 
         if pk
+          # CPK
+          # select_value("#{sql} RETURNING #{quote_column_name(pk)}")
           select_value("#{sql} RETURNING #{quote_column_names(pk)}")
         else
           super
@@ -22,6 +24,8 @@ module ActiveRecord
           pk = primary_key(table)
         end
 
+        # CPK
+        # sql = "#{sql} RETURNING #{quote_column_name(pk)}" if pk
         sql = "#{sql} RETURNING #{quote_column_names(pk)}" if pk
 
         [sql, binds]

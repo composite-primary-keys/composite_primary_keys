@@ -1,3 +1,7 @@
+# To run tests:
+#  1. Copy this file to databases.yml
+#  2. Delete all the specs except one
+
 mysql:
   adapter: mysql
   username: root

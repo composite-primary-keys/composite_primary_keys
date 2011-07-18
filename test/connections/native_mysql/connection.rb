@@ -1,7 +1,5 @@
 print "Using native MySQL\n"
 
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
-
 def connection_string
   options = {}
   options['u'] = SPEC['username']  if SPEC['username']
@@ -10,6 +8,6 @@ def connection_string
   options.map { |key, value| "-#{key}#{value}" }.join(" ")
 end
 
-  # Adapter config setup in locals/database_connections.rb
-SPEC = CompositePrimaryKeys::ConnectionSpec[:mysql]
+# Adapter config setup in text/connections/databases.yml
+SPEC = CompositePrimaryKeys::ConnectionSpec['mysql']
 ActiveRecord::Base.establish_connection(SPEC)

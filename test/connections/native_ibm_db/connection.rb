@@ -5,7 +5,6 @@ require 'IBM_DB'
 
 RAILS_CONNECTION_ADAPTERS = %w( mysql postgresql sqlite firebird sqlserver db2 oracle sybase openbase frontbase ibm_db )
 
-
 db1 = 'composite_primary_keys_unittest'
 
 connection_options = {

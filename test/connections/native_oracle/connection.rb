@@ -7,5 +7,5 @@ def connection_string
 end
 
 # Adapter config setup in locals/database_connections.rb
-SPEC = CompositePrimaryKeys::ConnectionSpec[:oracle]
+SPEC = CompositePrimaryKeys::ConnectionSpec['oracle']
 ActiveRecord::Base.establish_connection(SPEC)

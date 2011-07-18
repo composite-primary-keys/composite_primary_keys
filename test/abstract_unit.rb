@@ -1,7 +1,4 @@
-dir = File.dirname(__FILE__)
-PROJECT_ROOT = File.expand_path(File.join(dir, '..'))
-
-adapter = ENV["ADAPTER"] || "postgresql"
+PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 require "pp"
 require "test/unit"
@@ -11,18 +8,25 @@ require "hash_tricks"
 #require 'composite_primary_keys'
 require File.join(PROJECT_ROOT, "lib", "composite_primary_keys")
 
+# Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
+config = CompositePrimaryKeys::ConnectionSpec.config
+spec = config[config.keys.first]
+
+# And now connect to the database
+adapter = spec['adapter']
 require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
 
+# Tell active record about the configuration
+ActiveRecord::Base.configurations[:test] = spec
+
+# Load adapter overrides if necessary
+load_adapter(adapter)
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
 
-QUOTED_TYPE = ActiveRecord::Base.connection.quote_column_name('type') unless Object.const_defined?(:QUOTED_TYPE)
-
-ActiveRecord::Base.configurations[:test] = SPEC
-
-class ActiveSupport::TestCase #:nodoc:
+class ActiveSupport::TestCase
   include ActiveRecord::TestFixtures
   
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
@@ -98,4 +102,3 @@ ActiveRecord::Base.connection.class.class_eval do
 end
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
-#ActiveRecord::Base.colorize_logging = false

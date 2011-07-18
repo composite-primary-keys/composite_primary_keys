@@ -53,7 +53,6 @@ require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
 
 require 'active_record/connection_adapters/abstract_adapter'
-require 'active_record/connection_adapters/postgresql_adapter'
 
 require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
@@ -89,10 +88,27 @@ require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
 
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
-require 'composite_primary_keys/connection_adapters/postgresql_adapter'
 
 require 'composite_primary_keys/relation/calculations'
 require 'composite_primary_keys/relation/finder_methods'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
+
+
+def load_adapter(adapter)
+  path = File.expand_path(File.join(File.dirname(__FILE__),
+                          "composite_primary_keys", "connection_adapters",
+                          "#{adapter}_adapter.rb"))
+  if File.exists?(path)
+    require path
+  end
+end
+
+ActiveSupport.on_load(:active_record) do
+  if ActiveRecord::Base.connected?
+    spec = ActiveRecord::Base.connection_config
+    load_adapter(spec[:adapter])
+  end
+end
+
