@@ -20,9 +20,6 @@ require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "con
 # Tell active record about the configuration
 ActiveRecord::Base.configurations[:test] = spec
 
-# Load adapter overrides if necessary
-load_adapter(adapter)
-
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
 
