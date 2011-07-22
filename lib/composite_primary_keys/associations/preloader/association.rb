@@ -11,7 +11,8 @@ module ActiveRecord
         
         def associated_records_by_owner
           # CPK
-          # owner_keys = owners.map { |owner| owner[owner_key_name] }.compact.uniq
+          owners_map = owners_by_key
+          #owner_keys = owners_map.keys.compact
           owner_keys = owners.map do |owner|
             Array(owner_key_name).map do |owner_key|
               owner[owner_key]
@@ -36,7 +37,7 @@ module ActiveRecord
               record[key_name]
             end.join(CompositePrimaryKeys::ID_SEP)
 
-            owners_by_key[owner_key].each do |owner|
+            owners_map[owner_key].each do |owner|
               records_by_owner[owner] << record
             end
           end

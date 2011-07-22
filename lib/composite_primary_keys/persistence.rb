@@ -1,13 +1,15 @@
 module ActiveRecord
   module Persistence
     def destroy
-      if persisted?
-        ::ActiveRecord::IdentityMap.remove(self) if ::ActiveRecord::IdentityMap.enabled?
+      destroy_associations
 
+      if persisted?
+        IdentityMap.remove(self) if IdentityMap.enabled?
         # CPK
         #pk         = self.class.primary_key
         #column     = self.class.columns_hash[pk]
         #substitute = connection.substitute_at(column, 0)
+
         primary_keys = Array(self.class.primary_key)
         bind_values = Array.new
         eq_predicates = Array.new
@@ -20,10 +22,12 @@ module ActiveRecord
         predicate = Arel::Nodes::And.new(eq_predicates)
         relation = self.class.unscoped.where(predicate)
 
+        #relation = self.class.unscoped.where(
+        #  self.class.arel_table[pk].eq(substitute))
+
         # CPK
         #relation.bind_values = [[column, id]]
         relation.bind_values = bind_values
-
         relation.delete_all
       end
 
