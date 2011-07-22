@@ -1,3 +1,7 @@
+== 4.0.0.beta4 2011-07-22
+* Compatible with Rails 3.1 stable branch.  No longer works with RC4 (Charlie Savage)
+* Do not require loading of postgresql gem unless needed (Charlie Savage)
+
 == 4.0.0.beta3 2011-07-08
 * Fix the ability to update the values of a primary key (Travis Warlick)
 * Support port and host configurations for postgres rake tasks (Travis Warlick)
