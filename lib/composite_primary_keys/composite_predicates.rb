@@ -11,9 +11,11 @@ module CompositePrimaryKeys
     def cpk_or_predicate(predicates)
       # Can't do or here, arel does the wrong thing and makes a really
       # deeply nested stack that blows up
-      predicates.map do |predicate|
-        predicate.to_sql
-      end.join(" OR ")
+      predicates = predicates.map do |predicate|
+        "(#{predicate.to_sql})"
+      end
+      predicates = "(#{predicates.join(" OR ")})"
+      Arel::Nodes::SqlLiteral.new(predicates)
     end
 
     def cpk_id_predicate(table, keys, values)
