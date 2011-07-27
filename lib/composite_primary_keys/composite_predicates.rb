@@ -9,11 +9,11 @@ module CompositePrimaryKeys
     end
     
     def cpk_or_predicate(predicates)
-      result = predicates.shift
-      predicates.each do |predicate|
-        result = result.or(predicate)
-      end
-      result
+      # Can't do or here, arel does the wrong thing and makes a really
+      # deeply nested stack that blows up
+      predicates.map do |predicate|
+        predicate.to_sql
+      end.join(" OR ")
     end
 
     def cpk_id_predicate(table, keys, values)
