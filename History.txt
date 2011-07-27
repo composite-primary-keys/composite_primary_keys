@@ -1,3 +1,8 @@
+== 4.0.0.beta6 2011-07-26
+* Compatible with Rails 3.1 RC5 (TycoooN)
+* Do not use Arel::Nodes::Or to combine predicates because it creates a
+  deeply nested stack that blows up.
+
 == 4.0.0.beta4 2011-07-22
 * Compatible with Rails 3.1 stable branch.  No longer works with RC4 (Charlie Savage)
 * Do not require loading of postgresql gem unless needed (Charlie Savage)
