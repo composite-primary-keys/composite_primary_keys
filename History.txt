@@ -1,4 +1,4 @@
-== 4.0.0.beta6 2011-07-26
+== 4.0.0.beta7 2011-07-26
 * Compatible with Rails 3.1 RC5 (TycoooN)
 * Do not use Arel::Nodes::Or to combine predicates because it creates a
   deeply nested stack that blows up.
