@@ -13,6 +13,11 @@ There are tests available for the following adapters:
 
 To run the tests for one of the adapters follow these steps (using mysql in the example):
 
+* You will need the following gems:
+    - rake
+    - activerecord (3.1.0.rc5 or later)
+    - mysql (or the adapter of your choice)
+
 * Put your mysql connection settings to test/connections/databases.yml
   look into databases.example.sql for reference,
   keep only one connection spec at once in databases.yml
