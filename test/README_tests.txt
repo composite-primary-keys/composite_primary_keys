@@ -9,9 +9,23 @@ There are tests available for the following adapters:
 * oracle
 * oracle_enhanced
 * postgresql
-* sqlite
+* sqlite3
 
 To run the tests for one of the adapters follow these steps (using mysql in the example):
+
+* You will need the following gems:
+    - rake
+    - activerecord (3.1.0.rc5 or later)
+    - mysql (or the adapter of your choice)
+
+* Put your mysql connection settings to test/connections/databases.yml
+  look into databases.example.sql for reference,
+  keep only one connection spec at once in databases.yml
+
+    mysql:
+      adapter: mysql
+      username: root
+      database: composite_primary_keys_unittest
 
 * rake -T mysql
 
