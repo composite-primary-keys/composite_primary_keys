@@ -2,7 +2,7 @@ PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 require "pp"
 require "test/unit"
-require "hash_tricks"
+require "./hash_tricks"
 
 # To make debugging easier, test within this source tree versus an installed gem
 #require 'composite_primary_keys'

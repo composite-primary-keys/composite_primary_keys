@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,

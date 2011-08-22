@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestExists < ActiveSupport::TestCase
   fixtures :articles, :departments

@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestValidations < ActiveSupport::TestCase
   fixtures :seats

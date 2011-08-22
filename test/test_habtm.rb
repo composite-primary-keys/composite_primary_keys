@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestHabtm < ActiveSupport::TestCase
   fixtures :suburbs, :restaurants, :restaurants_suburbs, :products

@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase

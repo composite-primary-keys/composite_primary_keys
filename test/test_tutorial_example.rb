@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestTutorialExample < ActiveSupport::TestCase
   fixtures :users, :groups, :memberships, :membership_statuses

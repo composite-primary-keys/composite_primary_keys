@@ -1,3 +1,8 @@
+== 4.0.0.beta8 2011-082-22
+* Sqlite 3 fixes (Jan Vlnas)
+* Fixes for to_key method (Jan Vlnas)
+* Compatible with Rails 3.1 RC6 (Ari Epstein, Travis Warlick)
+
 == 4.0.0.beta7 2011-07-26
 * Compatible with Rails 3.1 RC5 (TycoooN)
 * Do not use Arel::Nodes::Or to combine predicates because it creates a

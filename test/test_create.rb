@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestCreate < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :streets, :suburbs

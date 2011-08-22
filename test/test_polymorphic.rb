@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestPolymorphic < ActiveSupport::TestCase
   fixtures :users, :employees, :comments, :hacks

@@ -1,4 +1,4 @@
-require 'abstract_unit'
+require './abstract_unit'
 
 class TestAttributeMethods < ActiveSupport::TestCase
   fixtures :reference_types
