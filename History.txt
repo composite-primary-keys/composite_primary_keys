@@ -1,3 +1,7 @@
+== 4.0.0.beta9 2011-082-22
+* Fix eager-loading in AR 3.1.rc6.
+
+
 == 4.0.0.beta8 2011-082-22
 * Sqlite 3 fixes (Jan Vlnas)
 * Fixes for to_key method (Jan Vlnas)
