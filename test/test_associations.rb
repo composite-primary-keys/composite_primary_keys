@@ -42,7 +42,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   # Its not generating the instances of associated classes from the rows
-  def test_find_includes_products
+  def test_find_includes
     # Old style
     products = Product.find(:all, :include => :product_tariffs)
     assert_equal(3, products.length)
@@ -52,6 +52,25 @@ class TestAssociations < ActiveSupport::TestCase
     products = Product.includes(:product_tariffs)
     assert_equal(3, products.length)
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
+  end
+
+  def test_find_includes_eager_loading
+    product = products(:second_product)
+    product_tarrif = product_tariffs(:second_free)
+
+    # Old style, include a where clause to force eager loading
+    products = Product.find(:all, :include => :product_tariffs,
+                                  :conditions => ["product_tariffs.product_id = ?", product.id])
+
+    assert_equal(1, products.length)
+    assert_equal(product, products.first)
+    assert_equal([product_tarrif], product.product_tariffs)
+
+    # New style
+    products = Product.includes(:product_tariffs).where('product_tariffs.product_id' => product.id)
+    assert_equal(1, products.length)
+    assert_equal(product, products.first)
+    assert_equal([product_tarrif], product.product_tariffs)
   end
 
   def test_find_includes_tariffs
