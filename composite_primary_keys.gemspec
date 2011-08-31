@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
 
   # Dependencies
   s.required_ruby_version = '>= 1.8.7'
-  s.add_dependency('activerecord', '~> 3.1.0.rc6')
+  s.add_dependency('activerecord', '~> 3.1.0')
 end
