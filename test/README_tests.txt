@@ -19,7 +19,7 @@ To run the tests for one of the adapters follow these steps (using mysql in the 
     - mysql (or the adapter of your choice)
 
 * Put your mysql connection settings to test/connections/databases.yml
-  look into databases.example.sql for reference,
+  look into databases.example.yml for reference,
   keep only one connection spec at once in databases.yml
 
     mysql:

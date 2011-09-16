@@ -24,7 +24,7 @@ See http://compositekeys.rubyforge.org for more.
 
 == Running Tests
 
-See test/README.tests.txt
+See test/README_tests.txt
 
 == Url
 
