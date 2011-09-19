@@ -7,6 +7,5 @@ class ReferenceType < ActiveRecord::Base
 
   before_destroy do |record|
     a = record
-    puts a
   end
 end
