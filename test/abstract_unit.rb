@@ -5,8 +5,8 @@ require "test/unit"
 require File.expand_path('../hash_tricks', __FILE__)
 
 # To make debugging easier, test within this source tree versus an installed gem
-#require 'composite_primary_keys'
-require File.join(PROJECT_ROOT, "lib", "composite_primary_keys")
+$LOAD_PATH.unshift('../../lib', __FILE__)
+require 'composite_primary_keys'
 
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")

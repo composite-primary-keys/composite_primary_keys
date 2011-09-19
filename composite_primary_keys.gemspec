@@ -1,5 +1,6 @@
 # Read the current version
-require File.join(File.dirname(__FILE__), 'lib', 'composite_primary_keys', 'version')
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+require 'composite_primary_keys/version'
 
 Gem::Specification.new do |s|
   s.name         = 'composite_primary_keys'
