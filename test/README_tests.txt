@@ -46,3 +46,11 @@ If you want to run closer to the metal you can cd into the test/
 directory and run the tests like so:
 
 * ADAPTER=mysql ruby test_equal.rb
+
+== Logging
+
+By default, ActiveRecord's log messages are sent to standard out when
+running the tests. If you would prefer to send them to a file, specify
+it as the environment variable CPK_LOGFILE:
+
+* CPK_LOGFILE=cpk_test.log rake mysql:test

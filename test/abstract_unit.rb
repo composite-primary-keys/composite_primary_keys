@@ -97,4 +97,4 @@ ActiveRecord::Base.connection.class.class_eval do
   end
 end
 
-ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger = Logger.new(ENV['CPK_LOGFILE'] || STDOUT)
