@@ -1,4 +1,4 @@
-require './abstract_unit'
+require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :streets, :suburbs
