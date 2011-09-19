@@ -18,9 +18,8 @@ To run the tests for one of the adapters follow these steps (using mysql in the 
     - activerecord (3.1.0.rc5 or later)
     - mysql (or the adapter of your choice)
 
-* Put your mysql connection settings to test/connections/databases.yml
-  look into databases.example.yml for reference,
-  keep only one connection spec at once in databases.yml
+* Put your database connection settings in test/connections/databases.yml.
+  Look at databases.example.yml for examples.
 
     mysql:
       adapter: mysql

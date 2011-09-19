@@ -1,5 +1,0 @@
-postgresql:
-  adapter: postgresql
-  database: composite_primary_keys_unittest
-  username: postgres
-  host: localhost

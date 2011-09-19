@@ -1,6 +1,6 @@
 # To run tests:
-#  1. Copy this file to databases.yml
-#  2. Delete all the specs except one
+#  1. Copy this file to test/connections/databases.yml.
+#  2. Update to match the databases you want to test against.
 
 mysql:
   adapter: mysql

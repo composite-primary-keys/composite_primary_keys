@@ -10,8 +10,7 @@ require 'composite_primary_keys'
 
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
-config = CompositePrimaryKeys::ConnectionSpec.config
-spec = config[config.keys.first]
+spec = CompositePrimaryKeys::ConnectionSpec[ENV['ADAPTER'] || 'postgresql']
 
 # And now connect to the database
 adapter = spec['adapter']
