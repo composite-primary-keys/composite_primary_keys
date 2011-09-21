@@ -4,13 +4,13 @@ class TestPolymorphic < ActiveSupport::TestCase
   fixtures :users, :employees, :comments, :hacks
   
   def test_polymorphic_has_many
-    comments = Hack.find('andrew').comments
-    assert_equal 'andrew', comments[0].person_id
+    comments = Hack.find(7).comments
+    assert_equal 7, comments[0].person_id
   end
 
   def test_polymorphic_has_one
-    first_comment = Hack.find('andrew').first_comment
-    assert_equal 'andrew', first_comment.person_id
+    first_comment = Hack.find(7).first_comment
+    assert_equal 7, first_comment.person_id
   end
 
   def test_has_many_through
