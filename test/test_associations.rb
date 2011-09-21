@@ -3,7 +3,7 @@ require './abstract_unit'
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
-           :departments, :memberships
+           :departments, :employees, :memberships, :membership_statuses
   
   def test_count
     assert_equal(3, Product.count(:include => :product_tariffs))
