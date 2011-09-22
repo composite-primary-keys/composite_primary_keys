@@ -95,14 +95,15 @@ create table employees (
 );
 
 create table comments (
-	id integer not null primary key autoincrement,
-	person_id varchar(100) null,
-	person_type varchar(100) null,
-	hack_id varchar(100) null
+    id integer not null primary key autoincrement,
+    person_id int null,
+    person_type varchar(100) null,
+    hack_id int null
 );
 
 create table hacks (
-    name varchar(50) not null primary key
+    id integer not null primary key autoincrement,
+    name varchar(50) not null
 );
 
 create table restaurants (

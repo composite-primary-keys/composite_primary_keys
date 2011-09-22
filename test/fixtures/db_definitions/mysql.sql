@@ -105,15 +105,16 @@ create table employees (
 
 create table comments (
     id int(11) not null auto_increment,
-    person_id varchar(100) default null,
+    person_id int(11) default null,
     person_type varchar(100) default null,
-    hack_id varchar(100) default null,
+    hack_id int(11) default null,
     primary key (id)
 ) type=InnoDB;
 
 create table hacks (
+    id int(11) not null auto_increment,
     name varchar(50) not null,
-    primary key (name)
+    primary key (id)
 ) type=InnoDB;
 
 create table restaurants (
