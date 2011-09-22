@@ -1,4 +1,4 @@
-require './abstract_unit'
+require File.expand_path('../abstract_unit', __FILE__)
 
 class TestExists < ActiveSupport::TestCase
   fixtures :articles, :departments

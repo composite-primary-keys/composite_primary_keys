@@ -2,16 +2,15 @@ PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 require "pp"
 require "test/unit"
-require "./hash_tricks"
+require File.expand_path('../hash_tricks', __FILE__)
 
 # To make debugging easier, test within this source tree versus an installed gem
-#require 'composite_primary_keys'
-require File.join(PROJECT_ROOT, "lib", "composite_primary_keys")
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'composite_primary_keys'
 
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
-config = CompositePrimaryKeys::ConnectionSpec.config
-spec = config[config.keys.first]
+spec = CompositePrimaryKeys::ConnectionSpec[ENV['ADAPTER'] || 'postgresql']
 
 # And now connect to the database
 adapter = spec['adapter']
@@ -98,4 +97,4 @@ ActiveRecord::Base.connection.class.class_eval do
   end
 end
 
-ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger = Logger.new(ENV['CPK_LOGFILE'] || STDOUT)
