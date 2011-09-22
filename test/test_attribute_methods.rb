@@ -1,7 +1,7 @@
 require './abstract_unit'
 
 class TestAttributeMethods < ActiveSupport::TestCase
-  fixtures :reference_types
+  fixtures :reference_types, :reference_codes
 
   def test_read_attribute_with_single_key
     rt = ReferenceType.find(1)
