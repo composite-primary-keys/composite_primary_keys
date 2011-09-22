@@ -15,7 +15,7 @@ class TestEqual < ActiveSupport::TestCase
     end
 
     pred = cpk_or_predicate(predicates)
-    assert_equal('(("departments"."id" = 0) OR ("departments"."id" = 1) OR ("departments"."id" = 2))',
+    assert_equal(with_quoted_identifiers('(("departments"."id" = 0) OR ("departments"."id" = 1) OR ("departments"."id" = 2))'),
                  pred)
   end
 
@@ -29,7 +29,7 @@ class TestEqual < ActiveSupport::TestCase
     end
 
     pred = cpk_and_predicate(predicates)
-    assert_equal('"departments"."id" = 0 AND "departments"."id" = 1 AND "departments"."id" = 2',
+    assert_equal(with_quoted_identifiers('"departments"."id" = 0 AND "departments"."id" = 1 AND "departments"."id" = 2'),
                 pred.to_sql)
   end
 end

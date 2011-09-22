@@ -50,7 +50,7 @@ class TestFind < ActiveSupport::TestCase
     error = assert_raise(::ActiveRecord::RecordNotFound) do
       ReferenceCode.find(['999', '999'])
     end
-    assert_equal("Couldn't find ReferenceCode with ID=999,999 WHERE \"reference_codes\".\"reference_type_id\" = 999 AND \"reference_codes\".\"reference_code\" = 999",
+    assert_equal(with_quoted_identifiers("Couldn't find ReferenceCode with ID=999,999 WHERE \"reference_codes\".\"reference_type_id\" = 999 AND \"reference_codes\".\"reference_code\" = 999"),
                  error.message)
   end
 

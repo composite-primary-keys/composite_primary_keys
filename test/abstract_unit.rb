@@ -81,6 +81,17 @@ class ActiveSupport::TestCase
   def composite?
     @key_test != :single
   end  
+
+  # Oracle metadata is in all caps.
+  def with_quoted_identifiers(s)
+    s.gsub(/"(\w+)"/) { |m|
+      if ActiveRecord::Base.configurations[:test]['adapter'] =~ /oracle/i
+        m.upcase
+      else
+        m
+      end
+    }
+  end
 end
 
 def current_adapter?(type)
