@@ -125,15 +125,18 @@ create sequence public.comments_seq start 1000;
 
 create table comments (
     id          int          not null default nextval('public.comments_seq'),
-    person_id   varchar(100) default null,
+    person_id   int          default null,
     person_type varchar(100) default null,
-    hack_id     varchar(100) default null,
+    hack_id     int          default null,
     primary key (id)
 );
 
+create sequence public.hacks_seq start 1000;
+
 create table hacks (
+    id   int         default nextval('public.hacks_seq'),
     name varchar(50) not null,
-    primary key (name)
+    primary key (id)
 );
 
 create table restaurants (
