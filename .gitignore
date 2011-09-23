@@ -8,3 +8,5 @@ db
 
 /doc
 /.idea
+
+test/connections/databases.yml
