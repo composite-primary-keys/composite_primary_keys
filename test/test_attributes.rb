@@ -1,4 +1,4 @@
-require './abstract_unit'
+require File.expand_path('../abstract_unit', __FILE__)
 
 class TestAttributes < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs
