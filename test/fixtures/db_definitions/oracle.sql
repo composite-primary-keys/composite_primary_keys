@@ -181,6 +181,19 @@ create table room_assignments (
     room_id    number(11) not null
 );
 
+create table seats (
+    flight_number int not null,
+    seat          int not null,
+    customer      int,
+    primary key (flight_number, seat)
+);
+
+create table capitols (
+    country varchar2(2000) not null,
+    city varchar2(2000) not null,
+    primary key (country, city)
+);
+
 create table products_restaurants (
     product_id   number(11) not null,
     franchise_id number(11) not null,
