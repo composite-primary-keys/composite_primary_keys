@@ -36,13 +36,19 @@ module ActiveRecord
             foreign_key = reflection.active_record_primary_key
           end
 
+          conditions = self.conditions[i]
+
           if reflection == chain.last
             # CPK
             # scope = scope.where(table[key].eq(owner[foreign_key]))
             predicate = cpk_join_predicate(table, key, owner, foreign_key)
             scope = scope.where(predicate)
 
-            conditions[i].each do |condition|
+            if reflection.type
+              scope = scope.where(table[reflection.type].eq(owner.class.base_class.name))
+            end
+
+            conditions.each do |condition|
               if options[:through] && condition.is_a?(Hash)
                 condition = { table.name => condition }
               end
@@ -53,14 +59,16 @@ module ActiveRecord
             # CPK
             # constraint = table[key].eq(foreign_table[foreign_key])
             constraint = cpk_join_predicate(table, key, foreign_table, foreign_key)
-            scope = scope.where(predicate)
 
-            join       = join(foreign_table, constraint)
+            if reflection.type
+              type = chain[i + 1].klass.base_class.name
+              constraint = constraint.and(table[reflection.type].eq(type))
+            end
 
-            scope = scope.joins(join)
+            scope = scope.joins(join(foreign_table, constraint))
 
-            unless conditions[i].empty?
-              scope = scope.where(sanitize(conditions[i], table))
+            unless conditions.empty?
+              scope = scope.where(sanitize(conditions, table))
             end
           end
         end
