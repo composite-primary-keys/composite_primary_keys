@@ -19,6 +19,12 @@ class TestAssociations < ActiveSupport::TestCase
     product = products(:first_product)
     assert_equal(2, product.product_tariffs.count(:distinct => true))
   end
+  
+  def test_count_includes
+    count = Dorm.count(:include => :rooms,
+                       :conditions => ["rooms.room_id = ?", 2])
+    assert_equal(1, count)
+  end
 
   def test_products
     assert_not_nil products(:first_product).product_tariffs
