@@ -5,7 +5,9 @@ require 'redcloth'
 require 'syntax/convertors/html'
 require 'erb'
 require 'active_support'
-require File.dirname(__FILE__) + '/../lib/composite_primary_keys/version.rb'
+
+version_path = File.join(File.dirname(__FILE__), '..', 'lib', 'composite_primary_keys', 'version.rb')
+require File.expand_path(version_path)
 
 version  = CompositePrimaryKeys::VERSION::STRING
 download = 'http://rubygems.org/gems/composite_primary_keys'
@@ -16,10 +18,14 @@ class Fixnum
     return 'th' if (10..19).include?(self % 100)
     # others
     case self % 10
-    when 1: return 'st'
-    when 2: return 'nd'
-    when 3: return 'rd'
-    else    return 'th'
+    when 1
+      return 'st'
+    when 2
+      return 'nd'
+    when 3
+      return 'rd'
+    else
+      return 'th'
     end
   end
 end
