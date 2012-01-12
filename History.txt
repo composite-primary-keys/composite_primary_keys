@@ -1,3 +1,8 @@
+== 4.1.2 2012-01-12
+* Helper to allow the same tests to be used for both Oracle and other DBs
+by replacing quoted identifiers with all-caps equivalents on Oracle (Rhett Sutphin)
+* Update Oracle tests (Rhett Sutphin)
+
 == 4.1.1 2011-08-31
 * Support for AR 3.1.1 
 * Make polymorphic belongs_to work in rails 3.1.1 (Tom Hughes)
