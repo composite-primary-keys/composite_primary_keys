@@ -12,22 +12,18 @@ module ActiveRecord
         else
           attr_name = attr_name.to_s
           # CPK
-          # attr_name = self.class.primary_key if attr_name == 'id'
-          attr_name = self.class.primary_key if (attr_name == 'id' and !self.composite?)
+          # attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
+          attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite?
           @attributes_cache.delete(attr_name)
-          if (column = column_for_attribute(attr_name)) && column.number?
-            @attributes[attr_name] = convert_number_column_value(value)
+          column = column_for_attribute(attr_name)
+
+          if column || @attributes.has_key?(attr_name)
+            @attributes[attr_name] = type_cast_attribute_for_write(column, value)
           else
-            @attributes[attr_name] = value
+            raise ActiveModel::MissingAttributeError, "can't write unknown attribute `#{attr_name}'"
           end
         end
       end
     end
   end
 end
-
-#ActiveRecord::Base.class_eval do
-#  alias :[]= :write_attribute
-#  alias :raw_write_attribute :write_attribute
-#  public :[]=
-#end

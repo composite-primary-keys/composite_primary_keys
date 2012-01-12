@@ -47,15 +47,18 @@ class TestAttributes < ActiveSupport::TestCase
     second_free = tariffs(:free)
     second_free_fk = [:tariff_id, :tariff_start_date]
 
-    second_free[key = second_free_fk] = flat.id
+    key = second_free_fk
+    second_free[key] = flat.id
     compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
     assert_equal flat.id, second_free[key]
 
-    second_free[key = second_free_fk.to_composite_keys] = flat.id
+    key = second_free_fk.to_composite_keys
+    second_free[key] = flat.id
     assert_equal flat.id, second_free[key]
     compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
 
-    second_free[key = second_free_fk.to_composite_keys.to_s] = flat.id
+    key = second_free_fk.to_composite_keys.tos
+    second_free[key] = flat.id
     assert_equal flat.id, second_free[key]
     compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
   end
