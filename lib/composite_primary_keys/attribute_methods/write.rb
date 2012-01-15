@@ -27,3 +27,8 @@ module ActiveRecord
     end
   end
 end
+
+ActiveRecord::Base.class_eval do
+  alias :[]= :write_attribute
+  public :[]=
+end

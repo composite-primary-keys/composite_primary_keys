@@ -43,31 +43,18 @@ class TestAttributes < ActiveSupport::TestCase
   end
     
   def test_brackets_foreign_key_assignment
-    flat = tariffs(:flat)
-    second_free = tariffs(:free)
-    second_free_fk = [:tariff_id, :tariff_start_date]
-
-    key = second_free_fk
-    second_free[key] = flat.id
-    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
-    assert_equal flat.id, second_free[key]
-
-    key = second_free_fk.to_composite_keys
-    second_free[key] = flat.id
-    assert_equal flat.id, second_free[key]
-    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
-
-    key = second_free_fk.to_composite_keys.tos
-    second_free[key] = flat.id
-    assert_equal flat.id, second_free[key]
-    compare_indexes(flat, flat.class.primary_key, second_free, second_free_fk)
+    tarrif = tariffs(:flat)
+    product_tariff = product_tariffs(:first_flat)
+    compare_indexes(tarrif, tarrif.class.primary_key, product_tariff, [:tariff_id, :tariff_start_date])
   end
   
   private
 
   def compare_indexes(obj1, indexes1, obj2, indexes2)
     indexes1.length.times do |key_index|
-      assert_equal(obj1[indexes1[key_index].to_s], obj2[indexes2[key_index].to_s])
+      key1 = indexes1[key_index]
+      key2 = indexes2[key_index]
+      assert_equal(obj1[key1], obj2[key2])
     end
   end
 end

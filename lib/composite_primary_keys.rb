@@ -34,6 +34,7 @@ end
 require 'active_record/fixtures'
 require 'active_record/persistence'
 require 'active_record/relation'
+require 'active_record/sanitization'
 
 require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
@@ -68,6 +69,7 @@ require 'composite_primary_keys/composite_predicates'
 require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/relation'
+require 'composite_primary_keys/sanitization'
 require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'

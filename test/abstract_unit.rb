@@ -2,7 +2,6 @@ PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 require "pp"
 require "test/unit"
-require File.expand_path('../hash_tricks', __FILE__)
 
 # To make debugging easier, test within this source tree versus an installed gem
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))

@@ -33,6 +33,31 @@ module ActiveRecord
       self.class.composite?
     end
 
+    def initialize_dup(other)
+      cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
+      # CPK
+      # cloned_attributes.delete(self.class.primary_key)
+      Array(self.class.primary_key).each {|key| cloned_attributes.delete(key.to_s)}
+
+      @attributes = cloned_attributes
+
+      _run_after_initialize_callbacks if respond_to?(:_run_after_initialize_callbacks)
+
+      @changed_attributes = {}
+      self.class.column_defaults.each do |attr, orig_value|
+        @changed_attributes[attr] = orig_value if field_changed?(attr, orig_value, @attributes[attr])
+      end
+
+      @aggregation_cache = {}
+      @association_cache = {}
+      @attributes_cache = {}
+      @new_record  = true
+
+      ensure_proper_type
+      populate_with_current_scope_attributes
+      super
+    end
+
     module CompositeClassMethods
       def primary_key
         primary_keys
@@ -75,12 +100,6 @@ module ActiveRecord
         end
       end
 
-      def quoted_id #:nodoc:
-        [self.class.primary_keys, ids].
-          transpose.
-          map {|attr_name,id| quote_value(id, column_for_attribute(attr_name))}
-      end
-
       # Sets the primary ID.
       def id=(ids)
         ids = ids.split(CompositePrimaryKeys::ID_SEP) if ids.is_a?(String)
@@ -94,31 +113,6 @@ module ActiveRecord
 
       def ==(comparison_object)
         ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| id.present?} : super(comparison_object)
-      end
-
-      def initialize_dup(other)
-        cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
-        # CPK
-        #cloned_attributes.delete(self.class.primary_key)
-        self.class.primary_key.each {|key| cloned_attributes.delete(key.to_s)}
-
-        @attributes = cloned_attributes
-
-        _run_after_initialize_callbacks if respond_to?(:_run_after_initialize_callbacks)
-
-        @changed_attributes = {}
-        attributes_from_column_definition.each do |attr, orig_value|
-          @changed_attributes[attr] = orig_value if field_changed?(attr, orig_value, @attributes[attr])
-        end
-
-        @aggregation_cache = {}
-        @association_cache = {}
-        @attributes_cache = {}
-        @new_record  = true
-
-        ensure_proper_type
-        populate_with_current_scope_attributes
-        clear_timestamp_attributes
       end
 
       def can_change_primary_key_values?

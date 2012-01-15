@@ -21,7 +21,9 @@ class TestClone < ActiveSupport::TestCase
   def test_dup
     testing_with do
       clone = @first.dup
-      assert_equal(@first.attributes.block(@klass.primary_key), clone.attributes)
+      
+      remove_keys = Array(@klass.primary_key).map &:to_s
+      assert_equal(@first.attributes.except(*remove_keys), clone.attributes)
 
       if composite?
         @klass.primary_key.each do |key|

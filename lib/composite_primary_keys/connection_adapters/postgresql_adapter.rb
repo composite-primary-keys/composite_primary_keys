@@ -2,10 +2,11 @@ module ActiveRecord
   module ConnectionAdapters
     class PostgreSQLAdapter
       def insert_sql(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
-        # Extract the table from the insert sql. Yuck.
-        _, table = extract_schema_and_table(sql.split(" ", 4)[2])
-
-        pk ||= primary_key(table)
+        unless pk
+          # Extract the table from the insert sql. Yuck.
+          table_ref = extract_table_ref_from_insert_sql(sql)
+          pk = primary_key(table_ref) if table_ref
+        end
 
         if pk
           # CPK
@@ -19,9 +20,9 @@ module ActiveRecord
 
       def sql_for_insert(sql, pk, id_value, sequence_name, binds)
         unless pk
-          _, table = extract_schema_and_table(sql.split(" ", 4)[2])
-
-          pk = primary_key(table)
+          # Extract the table from the insert sql. Yuck.
+          table_ref = extract_table_ref_from_insert_sql(sql)
+          pk = primary_key(table_ref) if table_ref
         end
 
         # CPK

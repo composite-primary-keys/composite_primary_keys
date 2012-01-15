@@ -36,7 +36,7 @@ class TestCreate < ActiveSupport::TestCase
   def test_create_no_id
     testing_with do
       begin
-        @obj = @klass.create(@klass_info[:create].block(@klass.primary_key))
+        @obj = @klass.create(@klass_info[:create].except(@klass.primary_key))
         @successful = !composite?
       rescue ActiveRecord::CompositeKeyError
         @successful = false

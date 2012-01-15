@@ -36,3 +36,7 @@ module ActiveRecord
     end
   end
 end
+
+ActiveRecord::Base.class_eval do
+  alias :[] :read_attribute
+end
