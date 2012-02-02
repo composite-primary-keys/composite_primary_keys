@@ -120,7 +120,7 @@ module ActiveRecord
       end
 
       # Returns this record's primary keys values in an Array
-      # if any value is avaliable
+      # if any value is available
       def to_key
         ids.to_a if !ids.compact.empty? # XXX Maybe use primary_keys with send instead of ids
       end
