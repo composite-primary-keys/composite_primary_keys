@@ -7,22 +7,36 @@ module ActiveRecord
     NOT_IMPLEMENTED_YET        = 'Not implemented for composite primary keys yet'
 
     class << self
-      def set_primary_keys(*keys)
-        keys = keys.first if keys.first.is_a?(Array)
+      def primary_keys
+        @primary_keys
+      end
 
-        if keys.length == 1
-          self.primary_key = keys.first
+      def primary_keys=(keys)
+        unless keys.kind_of?(Array)
+          self.primary_key = keys
           return
         end
 
-        cattr_accessor :primary_keys
-        self.primary_keys = keys.map { |k| k.to_sym }.to_composite_keys
+        @primary_keys = keys.map { |k| k.to_sym }.to_composite_keys
 
         class_eval <<-EOV
           extend  CompositeClassMethods
           include CompositeInstanceMethods
         EOV
       end
+
+      def set_primary_keys(*keys)
+        ActiveSupport::Deprecation.warn(
+            "Calling self.primary_keys = is deprecated. Please use `self.primary_keys = keys` instead."
+        )
+
+        keys = keys.first if keys.first.is_a?(Array)
+        if keys.length == 1
+          self.primary_key = keys.first
+        else
+          self.primary_keys = keys
+        end
+     end
 
       def composite?
         false
@@ -107,7 +121,7 @@ module ActiveRecord
         unless ids.is_a?(Array) and ids.length == self.class.primary_keys.length
           raise "#{self.class}.id= requires #{self.class.primary_keys.length} ids"
         end
-        [primary_keys, ids].transpose.each {|key, an_id| write_attribute(key , an_id)}
+        [self.class.primary_keys, ids].transpose.each {|key, an_id| write_attribute(key , an_id)}
         id
       end
 

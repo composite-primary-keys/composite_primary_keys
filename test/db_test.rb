@@ -24,7 +24,7 @@ end
 module GlobePG
   class TeacherToSchool < PGBase
     set_table_name 'teacher_to_school'
-    set_primary_keys ['teacherid', 'schoolid']
+    self.primary_keys = ['teacherid', 'schoolid']
 
     belongs_to :globe_teacher, :foreign_key => 'teacherid'
     belongs_to :globe_school, :foreign_key => 'schoolid'

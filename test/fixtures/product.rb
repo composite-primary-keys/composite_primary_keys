@@ -1,5 +1,5 @@
 class Product < ActiveRecord::Base
-	set_primary_keys :id  # redundant
+	self.primary_keys = :id  # redundant
 	has_many :product_tariffs, :foreign_key => :product_id, :dependent => :delete_all
 	has_many :tariffs, :through => :product_tariffs, :foreign_key => [:tariff_id, :tariff_start_date]
 

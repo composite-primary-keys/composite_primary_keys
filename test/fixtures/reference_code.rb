@@ -1,5 +1,5 @@
 class ReferenceCode < ActiveRecord::Base
-  set_primary_keys :reference_type_id, :reference_code
+  self.primary_keys = :reference_type_id, :reference_code
   
   belongs_to :reference_type, :foreign_key => "reference_type_id"
   
