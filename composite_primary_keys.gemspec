@@ -7,10 +7,9 @@ Gem::Specification.new do |s|
   s.version      = CompositePrimaryKeys::VERSION::STRING
   s.platform     = Gem::Platform::RUBY
   s.authors      = ["Dr Nic Williams", "Charlie Savage"]
-  s.email        = ["drnicwilliams@gmail.com"]
-  s.homepage     = "http://github.com/cfis/composite_primary_keys"
+  s.homepage     = "https://github.com/drnic/composite_primary_keys"
   s.summary      = "Composite key support for ActiveRecord"
-  s.description  = "Composite key support for ActiveRecord 3"
+  s.description  = "Composite key support for ActiveRecord"
   s.date         = Time.new
   s.files        = Dir['Rakefile',
                        '*.txt',
@@ -26,5 +25,5 @@ Gem::Specification.new do |s|
 
   # Dependencies
   s.required_ruby_version = '>= 1.8.7'
-  s.add_dependency('activerecord', '~> 3.2.0.rc2')
+  s.add_dependency('activerecord', '~> 3.2.0')
 end
