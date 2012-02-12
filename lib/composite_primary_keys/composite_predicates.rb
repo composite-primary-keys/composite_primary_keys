@@ -7,11 +7,22 @@ module CompositePrimaryKeys
         Arel::Nodes::And.new(predicates)
       end
     end
-    
+
+    def figure_engine(table)
+      case table
+        when Arel::Nodes::TableAlias
+          table.left.engine
+        when Arel::Table
+          table.engine
+        when ::ActiveRecord::Base
+          table
+        else
+          nil
+      end
+    end
+
     def cpk_or_predicate(predicates, table = nil)
-      # Can't do or here, arel does the wrong thing and makes a really
-      # deeply nested stack that blows up
-      engine = table && table.engine
+      engine = figure_engine(table)
       predicates = predicates.map do |predicate|
         predicate_sql = engine ? predicate.to_sql(engine) : predicate.to_sql
         "(#{predicate_sql})"
