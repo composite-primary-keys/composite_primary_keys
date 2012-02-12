@@ -56,9 +56,11 @@ module CompositePrimaryKeys
         when CompositePrimaryKeys::CompositeKeys
           relation = relation.where(cpk_id_predicate(table, primary_key, id))
         when Array
-          if !id.first.kind_of?(String)
+          pk_length = @klass.primary_keys.length
+
+          if id.length == pk_length # E.g. id = ['France', 'Paris']
             return self.exists?(id.to_composite_keys)
-          else
+          else # Assume that id contains where relation
             relation = relation.where(id)
           end
         when Hash
