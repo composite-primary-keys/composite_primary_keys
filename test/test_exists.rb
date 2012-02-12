@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestExists < ActiveSupport::TestCase
-  fixtures :articles, :departments
+  fixtures :articles, :departments, :capitols
   
   def test_id
     assert(Article.exists?(1))
@@ -31,5 +31,10 @@ class TestExists < ActiveSupport::TestCase
   def test_cpk_array_condition
     assert(Department.exists?(['department_id = ? and location_id = ?', 1, 1]))
     assert(!Department.exists?(['department_id = ? and location_id = ?', 1, -1]))
+  end
+
+  def test_cpk_array_string_id
+    assert(Capitol.exists?(['The Netherlands', 'Amsterdam']))
+    assert(!Capitol.exists?(['The Netherlands', 'Paris']))
   end
 end
