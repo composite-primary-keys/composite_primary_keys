@@ -34,7 +34,7 @@ end
 module GlobePG
   class GlobeSchool < PGBase
     set_table_name 'globe_school'
-    set_primary_key 'schoolid'
+    self.primary_key = 'schoolid'
     has_many :teacher_to_schools, :foreign_key => :schoolid
     has_many :globe_teachers, :through => :teacher_to_schools
   end
@@ -43,7 +43,7 @@ end
 module GlobePG
   class GlobeTeacher < PGBase
     set_table_name 'globe_teacher'
-    set_primary_key 'teacherid'
+    self.primary_key = 'teacherid'
     has_many :teacher_to_schools, :foreign_key => :teacherid
     has_many :globe_schools, :through => :teacher_to_schools
   end

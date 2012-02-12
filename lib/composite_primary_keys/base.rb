@@ -11,7 +11,7 @@ module ActiveRecord
         keys = keys.first if keys.first.is_a?(Array)
 
         if keys.length == 1
-          set_primary_key(keys.first)
+          self.primary_key = keys.first
           return
         end
 

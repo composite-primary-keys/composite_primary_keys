@@ -1,5 +1,5 @@
 class ReferenceType < ActiveRecord::Base
-  set_primary_key :reference_type_id
+  self.primary_key = :reference_type_id
   has_many :reference_codes, :foreign_key => "reference_type_id", :dependent => :destroy
   
   validates_presence_of :type_label, :abbreviation
