@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2006 Nic Williams
+# Copyright (c) 2006-2012 Nic Williams and Charlie Savage
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
