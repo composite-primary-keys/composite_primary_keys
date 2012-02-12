@@ -8,11 +8,13 @@ module CompositePrimaryKeys
       end
     end
     
-    def cpk_or_predicate(predicates)
+    def cpk_or_predicate(predicates, table = nil)
       # Can't do or here, arel does the wrong thing and makes a really
       # deeply nested stack that blows up
+      engine = table && table.engine
       predicates = predicates.map do |predicate|
-        "(#{predicate.to_sql})"
+        predicate_sql = engine ? predicate.to_sql(engine) : predicate.to_sql
+        "(#{predicate_sql})"
       end
       predicates = "(#{predicates.join(" OR ")})"
       Arel::Nodes::SqlLiteral.new(predicates)
@@ -43,7 +45,7 @@ module CompositePrimaryKeys
         cpk_and_predicate(eq_predicates)
       end
 
-      cpk_or_predicate(and_predicates)
+      cpk_or_predicate(and_predicates, table)
     end
   end
 end
