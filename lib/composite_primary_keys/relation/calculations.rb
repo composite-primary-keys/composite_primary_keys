@@ -46,7 +46,17 @@ module CompositePrimaryKeys
         # CPK
         # aliased_column = aggregate_column(column_name == :all ? 1 : column_name).as(column_alias)
         # relation.select_values = [aliased_column]
-        relation.select_values =  Array(aggregate_column(column_name))
+        relation.select_values = if column_name.kind_of?(Array)
+            column_name.map do |column|
+              Arel::Attribute.new(@klass.unscoped.table, column)
+            end
+          elsif @klass.column_names.include?(column_name.to_s)
+            [Arel::Attribute.new(@klass.unscoped.table, column_name)]
+          else
+            [Arel.sql(column_name == :all ? "#{@klass.quoted_table_name}.*" : column_name.to_s)]
+          end
+
+
         relation.distinct(true)
         subquery = relation.arel.as(subquery_alias)
 
