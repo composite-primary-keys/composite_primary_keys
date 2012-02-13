@@ -1,3 +1,18 @@
+== 5.0.0 2012-02-12
+* Fix tests so they pass on MySql (Charlie Savage)
+* Fix calculations to work with duplicate column names (cleesmith)
+* Switch rake tasks for Postgresql and MySql to use ActiveRecord API for
+  creating and dropping databases (Charlie Savage)
+* Follow AR 3.2 lead and introduce self.primary_keys and deprecate set_primary_keys (Charlie Savage)
+* Switch from set_primary_key to self.primary_key= to avoid Rails deprecation (Charlie Savage)
+* Fix issue when using multiple database connections (David Doan)
+* Fix homepage in gemspec and remove email address (Charlie Savage)
+* Add support for string keys to exists? (Jan Vlnas)
+* Fix typo (Jason Karns)
+
+== 5.0.0.rc1 2012-01-16
+* ActiveRecord 3.2 support
+
 == 4.1.2 2012-01-12
 * Helper to allow the same tests to be used for both Oracle and other DBs
 by replacing quoted identifiers with all-caps equivalents on Oracle (Rhett Sutphin)
