@@ -1,186 +1,186 @@
 create table reference_types (
-    reference_type_id int(11) not null auto_increment,
+    reference_type_id int not null auto_increment,
     type_label varchar(50) default null,
     abbreviation varchar(50) default null,
     description varchar(50) default null,
     primary key (reference_type_id)
-) type=InnoDB;
+);
 
 create table reference_codes (
-    reference_type_id int(11),
-    reference_code int(11) not null,
+    reference_type_id int,
+    reference_code int not null,
     code_label varchar(50) default null,
     abbreviation varchar(50) default null,
     description varchar(50) default null,
     primary key (reference_type_id, reference_code)
-) type=InnoDB;
+);
 
 create table products (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50) default null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table tariffs (
-    tariff_id int(11) not null,
+    tariff_id int not null,
     start_date date not null,
     amount integer(11) default null,
     primary key (tariff_id, start_date)
-) type=InnoDB;
+);
 
 create table product_tariffs (
-    product_id int(11) not null,
-    tariff_id int(11) not null,
+    product_id int not null,
+    tariff_id int not null,
     tariff_start_date date not null,
     primary key (product_id, tariff_id, tariff_start_date)
-) type=InnoDB;
+);
 
 create table suburbs (
-    city_id int(11) not null,
-    suburb_id int(11) not null,
+    city_id int not null,
+    suburb_id int not null,
     name varchar(50) not null,
     primary key (city_id, suburb_id)
-) type=InnoDB;
+);
 
 create table streets (
-    id int(11) not null auto_increment,
-    city_id int(11) not null,
-    suburb_id int(11) not null,
+    id int not null auto_increment,
+    city_id int not null,
+    suburb_id int not null,
     name varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table users (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table articles (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table readings (
-    id int(11) not null auto_increment,
-    user_id int(11) not null,
-    article_id int(11) not null,
-    rating int(11) not null,
+    id int not null auto_increment,
+    user_id int not null,
+    article_id int not null,
+    rating int not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table groups (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table memberships (
-    user_id int(11) not null,
-    group_id int(11) not null,
+    user_id int not null,
+    group_id int not null,
     primary key  (user_id,group_id)
-) type=InnoDB;
+);
 
 create table membership_statuses (
-    id int(11) not null auto_increment,
-    user_id int(11) not null,
-    group_id int(11) not null,
+    id int not null auto_increment,
+    user_id int not null,
+    group_id int not null,
     status varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table departments (
-    department_id int(11) not null,
-    location_id int(11) not null,
+    department_id int not null,
+    location_id int not null,
     primary key (department_id, location_id)
-) type=InnoDB;
+);
 
 create table employees (
-    id int(11) not null auto_increment,
-    department_id int(11) default null,
-    location_id int(11) default null,
+    id int not null auto_increment,
+    department_id int default null,
+    location_id int default null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table comments (
-    id int(11) not null auto_increment,
-    person_id int(11) default null,
+    id int not null auto_increment,
+    person_id int default null,
     person_type varchar(100) default null,
-    hack_id int(11) default null,
+    hack_id int default null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table hacks (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50) not null,
     primary key (id)
-) type=InnoDB;
+);
 
 create table restaurants (
-    franchise_id int(11) not null,
-    store_id int(11) not null,
+    franchise_id int not null,
+    store_id int not null,
     name varchar(100),
     primary key (franchise_id, store_id)
-) type=InnoDB;
+);
 
 create table restaurants_suburbs (
-    franchise_id int(11) not null,
-    store_id int(11) not null,
-    city_id int(11) not null,
-    suburb_id int(11) not null
-) type=InnoDB;
+    franchise_id int not null,
+    store_id int not null,
+    city_id int not null,
+    suburb_id int not null
+);
 
 create table dorms (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     primary key(id)
-) type=InnoDB;
+);
 
 create table rooms (
-    dorm_id int(11) not null,
-    room_id int(11) not null,
+    dorm_id int not null,
+    room_id int not null,
     primary key (dorm_id, room_id)
-) type=InnoDB;
+);
 
 create table room_attributes (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     name varchar(50),
     primary key(id)
-) type=InnoDB;
+);
 
 create table room_attribute_assignments (
-    dorm_id int(11) not null,
-    room_id int(11) not null,
-    room_attribute_id int(11) not null
-) type=InnoDB;
+    dorm_id int not null,
+    room_id int not null,
+    room_attribute_id int not null
+);
 
 create table students (
-    id int(11) not null auto_increment,
+    id int not null auto_increment,
     primary key(id)
-) type=InnoDB;
+);
 
 create table room_assignments (
-    student_id int(11) not null,
-    dorm_id int(11) not null,
-    room_id int(11) not null
-) type=InnoDB;
+    student_id int not null,
+    dorm_id int not null,
+    room_id int not null
+);
 
 create table seats (
-  flight_number int(11) not null,
-  seat          int(11) not null,
+  flight_number int not null,
+  seat          int not null,
   customer      int,
   primary key (flight_number, seat)
-) type=InnoDB;
+);
 
 create table capitols (
   country varchar(100) default null,
   city varchar(100) default null,
   primary key (country, city)
-) type=InnoDB;
+);
 
 create table products_restaurants (
-  product_id int(11) not null,
-  franchise_id int(11) not null,
-  store_id int(11) not null
-) type=InnoDB;
+  product_id int not null,
+  franchise_id int not null,
+  store_id int not null
+);
 
