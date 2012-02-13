@@ -7,7 +7,7 @@ create table reference_types (
 );
 
 create table reference_codes (
-    reference_type_id int,
+    reference_type_id int not null,
     reference_code int not null,
     code_label varchar(50) default null,
     abbreviation varchar(50) default null,
