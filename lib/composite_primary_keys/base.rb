@@ -27,7 +27,7 @@ module ActiveRecord
 
       def set_primary_keys(*keys)
         ActiveSupport::Deprecation.warn(
-            "Calling self.primary_keys = is deprecated. Please use `self.primary_keys = keys` instead."
+            "Calling set_primary_keys is deprecated. Please use `self.primary_keys = keys` instead."
         )
 
         keys = keys.first if keys.first.is_a?(Array)
