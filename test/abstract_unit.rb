@@ -9,11 +9,13 @@ require 'composite_primary_keys'
 
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
-spec = CompositePrimaryKeys::ConnectionSpec[ENV['ADAPTER'] || 'postgresql']
+
+spec_name = ENV['ADAPTER'] || 'postgresql'
+spec = CompositePrimaryKeys::ConnectionSpec[spec_name]
 
 # And now connect to the database
 adapter = spec['adapter']
-require File.join(PROJECT_ROOT, "test", "connections", "native_#{adapter}", "connection")
+require File.join(PROJECT_ROOT, "test", "connections", "native_#{spec_name}", "connection")
 
 # Tell active record about the configuration
 ActiveRecord::Base.configurations[:test] = spec
