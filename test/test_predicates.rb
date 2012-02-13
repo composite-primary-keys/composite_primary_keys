@@ -14,9 +14,12 @@ class TestEqual < ActiveSupport::TestCase
       predicates << dep[:id].eq(i)
     end
 
+    connection = ActiveRecord::Base.connection
+    quoted = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    expected = "((#{quoted} = 0) OR (#{quoted} = 1) OR (#{quoted} = 2))"
+
     pred = cpk_or_predicate(predicates)
-    assert_equal(with_quoted_identifiers('(("departments"."id" = 0) OR ("departments"."id" = 1) OR ("departments"."id" = 2))'),
-                 pred)
+    assert_equal(with_quoted_identifiers(expected), pred.to_s)
   end
 
   def test_and
@@ -28,8 +31,11 @@ class TestEqual < ActiveSupport::TestCase
       predicates << dep[:id].eq(i)
     end
 
+    connection = ActiveRecord::Base.connection
+    quoted = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    expected = "#{quoted} = 0 AND #{quoted} = 1 AND #{quoted} = 2"
+
     pred = cpk_and_predicate(predicates)
-    assert_equal(with_quoted_identifiers('"departments"."id" = 0 AND "departments"."id" = 1 AND "departments"."id" = 2'),
-                pred.to_sql)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
   end
 end
