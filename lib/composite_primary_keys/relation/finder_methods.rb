@@ -82,8 +82,10 @@ module CompositePrimaryKeys
         #   find('1,2', '3,4')      ->  ['1,2','3,4']
 
         # Normalize incoming data.  Note the last arg can be nil.  Happens
-        # when find is called with nil options like the reload method does.
+        # when find is called with nil options which is then passed on
+        # to find_with_ids.
         ids.compact!
+
         ids = [ids] unless ids.first.kind_of?(Array)
 
         results = ids.map do |cpk_ids|
