@@ -1,6 +1,19 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Calculations
+      def aggregate_column(column_name)
+        # CPK
+        if column_name.kind_of?(Array)
+          column_name.map do |column|
+            Arel::Attribute.new(@klass.unscoped.table, column)
+          end
+        elsif @klass.column_names.include?(column_name.to_s)
+          Arel::Attribute.new(@klass.unscoped.table, column_name)
+        else
+          Arel.sql(column_name == :all ? "*" : column_name.to_s)
+        end
+      end
+
       def execute_simple_calculation(operation, column_name, distinct)
         # Postgresql doesn't like ORDER BY when there are no GROUP BY
         relation = reorder(nil)
@@ -33,8 +46,8 @@ module CompositePrimaryKeys
         # CPK
         # aliased_column = aggregate_column(column_name == :all ? 1 : column_name).as(column_alias)
         # relation.select_values = [aliased_column]
-        column = aggregate_column(column_name)
-        relation.select_values = ["DISTINCT #{column.to_s}"]
+        relation.select_values =  Array(aggregate_column(column_name))
+        relation.distinct(true)
         subquery = relation.arel.as(subquery_alias)
 
         sm = Arel::SelectManager.new relation.engine
