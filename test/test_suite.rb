@@ -4,6 +4,7 @@ require 'test/unit'
   test_associations
   test_attribute_methods
   test_attributes
+  test_calculations
   test_composite_arrays
   test_create
   test_delete

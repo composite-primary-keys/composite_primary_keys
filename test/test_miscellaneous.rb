@@ -29,9 +29,4 @@ class TestMiscellaneous < ActiveSupport::TestCase
       assert_equal composite?, @first.composite?
     end
   end
-  
-  def test_count
-    assert_equal 3, Product.count
-  end
-  
 end
