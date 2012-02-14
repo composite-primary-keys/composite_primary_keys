@@ -1,5 +1,8 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
+class ChildCpkTest < ReferenceCode
+end
+
 class TestIds < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes
   
@@ -79,6 +82,15 @@ class TestIds < ActiveSupport::TestCase
         assert_equal @primary_keys.first.to_s, @klass.primary_key.to_s
       end
     end
+  end
+
+  def test_inherited_primary_keys
+    assert_equal([:reference_type_id, :reference_code], ChildCpkTest.primary_keys)
+  end
+
+  def test_inherited_ids
+    cpk_test = ChildCpkTest.new
+    assert_equal([nil, nil], cpk_test.id)
   end
 
   def test_assign_ids
