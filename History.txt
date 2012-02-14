@@ -1,3 +1,9 @@
+== 5.0.1 2012-02-13
+* Fix deprecation warning that was exactly backwards (Tom Hughes)
+* Fix primary_keys handling in models that inherit from other models
+  but don't redefine their primary_key.  Problem was the inherited
+  models didn't correctly reference their parents primary_keys (Charlie Savage)
+
 == 5.0.0 2012-02-12
 * Fix tests so they pass on MySql (Charlie Savage)
 * Fix calculations to work with duplicate column names (cleesmith)
