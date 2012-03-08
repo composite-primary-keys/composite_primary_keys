@@ -17,6 +17,18 @@ This RubyGem extends the activerecord gem to provide CPK support.
     end
     
     pv = ProductVariation.find(345, 12)
+
+== Factories
+
+	class AnEvent < ActiveRecord::Base
+	  set_primary_keys :id, :occurred_at
+
+
+	FactoryGirl.define do
+	  factory :an_event do
+	    sequence( :id ) { |n| [n,Time.now] }
+	    name "Brett"
+
     
 It even supports composite foreign keys for associations.
 
