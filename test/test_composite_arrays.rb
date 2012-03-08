@@ -15,7 +15,7 @@ class CompositeArraysTest < ActiveSupport::TestCase
     assert_equal '1,2,3', keys.to_s
     assert_equal '1,2,3', "#{keys}"
   end
-  
+
   def test_to_composite_keys
     keys = [1,2,3].to_composite_keys
     assert_equal CompositePrimaryKeys::CompositeKeys, keys.class
