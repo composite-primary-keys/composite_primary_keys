@@ -55,8 +55,8 @@ ActiveRecord 3.0.0 and 3.0.2 are not supported due to incompatible changes in Ar
 <h2>The basics</h2>
 <p>A model with composite primary keys would look like&#8230;</p>
 <p><pre class="syntax"><span class="keyword">class </span><span class="class">Membership</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
-  <span class="comment"># set_primary_keys *keys - turns on composite key functionality</span>
-  <span class="ident">set_primary_keys</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
+  <span class="comment"># self.primary_keys = *keys - turns on composite key functionality</span>
+  <span class="ident">self.primary_keys =</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
   <span class="ident">belongs_to</span> <span class="symbol">:user</span>
   <span class="ident">belongs_to</span> <span class="symbol">:group</span>
   <span class="ident">has_many</span> <span class="symbol">:statuses</span><span class="punct">,</span> <span class="symbol">:class_name</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">MembershipStatus</span><span class="punct">',</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
