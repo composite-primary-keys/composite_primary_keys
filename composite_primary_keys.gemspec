@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.date         = Time.new
   s.files        = Dir['Rakefile',
                        '*.txt',
+                       '*.rdoc',
                        '*.rb',
                        'lib/**/*',
                        'local/**/*',
