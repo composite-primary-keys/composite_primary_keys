@@ -62,7 +62,7 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(rc.reference_type_id, rt.reference_type_id)
   end
 
-  def test_create_habtm
+  def test_new_habtm
     restaurant = Restaurant.new(:franchise_id => 22,
                                 :store_id => 23,
                                 :name => "My Store")
@@ -74,6 +74,28 @@ class TestCreate < ActiveSupport::TestCase
     restaurant.save!
 
     restaurant.reload
+
+    # Test restaurant
+    assert_equal(22, restaurant.franchise_id)
+    assert_equal(23, restaurant.store_id)
+    assert_equal("My Store", restaurant.name)
+    assert_equal(1, restaurant.suburbs.length)
+
+    # Test suburbs
+    suburb = restaurant.suburbs[0]
+    assert_equal(24, suburb.city_id)
+    assert_equal(25, suburb.suburb_id)
+    assert_equal("My Suburb", suburb.name)
+  end
+
+  def test_create_habtm
+    restaurant = Restaurant.create(:franchise_id => 22,
+                                   :store_id => 23,
+                                   :name => "My Store")
+
+    restaurant.suburbs.create(:city_id => 24,
+                              :suburb_id => 25,
+                              :name => "My Suburb")
 
     # Test restaurant
     assert_equal(22, restaurant.franchise_id)
