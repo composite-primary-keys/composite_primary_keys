@@ -1,4 +1,11 @@
+== 5.0.2 2012-03-16
 * Use .rdoc extension on RDoc files (Elia Schito)
+* Update documentation to use self.primary_keys instead of set_primary_keys (Miguel Fonseca)
+* Added tests for comparing composite ids (Jim Jones)
+* Updating the README for clarity (Brett Fishman)
+* Fix method signature mismatch with active_record (Miguel Fonseca)
+* Fix ref in README (Elia Schito)
+* Add test for habm create (Charlie Savage)
 
 == 5.0.1 2012-02-13
 * Fix deprecation warning that was exactly backwards (Tom Hughes)
