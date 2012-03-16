@@ -2,22 +2,34 @@
 
 == Summary
 
-ActiveRecords/Rails famously doesn't support composite primary keys. 
+ActiveRecords/Rails famously doesn't support composite primary keys.
 This RubyGem extends the activerecord gem to provide CPK support.
 
 == Installation
 
     gem install composite_primary_keys
-    
+
 == Usage
-  
+
     require 'composite_primary_keys'
     class ProductVariation
       self.primary_keys = :product_id, :variation_seq
     end
-    
+
     pv = ProductVariation.find(345, 12)
-    
+
+== Factories
+
+    class ModelWithCompositeKeys < ActiveRecord::Base
+      set_primary_keys :id, :updated_at
+    end
+
+    FactoryGirl.define do
+      factory :model_with_composite_keys do
+	      sequence( :id ) { |n| [n,Time.now] }
+	      name "Brett"
+
+
 It even supports composite foreign keys for associations.
 
 See http://compositekeys.rubyforge.org for more.
