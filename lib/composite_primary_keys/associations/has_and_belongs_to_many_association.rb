@@ -1,8 +1,14 @@
 module ActiveRecord
   module Associations
     class HasAndBelongsToManyAssociation
-      def insert_record(record, validate = true)
-        return if record.new_record? && !record.save(:validate => validate)
+      def insert_record(record, validate = true, raise = false)
+        if record.new_record?
+          if raise
+            record.save!(:validate => validate)
+          else
+            return unless record.save(:validate => validate)
+          end
+        end
 
         if options[:insert_sql]
           owner.connection.insert(interpolate(options[:insert_sql], record))
