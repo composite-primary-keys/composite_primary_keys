@@ -1,3 +1,6 @@
+== 5.0.3 2012-03-23
+* Update ActiveRecord::AttributeMethods#Write for Rails 3.2.2
+
 == 5.0.2 2012-03-16
 * Use .rdoc extension on RDoc files (Elia Schito)
 * Update documentation to use self.primary_keys instead of set_primary_keys (Miguel Fonseca)
