@@ -25,8 +25,8 @@ module ActiveRecord
           end
           @attributes[attr_name] = type_cast_attribute_for_write(column, value)
         end
-        alias_method :raw_write_attribute, :write_attribute
       end
+      alias_method :raw_write_attribute, :write_attribute
     end
   end
 end
