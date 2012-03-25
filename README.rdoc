@@ -26,8 +26,10 @@ This RubyGem extends the activerecord gem to provide CPK support.
 
     FactoryGirl.define do
       factory :model_with_composite_keys do
-	      sequence( :id ) { |n| [n,Time.now] }
-	      name "Brett"
+        sequence( :id ) { |n| [n,Time.now] }
+        name "Brett"
+      end
+    end
 
 
 It even supports composite foreign keys for associations.
