@@ -32,6 +32,12 @@ class TestIds < ActiveSupport::TestCase
     end
   end
 
+  def test_to_param
+    testing_with do
+      assert_equal '1,1', @first.to_param if composite?
+    end
+  end
+
   def test_ids_to_s
     testing_with do
       order = @klass.primary_key.is_a?(String) ? @klass.primary_key : @klass.primary_key.join(',')
