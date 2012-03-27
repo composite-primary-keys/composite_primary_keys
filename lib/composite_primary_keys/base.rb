@@ -148,6 +148,10 @@ module ActiveRecord
       def to_key
         ids.to_a if !ids.compact.empty? # XXX Maybe use primary_keys with send instead of ids
       end
+      
+      def to_param
+        persisted? ? to_key.join(CompositePrimaryKeys::ID_SEP) : nil
+      end
     end
   end
 end
