@@ -8,6 +8,10 @@ def connection_string
   options.map { |key, value| "-#{key}#{value}" }.join(" ")
 end
 
-# Adapter config setup in text/connections/databases.yml
+# Adapter config setup in test/connections/databases.yml
 SPEC = CompositePrimaryKeys::ConnectionSpec['mysql']
-ActiveRecord::Base.establish_connection(SPEC)
+
+def establish_connection
+  ActiveRecord::Base.establish_connection(SPEC)
+end
+establish_connection
