@@ -162,6 +162,20 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(rooms(:branner_room_1), room_assignment.room)
   end
 
+  def test_composite_belongs_to_changes
+    room_assignment = room_assignments(:jacksons_room)
+    room_assignment.room = rooms(:branner_room_2)
+    # This was raising an error before:
+    #   TypeError: [:dorm_id, :room_id] is not a symbol
+    assert_equal({:room_id=>[1, 2]}, room_assignment.changes)
+
+    steve = employees(:steve)
+    steve.department = departments(:engineering)
+    # It was returning this before:
+    #   {"[:department_id, :location_id]"=>[nil, [2, 1]]}
+    assert_equal({:department_id=>[1, 2]}, steve.changes)
+  end
+
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
     assert_equal 2, @membership.reading.id
