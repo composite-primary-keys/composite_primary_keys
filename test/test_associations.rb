@@ -176,11 +176,6 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal({:department_id=>[1, 2]}, steve.changes)
   end
 
-  def test_has_many_with_primary_key
-    @membership = Membership.find([1, 1])
-    assert_equal 2, @membership.reading.id
-  end
-
   def test_has_one_with_composite
     # In this case a regular model has_one composite model
     department = departments(:engineering)
@@ -189,12 +184,11 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
-
     assert_equal 2, @membership.readings.size
   end
 
   def test_has_many_with_composite_key
-    # In this case a regular model has_many composite models
+    # In this case a regular model (Dorm) has_many composite models (Rooms)
     dorm = dorms(:branner)
     assert_equal(2, dorm.rooms.length)
     assert_equal(1, dorm.rooms[0].room_id)
