@@ -182,6 +182,21 @@ class TestAssociations < ActiveSupport::TestCase
     assert_not_nil(department.head)
   end
 
+  def test_has_many_build__simple_key
+    user = users(:santiago)
+    reading = user.readings.build
+    assert_equal user.id, reading.user_id
+    assert_equal user,    reading.user
+  end
+
+  def test_has_many_build__composite_key
+    department = departments(:engineering)
+    employee = department.employees.build
+    assert_equal department.department_id, employee.department_id
+    assert_equal department.location_id,   employee.location_id
+    assert_equal department,               employee.department
+  end
+
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
     assert_equal 2, @membership.readings.size
