@@ -162,9 +162,18 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(rooms(:branner_room_1), room_assignment.room)
   end
 
-  def test_has_many_with_primary_key
-    @membership = Membership.find([1, 1])
-    assert_equal 2, @membership.reading.id
+  def test_composite_belongs_to_changes
+    room_assignment = room_assignments(:jacksons_room)
+    room_assignment.room = rooms(:branner_room_2)
+    # This was raising an error before:
+    #   TypeError: [:dorm_id, :room_id] is not a symbol
+    assert_equal({:room_id=>[1, 2]}, room_assignment.changes)
+
+    steve = employees(:steve)
+    steve.department = departments(:engineering)
+    # It was returning this before:
+    #   {"[:department_id, :location_id]"=>[nil, [2, 1]]}
+    assert_equal({:department_id=>[1, 2]}, steve.changes)
   end
 
   def test_has_one_with_composite
@@ -173,14 +182,28 @@ class TestAssociations < ActiveSupport::TestCase
     assert_not_nil(department.head)
   end
 
+  def test_has_many_build__simple_key
+    user = users(:santiago)
+    reading = user.readings.build
+    assert_equal user.id, reading.user_id
+    assert_equal user,    reading.user
+  end
+
+  def test_has_many_build__composite_key
+    department = departments(:engineering)
+    employee = department.employees.build
+    assert_equal department.department_id, employee.department_id
+    assert_equal department.location_id,   employee.location_id
+    assert_equal department,               employee.department
+  end
+
   def test_has_many_with_primary_key
     @membership = Membership.find([1, 1])
-
     assert_equal 2, @membership.readings.size
   end
 
   def test_has_many_with_composite_key
-    # In this case a regular model has_many composite models
+    # In this case a regular model (Dorm) has_many composite models (Rooms)
     dorm = dorms(:branner)
     assert_equal(2, dorm.rooms.length)
     assert_equal(1, dorm.rooms[0].room_id)
