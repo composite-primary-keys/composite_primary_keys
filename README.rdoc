@@ -13,7 +13,7 @@ This RubyGem extends the activerecord gem to provide CPK support.
 
     require 'composite_primary_keys'
     class ProductVariation
-      set_primary_keys = :product_id, :variation_seq
+      self.primary_keys = :product_id, :variation_seq
     end
 
     pv = ProductVariation.find(345, 12)
