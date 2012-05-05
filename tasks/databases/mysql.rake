@@ -19,7 +19,9 @@ namespace :mysql do
       file.read
     end
 
+    Rake::Task['mysql:load_connection'].reenable
     Rake::Task['mysql:load_connection'].invoke
+    #puts %(ActiveRecord::Base.connection.instance_variable_get(:@config)=#{(ActiveRecord::Base.connection.instance_variable_get(:@config)).inspect})
     ActiveRecord::Base.connection.execute(sql)
   end
 
@@ -33,5 +35,6 @@ namespace :mysql do
   
   task :load_connection do
     require File.join(PROJECT_ROOT, "test", "connections", "native_mysql", "connection")
+    establish_connection
   end
 end
