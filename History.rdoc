@@ -1,3 +1,15 @@
+== 5.0.5 2012-05-05
+* Count without slower subquery in cases where that is possible (Sammy Larbi)
+* When you call association.build for a has_many association that uses a
+  composite foreign key, the newly built child record should have the values
+  in its belongs_to foreign_key populated from its owner's values (Tyler Rick).
+* Removed test_has_many_with_primary_key method that wasn't being used because
+  another method by the same name was defined below it (Tyler Rick).
+* Fixed a bug that was causing object.changes to raise TypeError (Tyler Rick)
+* Fix error when running rake mysql:rebuild_databases (Tyler Rick)
+* to_param should join with comma instead of minus sign (Tsutomu Kuroda)
+* Fix the "Factories" section of README.rdoc (Tsutomu Kuroda)
+
 == 5.0.4 2012-03-23
 * Update ActiveRecord::AttributeMethods#Write for Rails 3.2.2 (Travis Warlick)
 
