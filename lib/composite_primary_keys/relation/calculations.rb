@@ -55,8 +55,17 @@ module CompositePrimaryKeys
           else
             [Arel.sql(column_name == :all ? "#{@klass.quoted_table_name}.*" : column_name.to_s)]
           end
-
-
+        
+        # do not use slower subquery if we're only counting on one column
+        if relation.select_values.count == 1
+          # exclude distinct table_name.* in case of joins where subbing * would change results
+          if (!distinct && column_name == :all) || column_name != :all
+            column = relation.select_values[0].gsub("#{@klass.quoted_table_name}.","")
+            relation.select_values = [operation_over_aggregate_column(column, 'count', distinct)]
+            return relation.arel
+          end
+        end
+        
         relation.distinct(true)
         subquery = relation.arel.as(subquery_alias)
 
