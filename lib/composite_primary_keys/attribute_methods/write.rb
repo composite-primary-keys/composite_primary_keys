@@ -4,6 +4,7 @@ module ActiveRecord
       def write_attribute(attr_name, value)
         # CPK
         if attr_name.kind_of?(Array)
+          value = [nil]*attr_name.length if value.nil?
           unless value.length == attr_name.length
             raise "Number of attr_names and values do not match"
           end
