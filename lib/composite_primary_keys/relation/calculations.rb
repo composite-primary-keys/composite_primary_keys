@@ -39,6 +39,7 @@ module CompositePrimaryKeys
       end
 
       def build_count_subquery(relation, column_name, distinct)
+        return super(relation, column_name, distinct) unless column_name.kind_of?(Array)
         # CPK
         # column_alias = Arel.sql('count_column')
         subquery_alias = Arel.sql('subquery_for_count')
@@ -55,17 +56,6 @@ module CompositePrimaryKeys
           else
             [Arel.sql(column_name == :all ? "#{@klass.quoted_table_name}.*" : column_name.to_s)]
           end
-        
-        # do not use slower subquery if we're only counting on one column
-        if relation.select_values.count == 1
-          # exclude distinct table_name.* in case of joins where subbing * would change results
-          if (!distinct && column_name == :all) || column_name != :all
-            column = relation.select_values[0]
-            column.gsub!("#{@klass.quoted_table_name}.","") if column.respond_to?(:gsub)
-            relation.select_values = [operation_over_aggregate_column(column, 'count', distinct)]
-            return relation.arel
-          end
-        end
         
         relation.distinct(true)
         subquery = relation.arel.as(subquery_alias)
