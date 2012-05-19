@@ -60,7 +60,8 @@ module CompositePrimaryKeys
         if relation.select_values.count == 1
           # exclude distinct table_name.* in case of joins where subbing * would change results
           if (!distinct && column_name == :all) || column_name != :all
-            column = relation.select_values[0].gsub("#{@klass.quoted_table_name}.","")
+            column = relation.select_values[0]
+            column.gsub!("#{@klass.quoted_table_name}.","") if column.respond_to?(:gsub)
             relation.select_values = [operation_over_aggregate_column(column, 'count', distinct)]
             return relation.arel
           end
