@@ -1,3 +1,6 @@
+== 3.1.11 2012-05-20
+Fix AssociationReflection#derive_primary_key for belongs_to relationships (Heinrich Lee Yu).
+
 == 3.1.10 2011-07-08
 * Bugfix for belongs_to with includes (John Ash)
 * Improved tests for calling clear on a habtm association, which involved (David Rueck)
