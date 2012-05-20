@@ -1,3 +1,10 @@
+== 5.0.6 ?
+* Fixed bug where setting a belongs_to association to nil would raise an error (Tyler Rick)
+* Remove special case code for 1 column selects and just choose to use Rails version of the
+  method unless we need ours to deal with an Array (Sammy Larbi)
+* Change count tests to actually check for distinct, fix resulting error it
+  demonstrated in the code (Sammy Larbi)
+
 == 5.0.5 2012-05-05
 * Count without slower subquery in cases where that is possible (Sammy Larbi)
 * When you call association.build for a has_many association that uses a
@@ -104,6 +111,9 @@ by replacing quoted identifiers with all-caps equivalents on Oracle (Rhett Sutph
 == 4.0.0.beta1 2011-06-09
 * ActiveRecord 3.1 RC1 compatibility.  This required a significant rewrite due to
   all the changes in AR 3.1 versus 3.0.
+
+== 3.1.11 2012-05-20
+Fix AssociationReflection#derive_primary_key for belongs_to relationships (Heinrich Lee Yu).
 
 == 3.1.10 2011-07-08
 * Bugfix for belongs_to with includes (John Ash)
