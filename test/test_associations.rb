@@ -176,6 +176,13 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal({:department_id=>[1, 2]}, steve.changes)
   end
 
+  def test_composite_belongs_to__setting_to_nil
+    room_assignment = room_assignments(:jacksons_room)
+    # This was raising an error before:
+    #   NoMethodError: undefined method `length' for nil:NilClass
+    assert_nothing_raised { room_assignment.room = nil }
+  end
+
   def test_has_one_with_composite
     # In this case a regular model has_one composite model
     department = departments(:engineering)
