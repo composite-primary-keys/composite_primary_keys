@@ -1,7 +1,5 @@
-create sequence public.reference_types_seq start 1000;
-
 create table reference_types (
-    reference_type_id int         default nextval('public.reference_types_seq'),
+    reference_type_id serial not null,
     type_label        varchar(50) default null,
     abbreviation      varchar(50) default null,
     description       varchar(50) default null,
@@ -17,10 +15,8 @@ create table reference_codes (
     primary key (reference_type_id, reference_code)
 );
 
-create sequence public.products_seq start 1000;
-
 create table products (
-    id   int         not null default nextval('public.products_seq'),
+    id serial not null,
     name varchar(50) default null,
     primary key (id)
 );
@@ -46,46 +42,36 @@ create table suburbs (
     primary key (city_id, suburb_id)
 );
 
-create sequence public.streets_seq start 1000;
-
 create table streets (
-    id        int         not null default nextval('public.streets_seq'),
+    id        serial      not null,
     city_id   int         not null,
     suburb_id int         not null,
     name      varchar(50) not null,
     primary key (id)
 );
 
-create sequence public.users_seq start 1000;
-
 create table users (
-    id   int         not null default nextval('public.users_seq'),
+    id   serial not null,
     name varchar(50) not null,
     primary key (id)
 );
-
-create sequence public.articles_seq start 1000;
 
 create table articles (
-    id   int         not null default nextval('public.articles_seq'),
+    id   serial not null,
     name varchar(50) not null,
     primary key (id)
 );
 
-create sequence public.readings_seq start 1000;
-
 create table readings (
-    id         int not null default nextval('public.readings_seq'),
+    id         serial not null,
     user_id    int not null,
     article_id int not null,
     rating     int not null,
     primary key (id)
 );
 
-create sequence public.groups_seq start 1000;
-
 create table groups (
-    id   int         not null default nextval('public.groups_seq'),
+    id   serial not null,
     name varchar(50) not null,
     primary key (id)
 );
@@ -96,10 +82,8 @@ create table memberships (
     primary key (user_id, group_id)
 );
 
-create sequence public.membership_statuses_seq start 1000;
-
 create table membership_statuses (
-    id       int         not null default nextval('public.membership_statuses_seq'),
+    id       serial not null,
     user_id  int         not null,
     group_id int         not null,
     status   varchar(50) not null,
@@ -112,29 +96,23 @@ create table departments (
     primary key (department_id, location_id)
 );
 
-create sequence public.employees_seq start 1000;
-
 create table employees (
-    id            int not null default nextval('public.employees_seq'),
+    id            serial not null,
     department_id int default null,
     location_id   int default null,
     primary key (id)
 );
 
-create sequence public.comments_seq start 1000;
-
 create table comments (
-    id          int          not null default nextval('public.comments_seq'),
+    id          serial not null,
     person_id   int          default null,
     person_type varchar(100) default null,
     hack_id     int          default null,
     primary key (id)
 );
 
-create sequence public.hacks_seq start 1000;
-
 create table hacks (
-    id   int         default nextval('public.hacks_seq'),
+    id serial not null,
     name varchar(50) not null,
     primary key (id)
 );
@@ -153,10 +131,8 @@ create table restaurants_suburbs (
     suburb_id    int not null
 );
 
-create sequence public.dorms_seq start 1000;
-
 create table dorms (
-    id int not null default nextval('public.dorms_seq'),
+    id serial not null,
     primary key (id)
 );
 
@@ -166,10 +142,8 @@ create table rooms (
     primary key (dorm_id, room_id)
 );
 
-create sequence public.room_attributes_seq start 1000;
-
 create table room_attributes (
-    id   int not null default nextval('public.room_attributes_seq'),
+    id   serial not null,
     name varchar(50),
     primary key (id)
 );
@@ -180,10 +154,8 @@ create table room_attribute_assignments (
     room_attribute_id int not null
 );
 
-create sequence public.students_seq start 1000;
-
 create table students (
-    id int not null default nextval('public.students_seq'),
+    id serial not null,
     primary key (id)
 );
 
@@ -211,4 +183,3 @@ create table products_restaurants (
   franchise_id int not null,
   store_id int not null
 );
-  
