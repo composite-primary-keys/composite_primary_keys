@@ -6,9 +6,7 @@ namespace :sqlite3 do
   task :build_databases => :load_connection do
     schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlite.sql')
     dbfile = File.join(PROJECT_ROOT, connection_string)
-    cmd = "mkdir -p #{File.dirname(dbfile)}"
-    puts cmd
-    sh %{ #{cmd} }
+    FileUtils.mkdir_p(File.dirname(dbfile))
     cmd = "sqlite3 #{dbfile} < #{schema}"
     puts cmd
     sh %{ #{cmd} }
