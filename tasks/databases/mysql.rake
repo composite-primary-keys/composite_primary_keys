@@ -2,7 +2,7 @@ require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 
 namespace :mysql do
-  desc 'Create the MySQL test databases'
+  desc 'Create the MySQL test database'
   task :create_database do
     ActiveRecord::Base.clear_all_connections!
     spec = CompositePrimaryKeys::ConnectionSpec['mysql'].dup
@@ -12,8 +12,8 @@ namespace :mysql do
     ActiveRecord::Base.clear_all_connections!
   end
 
-  desc 'Build the MySQL test databases'
-  task :build_databases => [:create_database] do
+  desc 'Build the MySQL test database'
+  task :build_database => [:create_database] do
     path = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'mysql.sql')
     sql = File.open(path, 'rb') do |file|
       file.read
@@ -25,13 +25,13 @@ namespace :mysql do
     ActiveRecord::Base.connection.execute(sql)
   end
 
-  desc 'Drop the MySQL test databases'
-  task :drop_databases => :load_connection do
+  desc 'Drop the MySQL test database'
+  task :drop_database => :load_connection do
     ActiveRecord::Base.connection.drop_database(SPEC['database'])
   end
 
-  desc 'Rebuild the MySQL test databases'
-  task :rebuild_databases => [:drop_databases, :build_databases]
+  desc 'Rebuild the MySQL test database'
+  task :rebuild_database => [:drop_database, :build_database]
   
   task :load_connection do
     require File.join(PROJECT_ROOT, "test", "connections", "native_mysql", "connection")
