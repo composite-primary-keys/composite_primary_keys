@@ -1,9 +1,11 @@
-== 5.0.6 ?
+== 5.0.6 2012-05-20
 * Fixed bug where setting a belongs_to association to nil would raise an error (Tyler Rick)
 * Remove special case code for 1 column selects and just choose to use Rails version of the
   method unless we need ours to deal with an Array (Sammy Larbi)
 * Change count tests to actually check for distinct, fix resulting error it
   demonstrated in the code (Sammy Larbi)
+* Specify mysql2 driver by default (Charlie Savage)
+* Update sqlite tests to run on Windows (Charlie Savage)
 
 == 5.0.5 2012-05-05
 * Count without slower subquery in cases where that is possible (Sammy Larbi)
