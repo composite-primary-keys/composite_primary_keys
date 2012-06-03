@@ -133,7 +133,7 @@ class TestAssociations < ActiveSupport::TestCase
     dorm = Dorm.find(:first)
     assert_equal(2, dorm.rooms.length)
     assert_equal(1, dorm.rooms.first.room_attributes.length)
-    assert_equal('keg', dorm.rooms.first.room_attributes.first.name)
+    assert_equal('type', dorm.rooms.first.room_attributes.first.name)
   end
 
   def test_associations_with_conditions
@@ -237,7 +237,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through_with_conditions_when_through_association_is_composite
     room = Room.find(:first)
-    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "keg"]).size
+    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "type"]).size
   end
 
   def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
