@@ -21,7 +21,7 @@ module ActiveRecord
 
           condition = not_eq_conditions.shift
           not_eq_conditions.each do |not_eq_condition|
-            condition = condition.or(not_eq_conditions)
+            condition = condition.or(not_eq_condition)
           end
           relation = relation.and(condition)
         end
