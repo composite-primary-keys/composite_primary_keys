@@ -8,6 +8,8 @@ module ActiveRecord
           # We will come back in here with an *individual* attribute when Write#write_attribute looks through the individual attributes comprising this composite key:
           # [attr_name, value].transpose.map {|name,val| write_attribute(name, val)}
         else
+          attr = attr.to_s
+
           # The attribute already has an unsaved change.
           if attribute_changed?(attr)
             old = @changed_attributes[attr]
