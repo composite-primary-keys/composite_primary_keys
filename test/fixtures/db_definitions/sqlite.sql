@@ -169,3 +169,9 @@ create table products_restaurants (
 	franchise_id integer not null,
 	store_id integer not null
 );
+
+create table employees_groups (
+  employee_id integer not null,
+  group_id integer not null
+);
+
