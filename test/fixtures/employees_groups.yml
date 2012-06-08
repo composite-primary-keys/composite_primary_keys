@@ -1,0 +1,15 @@
+assn1:
+  employee_id: 1
+  group_id: 1
+
+assn2:
+  employee_id: 1
+  group_id: 2
+  
+assn3:
+  employee_id: 2
+  group_id: 1
+  
+assn4:
+  employee_id: 2
+  group_id: 2

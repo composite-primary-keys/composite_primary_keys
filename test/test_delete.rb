@@ -88,6 +88,14 @@ class TestDelete < ActiveSupport::TestCase
       Employee.find(head_id)
     end
   end
+  
+  def test_destroy_has_and_belongs_to_many_on_non_cpk
+    steve = employees(:steve)
+    records_before = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+    steve.destroy
+    records_after = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+    assert_equal records_after, records_before - steve.groups.count
+  end
 
 #  def test_destroy_has_many_delete_all
 #    # In this case the association is a has_many composite key with
