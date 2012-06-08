@@ -50,4 +50,13 @@ class TestUpdate < ActiveSupport::TestCase
     assert_equal({:reference_type_id => 2, :reference_code => 3}, obj.ids_hash)
     assert_equal([2, 3], obj.id)
   end
+
+  def test_update_attribute
+    obj = ReferenceType.find(1)
+    obj[:abbreviation] = 'a'
+    obj['abbreviation'] = 'b'
+    assert(obj.save)
+    assert(obj.reload)
+    assert_equal('b', obj.abbreviation)
+  end
 end

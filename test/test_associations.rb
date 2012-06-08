@@ -167,13 +167,14 @@ class TestAssociations < ActiveSupport::TestCase
     room_assignment.room = rooms(:branner_room_2)
     # This was raising an error before:
     #   TypeError: [:dorm_id, :room_id] is not a symbol
-    assert_equal({:room_id=>[1, 2]}, room_assignment.changes)
+    # changes returns HashWithIndifferentAccess
+    assert_equal({"room_id"=>[1, 2]}, room_assignment.changes)
 
     steve = employees(:steve)
     steve.department = departments(:engineering)
     # It was returning this before:
     #   {"[:department_id, :location_id]"=>[nil, [2, 1]]}
-    assert_equal({:department_id=>[1, 2]}, steve.changes)
+    assert_equal({"department_id"=>[1, 2]}, steve.changes)
   end
 
   def test_composite_belongs_to__setting_to_nil
