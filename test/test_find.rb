@@ -54,7 +54,12 @@ class TestFind < ActiveSupport::TestCase
     connection = ActiveRecord::Base.connection
     ref_type_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_type_id')}"
     ref_code_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_code')}"
-    expected = "Couldn't find ReferenceCode with ID=999,999 WHERE #{ref_type_quoted} = 999 AND #{ref_code_quoted} = 999"
+
+    if current_adapter?(:SQLServerAdapter)
+      expected = "Couldn't find ReferenceCode with ID=999,999 WHERE #{ref_type_quoted} = N'999' AND #{ref_code_quoted} = N'999'"
+    else
+      expected = "Couldn't find ReferenceCode with ID=999,999 WHERE #{ref_type_quoted} = 999 AND #{ref_code_quoted} = 999"
+    end
 
     assert_equal(with_quoted_identifiers(expected),
                  error.message)
