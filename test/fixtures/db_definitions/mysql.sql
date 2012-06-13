@@ -184,3 +184,7 @@ create table products_restaurants (
   store_id int not null
 );
 
+create table employees_groups (
+  employee_id int not null,
+  group_id int not null
+);

@@ -48,7 +48,7 @@ module ActiveRecord
           #).compile_delete
 
           predicate1 = cpk_id_predicate(relation, Array(reflection.foreign_key), Array(owner.id))
-          predicate2 = cpk_in_predicate(relation, Array(reflection.association_foreign_key), records.map { |x| x.id })
+          predicate2 = cpk_in_predicate(relation, Array(reflection.association_foreign_key), records.map { |x| x.id }) unless records == :all
           stmt = relation.where(predicate1.and(predicate2)).compile_delete
 
           owner.connection.delete stmt.to_sql

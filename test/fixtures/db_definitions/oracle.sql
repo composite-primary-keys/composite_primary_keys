@@ -199,3 +199,9 @@ create table products_restaurants (
     franchise_id number(11) not null,
     store_id     number(11) not null
 );
+
+create table employees_groups (
+  employee_id int not null,
+  group_id int not null
+);
+

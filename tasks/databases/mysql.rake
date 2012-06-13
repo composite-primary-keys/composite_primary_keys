@@ -22,7 +22,9 @@ namespace :mysql do
     Rake::Task['mysql:load_connection'].reenable
     Rake::Task['mysql:load_connection'].invoke
     #puts %(ActiveRecord::Base.connection.instance_variable_get(:@config)=#{(ActiveRecord::Base.connection.instance_variable_get(:@config)).inspect})
-    ActiveRecord::Base.connection.execute(sql)
+    sql.split(";").each do |statement|
+      ActiveRecord::Base.connection.execute(statement) unless statement.strip.length == 0
+    end
   end
 
   desc 'Drop the MySQL test database'
