@@ -34,7 +34,7 @@ module ActiveRecord
             # CPK
             # owner_key = record[association_key_name].to_s
             owner_key = Array(association_key_name).map do |key_name|
-              record[key_name]
+              record[key_name].class == BigDecimal || record[key_name].class == Float ? record[key_name].to_i : record[key_name]
             end.join(CompositePrimaryKeys::ID_SEP)
 
             owners_map[owner_key].each do |owner|
