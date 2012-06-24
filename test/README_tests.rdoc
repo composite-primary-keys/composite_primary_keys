@@ -28,12 +28,12 @@ To run the tests for one of the adapters follow these steps (using mysql in the 
 
 * rake -T mysql
 
-    rake mysql:build_databases         # Build the MySQL test databases
-    rake mysql:drop_databases          # Drop the MySQL test databases
-    rake mysql:rebuild_databases       # Rebuild the MySQL test databases
+    rake mysql:build_database         # Build the MySQL test databases
+    rake mysql:drop_database          # Drop the MySQL test databases
+    rake mysql:rebuild_database       # Rebuild the MySQL test databases
     rake mysql:test                    # Run tests using the mysql adapter
 
-* rake mysql:build_databases
+* rake mysql:build_database
 * rake mysql:test
 
 == Running tests individually
