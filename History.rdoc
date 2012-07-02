@@ -1,3 +1,15 @@
+== 5.0.8 2012-07-01
+* Enabled tests for MS SQL Server (Enderson Maia)
+* Update establish_connection to work with Rails 3.2.6 (Ivan Schneider)
+* Fix typos in rake tasks names in README_tests.rdoc (Ivan Schneider)
+* Fix problem with deleting non-CPK in Rails 3.2.5  (Sammy Larbi)
+* Fixes relationship deletion for HABTM in Rails when it passes :all flag instead of
+  an array of IDs.  Also adds new tests and test fixtures (Sammy Larbi)
+* Change mysql db creation to execute one statement each time, since in some setups
+  it will not run multiple statements (Sammy Larbi)
+* Fix multiple assignments to same column due to duplicate keys in @changed_attributes.
+  Includes test fixes (Jan Vlnas)
+
 == 5.0.7 2012-06-03
 * Fixed bug where validates_uniqueness failed for 3 or more primary keys. (Charlie Savage)
 
