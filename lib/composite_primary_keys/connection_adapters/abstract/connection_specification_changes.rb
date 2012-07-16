@@ -1,8 +1,8 @@
 module ActiveRecord
   class Base
     def self.load_cpk_adapter(adapter)
-      if adapter.to_s == 'postgresql'
-        require "composite_primary_keys/connection_adapters/#{adapter}_adapter.rb"
+      if adapter.to_s =~ /postgresql/
+        require "composite_primary_keys/connection_adapters/postgresql_adapter.rb"
       end
     end
     
