@@ -49,14 +49,19 @@ module CompositePrimaryKeys
     end
 
     def cpk_in_predicate(table, primary_keys, ids)
-      and_predicates = ids.map do |id_set|
-        eq_predicates = Array(primary_keys).zip(Array(id_set)).map do |primary_key, value|
-          table[primary_key].eq(value)
+      primary_keys = Array(primary_keys)
+      if primary_keys.length > 1
+        and_predicates = ids.map do |id_set|
+          eq_predicates = Array(primary_keys).zip(Array(id_set)).map do |primary_key, value|
+            table[primary_key].eq(value)
+          end
+          cpk_and_predicate(eq_predicates)
         end
-        cpk_and_predicate(eq_predicates)
-      end
 
-      cpk_or_predicate(and_predicates, table)
+        cpk_or_predicate(and_predicates, table)
+      else
+        table[primary_keys.first].in(ids.flatten)
+      end
     end
   end
 end
