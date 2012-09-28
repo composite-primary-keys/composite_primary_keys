@@ -10,24 +10,20 @@ module ActiveRecord
         #column     = self.class.columns_hash[pk]
         #substitute = connection.substitute_at(column, 0)
 
+        where_hash = {}
         primary_keys = Array(self.class.primary_key)
-        bind_values = Array.new
-        eq_predicates = Array.new
-        primary_keys.each_with_index do |key, i|
-          column = self.class.columns_hash[key.to_s]
-          bind_values << [column, self[key]]
-          substitute = connection.substitute_at(column, i)
-          eq_predicates << self.class.arel_table[key].eq(substitute)
-        end
-        predicate = Arel::Nodes::And.new(eq_predicates)
-        relation = self.class.unscoped.where(predicate)
 
         #relation = self.class.unscoped.where(
         #  self.class.arel_table[pk].eq(substitute))
 
-        # CPK
+        primary_keys.each do |key|
+          where_hash[key.to_s] = self[key]
+        end
+
+        # CPK      
         #relation.bind_values = [[column, id]]
-        relation.bind_values = bind_values
+
+        relation = self.class.unscoped.where(where_hash)
         relation.delete_all
       end
 
