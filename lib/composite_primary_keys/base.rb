@@ -59,6 +59,7 @@ module ActiveRecord
 
     def initialize_dup(other)
       cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
+      self.class.initialize_attributes(cloned_attributes, :serialized => false)
       # CPK
       # cloned_attributes.delete(self.class.primary_key)
       Array(self.class.primary_key).each {|key| cloned_attributes.delete(key.to_s)}
@@ -148,7 +149,7 @@ module ActiveRecord
       def to_key
         ids.to_a if !ids.compact.empty? # XXX Maybe use primary_keys with send instead of ids
       end
-      
+
       def to_param
         persisted? ? to_key.join(CompositePrimaryKeys::ID_SEP) : nil
       end
