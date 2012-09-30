@@ -1,3 +1,9 @@
+== 5.0.9 2012-09-29
+* Add support for counter cache (Charlie Savage)
+* Fix recreating postgresql database (Charlie Savage)
+* Update dependency to ActiveRecord 3.2.8 or higher (Charlie Savage)
+* Enable tests for MS SQL Servder (Enderson Maia)
+
 == 5.0.8 2012-07-01
 * Enabled tests for MS SQL Server (Enderson Maia)
 * Update establish_connection to work with Rails 3.2.6 (Ivan Schneider)
