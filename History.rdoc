@@ -1,8 +1,12 @@
 == 5.0.9 2012-09-29
+* Enable tests for MS SQL Servder (Enderson Maia)
+* Update ActiveRecord::Base#initialize_dup override in line with ActiveRecord::Base 3.2.5+ (Lucas Maxwell)
+* Require postgresql_adapter.rb also when using activerecord-postgis-adapter (Torsti Schulz)
+* Make cpk_in_predicate build a simple IN when possible (Tom Hughes)
+* Fixed problem loading jdbcpostgresql adapter (Troy Caldwell)
 * Add support for counter cache (Charlie Savage)
 * Fix recreating postgresql database (Charlie Savage)
 * Update dependency to ActiveRecord 3.2.8 or higher (Charlie Savage)
-* Enable tests for MS SQL Servder (Enderson Maia)
 
 == 5.0.8 2012-07-01
 * Enabled tests for MS SQL Server (Enderson Maia)
