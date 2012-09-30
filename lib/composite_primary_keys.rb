@@ -26,11 +26,12 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~> 3.2.0'
+  gem 'activerecord', '>= 3.2.8', '~> 3.2.0'
   require 'active_record'
 end
 
 # AR files we override
+require 'active_record/counter_cache'
 require 'active_record/fixtures'
 require 'active_record/persistence'
 require 'active_record/relation'
@@ -66,6 +67,7 @@ require 'active_record/validations/uniqueness'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/composite_predicates'
+require 'composite_primary_keys/counter_cache'
 require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/relation'
