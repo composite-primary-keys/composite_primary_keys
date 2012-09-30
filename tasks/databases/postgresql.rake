@@ -15,6 +15,10 @@ namespace :postgresql do
 
   desc 'Build the PostgreSQL test database'
   task :build_database => [:create_database] do
+    ActiveRecord::Base.clear_all_connections!
+    spec = CompositePrimaryKeys::ConnectionSpec['postgresql'].dup
+    connection = ActiveRecord::Base.establish_connection(spec)
+
     path = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'postgresql.sql')
     sql = File.open(path, 'rb') do |file|
       file.read
