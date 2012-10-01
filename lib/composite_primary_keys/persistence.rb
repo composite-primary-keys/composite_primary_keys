@@ -35,6 +35,35 @@ module ActiveRecord
       freeze
     end
 
+    def touch(name = nil)
+      attributes = timestamp_attributes_for_update_in_model
+      attributes << name if name
+
+      unless attributes.empty?
+        current_time = current_time_from_proper_timezone
+        changes = {}
+
+        attributes.each do |column|
+          column = column.to_s
+          changes[column] = write_attribute(column, current_time)
+        end
+
+        changes[self.class.locking_column] = increment_lock if locking_enabled?
+
+        puts changes.inspect
+
+        @changed_attributes.except!(*changes.keys)
+
+        relation    = self.class.send(:relation)
+        arel_table  = self.class.arel_table
+        primary_key = self.class.primary_key
+
+        primary_key_predicate = relation.cpk_id_predicate(arel_table, Array(primary_key), Array(id))
+
+        self.class.unscoped.where(primary_key_predicate).update_all(changes) == 1
+      end
+    end
+
     def update(attribute_names = @attributes.keys)
       klass = self.class
       if !self.composite?
