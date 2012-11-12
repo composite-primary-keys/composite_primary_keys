@@ -68,9 +68,11 @@ module ActiveRecord
 
       _run_after_initialize_callbacks if respond_to?(:_run_after_initialize_callbacks)
 
+      changed = respond_to?(:_field_changed?, true) && :_field_changed? || :field_changed?
+
       @changed_attributes = {}
       self.class.column_defaults.each do |attr, orig_value|
-        @changed_attributes[attr] = orig_value if field_changed?(attr, orig_value, @attributes[attr])
+        @changed_attributes[attr] = orig_value if send(changed, attr, orig_value, @attributes[attr])
       end
 
       @aggregation_cache = {}
