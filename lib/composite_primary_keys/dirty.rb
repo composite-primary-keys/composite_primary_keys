@@ -5,12 +5,12 @@ module ActiveModel
     end
 
     def primary_key_changed?
-      !!changed.detect { |key| ids_hash.keys.include?(key.to_sym) }
+      !!changed.detect { |key| ids_hash.keys.include?(key.to_s) }
     end
 
     def primary_key_was
       ids_hash.keys.inject(Hash.new) do |result, attribute_name|
-        result[attribute_name.to_sym] = attribute_was(attribute_name.to_s)
+        result[attribute_name] = attribute_was(attribute_name.to_s)
         result
       end
     end

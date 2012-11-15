@@ -27,7 +27,7 @@ module ActiveRecord
           return
         end
 
-        @primary_keys = keys.map { |k| k.to_sym }.to_composite_keys
+        @primary_keys = keys.map { |k| k.to_s }.to_composite_keys
 
         class_eval <<-EOV
           extend  CompositeClassMethods
