@@ -27,7 +27,7 @@ module ActiveRecord
       end
 
       def field_changed2?(attr, old, value)
-        if respond_to?(field_changed?)
+        if respond_to?(:field_changed?)
           field_changed?(attr, old, value)
         else
           _field_changed?(attr, old, value)
