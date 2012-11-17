@@ -13,17 +13,25 @@ module ActiveRecord
           # The attribute already has an unsaved change.
           if attribute_changed?(attr)
             old = @changed_attributes[attr]
-            @changed_attributes.delete(attr) unless field_changed?(attr, old, value)
+            @changed_attributes.delete(attr) unless field_changed2?(attr, old, value)
           else
             old = clone_attribute_value(:read_attribute, attr)
             # Save Time objects as TimeWithZone if time_zone_aware_attributes == true
             old = old.in_time_zone if clone_with_time_zone_conversion_attribute?(attr, old)
-            @changed_attributes[attr] = old if field_changed?(attr, old, value)
+            @changed_attributes[attr] = old if field_changed2?(attr, old, value)
           end
         end
 
         # Carry on.
         super(attr, value)
+      end
+
+      def field_changed2?(attr, old, value)
+        if respond_to?(:field_changed?)
+          field_changed?(attr, old, value)
+        else
+          _field_changed?(attr, old, value)
+        end  
       end
     end
   end
