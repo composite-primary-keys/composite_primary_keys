@@ -46,8 +46,6 @@ module ActiveRecord
 
         changes[self.class.locking_column] = increment_lock if locking_enabled?
 
-        puts changes.inspect
-
         @changed_attributes.except!(*changes.keys)
 
         relation    = self.class.send(:relation)
