@@ -2,6 +2,7 @@ module ActiveRecord
   class Relation
     def add_cpk_support
       class << self
+        include CompositePrimaryKeys::ActiveRecord::Batches
         include CompositePrimaryKeys::ActiveRecord::Calculations
         include CompositePrimaryKeys::ActiveRecord::FinderMethods
         include CompositePrimaryKeys::ActiveRecord::QueryMethods

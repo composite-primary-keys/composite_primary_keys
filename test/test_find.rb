@@ -2,7 +2,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
-  fixtures :capitols, :reference_types, :reference_codes, :suburbs
+  fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs
 
   def test_find_first
     ref_code = ReferenceCode.find(:first, :order => 'reference_type_id, reference_code')
@@ -74,5 +74,11 @@ class TestFind < ActiveSupport::TestCase
     # Rails actually changes city_id DESC to city_id ASC
     suburb = Suburb.find(:last, :order => 'suburbs.city_id DESC')
     assert_equal([1,1], suburb.id)
+  end
+
+  def test_find_in_batchs
+    departments = Department.find_in_batches do |batch|
+      assert_equal(2, batch.size)
+    end
   end
 end
