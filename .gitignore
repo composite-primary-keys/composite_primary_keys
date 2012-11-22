@@ -8,5 +8,7 @@ db
 
 /doc
 /.idea
+*.swo
+*.swp
 
 test/connections/databases.yml
