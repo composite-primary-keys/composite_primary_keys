@@ -78,7 +78,7 @@ class TestIds < ActiveSupport::TestCase
     testing_with do
       if composite?
         assert_not_nil @klass.primary_keys
-        assert_equal @primary_keys.map {|key| key.to_sym}, @klass.primary_keys
+        assert_equal @primary_keys.map {|key| key.to_s}, @klass.primary_keys
         assert_equal @klass.primary_keys, @klass.primary_key
         assert_kind_of(CompositePrimaryKeys::CompositeKeys, @klass.primary_keys)
         assert_equal @primary_keys.map {|key| key.to_sym}.join(','), @klass.primary_key.to_s
@@ -91,7 +91,7 @@ class TestIds < ActiveSupport::TestCase
   end
 
   def test_inherited_primary_keys
-    assert_equal([:reference_type_id, :reference_code], ChildCpkTest.primary_keys)
+    assert_equal(["reference_type_id", "reference_code"], ChildCpkTest.primary_keys)
   end
 
   def test_inherited_ids

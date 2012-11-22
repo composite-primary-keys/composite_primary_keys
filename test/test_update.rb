@@ -41,13 +41,13 @@ class TestUpdate < ActiveSupport::TestCase
     obj.reference_type_id = 2
     obj.reference_code = 3
     assert(obj.primary_key_changed?)
-    assert_equal({:reference_type_id => 1, :reference_code => 1}, obj.primary_key_was)
-    assert_equal({:reference_type_id => 2, :reference_code => 3}, obj.ids_hash)
+    assert_equal({"reference_type_id" => 1, "reference_code" => 1}, obj.primary_key_was)
+    assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
     assert(obj.save)
     assert(obj.reload)
     assert_equal(2, obj.reference_type_id)
     assert_equal(3, obj.reference_code)
-    assert_equal({:reference_type_id => 2, :reference_code => 3}, obj.ids_hash)
+    assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
     assert_equal([2, 3], obj.id)
   end
 
