@@ -18,14 +18,18 @@ create table reference_codes (
 create table products (
     id serial not null,
     name varchar(50) default null,
-    primary key (id)
+    primary key (id),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 create table tariffs (
     tariff_id  int  not null,
     start_date date not null,
     amount     int  default null,
-    primary key (tariff_id, start_date)
+    primary key (tariff_id, start_date),
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 create table product_tariffs (

@@ -16,13 +16,17 @@ create table reference_codes (
 
 create table products (
     id int(11) not null primary key,
-    name varchar(50) default null
+    name varchar(50) default null,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
 
 create table tariffs (
     tariff_id int(11) not null,
     start_date date not null,
     amount integer(11) default null,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     primary key (tariff_id, start_date)
 );
 
