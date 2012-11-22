@@ -1,3 +1,11 @@
+== 5.0.10 2012-11-21
+* ActiveRecord 3.2.9 compatability (Tom Hughes, Chris Heald, Jack Tang)
+* Add support for find_in_batches (Charlie Savage)
+* Add support for touch method (Macario Ortega)
+* Remove symbolized representation of primary keys to be consistent with ActiveRecord (Tiago Cardoso)
+* Update destroy method to use hash of primary keys over an array. This allows the proper SQL
+  (using IS NULL) to be generated when one of the primary key attributes is nil (Scott Hunter).
+
 == 5.0.9 2012-09-29
 * Enable tests for MS SQL Servder (Enderson Maia)
 * Update ActiveRecord::Base#initialize_dup override in line with ActiveRecord::Base 3.2.5+ (Lucas Maxwell)
