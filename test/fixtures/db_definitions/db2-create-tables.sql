@@ -117,4 +117,3 @@ create table addresses (
     address varchar(100),
     primary key (address_id, user_id)
 );
-

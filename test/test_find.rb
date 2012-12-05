@@ -11,9 +11,7 @@ class TestFind < ActiveSupport::TestCase
   end
 
  def test_find_last_with_default_order_scope
-    puts "********" * 10
     ref_code = Address.find(:last)
-    puts "********" * 10
     assert_kind_of(Address, ref_code)
     assert_equal([3,7], ref_code.id)
   end

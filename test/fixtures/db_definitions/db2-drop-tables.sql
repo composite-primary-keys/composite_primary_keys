@@ -16,4 +16,3 @@ drop table RESTAURANTS;
 drop table RESTAURANTS_SUBURBS;
 drop table PRODUCTS_RESTAURANTS;
 drop table ADDRESSES;
-
