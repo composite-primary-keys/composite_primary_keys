@@ -25,6 +25,8 @@ create table tariffs (
     tariff_id int not null,
     start_date date not null,
     amount integer(11) default null,
+    created_at timestamp NOT NULL,
+    updated_at timestamp NOT NULL,
     primary key (tariff_id, start_date)
 );
 
@@ -187,4 +189,12 @@ create table products_restaurants (
 create table employees_groups (
   employee_id int not null,
   group_id int not null
+);
+
+create table addresses (
+    address_id int not null,
+    user_id int not null,
+    sort_order int not null,
+    address varchar(100),
+    primary key (address_id, user_id)
 );

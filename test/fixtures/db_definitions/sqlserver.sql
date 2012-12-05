@@ -208,3 +208,14 @@ CREATE TABLE products_restaurants (
     store_id     [int] NOT NULL
 );
 go
+
+CREATE TABLE addresses (
+    address_id [int] NOT NULL,
+    user_id [int] NOT NULL,
+    sort_order [int] NOT NULL,
+    address [varchar](100),
+    CONSTRAINT [addresses_pk] PRIMARY KEY CLUSTERED 
+        ( [address_id], [user_id] )
+
+);
+go

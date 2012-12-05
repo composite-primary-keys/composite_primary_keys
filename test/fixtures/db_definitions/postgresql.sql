@@ -192,3 +192,11 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table addresses (
+    address_id int not null,
+    user_id int not null,
+    sort_order int not null,
+    address varchar(100),
+    primary key (address_id, user_id)
+);
