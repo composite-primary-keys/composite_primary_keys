@@ -40,3 +40,5 @@ drop sequence students_seq;
 drop table seats;
 drop table capitols;
 drop table products_restaurants;
+drop table addresses;
+

@@ -1,0 +1,17 @@
+address_one:
+  address_id: 1
+  user_id: 1
+  sort_order: 1
+  address: 987 Oak St.
+
+address_two:
+  address_id: 2
+  user_id: 5
+  sort_order: 2
+  address: 456 West St.
+
+address_three:
+  address_id: 3
+  user_id: 7
+  sort_order: 3
+  address: 123 Main St.

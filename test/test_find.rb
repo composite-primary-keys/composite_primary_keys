@@ -2,12 +2,20 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
-  fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs
+  fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs, :addresses
 
   def test_find_first
     ref_code = ReferenceCode.find(:first, :order => 'reference_type_id, reference_code')
     assert_kind_of(ReferenceCode, ref_code)
     assert_equal([1,1], ref_code.id)
+  end
+
+ def test_find_last_with_default_order_scope
+    puts "********" * 10
+    ref_code = Address.find(:last)
+    puts "********" * 10
+    assert_kind_of(Address, ref_code)
+    assert_equal([3,7], ref_code.id)
   end
 
   def test_find_last

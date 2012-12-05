@@ -109,3 +109,12 @@ create table products_restaurants (
   franchise_id integer not null,
   store_id integer not null
 );
+
+create table addresses (
+    address_id integer not null,
+    user_id integer not null,
+    sort_order integer not null,
+    address varchar(100),
+    primary key (address_id, user_id)
+);
+

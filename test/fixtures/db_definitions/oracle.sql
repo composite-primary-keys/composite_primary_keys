@@ -205,3 +205,10 @@ create table employees_groups (
   group_id int not null
 );
 
+create table addresses (
+    address_id number(11) not null,
+    user_id number(11) not null,
+    sort_order number(11) not null,
+    address varchar(100),
+    constraint addresses_pk primary key (address_id, user_id)
+);
