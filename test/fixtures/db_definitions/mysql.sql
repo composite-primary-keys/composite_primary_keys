@@ -25,6 +25,8 @@ create table tariffs (
     tariff_id int not null,
     start_date date not null,
     amount integer(11) default null,
+    created_at timestamp,
+    updated_at timestamp,
     primary key (tariff_id, start_date)
 );
 
