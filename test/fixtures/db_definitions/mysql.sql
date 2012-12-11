@@ -12,6 +12,7 @@ create table reference_codes (
     code_label varchar(50) default null,
     abbreviation varchar(50) default null,
     description varchar(50) default null,
+    sort_order integer not null,
     primary key (reference_type_id, reference_code)
 );
 
@@ -25,6 +26,7 @@ create table tariffs (
     tariff_id int not null,
     start_date date not null,
     amount integer(11) default null,
+    updated_at datetime not null,
     primary key (tariff_id, start_date)
 );
 
