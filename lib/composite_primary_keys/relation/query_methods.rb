@@ -17,7 +17,7 @@ module CompositePrimaryKeys
           end.join(", ")
         end
 
-        except(:order).order(Arel.sql(order))
+        reorder(Arel.sql(order))
       end
     end
   end
