@@ -5,7 +5,7 @@ end
 
 class TestIds < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes
-  
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
