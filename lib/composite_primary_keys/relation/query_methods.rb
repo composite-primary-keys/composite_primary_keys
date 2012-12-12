@@ -1,24 +1,17 @@
-module CompositePrimaryKeys
-  module ActiveRecord
-    module QueryMethods
-      def reverse_order
-        order_clause = arel.order_clauses
+module ActiveRecord::QueryMethods
+  alias :original_reverse_sql_order :reverse_sql_order
+end
 
-        # CPK
-        # order = order_clause.empty? ?
-        #  "#{table_name}.#{primary_key} DESC" :
-        #  reverse_sql_order(order_clause).join(', ')
+module CompositePrimaryKeys::ActiveRecord::QueryMethods
 
-        order = unless order_clause.empty?
-          reverse_sql_order(order_clause).join(', ')
-        else
-          klass.primary_key.map do |key|
-            "#{table_name}.#{key} DESC"
-          end.join(", ")
-        end
+  def reverse_sql_order(order_query)
+    
+    # break apart CPKs 
+    order_query = primary_key.map do |key|
+      "#{quoted_table_name}.#{connection.quote_column_name(key)} ASC"
+    end if order_query.empty?
 
-        except(:order).order(Arel.sql(order))
-      end
-    end
+    original_reverse_sql_order(order_query)
   end
+
 end
