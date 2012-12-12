@@ -5,13 +5,19 @@ class TestFind < ActiveSupport::TestCase
   fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs
 
   def test_find_first
-    ref_code = ReferenceCode.find(:first, :order => 'reference_type_id, reference_code')
+    ref_code = ReferenceCode.unscoped.find(:first, :order => 'reference_type_id, reference_code')
     assert_kind_of(ReferenceCode, ref_code)
     assert_equal([1,1], ref_code.id)
   end
 
   def test_find_last
-    ref_code = ReferenceCode.find(:last, :order => 'reference_type_id, reference_code')
+    ref_code = ReferenceCode.unscoped.find(:last, :order => 'reference_type_id, reference_code')
+    assert_kind_of(ReferenceCode, ref_code)
+    assert_equal([2,2], ref_code.id)
+  end
+
+  def test_find_last_with_default_order_scope
+    ref_code = ReferenceCode.find(:last)
     assert_kind_of(ReferenceCode, ref_code)
     assert_equal([2,2], ref_code.id)
   end
