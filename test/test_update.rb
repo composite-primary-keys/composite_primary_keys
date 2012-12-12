@@ -2,30 +2,30 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 class TestUpdate < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes
-  
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => :reference_type_id,
       :update => { :description => 'RT Desc' },
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
       :update => { :description => 'RT Desc' },
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_setup
     testing_with do
       assert_not_nil @klass_info[:update]
     end
   end
-  
+
   def test_update_attributes
     testing_with do
       assert(@first.update_attributes(@klass_info[:update]))
@@ -35,7 +35,7 @@ class TestUpdate < ActiveSupport::TestCase
       end
     end
   end
-  
+
   def test_update_primary_key
     obj = ReferenceCode.find([1,1])
     obj.reference_type_id = 2
@@ -58,5 +58,15 @@ class TestUpdate < ActiveSupport::TestCase
     assert(obj.save)
     assert(obj.reload)
     assert_equal('b', obj.abbreviation)
+  end
+
+  def test_update_all
+    assert_nothing_raised do
+      refrence_code = ReferenceCode.create
+      primary_key = refrence_code.class.primary_key
+      ReferenceCode.update_all(
+        {description: 'random value'},
+        {primary_key => refrence_code[primary_key]})
+    end
   end
 end
