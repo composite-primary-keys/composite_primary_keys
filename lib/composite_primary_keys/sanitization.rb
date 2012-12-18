@@ -18,7 +18,7 @@ module ActiveRecord
         attrs.each do |attr, value|
           if attr.is_a?(CompositePrimaryKeys::CompositeKeys)
             attr.each_with_index do |key,i|
-              expanded_attrs[key] = value[i]
+              expanded_attrs[key] = value.flatten[i]
             end
           elsif aggregation = reflect_on_aggregation(attr.to_sym)
             mapping = aggregation.mapping
