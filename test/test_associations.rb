@@ -269,4 +269,12 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(1, memberships.length)
     assert_equal([1,1], memberships[0].id)
   end
+
+  def test_foreign_key_present_with_null_association_ids
+    group = Group.new
+    group.memberships.build
+    associations = group.association_cache[:memberships]
+    assert_equal(false, associations.send('foreign_key_present?'))
+  end
+
 end
