@@ -48,7 +48,7 @@ ActiveRecord 3.0.0 and 3.0.2 are not supported due to incompatible changes in Ar
 <h2>Installing</h2>
 <p><pre class="syntax"><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">composite_primary_keys</span></pre></p>
 <p>Rails: Add the following to your <code>Gemfile</code></p>
-<p><pre class="syntax"><span class="ident">gem</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">',</span> <span class="punct">'</span><span class="string">=3.1.0</span><span class="punct">'</span></pre></p>
+<p><pre class="syntax"><span class="ident">gem</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">',</span> <span class="punct">'</span><span class="string">=5.0.10</span><span class="punct">'</span></pre></p>
 <p>Ruby scripts: Add the following to the top of your script</p>
 <p><pre class="syntax"><span class="ident">require</span> <span class="punct">'</span><span class="string">rubygems</span><span class="punct">'</span>
 <span class="ident">require</span> <span class="punct">'</span><span class="string">composite_primary_keys</span><span class="punct">'</span></pre></p>
@@ -56,7 +56,7 @@ ActiveRecord 3.0.0 and 3.0.2 are not supported due to incompatible changes in Ar
 <p>A model with composite primary keys would look like&#8230;</p>
 <p><pre class="syntax"><span class="keyword">class </span><span class="class">Membership</span> <span class="punct">&lt;</span> <span class="constant">ActiveRecord</span><span class="punct">::</span><span class="constant">Base</span>
   <span class="comment"># self.primary_keys *keys - turns on composite key functionality</span>
-  <span class="constant">self</span><span class="punct">.</span><span class="ident">primary_keys</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
+  <span class="constant">self</span><span class="punct">.</span><span class="ident">primary_keys</span> <span class="punct">=</span> <span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span>
   <span class="ident">belongs_to</span> <span class="symbol">:user</span>
   <span class="ident">belongs_to</span> <span class="symbol">:group</span>
   <span class="ident">has_many</span> <span class="symbol">:statuses</span><span class="punct">,</span> <span class="symbol">:class_name</span> <span class="punct">=&gt;</span> <span class="punct">'</span><span class="string">MembershipStatus</span><span class="punct">',</span> <span class="symbol">:foreign_key</span> <span class="punct">=&gt;</span> <span class="punct">[</span><span class="symbol">:user_id</span><span class="punct">,</span> <span class="symbol">:group_id</span><span class="punct">]</span>
