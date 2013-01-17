@@ -87,4 +87,13 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(25, suburb.suburb_id)
     assert_equal("My Suburb", suburb.name)
   end
+
+  def test_create_auto_increment
+    return unless current_adapter?('MysqlAdapter') ||
+      current_adapter?('Mysql2Adapter')
+    post = Post.new(:title => 'First post', :body => 'Hello world!')
+    assert post.save
+    assert_equal 1, post.version
+    assert_not_nil post[:id], "New post id should be set automatically"
+  end
 end
