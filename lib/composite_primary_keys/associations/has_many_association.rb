@@ -41,7 +41,7 @@ module ActiveRecord
       def foreign_key_present?
         # CPK
         # owner.attribute_present?(reflection.association_primary_key)
-        reflection.association_primary_key.all?{ |key| owner.attribute_present?(key) }
+        Array(reflection.association_primary_key).all? {|key| owner.attribute_present?(key)}
       end
     end
   end
