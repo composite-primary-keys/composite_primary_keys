@@ -1,3 +1,10 @@
+== 5.0.11 2013-01-19
+* Patch HasManyAssociation foreign_key_present? method to work with array of keys (tbeauvais)
+* Patch reverse_sql_order method to break apart CPKs (tbeauvais)
+* Add test and fix for nested_attributes update (Dinshaw Gobhai)
+* Add test and fix for to_sym exception (Dinshaw Gobhai)
+* Add missing timestamp columns for mysql test_touch.rb (Dinshaw Gobhai)
+
 == 5.0.10 2012-11-21
 * ActiveRecord 3.2.9 compatability (Tom Hughes, Chris Heald, Jack Tang)
 * Add support for find_in_batches (Charlie Savage)
