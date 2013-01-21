@@ -1,3 +1,6 @@
+== 5.0.12 2013-01-21
+* Fix HasManyAssociation foreign_key_present? method to work with non CPK assocations (Charlie Savage)
+
 == 5.0.11 2013-01-19
 * Patch HasManyAssociation foreign_key_present? method to work with array of keys (tbeauvais)
 * Patch reverse_sql_order method to break apart CPKs (tbeauvais)
