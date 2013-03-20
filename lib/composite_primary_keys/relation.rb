@@ -62,9 +62,9 @@ module ActiveRecord
     end
 
     alias :initialize_without_cpk :initialize
-    def initialize(klass, table)
-      initialize_without_cpk(klass, table)
-      add_cpk_support if klass.composite?
+    def initialize(klass, table, values = {})
+      initialize_without_cpk(klass, table, values)
+      add_cpk_support if klass && klass.composite?
       add_cpk_where_values_hash
     end
 
