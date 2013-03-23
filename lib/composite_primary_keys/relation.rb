@@ -6,7 +6,8 @@ module ActiveRecord
         include CompositePrimaryKeys::ActiveRecord::Calculations
         include CompositePrimaryKeys::ActiveRecord::FinderMethods
         include CompositePrimaryKeys::ActiveRecord::QueryMethods
-
+        
+        
         def delete(id_or_array)
           ::ActiveRecord::IdentityMap.remove_by_id(self.symbolized_base_class, id_or_array) if ::ActiveRecord::IdentityMap.enabled?
           # Without CPK:
