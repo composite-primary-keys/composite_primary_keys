@@ -1,36 +1,19 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Persistence
-      def destroy
-        destroy_associations
+      def relation_for_destroy
+        return super unless composite?
+        
+        where_hash = {}
+        primary_keys = Array(self.class.primary_key)
 
-        if persisted?
-          IdentityMap.remove(self) if IdentityMap.enabled?
-          # CPK
-          #pk         = self.class.primary_key
-          #column     = self.class.columns_hash[pk]
-          #substitute = connection.substitute_at(column, 0)
-
-          where_hash = {}
-          primary_keys = Array(self.class.primary_key)
-
-          #relation = self.class.unscoped.where(
-          #  self.class.arel_table[pk].eq(substitute))
-
-          primary_keys.each do |key|
-            where_hash[key.to_s] = self[key]
-          end
-
-          # CPK      
-          #relation.bind_values = [[column, id]]
-
-          relation = self.class.unscoped.where(where_hash)
-          relation.delete_all
+        primary_keys.each do |key|
+          where_hash[key.to_s] = self[key]
         end
 
-        @destroyed = true
-        freeze
+        relation = self.class.unscoped.where(where_hash)
       end
+      
 
       def touch(name = nil)
         attributes = timestamp_attributes_for_update_in_model
