@@ -22,8 +22,9 @@ class TestClone < ActiveSupport::TestCase
     testing_with do
       clone = @first.dup
       
-      remove_keys = Array(@klass.primary_key).map &:to_s
-      assert_equal(@first.attributes.except(*remove_keys), clone.attributes)
+      remove_keys = Array(@klass.primary_key).map(&:to_s)
+      remove_keys << Array(@klass.primary_key) # Rails 4 adds the PK to the attributes, so we want to remove it as well
+      assert_equal(@first.attributes.except(*remove_keys), clone.attributes.except(*remove_keys))
 
       if composite?
         @klass.primary_key.each do |key|

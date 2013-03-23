@@ -4,9 +4,9 @@ module ActiveRecord
       class Association
         def records_for(ids)
           # CPK
-          # scoped.where(association_key.in(ids))
+          # scope.where(association_key.in(ids))
           predicate = cpk_in_predicate(table, reflection.foreign_key, ids)
-          scoped.where(predicate)
+          scope.where(predicate)
         end
         
         def associated_records_by_owner

@@ -7,7 +7,7 @@ module ActiveRecord
     end
     
     def self.establish_connection(spec = ENV["DATABASE_URL"])
-      resolver = ConnectionSpecification::Resolver.new spec, configurations
+      resolver = ConnectionAdapters::ConnectionSpecification::Resolver.new spec, configurations
       spec = resolver.spec
       
       # CPK
@@ -18,7 +18,7 @@ module ActiveRecord
       end
 
       remove_connection
-      connection_handler.establish_connection name, spec
+      connection_handler.establish_connection self, spec
     end
 
     class << self

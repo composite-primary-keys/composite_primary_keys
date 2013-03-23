@@ -36,6 +36,7 @@ class TestAttributes < ActiveSupport::TestCase
   def test_brackets_assignment
     testing_with do
       @first.attributes.each_pair do |attr_name, value|
+        next if attr_name == @first.class.primary_key
         @first[attr_name]= !value.nil? ? value * 2 : '1'
         assert_equal !value.nil? ? value * 2 : '1', @first[attr_name]
       end

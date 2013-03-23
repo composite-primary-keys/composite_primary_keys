@@ -5,7 +5,7 @@ module ActiveRecord
         def records_for(ids)
           # CPK
           predicate = cpk_in_predicate(table, association_key_name, ids)
-          scoped.where(predicate)
+          scope.where(predicate)
         end
       end
     end
