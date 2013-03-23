@@ -1,3 +1,6 @@
+== 6.0.0 (unreleased)
+* ActiveRecord 4.0 support (Sammy Larbi)
+
 == 5.0.12 2013-01-21
 * Fix HasManyAssociation foreign_key_present? method to work with non CPK assocations (Charlie Savage)
 
