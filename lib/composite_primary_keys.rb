@@ -67,6 +67,7 @@ require 'active_record/validations/uniqueness'
 # CPK files
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
+require 'composite_primary_keys/core'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/composite_predicates'
 require 'composite_primary_keys/counter_cache'

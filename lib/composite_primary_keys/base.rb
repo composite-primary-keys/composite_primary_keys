@@ -59,32 +59,6 @@ module ActiveRecord
       self.class.composite?
     end
 
-    def initialize_dup(other)
-      cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
-      self.class.initialize_attributes(cloned_attributes, :serialized => false)
-      # CPK
-      # cloned_attributes.delete(self.class.primary_key)
-      Array(self.class.primary_key).each {|key| cloned_attributes.delete(key.to_s)}
-
-      @attributes = cloned_attributes
-
-      _run_after_initialize_callbacks if respond_to?(:_run_after_initialize_callbacks)
-
-      @changed_attributes = {}
-      self.class.column_defaults.each do |attr, orig_value|
-        @changed_attributes[attr] = orig_value if _field_changed?(attr, orig_value, @attributes[attr])
-      end
-
-      @aggregation_cache = {}
-      @association_cache = {}
-      @attributes_cache = {}
-      @new_record  = true
-
-      ensure_proper_type
-      populate_with_current_scope_attributes
-      super
-    end
-
     module CompositeClassMethods
       def primary_key
         primary_keys
