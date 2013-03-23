@@ -24,4 +24,17 @@ module CompositePrimaryKeys::ActiveRecord::QueryMethods
     end.flatten
   end
 
+
+  def order(*args)
+    args.map! do |arg|
+      if composite? && arg.is_a?(Arel::Nodes::Ordering) && arg.expr.name.is_a?(Array)
+        arg = arg.expr.name.map do |key|
+          cloned_node = arg.clone
+          cloned_node.expr.name = key
+        end
+      end
+      arg
+    end
+    super(*args)
+  end
 end
