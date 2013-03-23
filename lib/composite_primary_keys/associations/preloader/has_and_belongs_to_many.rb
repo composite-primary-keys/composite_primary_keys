@@ -4,9 +4,9 @@ module ActiveRecord
       class HasAndBelongsToMany
         def records_for(ids)
           # CPK
-          #scope = super
+          # scope = super
           predicate = cpk_in_predicate(join_table, reflection.foreign_key, ids)
-          scope = scope.where(predicate)
+          scope = build_scope.where(predicate)
 
           klass.connection.select_all(scope.arel.to_sql, 'SQL', scope.bind_values)
         end
