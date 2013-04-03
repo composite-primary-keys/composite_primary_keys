@@ -46,6 +46,15 @@ class TestFind < ActiveSupport::TestCase
     assert_equal(['The Netherlands', 'Amsterdam'], capitol.id)
   end
 
+  def test_find_each
+    room_assignments = []
+    RoomAssignment.find_each(:batch_size => 2) do |assignment|
+      room_assignments << assignment
+    end
+
+    assert_equal(RoomAssignment.count, room_assignments.uniq.length)
+  end
+
   def test_not_found
     error = assert_raise(::ActiveRecord::RecordNotFound) do
       ReferenceCode.find(['999', '999'])
@@ -76,9 +85,9 @@ class TestFind < ActiveSupport::TestCase
     assert_equal([1,1], suburb.id)
   end
 
-  def test_find_in_batchs
-    departments = Department.find_in_batches do |batch|
-      assert_equal(2, batch.size)
+  def test_find_in_batches
+    Department.find_in_batches do |batch|
+      assert_equal(Department.count, batch.size)
     end
   end
 end
