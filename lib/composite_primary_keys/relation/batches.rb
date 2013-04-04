@@ -5,7 +5,7 @@ module CompositePrimaryKeys
         relation = self
 
         unless arel.orders.blank? && arel.taken.blank?
-          ActiveRecord::Base.logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
+          ::ActiveRecord::Base.logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
         end
 
         if (finder_options = options.except(:start, :batch_size)).present?
