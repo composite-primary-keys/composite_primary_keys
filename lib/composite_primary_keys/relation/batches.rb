@@ -39,19 +39,17 @@ module CompositePrimaryKeys
             # Lexicographically select records
             #
             query = prefixes(primary_key.zip(primary_key_offset)).map do |kvs|
-              conds = kvs.each_with_index.reduce(unscoped) do |rel, ((k, v), i)|
+              and_clause = kvs.each_with_index.map do |(k, v), i|
                 # Use > for the last key in the and clause
                 # otherwise use =
-                condition = if i == kvs.length - 1
+                if i == kvs.length - 1
                   table[k].gt(v)
                 else
                   table[k].eq(v)
                 end
+              end.reduce(:and)
 
-                rel.where(condition)
-              end
-
-              Arel::Nodes::Grouping.new(conds.where_values.reduce(:and))
+              Arel::Nodes::Grouping.new(and_clause)
             end.reduce(:or)
 
             records = relation.where(query)
