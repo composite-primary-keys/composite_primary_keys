@@ -22,7 +22,7 @@ module CompositePrimaryKeys
 
         # CPK
         # records = relation.where(table[primary_key].gteq(start)).all
-        records = self.primary_key.each.reduce(relation) do |rel, key|
+        records = self.primary_key.reduce(relation) do |rel, key|
           rel.where(table[key].gteq(start))
         end.all
 
@@ -39,7 +39,7 @@ module CompositePrimaryKeys
             # Lexicographically select records
             #
             query = prefixes(primary_key.zip(primary_key_offset)).map do |kvs|
-              and_clause = kvs.each_with_index.reduce(self) do |rel, ((k, v), i)|
+              conds = kvs.each_with_index.reduce(unscoped) do |rel, ((k, v), i)|
                 # Use > for the last key in the and clause
                 # otherwise use =
                 condition = if i == kvs.length - 1
@@ -51,7 +51,7 @@ module CompositePrimaryKeys
                 rel.where(condition)
               end
 
-              Arel::Nodes::Grouping.new(and_clause.where_values.reduce(:and))
+              Arel::Nodes::Grouping.new(conds.where_values.reduce(:and))
             end.reduce(:or)
 
             records = relation.where(query)
