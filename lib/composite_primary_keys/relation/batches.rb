@@ -5,7 +5,7 @@ module CompositePrimaryKeys
         relation = self
 
         unless arel.orders.blank? && arel.taken.blank?
-          ActiveRecord::Base.logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
+          ::ActiveRecord::Base.logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
         end
 
         if (finder_options = options.except(:start, :batch_size)).present?
@@ -21,11 +21,10 @@ module CompositePrimaryKeys
         relation = relation.reorder(batch_order).limit(batch_size)
 
         # CPK
-        #records = relation.where(table[primary_key].gteq(start)).all
-        self.primary_key.each do |key|
-          relation = relation.where(table[key].gteq(start))
-        end
-        records = relation.all
+        # records = relation.where(table[primary_key].gteq(start)).all
+        records = self.primary_key.reduce(relation) do |rel, key|
+          rel.where(table[key].gteq(start))
+        end.all
 
         while records.any?
           records_size = records.size
@@ -37,12 +36,23 @@ module CompositePrimaryKeys
 
           if primary_key_offset
             # CPK
-            #records = relation.where(table[primary_key].gt(primary_key_offset)).to_a
-            self.primary_key.each do |key|
-              relation = relation.where(table[key].gt(primary_key_offset))
-            end
-            records = relation.to_a
+            # Lexicographically select records
+            #
+            query = prefixes(primary_key.zip(primary_key_offset)).map do |kvs|
+              and_clause = kvs.each_with_index.map do |(k, v), i|
+                # Use > for the last key in the and clause
+                # otherwise use =
+                if i == kvs.length - 1
+                  table[k].gt(v)
+                else
+                  table[k].eq(v)
+                end
+              end.reduce(:and)
 
+              Arel::Nodes::Grouping.new(and_clause)
+            end.reduce(:or)
+
+            records = relation.where(query)
           else
             raise "Primary key not included in the custom select clause"
           end
@@ -50,6 +60,13 @@ module CompositePrimaryKeys
       end
 
       private
+
+      # Helper method to collect prefixes of an array:
+      # prefixes([:a, :b, :c]) => [[:a], [:a, :b], [:a, :b, :c]]
+      #
+      def prefixes(ary)
+        ary.length.times.reduce([]) { |results, i| results << ary[0..i] }
+      end
 
       def batch_order
         # CPK
