@@ -183,3 +183,12 @@ create table products_restaurants (
   store_id int(11) not null
 ) type=InnoDB;
 
+create table posts (
+  id int(11) not null auto_increment,
+  version int(11) not null default '1',
+  title varchar(255) default null,
+  body text,
+  created_at datetime not null,
+  updated_at datetime not null,
+  primary key  (id, version)
+) type=InnoDB DEFAULT CHARSET=latin1

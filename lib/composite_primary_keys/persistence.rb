@@ -8,6 +8,27 @@ module ActiveRecord
       end
     end
 
+    def create
+      if self.id.nil? && connection.prefetch_primary_key?(self.class.table_name)
+        self.id = connection.next_sequence_value(self.class.sequence_name)
+      end
+
+      attributes_values = arel_attributes_values
+
+      new_id = if attributes_values.empty?
+        self.class.unscoped.insert connection.empty_insert_statement_value
+      else
+        self.class.unscoped.insert attributes_values
+      end
+
+      # CPK
+      # self.id ||= new_id
+      self[:id] ||= new_id
+
+      @new_record = false
+      id
+    end
+
     def destroy
       if persisted?
         # self.class.unscoped.where(self.class.arel_table[self.class.primary_key].eq(id)).delete_all
