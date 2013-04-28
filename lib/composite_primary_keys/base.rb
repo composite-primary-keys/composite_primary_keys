@@ -127,9 +127,8 @@ module ActiveRecord
 
       # Sets the primary ID.
       def id=(ids)
-        ids = ids.split(CompositePrimaryKeys::ID_SEP) if ids.is_a?(String)
-        ids.flatten!
-        unless ids.is_a?(Array) and ids.length == self.class.primary_keys.length
+        ids = CompositePrimaryKeys::CompositeKeys.parse(ids)
+        unless ids.length == self.class.primary_keys.length
           raise "#{self.class}.id= requires #{self.class.primary_keys.length} ids"
         end
         [self.class.primary_keys, ids].transpose.each {|key, an_id| write_attribute(key , an_id)}

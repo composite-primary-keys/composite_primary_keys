@@ -53,6 +53,7 @@ require 'active_model/dirty'
 require 'active_record/attribute_methods/dirty'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
+require 'active_record/nested_attributes'
 
 require 'active_record/connection_adapters/abstract_adapter'
 
@@ -91,6 +92,7 @@ require 'composite_primary_keys/dirty'
 require 'composite_primary_keys/attribute_methods/dirty'
 require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
+require 'composite_primary_keys/nested_attributes'
 
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
 require 'composite_primary_keys/connection_adapters/abstract/connection_specification_changes'

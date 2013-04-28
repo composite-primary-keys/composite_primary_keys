@@ -9,6 +9,17 @@ module CompositePrimaryKeys
   end
 
   class CompositeKeys < Array
+    def self.parse(value)
+      case value
+      when Array
+        value.to_composite_keys
+      when String
+        self.new(value.split(ID_SEP))
+      else
+        raise(ArgumentError, "Unsupported type: #{value}")
+      end
+    end
+
     def to_s
       # Doing this makes it easier to parse Base#[](attr_name)
       join(ID_SEP)
