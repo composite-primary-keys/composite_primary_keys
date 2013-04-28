@@ -4,7 +4,7 @@ class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
            :departments, :employees, :memberships, :membership_statuses
-  
+
   def test_products
     assert_not_nil products(:first_product).product_tariffs
     assert_equal 2, products(:first_product).product_tariffs.length
@@ -131,7 +131,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_through_when_through_association_is_composite
     dorm = Dorm.find(:first)
-    assert_equal(2, dorm.rooms.length)
+    assert_equal(3, dorm.rooms.length)
     assert_equal(1, dorm.rooms.first.room_attributes.length)
     assert_equal('type', dorm.rooms.first.room_attributes.first.name)
   end
@@ -213,9 +213,10 @@ class TestAssociations < ActiveSupport::TestCase
   def test_has_many_with_composite_key
     # In this case a regular model (Dorm) has_many composite models (Rooms)
     dorm = dorms(:branner)
-    assert_equal(2, dorm.rooms.length)
+    assert_equal(3, dorm.rooms.length)
     assert_equal(1, dorm.rooms[0].room_id)
     assert_equal(2, dorm.rooms[1].room_id)
+    assert_equal(3, dorm.rooms[2].room_id)
   end
 
   def test_joins_has_many_with_primary_key
