@@ -6,7 +6,7 @@ module ActiveRecord
           # CPK
           # "#{aliased_prefix}_r0"
 
-          active_record.composite? ?
+          base_klass.composite? ?
             primary_key.inject([]) {|aliased_keys, key| aliased_keys << "#{ aliased_prefix }_r#{aliased_keys.length}"} :
             "#{ aliased_prefix }_r0"
         end
@@ -14,7 +14,7 @@ module ActiveRecord
         def record_id(row)
           # CPK
           # row[aliased_primary_key]
-          active_record.composite? ?
+          base_klass.composite? ?
             aliased_primary_key.map {|key| row[key]}.to_composite_keys :
             row[aliased_primary_key]
         end
@@ -25,7 +25,7 @@ module ActiveRecord
 
             # CPK
             #([primary_key] + (column_names - [primary_key])).each_with_index do |column_name, i|
-            keys = active_record.composite? ? primary_key.map(&:to_s) : [primary_key]
+            keys = base_klass.composite? ? primary_key.map(&:to_s) : [primary_key]
 
             (keys + (column_names - keys)).each_with_index do |column_name, i|
               @column_names_with_alias << [column_name, "#{aliased_prefix}_r#{i}"]

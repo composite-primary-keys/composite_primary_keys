@@ -50,8 +50,8 @@ module CompositePrimaryKeys
         relation.select_values = column_name.map do |column|
           Arel::Attribute.new(@klass.unscoped.table, column)
         end
-        
-        relation.distinct(true)
+
+        relation = relation.distinct(true)
         subquery = relation.arel.as(subquery_alias)
 
         sm = Arel::SelectManager.new relation.engine
