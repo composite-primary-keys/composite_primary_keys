@@ -11,7 +11,7 @@ module ActiveRecord
         end
 
         if options[:insert_sql]
-          owner.connection.insert(interpolate(options[:insert_sql], record))
+          owner.class.connection.insert(interpolate(options[:insert_sql], record))
         else
           # CPK
           #stmt = join_table.compile_insert(
@@ -31,7 +31,7 @@ module ActiveRecord
 
           stmt = join_table.compile_insert(join_values)
 
-          owner.connection.insert stmt.to_sql
+          owner.class.connection.insert stmt.to_sql
         end
 
         record
@@ -39,7 +39,7 @@ module ActiveRecord
 
       def delete_records(records, method)
         if sql = options[:delete_sql]
-          records.each { |record| owner.connection.delete(interpolate(sql, record)) }
+          records.each { |record| owner.class.connection.delete(interpolate(sql, record)) }
         else
           relation = join_table
           # CPK
@@ -51,7 +51,7 @@ module ActiveRecord
           predicate2 = cpk_in_predicate(relation, Array(reflection.association_foreign_key), records.map { |x| x.id }) unless records == :all
           stmt = relation.where(predicate1.and(predicate2)).compile_delete
 
-          owner.connection.delete stmt.to_sql
+          owner.class.connection.delete stmt.to_sql
         end
       end
     end    

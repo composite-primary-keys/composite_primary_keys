@@ -18,7 +18,7 @@ module ActiveRecord
           parent
         }.uniq
 
-        remove_duplicate_results!(active_record, records, @associations)
+        remove_duplicate_results!(base_klass, records, @associations)
         records
       end
 
