@@ -109,4 +109,23 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(25, suburb.suburb_id)
     assert_equal("My Suburb", suburb.name)
   end
+
+  def test_create_auto_increment_with_default_column
+    return unless current_adapter?('MysqlAdapter') || current_adapter?('Mysql2Adapter')
+    widget = Widget.new(:data => "Hello!")
+    assert widget.save
+    assert_equal 1, widget.version
+    assert_not_nil widget.id[0], "New widget id should be set automatically"
+    assert_not_nil widget[:id], "New widget id (hash) should be set automatically"
+  end
+
+  def test_create_auto_increment_with_custom_column
+    return unless current_adapter?('MysqlAdapter') || current_adapter?('Mysql2Adapter')
+    event = DocumentEvent.new(:data => "Hello!", :to_uid => 5)
+    assert event.save
+    assert_equal 5, event.to_uid
+    assert_not_nil event.id[1], "New document event document_event_id should be set automatically"
+    assert_not_nil event[:document_event_id], "New document event document_event_id (hash) should be set automatically"
+  end
+
 end

@@ -190,3 +190,18 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table document_events (
+    document_event_id int(11) not null auto_increment,
+    to_uid int(11) not null,
+    data text,
+    primary key (to_uid, document_event_id),
+    unique key (document_event_id)
+);
+
+create table widgets (
+    id int(11) not null auto_increment,
+    version int(11) not null default '1',
+    data text,
+    primary key (id, version)
+);

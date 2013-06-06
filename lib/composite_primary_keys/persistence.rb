@@ -1,5 +1,20 @@
 module ActiveRecord
   module Persistence
+    def create
+      attributes_values = arel_attributes_values(!id.nil?)
+
+      new_id = self.class.unscoped.insert attributes_values
+
+      # CPK
+      # self.id ||= new_id if self.class.primary_key
+      auto_increment_column = self.class.auto_increment_column || :id
+      self[auto_increment_column] ||= new_id if self.class.primary_key
+
+      IdentityMap.add(self) if IdentityMap.enabled?
+      @new_record = false
+      id
+    end
+
     def destroy
       destroy_associations
 
