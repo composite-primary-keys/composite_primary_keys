@@ -6,7 +6,7 @@ module ActiveRecord
         if attr_name.kind_of?(Array)
           value = [nil]*attr_name.length if value.nil?
           unless value.length == attr_name.length
-            raise "Number of attr_names and values do not match"
+            raise "Number of attr_names #{attr_name.inspect} and values #{value.inspect} do not match"
           end
           [attr_name, value].transpose.map {|name,val| write_attribute(name, val)}
           value
