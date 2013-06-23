@@ -7,6 +7,11 @@ class TestEqual < ActiveSupport::TestCase
     assert_not_equal(Capitol.new, Capitol.new)
   end
 
+  def test_same_new
+    it = Capitol.new
+    assert_equal(it, it)
+  end
+
   def test_same
     first = Capitol.find('Canada', 'Ottawa')
     second = Capitol.find('Canada', 'Ottawa')
