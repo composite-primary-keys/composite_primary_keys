@@ -13,6 +13,10 @@ module ActiveRecord
         where_hash = {}
         primary_keys = Array(self.class.primary_key)
 
+        if primary_keys.empty?
+          raise ActiveRecord::CompositeKeyError, "No primary key(s) defined for #{self.class.name}"
+        end
+
         #relation = self.class.unscoped.where(
         #  self.class.arel_table[pk].eq(substitute))
 
