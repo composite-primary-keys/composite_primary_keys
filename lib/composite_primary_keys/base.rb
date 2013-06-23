@@ -136,6 +136,7 @@ module ActiveRecord
       end
 
       def ==(comparison_object)
+        return true if equal? comparison_object
         ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| id.present?} : super(comparison_object)
       end
 
