@@ -1,5 +1,3 @@
-require 'test/unit'
-
 %w(
   test_associations
   test_attribute_methods
