@@ -1,6 +1,5 @@
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-require "pp"
 require "test/unit"
 
 # To make debugging easier, test within this source tree versus an installed gem
