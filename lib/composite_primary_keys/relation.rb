@@ -6,9 +6,9 @@ module ActiveRecord
         include CompositePrimaryKeys::ActiveRecord::Calculations
         include CompositePrimaryKeys::ActiveRecord::FinderMethods
         include CompositePrimaryKeys::ActiveRecord::QueryMethods
-
+        
+        
         def delete(id_or_array)
-          ::ActiveRecord::IdentityMap.remove_by_id(self.symbolized_base_class, id_or_array) if ::ActiveRecord::IdentityMap.enabled?
           # Without CPK:
           # where(primary_key => id_or_array).delete_all
 
@@ -62,9 +62,9 @@ module ActiveRecord
     end
 
     alias :initialize_without_cpk :initialize
-    def initialize(klass, table)
-      initialize_without_cpk(klass, table)
-      add_cpk_support if klass.composite?
+    def initialize(klass, table, values = {})
+      initialize_without_cpk(klass, table, values)
+      add_cpk_support if klass && klass.composite?
       add_cpk_where_values_hash
     end
 

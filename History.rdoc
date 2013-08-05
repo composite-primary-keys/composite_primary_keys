@@ -1,7 +1,9 @@
+== 6.0.0 (2013-08-04)
+* ActiveRecord 4.0 support (Sammy Larbi)
+
 == 5.0.13 2013-04-27
 * Batch query improvements (Jordan Byron)
 * Support nested attributes (aiasfina and Charlie Savage)
-* ActiveRecord 4.0 support in ar_4.0.x branch
 
 == 5.0.12 2013-01-21
 * Fix HasManyAssociation foreign_key_present? method to work with non CPK assocations (Charlie Savage)

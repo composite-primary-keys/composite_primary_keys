@@ -97,6 +97,18 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal records_after, records_before - steve.groups.count
   end
 
+  def test_delete_not_destroy_on_cpk
+    tariff = Tariff.where(tariff_id: 2).first
+    tariff.delete
+    assert !tariff.persisted?
+  end
+  
+  def test_delete_not_destroy_on_non_cpk
+    article = Article.first
+    article.delete
+    assert !article.persisted?
+  end
+
 #  def test_destroy_has_many_delete_all
 #    # In this case the association is a has_many composite key with
 #    # dependent set to :delete_all

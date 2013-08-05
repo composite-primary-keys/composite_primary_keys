@@ -8,7 +8,7 @@ module ActiveRecord
         else
           # CPK
           # keys  = records.map { |r| r[reflection.association_primary_key] }
-          # scope = scoped.where(reflection.association_primary_key => keys)
+          # scope = scope.where(reflection.association_primary_key => keys)
           table = Arel::Table.new(reflection.table_name)
           and_conditions = records.map do |record|
             eq_conditions = Array(reflection.association_primary_key).map do |name|
@@ -22,7 +22,7 @@ module ActiveRecord
             condition = condition.or(and_condition)
           end
 
-          scope = scoped.where(condition)
+          scope = scope.where(condition)
 
           if method == :delete_all
             update_counter(-scope.delete_all)
