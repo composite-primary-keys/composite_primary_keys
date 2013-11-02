@@ -278,4 +278,16 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(false, associations.send('foreign_key_present?'))
   end
 
+  def test_dumpable_after_traversing_association
+    user = User.find(1)
+    user.readings.all # Fetch the association
+    assert_equal String, Marshal.dump(user).class
+  end
+
+  def test_dumpable_after_traversing_association_cpk
+    suburb = Suburb.find([1, 1])
+    suburb.streets.all # Fetch the association
+    assert_equal String, Marshal.dump(suburb).class
+  end
+
 end
