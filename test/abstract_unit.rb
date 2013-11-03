@@ -1,6 +1,9 @@
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-require "test/unit"
+require 'active_support/test_case'
+require 'minitest/autorun'
+require 'minitest/reporters'
+MiniTest::Reporters.use!
 
 # To make debugging easier, test within this source tree versus an installed gem
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
