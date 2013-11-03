@@ -1,5 +1,12 @@
 module ActiveRecord
   module Core
+    def init_internals_with_cpk
+      init_internals_without_cpk
+      # Remove cpk array from attributes, fixes to_json
+      @attributes.delete(self.class.primary_key) if self.composite?
+    end
+    alias_method_chain :init_internals, :cpk
+
     def initialize_dup(other)
       cloned_attributes = other.clone_attributes(:read_attribute_before_type_cast)
       self.class.initialize_attributes(cloned_attributes, :serialized => false)

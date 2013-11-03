@@ -17,6 +17,7 @@
   test_polymorphic
   test_predicates
   test_santiago
+  test_serialize
   test_tutorial_example
   test_update
   test_validations
