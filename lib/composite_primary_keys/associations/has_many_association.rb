@@ -6,23 +6,27 @@ module ActiveRecord
           records.each { |r| r.destroy }
           update_counter(-records.length) unless inverse_updates_counter_cache?
         else
-          # CPK
-          # keys  = records.map { |r| r[reflection.association_primary_key] }
-          # scope = scope.where(reflection.association_primary_key => keys)
-          table = Arel::Table.new(reflection.table_name)
-          and_conditions = records.map do |record|
-            eq_conditions = Array(reflection.association_primary_key).map do |name|
-              table[name].eq(record[name])
+          if records == :all
+            scope = self.scope
+          else
+            # CPK
+            # keys  = records.map { |r| r[reflection.association_primary_key] }
+            # scope = scope.where(reflection.association_primary_key => keys)
+            table = Arel::Table.new(reflection.table_name)
+            and_conditions = records.map do |record|
+              eq_conditions = Array(reflection.association_primary_key).map do |name|
+                table[name].eq(record[name])
+              end
+              Arel::Nodes::And.new(eq_conditions)
             end
-            Arel::Nodes::And.new(eq_conditions)
-          end
 
-          condition = and_conditions.shift
-          and_conditions.each do |and_condition|
-            condition = condition.or(and_condition)
-          end
+            condition = and_conditions.shift
+            and_conditions.each do |and_condition|
+              condition = condition.or(and_condition)
+            end
 
-          scope = scope.where(condition)
+            scope = self.scope.where(condition)
+          end
 
           if method == :delete_all
             update_counter(-scope.delete_all)
