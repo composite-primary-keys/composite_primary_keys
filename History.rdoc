@@ -1,3 +1,11 @@
+== 6.0.1 (2013-11-29)
+
+* Handle records == :all in HasManyAssociation#delete_records. Without this calling
+  delete or clear on a has_many assocation can result in an exception (Tom Hughes)
+* Don't include cpk key as an attributes - fixes json serialization - #168 (Charlie Savage)
+* Fix tests running on ruby 1.9.3 (Charlie Savage)
+* Update nested_attributes to work with activerecord 4.0.x (Nick DeLuca)
+
 == 6.0.0 (2013-08-04)
 * ActiveRecord 4.0 support (Sammy Larbi)
 
