@@ -5,6 +5,6 @@ class User < ActiveRecord::Base
   has_many :hacks, :through => :comments, :source => :hack
   
   def find_custom_articles
-    articles.find(:all, :conditions => ["name = ?", "Article One"])
+    articles.where("name = ?", "Article One")
   end
 end

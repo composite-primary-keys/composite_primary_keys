@@ -24,7 +24,7 @@ module CompositePrimaryKeys
         # records = relation.where(table[primary_key].gteq(start)).all
         records = self.primary_key.reduce(relation) do |rel, key|
           rel.where(table[key].gteq(start))
-        end.all
+        end
 
         while records.any?
           records_size = records.size

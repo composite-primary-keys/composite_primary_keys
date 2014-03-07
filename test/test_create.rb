@@ -48,7 +48,7 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_on_association
-    suburb = Suburb.find(:first)
+    suburb = Suburb.first
     suburb.streets.create(:name => "my street")
     street = Street.find_by_name('my street')
     assert_equal(suburb.city_id, street.city_id)
@@ -56,15 +56,15 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_on_association_when_belongs_to_is_single_key
-    rt = ReferenceType.find(:first)
+    rt = ReferenceType.first
     rt.reference_codes.create(:reference_code => 4321, :code_label => 'foo', :abbreviation => 'bar')
     rc = ReferenceCode.find_by_reference_code(4321)
     assert_equal(rc.reference_type_id, rt.reference_type_id)
   end
 
   def test_new_habtm
-    restaurant = Restaurant.new(:franchise_id => 22,
-                                :store_id => 23,
+    restaurant = Restaurant.new(:franchise_id => 101,
+                                :store_id => 201,
                                 :name => "My Store")
 
     restaurant.suburbs << Suburb.new(:city_id => 24,
@@ -73,11 +73,9 @@ class TestCreate < ActiveSupport::TestCase
 
     restaurant.save!
 
-    restaurant.reload
-
     # Test restaurant
-    assert_equal(22, restaurant.franchise_id)
-    assert_equal(23, restaurant.store_id)
+    assert_equal(101, restaurant.franchise_id)
+    assert_equal(201, restaurant.store_id)
     assert_equal("My Store", restaurant.name)
     assert_equal(1, restaurant.suburbs.length)
 
@@ -89,8 +87,8 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_habtm
-    restaurant = Restaurant.create(:franchise_id => 22,
-                                   :store_id => 23,
+    restaurant = Restaurant.create(:franchise_id => 100,
+                                   :store_id => 200,
                                    :name => "My Store")
 
     restaurant.suburbs.create(:city_id => 24,
@@ -98,10 +96,11 @@ class TestCreate < ActiveSupport::TestCase
                               :name => "My Suburb")
 
     # Test restaurant
-    assert_equal(22, restaurant.franchise_id)
-    assert_equal(23, restaurant.store_id)
+    assert_equal(100, restaurant.franchise_id)
+    assert_equal(200, restaurant.store_id)
     assert_equal("My Store", restaurant.name)
-    assert_equal(1, restaurant.suburbs.length)
+
+    assert_equal(1, restaurant.suburbs(true).length)
 
     # Test suburbs
     suburb = restaurant.suburbs[0]

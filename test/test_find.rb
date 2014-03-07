@@ -5,13 +5,13 @@ class TestFind < ActiveSupport::TestCase
   fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs
 
   def test_find_first
-    ref_code = ReferenceCode.find(:first, :order => 'reference_type_id, reference_code')
+    ref_code = ReferenceCode.order('reference_type_id, reference_code').first
     assert_kind_of(ReferenceCode, ref_code)
     assert_equal([1,1], ref_code.id)
   end
 
   def test_find_last
-    ref_code = ReferenceCode.find(:last, :order => 'reference_type_id, reference_code')
+    ref_code = ReferenceCode.order('reference_type_id, reference_code').last
     assert_kind_of(ReferenceCode, ref_code)
     assert_equal([2,2], ref_code.id)
   end
@@ -82,13 +82,13 @@ class TestFind < ActiveSupport::TestCase
   end
 
   def test_find_last_suburb
-    suburb = Suburb.find(:last)
+    suburb = Suburb.last
     assert_equal([2,1], suburb.id)
   end
 
   def test_find_last_suburb_with_order
     # Rails actually changes city_id DESC to city_id ASC
-    suburb = Suburb.find(:last, :order => 'suburbs.city_id DESC')
+    suburb = Suburb.order('suburbs.city_id DESC').last
     assert_equal([1,1], suburb.id)
   end
 
