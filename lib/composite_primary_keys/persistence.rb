@@ -65,11 +65,12 @@ module CompositePrimaryKeys
         klass.connection.update stmt.to_sql
       end
 
-      # FIXME: This DOES work. However, while ActiveRecord::Persistence defines a create_record method
+      # This override ensures that pkeys are set on the instance when records are created.
+      # However, while ActiveRecord::Persistence defines a create_record method
       # the call in create_or_update is actually calling the method create_record in the Dirty concern
       # which removes the pkey attrs and also sets updated/created at timestamps
       # For some reason when we overide here we lose dirty!
-      # So, for now we don't have updating timestamps
+      # So, for now, timestamps are recorded explicitly
       def create_record(attribute_names = nil)
         record_timestamps!
         attribute_names ||= keys_for_partial_write
