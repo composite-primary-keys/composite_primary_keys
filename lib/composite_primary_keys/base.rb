@@ -113,7 +113,7 @@ module ActiveRecord
 
       def ==(comparison_object)
         return true if equal? comparison_object
-        ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| id.present?} : super(comparison_object)
+        ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| !id.nil?} : super(comparison_object)
       end
 
       def can_change_primary_key_values?
