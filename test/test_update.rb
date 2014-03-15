@@ -64,9 +64,8 @@ class TestUpdate < ActiveSupport::TestCase
     assert_nothing_raised do
       refrence_code = ReferenceCode.create
       primary_key = refrence_code.class.primary_key
-      ReferenceCode.update_all(
-        {description: 'random value'},
-        {primary_key => refrence_code[primary_key]})
+      ReferenceCode.where(primary_key => refrence_code[primary_key]).
+        update_all(description: 'random value')
     end
   end
 end

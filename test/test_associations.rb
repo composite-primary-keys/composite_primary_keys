@@ -29,7 +29,7 @@ class TestAssociations < ActiveSupport::TestCase
   # Its not generating the instances of associated classes from the rows
   def test_find_includes
     # Old style
-    products = Product.find(:all, :include => :product_tariffs)
+    products = Product.includes(:product_tariffs).all
     assert_equal(3, products.length)
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
 
@@ -44,8 +44,9 @@ class TestAssociations < ActiveSupport::TestCase
     product_tarrif = product_tariffs(:second_free)
 
     # Old style, include a where clause to force eager loading
-    products = Product.find(:all, :include => :product_tariffs,
-                                  :conditions => ["product_tariffs.product_id = ?", product.id])
+    #products = Product.find(:all, :include => :product_tariffs,
+    #                              :conditions => ["product_tariffs.product_id = ?", product.id])
+    products = Product.includes(:product_tariffs).where("product_tariffs.product_id = ?", product.id).references(:product_tariffs)
 
     assert_equal(1, products.length)
     assert_equal(product, products.first)
@@ -60,7 +61,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_find_includes_tariffs
     # Old style
-    tariffs = Tariff.find(:all, :include => :product_tariffs)
+    tariffs = Tariff.includes(:product_tariffs)
     assert_equal(3, tariffs.length)
     assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
 
@@ -72,7 +73,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_find_includes_product_tariffs_product
     # Old style
-    product_tariffs = ProductTariff.find(:all, :include => :product)
+    product_tariffs = ProductTariff.includes(:product)
     assert_not_nil(product_tariffs)
     assert_equal(3, product_tariffs.length)
 
@@ -84,7 +85,7 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_find_includes_product_tariffs_tariff
     # Old style
-    product_tariffs = ProductTariff.find(:all, :include => :tariff)
+    product_tariffs = ProductTariff.includes(:tariff)
     assert_equal(3, product_tariffs.length)
 
     # New style
@@ -93,7 +94,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_through
-    products = Product.find(:all, :include => :tariffs)
+    products = Product.includes(:tariffs)
     assert_equal(3, products.length)
 
     tarrifs_length = products.inject(0) {|sum, product| sum + product.tariffs.length}
@@ -101,12 +102,12 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_new_style_includes_with_conditions
-    product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').first
+    product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').references(:tariffs).first
     assert_equal(0, product_tariff.tariff.amount)
   end
 
   def test_find_product_includes
-    products = Product.find(:all, :include => {:product_tariffs => :tariff})
+    products = Product.includes(:product_tariffs => :tariff)
     assert_equal(3, products.length)
 
     product_tariffs_length = products.inject(0) {|sum, product| sum + product.product_tariffs.length}
@@ -114,7 +115,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_find_tariffs_includes
-    tariffs = Tariff.find(:all, :include => {:product_tariffs => :product})
+    tariffs = Tariff.includes(:product_tariffs => :product)
     assert_equal(3, tariffs.length)
 
     product_tariffs_length = tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length}
@@ -122,7 +123,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_through_when_not_pre_loaded
-  	student = Student.find(:first)
+  	student = Student.first
   	rooms = student.rooms
   	assert_equal(1, rooms.size)
   	assert_equal(1, rooms.first.dorm_id)
@@ -130,7 +131,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_through_when_through_association_is_composite
-    dorm = Dorm.find(:first)
+    dorm = Dorm.first
     assert_equal(3, dorm.rooms.length)
     assert_equal(1, dorm.rooms.first.room_attributes.length)
     assert_equal('type', dorm.rooms.first.room_attributes.first.name)
@@ -143,10 +144,10 @@ class TestAssociations < ActiveSupport::TestCase
     suburb = Suburb.find([2, 1])
     assert_equal 1, suburb.first_streets.size
 
-    suburb = Suburb.find([2, 1], :include => :streets)
+    suburb = Suburb.includes(:streets).find([2, 1])
     assert_equal 2, suburb.streets.size
 
-    suburb = Suburb.find([2, 1], :include => :first_streets)
+    suburb = Suburb.includes(:first_streets).find([2, 1])
     assert_equal 1, suburb.first_streets.size
   end
 
@@ -220,53 +221,46 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_joins_has_many_with_primary_key
-    @membership = Membership.find(:first, :joins => :readings, :conditions => { :readings => { :id => 1 } })
+    #@membership = Membership.find(:first, :joins => :readings, :conditions => { :readings => { :id => 1 } })
+    @membership = Membership.joins(:readings).where(readings: { id: 1 }).first
 
     assert_equal [1, 1], @membership.id
   end
 
   def test_joins_has_one_with_primary_key
-    @membership = Membership.find(:first, :joins => :readings,
-                                          :conditions => { :readings => { :id => 2 } })
+    @membership = Membership.joins(:readings).where(readings: { id: 2 }).first
 
     assert_equal [1, 1], @membership.id
   end
 
   def test_has_many_through_with_conditions_when_through_association_is_not_composite
-    user = User.find(:first)
-    assert_equal 1, user.articles.find(:all, :conditions => ["articles.name = ?", "Article One"]).size
+    user = User.first
+    assert_equal 1, user.articles.where("articles.name = ?", "Article One").size
   end
 
   def test_has_many_through_with_conditions_when_through_association_is_composite
-    room = Room.find(:first)
-    assert_equal 0, room.room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "type"]).size
+    room = Room.first
+    assert_equal 0, room.room_attributes.where("room_attributes.name != ?", "type").size
   end
 
   def test_has_many_through_on_custom_finder_when_through_association_is_composite_finder_when_through_association_is_not_composite
-    user = User.find(:first)
+    user = User.first
     assert_equal(1, user.find_custom_articles.size)
   end
 
   def test_has_many_through_on_custom_finder_when_through_association_is_composite
-    room = Room.find(:first)
+    room = Room.first
     assert_equal(0, room.find_custom_room_attributes.size)
   end
 
   def test_has_many_with_primary_key_with_associations
-    # Trigger Active Records find_with_associations method
-    memberships = Membership.find(:all, :include => :statuses,
-                                        :conditions => ["membership_statuses.status = ?",
-                                                        'Active'])
-
+    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').references(:membership_statuses)
     assert_equal(1, memberships.length)
     assert_equal([1,1], memberships[0].id)
   end
 
   def test_limitable_reflections
-    memberships = Membership.find(:all, :include => :statuses,
-                                        :conditions => ["membership_statuses.status = ?",
-                                                        'Active'],
-                                        :limit => 1)
+    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').limit(1)
     assert_equal(1, memberships.length)
     assert_equal([1,1], memberships[0].id)
   end

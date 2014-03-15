@@ -7,7 +7,7 @@ class TestHabtm < ActiveSupport::TestCase
     @restaurant = Restaurant.find([1,1])
     assert_equal 2, @restaurant.suburbs.size
 
-    @restaurant = Restaurant.find([1,1], :include => :suburbs)
+    @restaurant = Restaurant.includes(:suburbs).find([1,1])
     assert_equal 2, @restaurant.suburbs.size
   end
 

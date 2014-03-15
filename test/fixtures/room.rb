@@ -6,6 +6,6 @@ class Room < ActiveRecord::Base
   has_many :room_attributes, :through => :room_attribute_assignments
   
   def find_custom_room_attributes
-    room_attributes.find(:all, :conditions => ["room_attributes.name != ?", "type"])
+    room_attributes.where("room_attributes.name != ?", "type")
   end
 end

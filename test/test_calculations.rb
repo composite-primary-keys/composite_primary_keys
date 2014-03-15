@@ -6,28 +6,27 @@ class TestCalculations < ActiveSupport::TestCase
            :departments, :employees, :memberships, :membership_statuses
 
   def test_count
-    assert_equal(3, Product.count(:include => :product_tariffs))
-    assert_equal(3, Tariff.count(:include => :product_tariffs))
+    assert_equal(3, Product.includes(:product_tariffs).count)
+    assert_equal(3, Tariff.includes(:product_tariffs).count)
 
     expected = {Date.today => 2,
                 Date.today.next => 1}
 
-    assert_equal(expected, Tariff.count(:group => :start_date))
+    assert_equal(expected, Tariff.group(:start_date).count)
   end
 
   def test_count_distinct
     product = products(:first_product)
-    assert_equal(1, product.product_tariffs.select('tariff_start_date').count(:distinct => true))
+    assert_equal(1, product.product_tariffs.select('tariff_start_date').distinct.count)
   end
   
   def test_count_not_distinct
     product = products(:first_product)
-    assert_equal(2, product.product_tariffs.select('tariff_start_date').count(:distinct => false))
+    assert_equal(2, product.product_tariffs.select('tariff_start_date').count)
   end
 
   def test_count_includes
-    count = Dorm.count(:include => :rooms,
-                       :conditions => ["rooms.room_id = ?", 2])
+    count = Dorm.where("rooms.room_id = ?", 2).includes(:rooms).references(:rooms).count
     assert_equal(1, count)
   end
 
