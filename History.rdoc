@@ -1,3 +1,11 @@
+== 5.0.14 2013-03-16
+* Raise error on destroy when no pk is set (Manuel Kniep)
+* Fix bug where object == object returns false for new instances of a CPK model,
+  even though object.equal?(object) is true (Tyler Rick)
+* Instead of the generic message "Number of attr_names and values do not match", give
+  specifics that would aid in debugging (Tyler Rick)
+* Improve equality, ==, implmentation (Joe Goggins)
+
 == 5.0.13 2013-04-27
 * Batch query improvements (Jordan Byron)
 * Support nested attributes (aiasfina and Charlie Savage)
