@@ -50,13 +50,17 @@ module ActiveRecord
       class << self
         def where_values_hash
           # CPK adds this so that it finds the Equality nodes beneath the And node:
-          nodes_from_and = with_default_scope.where_values.grep(Arel::Nodes::And).map {|and_node| and_node.children.grep(Arel::Nodes::Equality) }.flatten
-
-          equalities = (nodes_from_and + with_default_scope.where_values.grep(Arel::Nodes::Equality)).find_all { |node|
+          #equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
+          equalities = where_values.grep(Arel::Nodes::And).map {|and_node| and_node.children.grep(Arel::Nodes::Equality) }.flatten.find_all { |node|
             node.left.relation.name == table_name
           }
 
-          Hash[equalities.map { |where| [where.left.name, where.right] }]
+          binds = Hash[bind_values.find_all(&:first).map { |column, v| [column.name, v] }]
+
+          Hash[equalities.map { |where|
+            name = where.left.name
+            [name, binds.fetch(name.to_s) { where.right }]
+          }]
         end
       end
     end
@@ -73,5 +77,42 @@ module ActiveRecord
       initialize_copy_without_cpk(other)
       add_cpk_support if klass.composite?
     end
+
+    def update_record(values, id, id_was) # :nodoc:
+      substitutes, binds = substitute_values values
+
+      # CPK
+      um = if self.composite?
+        relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+        relation.arel.compile_update(substitutes, @klass.primary_key)
+      else
+        @klass.unscoped.where(@klass.arel_table[@klass.primary_key].eq(id_was || id)).arel.compile_update(substitutes, @klass.primary_key)
+      end
+
+      @klass.connection.update(
+        um,
+        'SQL',
+        binds)
+    end
+
+    # def update_record(attribute_names = @attributes.keys)
+    #   return super(attribute_names) unless composite?
+    #
+    #   klass = self.class
+    #
+    #   attributes_with_values = arel_attributes_with_values_for_update(attribute_names)
+    #   return 0 if attributes_with_values.empty?
+    #
+    #   if !can_change_primary_key? and primary_key_changed?
+    #     raise ActiveRecord::CompositeKeyError, "Cannot update primary key values without ActiveModel::Dirty"
+    #   elsif primary_key_changed?
+    #     stmt = klass.unscoped.where(primary_key_was).arel.compile_update(attributes_with_values)
+    #   else
+    #     stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
+    #   end
+    #
+    #   klass.connection.update stmt.to_sql
+    # end
+
   end
 end

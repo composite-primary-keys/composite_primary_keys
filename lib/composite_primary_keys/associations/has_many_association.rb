@@ -3,15 +3,15 @@ module ActiveRecord
     class HasManyAssociation
       def delete_records(records, method)
         if method == :destroy
-          records.each { |r| r.destroy }
+          records.each(&:destroy!)
           update_counter(-records.length) unless inverse_updates_counter_cache?
         else
-          if records == :all
+          if records == :all || !reflection.klass.primary_key
             scope = self.scope
           else
             # CPK
-            # keys  = records.map { |r| r[reflection.association_primary_key] }
-            # scope = scope.where(reflection.association_primary_key => keys)
+            # scope = self.scope.where(reflection.klass.primary_key => records)
+            # scope = self.scope.where(reflection.klass.primary_key => records)
             table = Arel::Table.new(reflection.table_name)
             and_conditions = records.map do |record|
               eq_conditions = Array(reflection.association_primary_key).map do |name|
@@ -31,21 +31,20 @@ module ActiveRecord
           if method == :delete_all
             update_counter(-scope.delete_all)
           else
-            # CPK
-            # update_counter(-scope.update_all(reflection.foreign_key => nil))
-            updates = Array(reflection.foreign_key).inject(Hash.new) do |hash, name|
-              hash[name] = nil
-              hash
-            end
-            update_counter(-scope.update_all(updates))
+            update_counter(-scope.update_all(reflection.foreign_key => nil))
           end
         end
       end
 
       def foreign_key_present?
-        # CPK
-        # owner.attribute_present?(reflection.association_primary_key)
-        Array(reflection.association_primary_key).all? {|key| owner.attribute_present?(key)}
+        if reflection.klass.primary_key
+          # CPK
+          #owner.attribute_present?(reflection.association_primary_key)
+          owner.attribute_present?(reflection.association_primary_key)
+          Array(reflection.klass.primary_key).all? {|key| owner.attribute_present?(key)}
+        else
+          false
+        end
       end
     end
   end
