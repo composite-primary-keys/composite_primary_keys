@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>4.0.0'
+  gem 'activerecord', '=4.1.0.rc2'
   require 'active_record'
 end
 
@@ -39,14 +39,12 @@ require 'active_record/sanitization'
 
 require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
-require 'active_record/associations/has_and_belongs_to_many_association'
 require 'active_record/associations/has_many_association'
 require 'active_record/associations/join_dependency'
 require 'active_record/associations/join_dependency/join_part'
 require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
-require 'active_record/associations/preloader/has_and_belongs_to_many'
 
 require 'active_model/dirty'
 
@@ -78,14 +76,12 @@ require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'
 require 'composite_primary_keys/associations/association_scope'
-require 'composite_primary_keys/associations/has_and_belongs_to_many_association'
 require 'composite_primary_keys/associations/has_many_association'
 require 'composite_primary_keys/associations/join_dependency'
 require 'composite_primary_keys/associations/join_dependency/join_part'
 require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
-require 'composite_primary_keys/associations/preloader/has_and_belongs_to_many'
 
 require 'composite_primary_keys/dirty'
 

@@ -1,31 +1,18 @@
 module ActiveRecord
   module Associations
     class AssociationScope
-      def add_constraints(scope)
-        tables = construct_tables
+      def add_constraints(scope, owner, assoc_klass, refl, tracker)
+        chain = refl.chain
+        scope_chain = refl.scope_chain
+
+        tables = construct_tables(chain, assoc_klass, refl, tracker)
 
         chain.each_with_index do |reflection, i|
           table, foreign_table = tables.shift, tables.first
 
-          if reflection.source_macro == :has_and_belongs_to_many
-            join_table = tables.shift
-
-            # CPK
-            # scope = scope.joins(join(
-            #  join_table,
-            #  table[reflection.active_record_primary_key].
-            #    eq(join_table[reflection.association_foreign_key])
-            #))
-            predicate = cpk_join_predicate(table, reflection.association_primary_key,
-                                           join_table, reflection.association_foreign_key)
-            scope = scope.joins(join(join_table, predicate))
-
-            table, foreign_table = join_table, tables.first
-          end
-
           if reflection.source_macro == :belongs_to
             if reflection.options[:polymorphic]
-              key = reflection.association_primary_key(self.klass)
+              key = reflection.association_primary_key(assoc_klass)
             else
               key = reflection.association_primary_key
             end
@@ -36,39 +23,50 @@ module ActiveRecord
             foreign_key = reflection.active_record_primary_key
           end
 
-          
           if reflection == chain.last
-            # CPK
-            # scope = scope.where(table[key].eq(owner[foreign_key]))
+            # CPK - TODO add back in tracker support
+            #bind_val = bind scope, table.table_name, key.to_s, owner[foreign_key], tracker
+            #scope    = scope.where(table[key].eq(bind_val))
             predicate = cpk_join_predicate(table, key, owner, foreign_key)
             scope = scope.where(predicate)
 
             if reflection.type
-              scope = scope.where(table[reflection.type].eq(owner.class.base_class.name))
+              value    = owner.class.base_class.name
+              bind_val = bind scope, table.table_name, reflection.type.to_s, value, tracker
+              scope    = scope.where(table[reflection.type].eq(bind_val))
             end
           else
             # CPK
-            # constraint = table[key].eq(foreign_table[foreign_key])
+            #constraint = table[key].eq(foreign_table[foreign_key])
             constraint = cpk_join_predicate(table, key, foreign_table, foreign_key)
 
             if reflection.type
-              type = chain[i + 1].klass.base_class.name
-              constraint = constraint.and(table[reflection.type].eq(type))
+              value    = chain[i + 1].klass.base_class.name
+              bind_val = bind scope, table.table_name, reflection.type.to_s, value, tracker
+              scope    = scope.where(table[reflection.type].eq(bind_val))
             end
 
             scope = scope.joins(join(foreign_table, constraint))
           end
-          
-          scope_chain[i].each do |scope_chain_item|
-            klass = i == 0 ? self.klass : reflection.klass
-            item  = eval_scope(klass, scope_chain_item)
 
-            if scope_chain_item == self.reflection.scope
-              scope.merge! item.except(:where, :includes)
+          is_first_chain = i == 0
+          klass = is_first_chain ? assoc_klass : reflection.klass
+
+          # Exclude the scope of the association itself, because that
+          # was already merged in the #scope method.
+          scope_chain[i].each do |scope_chain_item|
+            item  = eval_scope(klass, scope_chain_item, owner)
+
+            if scope_chain_item == refl.scope
+              scope.merge! item.except(:where, :includes, :bind)
             end
 
-            scope.includes! item.includes_values
+            if is_first_chain
+              scope.includes! item.includes_values
+            end
+
             scope.where_values += item.where_values
+            scope.order_values |= item.order_values
           end
         end
 

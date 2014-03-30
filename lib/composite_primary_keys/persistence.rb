@@ -48,9 +48,9 @@ module CompositePrimaryKeys
 
       def update_record(attribute_names = @attributes.keys)
         return super(attribute_names) unless composite?
-        
+
         klass = self.class
-        
+
         attributes_with_values = arel_attributes_with_values_for_update(attribute_names)
         return 0 if attributes_with_values.empty?
 
@@ -61,7 +61,7 @@ module CompositePrimaryKeys
         else
           stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
         end
-        
+
         klass.connection.update stmt.to_sql
       end
 

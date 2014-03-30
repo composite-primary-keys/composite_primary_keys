@@ -7,12 +7,13 @@ module ActiveRecord
     end
     
     def self.establish_connection(spec = ENV["DATABASE_URL"])
-      resolver = ConnectionAdapters::ConnectionSpecification::Resolver.new spec, configurations
-      spec = resolver.spec
-      
+      spec     ||= DEFAULT_ENV.call.to_sym
+      resolver =   ConnectionAdapters::ConnectionSpecification::Resolver.new configurations
+      spec     =   resolver.spec(spec)
+
       # CPK
       load_cpk_adapter(spec.config[:adapter])
-      
+
       unless respond_to?(spec.adapter_method)
         raise AdapterNotFound, "database configuration specifies nonexistent #{spec.config[:adapter]} adapter"
       end
