@@ -192,3 +192,10 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+
+CREATE TABLE spreadsheets (
+    id integer NOT NULL,
+    uid character varying(255),
+    data bytea
+);
