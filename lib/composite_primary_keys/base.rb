@@ -23,9 +23,9 @@ module ActiveRecord
         end
       end
 
-      def primary_keys=(keys)
+      def primary_key_with_composite_key_support=(keys)
         unless keys.kind_of?(Array)
-          self.primary_key = keys
+          self.primary_key_without_composite_key_support = keys
           return
         end
 
@@ -36,6 +36,8 @@ module ActiveRecord
           include CompositeInstanceMethods
         EOV
       end
+      alias_method_chain :primary_key=, :composite_key_support
+      alias_method :primary_keys=, :primary_key=
 
       def set_primary_keys(*keys)
         ActiveSupport::Deprecation.warn(
