@@ -12,6 +12,8 @@ module ActiveRecord
           value
         else
           attr_name = attr_name.to_s
+          # CPK
+          # attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
           attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite?
           @attributes_cache.delete(attr_name)
           column = column_for_attribute(attr_name)
