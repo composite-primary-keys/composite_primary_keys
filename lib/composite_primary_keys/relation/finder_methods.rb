@@ -32,41 +32,44 @@ module CompositePrimaryKeys
         end)
       end
 
-      def exists?(id = nil)
-        # ID can be:
+      def exists?(conditions = :none)
+        # conditions can be:
         #   Array - ['department_id = ? and location_id = ?', 1, 1]
         #   Array -> [1,2]
         #   CompositeKeys -> [1,2]
 
-        id = id.id if ::ActiveRecord::Base === id
+        conditions = conditions.id if ::ActiveRecord::Base === conditions
+        return false if !conditions
 
-        join_dependency = construct_join_dependency_for_association_find
-        relation = construct_relation_for_association_find(join_dependency)
-        relation = relation.except(:select).select("1").limit(1)
+        relation = apply_join_dependency(self, construct_join_dependency)
+        return false if ::ActiveRecord::NullRelation === relation
+
+        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
 
         # CPK
-        #case id
+        #case conditions
         #when Array, Hash
-        #  relation = relation.where(id)
+        #  relation = relation.where(conditions)
         #else
-        #  relation = relation.where(table[primary_key].eq(id)) if id
+        #  relation = relation.where(table[primary_key].eq(conditions)) if conditions != :none
         #end
 
-        case id
+        case conditions
         when CompositePrimaryKeys::CompositeKeys
-          relation = relation.where(cpk_id_predicate(table, primary_key, id))
+          relation = relation.where(cpk_id_predicate(table, primary_key, conditions))
         when Array
           pk_length = @klass.primary_keys.length
 
-          if id.length == pk_length # E.g. id = ['France', 'Paris']
-            return self.exists?(id.to_composite_keys)
-          else # Assume that id contains where relation
-            relation = relation.where(id)
+          if conditions.length == pk_length # E.g. conditions = ['France', 'Paris']
+            return self.exists?(conditions.to_composite_keys)
+          else # Assume that conditions contains where relation
+            relation = relation.where(conditions)
           end
         when Hash
-          relation = relation.where(id)
+          relation = relation.where(conditions)
         end
-        connection.select_value(relation.to_sql) ? true : false
+
+        connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
       end
 
       def find_with_ids(*ids, &block)
