@@ -34,6 +34,7 @@ module ActiveRecord
         class_eval <<-EOV
           extend  CompositeClassMethods
           include CompositeInstanceMethods
+          include CompositePrimaryKeys::ActiveRecord::Overides
         EOV
       end
 

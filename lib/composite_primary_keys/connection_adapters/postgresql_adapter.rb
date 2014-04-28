@@ -32,8 +32,14 @@ module ActiveRecord
         [sql, binds]
       end
 
+      # Returns a single value if query returns a single element
+      # otherwise returns an array coresponding to the composite keys
+      #
       def last_inserted_id(result)
-        result.rows.first
+        row = result.rows.first
+        if Array === row
+          row.size == 1 ? row[0] : row
+        end
       end
     end
   end
