@@ -30,6 +30,7 @@ class TestCreate < ActiveSupport::TestCase
     testing_with do
       assert new_obj = @klass.create(@klass_info[:create])
       assert !new_obj.new_record?
+      assert new_obj.id
     end
   end
 
