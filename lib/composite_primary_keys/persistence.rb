@@ -77,10 +77,14 @@ module CompositePrimaryKeys
         attributes_values = arel_attributes_with_values_for_create(attribute_names)
 
         new_id = self.class.unscoped.insert attributes_values
+        
+        # DB like MySQL doesn't return the newly inserted result.
+        # self.id cannot be updated for this case.
+        self.id = new_id if self.class.primary_key and new_id.kind_of?(Array)
 
         @new_record = false
         
-        self.class.primary_key ? self.id : new_id
+        id
       end
 
       def record_timestamps!
