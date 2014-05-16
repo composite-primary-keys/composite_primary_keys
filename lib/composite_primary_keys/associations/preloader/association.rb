@@ -9,7 +9,7 @@ module ActiveRecord
           scope.where(predicate)
         end
         
-        def associated_records_by_owner
+        def associated_records_by_owner(preloader)
           # CPK
           owners_map = owners_by_key
           #owner_keys = owners_map.keys.compact
@@ -19,29 +19,40 @@ module ActiveRecord
             end
           end.compact.uniq
 
-          if klass.nil? || owner_keys.empty?
-            records = []
-          else
-            # Some databases impose a limit on the number of ids in a list (in Oracle it's 1000)
-            # Make several smaller queries if necessary or make one query if the adapter supports it
-            sliced  = owner_keys.each_slice(model.connection.in_clause_length || owner_keys.size)
-            records = sliced.map { |slice| records_for(slice) }.flatten
+          # Each record may have multiple owners, and vice-versa
+          records_by_owner = owners.each_with_object({}) do |owner,h|
+            h[owner] = []
           end
 
-          # Each record may have multiple owners, and vice-versa
-          records_by_owner = Hash[owners.map { |owner| [owner, []] }]
-          records.each do |record|
+          if owner_keys.any?
+            # Some databases impose a limit on the number of ids in a list (in Oracle it's 1000)
+            # Make several smaller queries if necessary or make one query if the adapter supports it
+            sliced  = owner_keys.each_slice(klass.connection.in_clause_length || owner_keys.size)
+
+            records = load_slices sliced
+            records.each do |record, owner_key|
+              owners_map[owner_key].each do |owner|
+                records_by_owner[owner] << record
+              end
+            end
+          end
+
+          records_by_owner
+        end
+
+        def load_slices(slices)
+          @preloaded_records = slices.flat_map { |slice|
+            records_for(slice)
+          }
+
+          @preloaded_records.map { |record|
             # CPK
-            # owner_key = record[association_key_name].to_s
+            #[record, record[association_key_name]]
             owner_key = Array(association_key_name).map do |key_name|
               record[key_name]
             end.join(CompositePrimaryKeys::ID_SEP)
-
-            owners_map[owner_key].each do |owner|
-              records_by_owner[owner] << record
-            end
-          end
-          records_by_owner
+            [record, owner_key]
+          }
         end
 
         def owners_by_key
