@@ -77,7 +77,12 @@ module CompositePrimaryKeys
         attributes_values = arel_attributes_with_values_for_create(attribute_names)
 
         new_id = self.class.unscoped.insert attributes_values
-        self.id = new_id if self.class.primary_key
+        
+        # DB like MySQL doesn't return the newly inserted result.
+        # self.id cannot be updated for this case.
+        # self.id.nil? is needed since this function is used for non-composity key too
+        # in this (ar_4.0.x) branch.
+        self.id = new_id if self.class.primary_key and (self.id.nil? or new_id.kind_of?(Array))
 
         @new_record = false
         id
