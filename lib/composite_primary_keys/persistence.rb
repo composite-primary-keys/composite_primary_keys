@@ -80,10 +80,11 @@ module CompositePrimaryKeys
         
         # DB like MySQL doesn't return the newly inserted result.
         # self.id cannot be updated for this case.
-        self.id = new_id if self.class.primary_key and new_id.kind_of?(Array)
+        # self.id.nil? is needed since this function is used for non-composity key too
+        # in this (ar_4.0.x) branch.
+        self.id = new_id if self.class.primary_key and (self.id.nil? or new_id.kind_of?(Array))
 
         @new_record = false
-        
         id
       end
 
