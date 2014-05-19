@@ -5,9 +5,9 @@ module ActiveRecord
         require "composite_primary_keys/connection_adapters/postgresql_adapter.rb"
       end
     end
-    
+
     def self.establish_connection(spec = ENV["DATABASE_URL"])
-      spec     ||= DEFAULT_ENV.call.to_sym
+      spec     ||= ActiveRecord::ConnectionHandling::DEFAULT_ENV.call.to_sym
       resolver =   ConnectionAdapters::ConnectionSpecification::Resolver.new configurations
       spec     =   resolver.spec(spec)
 
