@@ -36,7 +36,7 @@ module ActiveRecord
       # otherwise returns an array coresponding to the composite keys
       #
       def last_inserted_id(result)
-        row = result.rows.first
+        row = result && result.rows.first
         if Array === row
           row.size == 1 ? row[0] : row
         end
