@@ -2,6 +2,7 @@ module ActiveRecord
   module AttributeMethods
     module Dirty
       def write_attribute(attr, value)
+        puts "IN CPK DIRTY: #{self}.#{attr}=#{value.inspect}"
         # CPK
         if attr.kind_of?(Array)
           # A *composite* attribute can't be marked as changed! So do nothing now.

@@ -9,15 +9,17 @@ module CompositePrimaryKeys
       # For some reason when we overide here we lose dirty!
       # So, for now, timestamps are recorded explicitly
       def create_record(attribute_names = nil)
-        record_timestamps!
-        attribute_names ||= keys_for_partial_write
-        attributes_values = arel_attributes_with_values_for_create(attribute_names)
+        run_callbacks(:create) do
+          record_timestamps!
+          attribute_names ||= keys_for_partial_write
+          attributes_values = arel_attributes_with_values_for_create(attribute_names)
 
-        new_id = self.class.unscoped.insert attributes_values
-        self.id = new_id if self.class.primary_key
+          new_id = self.class.unscoped.insert attributes_values
+          self.id = new_id if self.class.primary_key
 
-        @new_record = false
-        id
+          @new_record = false
+          id
+        end
       end
 
       def record_timestamps!
