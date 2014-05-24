@@ -37,6 +37,8 @@ module CompositePrimaryKeys
 
           changed_attributes.except!(*changes.keys)
 
+          relation    = self.class.send(:relation)
+          arel_table  = self.class.arel_table
           primary_key = self.class.primary_key
 
           # CPK
