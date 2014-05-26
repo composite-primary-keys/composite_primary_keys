@@ -21,7 +21,7 @@ This RubyGem extends the activerecord gem to provide CPK support.
 == Factories
 
     class ModelWithCompositeKeys < ActiveRecord::Base
-      set_primary_keys :id, :updated_at
+      self.primary_keys :id, :updated_at
     end
 
     FactoryGirl.define do
