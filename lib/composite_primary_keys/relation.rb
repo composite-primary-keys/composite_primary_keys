@@ -63,6 +63,8 @@ module ActiveRecord
         def where_values_hash
           # CPK adds this so that it finds the Equality nodes beneath the And node:
           #equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
+          #  node.left.relation.name == table_name
+          # }
           nodes_from_and = where_values.grep(Arel::Nodes::And).map {|and_node| and_node.children.grep(Arel::Nodes::Equality) }.flatten
 
           equalities = (nodes_from_and + where_values.grep(Arel::Nodes::Equality)).find_all { |node|
@@ -95,25 +97,5 @@ module ActiveRecord
         'SQL',
         binds)
     end
-
-    # def update_record(attribute_names = @attributes.keys)
-    #   return super(attribute_names) unless composite?
-    #
-    #   klass = self.class
-    #
-    #   attributes_with_values = arel_attributes_with_values_for_update(attribute_names)
-    #   return 0 if attributes_with_values.empty?
-    #
-    #   if !can_change_primary_key? and primary_key_changed?
-    #     raise ActiveRecord::CompositeKeyError, "Cannot update primary key values without ActiveModel::Dirty"
-    #   elsif primary_key_changed?
-    #     stmt = klass.unscoped.where(primary_key_was).arel.compile_update(attributes_with_values)
-    #   else
-    #     stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
-    #   end
-    #
-    #   klass.connection.update stmt.to_sql
-    # end
-
   end
 end
