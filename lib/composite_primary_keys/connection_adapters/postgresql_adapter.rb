@@ -33,7 +33,10 @@ module ActiveRecord
       end
 
       def last_inserted_id(result)
-        result.rows.first
+        row = result.rows.first
+        if Array === row
+          row.size == 1 ? row[0] : row
+        end
       end
     end
   end

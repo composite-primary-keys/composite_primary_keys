@@ -1,25 +1,33 @@
 module ActiveRecord
   module Associations
     class JoinDependency
-      def instantiate(rows)
-        primary_key = join_base.aliased_primary_key
-        parents = {}
+      def instantiate(result_set, aliases)
+        primary_key = aliases.column_alias(join_root, join_root.primary_key)
+        type_caster = result_set.column_type primary_key
 
-        records = rows.map { |model|
+        seen = Hash.new { |h,parent_klass|
+          h[parent_klass] = Hash.new { |i,parent_id|
+            i[parent_id] = Hash.new { |j,child_klass| j[child_klass] = {} }
+          }
+        }
+
+        model_cache = Hash.new { |h,klass| h[klass] = {} }
+        parents = model_cache[join_root]
+        column_aliases = aliases.column_aliases join_root
+
+        result_set.each { |row_hash|
           # CPK
-          #primary_id = model[primary_key]
-          primary_id = if primary_key.kind_of?(Array)
-            primary_key.map {|key| model[key]}
+          #primary_id = type_caster.type_cast row_hash[primary_key]
+          primary_id = if row_hash[primary_key].kind_of?(Array)
+            row_hash[primary_key].map {|key| type_caster.type_cast key}
           else
-            model[primary_key]
+            type_caster.type_cast row_hash[primary_key]
           end
-          parent = parents[primary_id] ||= join_base.instantiate(model)
-          construct(parent, @associations, join_associations, model)
-          parent
-        }.uniq
+          parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
+          construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+        }
 
-        remove_duplicate_results!(base_klass, records, @associations)
-        records
+        parents.values
       end
 
       protected
