@@ -1,37 +1,6 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
-      def construct_limited_ids_condition(relation)
-        orders = relation.order_values
-        # CPK
-        # values = @klass.connection.distinct("#{@klass.connection.quote_table_name table_name}.#{primary_key}", orders)
-        keys = @klass.primary_keys.map do |key|
-          "#{@klass.connection.quote_table_name @klass.table_name}.#{key}"
-        end
-        values = @klass.connection.distinct(keys.join(', '), orders)
-
-        relation = relation.dup
-
-        ids_array = relation.select(values).collect {|row| row[primary_key]}
-        # CPK
-        # ids_array.empty? ? raise(ThrowResult) : table[primary_key].in(ids_array)
-
-        # OR together each and expression (key=value and key=value) that matches an id set
-        # since we only need to match 0 or more records
-        or_expressions = ids_array.map do |id_set|
-          # AND together "key=value" exprssios to match each id set
-          and_expressions = [self.primary_keys, id_set].transpose.map do |key, id|
-            table[key].eq(id)
-          end
-          Arel::Nodes::And.new(and_expressions)
-        end
-
-        first = or_expressions.shift
-        Arel::Nodes::Grouping.new(or_expressions.inject(first) do |memo, expr|
-            Arel::Nodes::Or.new(memo, expr)
-        end)
-      end
-
       def exists?(conditions = :none)
         # conditions can be:
         #   Array - ['department_id = ? and location_id = ?', 1, 1]
@@ -72,8 +41,55 @@ module CompositePrimaryKeys
         connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
       end
 
-      def find_with_ids(*ids, &block)
-        return to_a.find { |*block_args| yield(*block_args) } if block_given?
+      def find_with_ids(*ids)
+        raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
+
+        expects_array = ids.first.kind_of?(Array)
+        return ids.first if expects_array && ids.first.empty?
+
+        # CPK - don't do this, we want an array of arrays
+        #ids = ids.flatten.compact.uniq
+
+        case ids.size
+          when 0
+            raise RecordNotFound, "Couldn't find #{@klass.name} without an ID"
+          when 1
+            result = find_one(ids.first)
+            # CPK
+            # expects_array ? [ result ] : result
+            result
+          else
+            find_some(ids)
+        end
+      end
+
+      def find_one(id)
+        # CPK
+        #id = id.id if ActiveRecord::Base === id
+        id = id.id if ::ActiveRecord::Base === id
+
+        # CPK
+        #column = columns_hash[primary_key]
+        #substitute = connection.substitute_at(column, bind_values.length)
+        #relation = where(table[primary_key].eq(substitute))
+        #relation.bind_values += [[column, id]]
+        #record = relation.take
+        relation = self
+        values = primary_keys.each_with_index.map do |primary_key, i|
+          column = columns_hash[primary_key]
+          relation.bind_values += [[column, id[i]]]
+          connection.substitute_at(column, bind_values.length - 1)
+        end
+        relation = relation.where(cpk_id_predicate(table, primary_keys, values))
+
+        record = relation.take
+        raise_record_not_found_exception!(id, 0, 1) unless record
+        record
+      end
+
+      def find_some(ids)
+        # CPK
+        # result = where(table[primary_key].in(ids)).to_a
 
         # Supports:
         #   find('1,2')             ->  ['1,2']
@@ -83,15 +99,7 @@ module CompositePrimaryKeys
         #
         # Does *not* support:
         #   find('1,2', '3,4')      ->  ['1,2','3,4']
-
-        # Normalize incoming data.  Note the last arg can be nil.  Happens
-        # when find is called with nil options which is then passed on
-        # to find_with_ids.
-        ids.compact!
-
-        ids = [ids] unless ids.first.kind_of?(Array)
-
-        results = ids.map do |cpk_ids|
+        result = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
             cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
           else
@@ -117,7 +125,23 @@ module CompositePrimaryKeys
           records
         end.flatten
 
-        ids.length == 1 ? results.first : results
+        expected_size =
+          if limit_value && ids.size > limit_value
+            limit_value
+          else
+            ids.size
+          end
+
+        # 11 ids with limit 3, offset 9 should give 2 results.
+        if offset_value && (ids.size - offset_value < expected_size)
+          expected_size = ids.size - offset_value
+        end
+
+        if result.size == expected_size
+          result
+        else
+          raise_record_not_found_exception!(ids, result.size, expected_size)
+        end
       end
     end
   end
