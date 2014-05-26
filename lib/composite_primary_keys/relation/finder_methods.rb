@@ -1,6 +1,41 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
+      def apply_join_dependency(relation, join_dependency)
+        relation = relation.except(:includes, :eager_load, :preload)
+        relation = relation.joins join_dependency
+
+        if using_limitable_reflections?(join_dependency.reflections)
+          relation
+        else
+          if relation.limit_value
+            limited_ids = limited_ids_for(relation)
+            # CPK
+            #limited_ids.empty? ? relation.none! : relation.where!(table[primary_key].in(limited_ids))
+            limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
+          end
+          relation.except(:limit, :offset)
+        end
+      end
+
+      def limited_ids_for(relation)
+        # CPK
+        #values = @klass.connection.columns_for_distinct(
+        #  "#{quoted_table_name}.#{quoted_primary_key}", relation.order_values)
+        columns = @klass.primary_keys.map do |key|
+          "#{quoted_table_name}.#{connection.quote_column_name(key)}"
+        end
+        values = @klass.connection.columns_for_distinct(columns, relation.order_values)
+
+        relation = relation.except(:select).select(values).distinct!
+
+        id_rows = @klass.connection.select_all(relation.arel, 'SQL', relation.bind_values)
+
+        # CPK
+        #id_rows.map {|row| row[primary_key]}
+        id_rows.map {|row| row.values}
+      end
+
       def exists?(conditions = :none)
         # conditions can be:
         #   Array - ['department_id = ? and location_id = ?', 1, 1]

@@ -2,13 +2,18 @@ module ActiveRecord
   module Associations
     class Preloader
       class Association
-        def records_for(ids)
+        def query_scope(ids)
           # CPK
           # scope.where(association_key.in(ids))
-          predicate = cpk_in_predicate(table, reflection.foreign_key, ids)
-          scope.where(predicate)
+
+          if reflection.foreign_key.is_a?(Array)
+            predicate = cpk_in_predicate(table, reflection.foreign_key, ids)
+            scope.where(predicate)
+          else
+            scope.where(association_key.in(ids))
+          end
         end
-        
+
         def associated_records_by_owner(preloader)
           # CPK
           owners_map = owners_by_key

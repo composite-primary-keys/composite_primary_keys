@@ -8,27 +8,10 @@ module CompositePrimaryKeys
       end
     end
 
-    def figure_engine(table)
-      case table
-        when Arel::Nodes::TableAlias
-          table.left.engine
-        when Arel::Table
-          table.engine
-        when ::ActiveRecord::Base
-          table
-        else
-          nil
-      end
-    end
-
-    def cpk_or_predicate(predicates, table = nil)
-      engine = figure_engine(table)
-      predicates = predicates.map do |predicate|
-        predicate_sql = engine ? predicate.to_sql(engine) : predicate.to_sql
-        "(#{predicate_sql})"
-      end
-      predicates = "(#{predicates.join(" OR ")})"
-      Arel::Nodes::SqlLiteral.new(predicates)
+    def cpk_or_predicate(predicates)
+      ::Arel::Nodes::Grouping.new(predicates.inject { |memo,node|
+        ::Arel::Nodes::Or.new(memo, node)
+      })
     end
 
     def cpk_id_predicate(table, keys, values)
@@ -49,19 +32,10 @@ module CompositePrimaryKeys
     end
 
     def cpk_in_predicate(table, primary_keys, ids)
-      primary_keys = Array(primary_keys)
-      if primary_keys.length > 1
-        and_predicates = ids.map do |id_set|
-          eq_predicates = Array(primary_keys).zip(Array(id_set)).map do |primary_key, value|
-            table[primary_key].eq(value)
-          end
-          cpk_and_predicate(eq_predicates)
-        end
-
-        cpk_or_predicate(and_predicates, table)
-      else
-        table[primary_keys.first].in(ids.flatten)
+      and_predicates = ids.map do |id|
+        cpk_id_predicate(table, primary_keys, id)
       end
+      cpk_or_predicate(and_predicates)
     end
   end
 end
