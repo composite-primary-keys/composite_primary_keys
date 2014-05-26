@@ -1,13 +1,25 @@
 module ActiveRecord
   class Relation
+    alias :initialize_without_cpk :initialize
+    def initialize(klass, table, values = {})
+      initialize_without_cpk(klass, table, values)
+      add_cpk_support if klass && klass.composite?
+      add_cpk_where_values_hash
+    end
+
+    alias :initialize_copy_without_cpk :initialize_copy
+    def initialize_copy(other)
+      initialize_copy_without_cpk(other)
+      add_cpk_support if klass.composite?
+    end
+
     def add_cpk_support
       class << self
         include CompositePrimaryKeys::ActiveRecord::Batches
         include CompositePrimaryKeys::ActiveRecord::Calculations
         include CompositePrimaryKeys::ActiveRecord::FinderMethods
         include CompositePrimaryKeys::ActiveRecord::QueryMethods
-        
-        
+
         def delete(id_or_array)
           # Without CPK:
           # where(primary_key => id_or_array).delete_all
@@ -65,19 +77,6 @@ module ActiveRecord
           }]
         end
       end
-    end
-
-    alias :initialize_without_cpk :initialize
-    def initialize(klass, table, values = {})
-      initialize_without_cpk(klass, table, values)
-      add_cpk_support if klass && klass.composite?
-      add_cpk_where_values_hash
-    end
-
-    alias :initialize_copy_without_cpk :initialize_copy
-    def initialize_copy(other)
-      initialize_copy_without_cpk(other)
-      add_cpk_support if klass.composite?
     end
 
     def update_record(values, id, id_was) # :nodoc:
