@@ -91,14 +91,6 @@ module CompositePrimaryKeys
         # CPK
         # result = where(table[primary_key].in(ids)).to_a
 
-        # Supports:
-        #   find('1,2')             ->  ['1,2']
-        #   find(1,2)               ->  [1,2]
-        #   find([1,2])             -> [['1,2']]
-        #   find([1,2], [3,4])      -> [[1,2],[3,4]]
-        #
-        # Does *not* support:
-        #   find('1,2', '3,4')      ->  ['1,2','3,4']
         result = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
             cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
