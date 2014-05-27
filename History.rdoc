@@ -1,3 +1,7 @@
+== 7.0.0 (2014-05-26)
+
+* Active Record 4.1 support! (Charlie Savage, Tom Hughes, Simon South)
+
 == 6.0.6 (2014-05-26)
 
 * Don't refer to deprecated set_primary_keys in README (Henare Degan)
