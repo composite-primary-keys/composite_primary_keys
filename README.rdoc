@@ -95,5 +95,7 @@ but you'll have better luck getting support using GitHub.
 == Author
 
 First version was written by Dr Nic Williams.
+
 Maintained by Charlie Savage
+
 Contributions by many!
