@@ -88,9 +88,7 @@ See test/README_tests.rdoc
 
 == Questions, Discussion and Contributions
 
-The CPK home page is hosted at https://github.com/composite-primary-keys/composite_primary_keys.  There
-is also a Google group at https://groups.google.com/forum/#!forum/compositekeys,
-but you'll have better luck getting support using GitHub.
+For help please visit https://github.com/composite-primary-keys/composite_primary_keys.
 
 == Author
 
