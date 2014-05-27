@@ -2,20 +2,24 @@ module CompositePrimaryKeys
   module ActiveRecord
     module Persistence
       def relation_for_destroy
-        return super unless composite?
-        
-        primary_keys = Array(self.class.primary_key)
+        # CPK
+        #pk         = self.class.primary_key
+        #column     = self.class.columns_hash[pk]
+        #substitute = self.class.connection.substitute_at(column, 0)
+        #relation = self.class.unscoped.where(
+        #  self.class.arel_table[pk].eq(substitute))
+        #relation.bind_values = [[column, id]]
 
-        if primary_keys.empty?
-          raise ActiveRecord::CompositeKeyError, "No primary key(s) defined for #{self.class.name}"
+        relation = self.class.unscoped
+
+        Array(self.class.primary_key).each_with_index do |key, index|
+          column     = self.class.columns_hash[key]
+          substitute = self.class.connection.substitute_at(column, index)
+          relation = relation.where(self.class.arel_table[key].eq(substitute))
+          relation.bind_values += [[column, self[key]]]
         end
 
-        where_hash = primary_keys.inject(Hash.new) do |hash, key|
-          hash[key.to_s] = self[key]
-          hash
-        end
-
-        relation = self.class.unscoped.where(where_hash)
+        relation
       end
 
       def touch(name = nil)
@@ -49,29 +53,16 @@ module CompositePrimaryKeys
           true
         end
       end
-      # def create_record(attribute_names = nil)
-      #   record_timestamps!
-      #   attribute_names ||= keys_for_partial_write
-      #    attributes_values = arel_attributes_with_values_for_create(attribute_names)
-      #
-      #   new_id = self.class.unscoped.insert attributes_values
-      #   self.id = new_id if self.class.primary_key
-      #
-      #   @new_record = false
-      #   id
-      # end
-      #
-      # def record_timestamps!
-      #   if self.record_timestamps
-      #     current_time = current_time_from_proper_timezone
-      #
-      #     all_timestamp_attributes.each do |column|
-      #       if respond_to?(column) && respond_to?("#{column}=") && self.send(column).nil?
-      #         write_attribute(column.to_s, current_time)
-      #       end
-      #     end
-      #   end
-      # end
+
+      def create_record(attribute_names = @attributes.keys)
+        attributes_values = arel_attributes_with_values_for_create(attribute_names)
+
+        new_id = self.class.unscoped.insert attributes_values
+        self.id ||= new_id if self.class.primary_key
+
+        @new_record = false
+        id
+      end
     end
   end
 end
