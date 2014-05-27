@@ -1,94 +1,132 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
-      def construct_limited_ids_condition(relation)
-        orders = relation.order_values
-        # CPK
-        # values = @klass.connection.distinct("#{@klass.connection.quote_table_name table_name}.#{primary_key}", orders)
-        keys = @klass.primary_keys.map do |key|
-          "#{@klass.connection.quote_table_name @klass.table_name}.#{key}"
-        end
-        values = @klass.connection.distinct(keys.join(', '), orders)
+      def apply_join_dependency(relation, join_dependency)
+        relation = relation.except(:includes, :eager_load, :preload)
+        relation = relation.joins join_dependency
 
-        relation = relation.dup
-
-        ids_array = relation.select(values).collect {|row| row[primary_key]}
-        # CPK
-        # ids_array.empty? ? raise(ThrowResult) : table[primary_key].in(ids_array)
-
-        # OR together each and expression (key=value and key=value) that matches an id set
-        # since we only need to match 0 or more records
-        or_expressions = ids_array.map do |id_set|
-          # AND together "key=value" exprssios to match each id set
-          and_expressions = [self.primary_keys, id_set].transpose.map do |key, id|
-            table[key].eq(id)
+        if using_limitable_reflections?(join_dependency.reflections)
+          relation
+        else
+          if relation.limit_value
+            limited_ids = limited_ids_for(relation)
+            # CPK
+            #limited_ids.empty? ? relation.none! : relation.where!(table[primary_key].in(limited_ids))
+            limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
           end
-          Arel::Nodes::And.new(and_expressions)
+          relation.except(:limit, :offset)
         end
-
-        first = or_expressions.shift
-        Arel::Nodes::Grouping.new(or_expressions.inject(first) do |memo, expr|
-            Arel::Nodes::Or.new(memo, expr)
-        end)
       end
 
-      def exists?(id = nil)
-        # ID can be:
+      def limited_ids_for(relation)
+        # CPK
+        #values = @klass.connection.columns_for_distinct(
+        #  "#{quoted_table_name}.#{quoted_primary_key}", relation.order_values)
+        columns = @klass.primary_keys.map do |key|
+          "#{quoted_table_name}.#{connection.quote_column_name(key)}"
+        end
+        values = @klass.connection.columns_for_distinct(columns, relation.order_values)
+
+        relation = relation.except(:select).select(values).distinct!
+
+        id_rows = @klass.connection.select_all(relation.arel, 'SQL', relation.bind_values)
+
+        # CPK
+        #id_rows.map {|row| row[primary_key]}
+        id_rows.map {|row| row.values}
+      end
+
+      def exists?(conditions = :none)
+        # conditions can be:
         #   Array - ['department_id = ? and location_id = ?', 1, 1]
         #   Array -> [1,2]
         #   CompositeKeys -> [1,2]
 
-        id = id.id if ::ActiveRecord::Base === id
+        conditions = conditions.id if ::ActiveRecord::Base === conditions
+        return false if !conditions
 
-        join_dependency = construct_join_dependency_for_association_find
-        relation = construct_relation_for_association_find(join_dependency)
-        relation = relation.except(:select).select("1").limit(1)
+        relation = apply_join_dependency(self, construct_join_dependency)
+        return false if ::ActiveRecord::NullRelation === relation
+
+        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
 
         # CPK
-        #case id
+        #case conditions
         #when Array, Hash
-        #  relation = relation.where(id)
+        #  relation = relation.where(conditions)
         #else
-        #  relation = relation.where(table[primary_key].eq(id)) if id
+        #  relation = relation.where(table[primary_key].eq(conditions)) if conditions != :none
         #end
 
-        case id
+        case conditions
         when CompositePrimaryKeys::CompositeKeys
-          relation = relation.where(cpk_id_predicate(table, primary_key, id))
+          relation = relation.where(cpk_id_predicate(table, primary_key, conditions))
         when Array
           pk_length = @klass.primary_keys.length
 
-          if id.length == pk_length # E.g. id = ['France', 'Paris']
-            return self.exists?(id.to_composite_keys)
-          else # Assume that id contains where relation
-            relation = relation.where(id)
+          if conditions.length == pk_length # E.g. conditions = ['France', 'Paris']
+            return self.exists?(conditions.to_composite_keys)
+          else # Assume that conditions contains where relation
+            relation = relation.where(conditions)
           end
         when Hash
-          relation = relation.where(id)
+          relation = relation.where(conditions)
         end
-        connection.select_value(relation.to_sql) ? true : false
+
+        connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
       end
 
-      def find_with_ids(*ids, &block)
-        return to_a.find { |*block_args| yield(*block_args) } if block_given?
+      def find_with_ids(*ids)
+        raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
 
-        # Supports:
-        #   find('1,2')             ->  ['1,2']
-        #   find(1,2)               ->  [1,2]
-        #   find([1,2])             -> [['1,2']]
-        #   find([1,2], [3,4])      -> [[1,2],[3,4]]
-        #
-        # Does *not* support:
-        #   find('1,2', '3,4')      ->  ['1,2','3,4']
+        expects_array = ids.first.kind_of?(Array)
+        return ids.first if expects_array && ids.first.empty?
 
-        # Normalize incoming data.  Note the last arg can be nil.  Happens
-        # when find is called with nil options which is then passed on
-        # to find_with_ids.
-        ids.compact!
+        # CPK - don't do this, we want an array of arrays
+        #ids = ids.flatten.compact.uniq
 
-        ids = [ids] unless ids.first.kind_of?(Array)
+        case ids.size
+          when 0
+            raise RecordNotFound, "Couldn't find #{@klass.name} without an ID"
+          when 1
+            result = find_one(ids.first)
+            # CPK
+            # expects_array ? [ result ] : result
+            result
+          else
+            find_some(ids)
+        end
+      end
 
-        results = ids.map do |cpk_ids|
+      def find_one(id)
+        # CPK
+        #id = id.id if ActiveRecord::Base === id
+        id = id.id if ::ActiveRecord::Base === id
+
+        # CPK
+        #column = columns_hash[primary_key]
+        #substitute = connection.substitute_at(column, bind_values.length)
+        #relation = where(table[primary_key].eq(substitute))
+        #relation.bind_values += [[column, id]]
+        #record = relation.take
+        relation = self
+        values = primary_keys.each_with_index.map do |primary_key, i|
+          column = columns_hash[primary_key]
+          relation.bind_values += [[column, id[i]]]
+          connection.substitute_at(column, bind_values.length - 1)
+        end
+        relation = relation.where(cpk_id_predicate(table, primary_keys, values))
+
+        record = relation.take
+        raise_record_not_found_exception!(id, 0, 1) unless record
+        record
+      end
+
+      def find_some(ids)
+        # CPK
+        # result = where(table[primary_key].in(ids)).to_a
+
+        result = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
             cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
           else
@@ -114,7 +152,23 @@ module CompositePrimaryKeys
           records
         end.flatten
 
-        ids.length == 1 ? results.first : results
+        expected_size =
+          if limit_value && ids.size > limit_value
+            limit_value
+          else
+            ids.size
+          end
+
+        # 11 ids with limit 3, offset 9 should give 2 results.
+        if offset_value && (ids.size - offset_value < expected_size)
+          expected_size = ids.size - offset_value
+        end
+
+        if result.size == expected_size
+          result
+        else
+          raise_record_not_found_exception!(ids, result.size, expected_size)
+        end
       end
     end
   end

@@ -11,7 +11,7 @@ class TestAttributeMethods < ActiveSupport::TestCase
   end
 
   def test_read_attribute_with_composite_keys
-    ref_code = ReferenceCode.find(1, 1)
+    ref_code = ReferenceCode.find([1, 1])
     assert_equal(1, ref_code.id.first)
     assert_equal(1, ref_code.id.last)
     assert_equal('Mr', ref_code.abbreviation)
@@ -24,7 +24,7 @@ class TestAttributeMethods < ActiveSupport::TestCase
   end
 
   def test_to_key_with_composite_keys
-    ref_code = ReferenceCode.find(1, 1)
+    ref_code = ReferenceCode.find([1, 1])
     assert_equal(1, ref_code.to_key.first)
     assert_equal(1, ref_code.to_key.last)
   end
@@ -46,7 +46,7 @@ class TestAttributeMethods < ActiveSupport::TestCase
   end
 
   def test_to_key_with_composite_key_destroyed
-    ref_code = ReferenceCode.find(1, 1)
+    ref_code = ReferenceCode.find([1, 1])
     ref_code.destroy
     assert_equal([1,1], ref_code.to_key)
   end

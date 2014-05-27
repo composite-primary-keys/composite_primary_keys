@@ -260,7 +260,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_limitable_reflections
-    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').limit(1)
+    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').references(:membership_statuses).limit(1)
     assert_equal(1, memberships.length)
     assert_equal([1,1], memberships[0].id)
   end
@@ -271,5 +271,4 @@ class TestAssociations < ActiveSupport::TestCase
     associations = group.association_cache[:memberships]
     assert_equal(false, associations.send('foreign_key_present?'))
   end
-
 end

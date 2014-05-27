@@ -26,27 +26,30 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>4.0.0'
+  gem 'activerecord', '~>4.1.1'
   require 'active_record'
 end
+
+# AM files we override
+require 'active_model/dirty'
 
 # AR files we override
 require 'active_record/counter_cache'
 require 'active_record/fixtures'
+require 'active_record/model_schema'
 require 'active_record/persistence'
 require 'active_record/relation'
 require 'active_record/sanitization'
 
 require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
-require 'active_record/associations/has_and_belongs_to_many_association'
 require 'active_record/associations/has_many_association'
+require 'active_record/associations/has_many_through_association'
 require 'active_record/associations/join_dependency'
 require 'active_record/associations/join_dependency/join_part'
 require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
-require 'active_record/associations/preloader/has_and_belongs_to_many'
 
 
 require 'active_model/dirty'
@@ -67,6 +70,7 @@ require 'active_record/validations/uniqueness'
 
 
 # CPK files
+require 'composite_primary_keys/active_model/dirty'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/active_record_overides'
 require 'composite_primary_keys/base'
@@ -74,20 +78,20 @@ require 'composite_primary_keys/core'
 require 'composite_primary_keys/composite_arrays'
 require 'composite_primary_keys/composite_predicates'
 require 'composite_primary_keys/fixtures'
+require 'composite_primary_keys/model_schema'
 require 'composite_primary_keys/relation'
 require 'composite_primary_keys/sanitization'
 require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'
 require 'composite_primary_keys/associations/association_scope'
-require 'composite_primary_keys/associations/has_and_belongs_to_many_association'
 require 'composite_primary_keys/associations/has_many_association'
+require 'composite_primary_keys/associations/has_many_through_association'
 require 'composite_primary_keys/associations/join_dependency'
 require 'composite_primary_keys/associations/join_dependency/join_part'
 require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
-require 'composite_primary_keys/associations/preloader/has_and_belongs_to_many'
 
 require 'composite_primary_keys/dirty'
 

@@ -16,10 +16,10 @@ class TestEqual < ActiveSupport::TestCase
 
     connection = ActiveRecord::Base.connection
     quoted = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
-    expected = "((#{quoted} = 0) OR (#{quoted} = 1) OR (#{quoted} = 2))"
+    expected = "(#{quoted} = 0 OR #{quoted} = 1 OR #{quoted} = 2)"
 
     pred = cpk_or_predicate(predicates)
-    assert_equal(with_quoted_identifiers(expected), pred.to_s)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
   end
 
   def test_and

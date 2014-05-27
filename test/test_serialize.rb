@@ -1,6 +1,6 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
-class TestEqual < ActiveSupport::TestCase
+class TestSerialization < ActiveSupport::TestCase
   fixtures :departments
 
   def test_json

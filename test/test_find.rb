@@ -22,12 +22,6 @@ class TestFind < ActiveSupport::TestCase
     assert_equal([1,3], ref_code.id)
   end
 
-  def test_find_one_string
-    ref_code = ReferenceCode.find('1,3')
-    assert_kind_of(ReferenceCode, ref_code)
-    assert_equal([1,3], ref_code.id)
-  end
-
   def test_find_some
     ref_codes = ReferenceCode.find([1,3], [2,1])
     assert_kind_of(Array, ref_codes)
@@ -71,14 +65,8 @@ class TestFind < ActiveSupport::TestCase
     ref_type_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_type_id')}"
     ref_code_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_code')}"
 
-    if current_adapter?(:SQLServerAdapter)
-      expected = "Couldn't find ReferenceCode with ID=999,999 WHERE #{ref_type_quoted} = N'999' AND #{ref_code_quoted} = N'999'"
-    else
-      expected = "Couldn't find ReferenceCode with ID=999,999 WHERE #{ref_type_quoted} = 999 AND #{ref_code_quoted} = 999"
-    end
-
-    assert_equal(with_quoted_identifiers(expected),
-                 error.message)
+    expected = "Couldn't find all ReferenceCodes with 'reference_type_id,reference_code': (999, 999) (found 0 results, but was looking for 1)"
+    assert_equal(with_quoted_identifiers(expected), error.message)
   end
 
   def test_find_last_suburb
