@@ -10,7 +10,7 @@ to support composite keys.
 
     gem install composite_primary_keys
 
-If you are using Rails (ie, wiht bundler), add the following to your Gemfile:
+If you are using Rails add the following to your Gemfile:
 
   gem 'composite_primary_keys', '=x.x.x' (see next section about what verison to use)
 
@@ -89,7 +89,8 @@ See test/README_tests.rdoc
 == Questions, Discussion and Contributions
 
 The CPK home page is hosted at https://github.com/composite-primary-keys/composite_primary_keys.  There
-is also a Google group, but you'll have better luck getting support using GitHub.
+is also a Google group at https://groups.google.com/forum/#!forum/compositekeys,
+but you'll have better luck getting support using GitHub.
 
 == Author
 
