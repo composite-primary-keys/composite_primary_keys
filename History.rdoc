@@ -1,3 +1,15 @@
+== 6.0.6 (2014-05-26)
+
+* Don't refer to deprecated set_primary_keys in README (Henare Degan)
+* Fix gemspec dependency (Charlie Savage)
+
+== 6.0.5 (2014-05-20)
+
+* Removed debugging output (Dan Draper)
+* Fixes to ensure that has_one associations work correctly (Dan Draper)
+* Fix postgres db migration failure since no result is returned in some cases (seashell-qd)
+* Fix exception raised in method "id=" (seashell.qd@hotmail.com)
+
 == 6.0.3 (2014-04-28)
 
 * Fixes setting of primary key when CPK is not used for a given model (see #191)
