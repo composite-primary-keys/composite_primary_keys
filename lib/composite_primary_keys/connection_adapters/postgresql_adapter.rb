@@ -1,5 +1,13 @@
 module ActiveRecord
   module ConnectionAdapters
+    class PostgreSQLColumn
+      # This overide is needed to ensure ActiveRecord::Dirty behaves as expected
+      def type_cast(value)
+        return value if value.kind_of?(Array)
+        super
+      end
+    end
+    
     class PostgreSQLAdapter
       def insert_sql(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
         unless pk
@@ -32,8 +40,11 @@ module ActiveRecord
         [sql, binds]
       end
 
+      # Returns a single value if query returns a single element
+      # otherwise returns an array coresponding to the composite keys
+      #
       def last_inserted_id(result)
-        row = result.rows.first
+        row = result && result.rows.first
         if Array === row
           row.size == 1 ? row[0] : row
         end

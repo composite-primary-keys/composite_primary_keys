@@ -1,3 +1,12 @@
+== 6.0.3 (2014-04-28)
+
+* Fixes setting of primary key when CPK is not used for a given model (see #191)
+
+== 6.0.2 (2014-04-28)
+
+* Fixes relating to ActiveRecord 4.0.x compatibility (Dan Draper)
+* Ensure that primary key is set on instance when creating new records (Dan Draper)
+
 == 6.0.1 (2013-11-29)
 
 * Handle records == :all in HasManyAssociation#delete_records. Without this calling
