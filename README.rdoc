@@ -71,6 +71,13 @@ Now we want to be able to find instances using the same syntax we always use for
 
 Notice the use of an array to specify the composite key values.
 
+NOTE - API CHANGE.  CPK Version 6.x and earlier used to allow composite keys to be listed out
+like this:
+
+  Membership.find(1,1)
+
+This usage is no longer supported.
+
 == Databases
 
 CPK supports the following databases:
