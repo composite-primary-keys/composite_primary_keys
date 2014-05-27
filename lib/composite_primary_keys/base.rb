@@ -34,7 +34,6 @@ module ActiveRecord
         class_eval <<-EOV
           extend  CompositeClassMethods
           include CompositeInstanceMethods
-          include CompositePrimaryKeys::ActiveRecord::Overides
         EOV
       end
       alias_method_chain :primary_key=, :composite_key_support
