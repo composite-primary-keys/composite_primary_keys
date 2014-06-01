@@ -64,6 +64,7 @@ require 'active_record/connection_adapters/abstract_adapter'
 require 'active_record/relation/batches'
 require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
+require 'active_record/relation/predicate_builder'
 require 'active_record/relation/query_methods'
 
 require 'active_record/validations/uniqueness'
@@ -104,6 +105,7 @@ require 'composite_primary_keys/connection_adapters/abstract/connection_specific
 require 'composite_primary_keys/relation/batches'
 require 'composite_primary_keys/relation/calculations'
 require 'composite_primary_keys/relation/finder_methods'
+require 'composite_primary_keys/relation/predicate_builder'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
