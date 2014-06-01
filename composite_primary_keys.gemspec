@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
                        'test/**/*']
   s.require_path = 'lib'
   s.test_files   = Dir.glob("test/**")
-  s.rubyforge_project = 'compositekeys'
+  s.license = 'MIT'
 
   # Dependencies
   s.required_ruby_version = '>= 1.9.3'
