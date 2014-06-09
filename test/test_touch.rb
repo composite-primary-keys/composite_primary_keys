@@ -11,8 +11,8 @@ class TestTouch < ActiveSupport::TestCase
     previously_updated_at = tariff.updated_at
 
     tariff.amount         = previous_amount + 1
+    sleep 1.0 # we need to sleep for 1 second because the times updated (on mysql, at least) are only precise to 1 second.
     tariff.touch
-    sleep 0.1
     assert_not_equal previously_updated_at, tariff.updated_at
     assert_equal previous_amount + 1, tariff.amount
     assert tariff.amount_changed?, 'tarif amount should have changed'
