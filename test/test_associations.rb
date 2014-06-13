@@ -255,8 +255,9 @@ class TestAssociations < ActiveSupport::TestCase
 
   def test_has_many_with_primary_key_with_associations
     memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').references(:membership_statuses)
-    assert_equal(1, memberships.length)
+    assert_equal(2, memberships.length)
     assert_equal([1,1], memberships[0].id)
+    assert_equal([3,2], memberships[1].id)
   end
 
   def test_limitable_reflections

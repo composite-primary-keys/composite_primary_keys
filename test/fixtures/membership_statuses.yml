@@ -9,3 +9,9 @@ drnic-cpk:
   user_id: 2
   group_id: 1
   status: Owner
+
+cfis-cpk:
+  id: 3
+  user_id: 3
+  group_id: 2
+  status: Active
