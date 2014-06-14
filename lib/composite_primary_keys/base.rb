@@ -114,6 +114,7 @@ module ActiveRecord
       end
 
       def ==(comparison_object)
+        return false if !persisted? && comparison_object.object_id != object_id
         return true if equal? comparison_object
         ids.is_a?(Array) ? super(comparison_object) && ids.all? {|id| !id.nil?} : super(comparison_object)
       end

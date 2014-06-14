@@ -31,7 +31,7 @@ module ActiveRecord
                                eq_predicates = association.klass.primary_key.zip(ids).map do |primary_key, value|
                                  association.klass.arel_table[primary_key].eq(value)
                                end
-                               association.scoped.where(*eq_predicates).to_a
+                               association.scope.where(*eq_predicates).to_a
                              else
                                []
                              end
