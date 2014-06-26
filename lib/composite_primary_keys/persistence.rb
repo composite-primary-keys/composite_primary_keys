@@ -46,7 +46,7 @@ module CompositePrimaryKeys
         end
       end
 
-      def update_record(attribute_names = @attributes.keys)
+      def _update_record(attribute_names = @attributes.keys)
         return super(attribute_names) unless composite?
         
         klass = self.class
