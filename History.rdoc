@@ -1,3 +1,38 @@
+== 7.0.2 (2014-06-01)
+
+* Fix id_was when one of the column names is called id (Adrian Hooper)
+* Fix queries that use ActiveRecord objects in the where clause (Adrian Hooper)
+
+== 7.0.1 (2014-05-27)
+
+* Fix setting of timestamps automatically by Rails (Charlie Savage)
+
+== 7.0.0 (2014-05-26)
+
+* Active Record 4.1 support! (Charlie Savage, Tom Hughes, Simon South)
+
+Note there is one big api change.  Previously, CPK supported both of these calls:
+
+  Membership.find(1,1)
+  Membership.find([1,1])
+
+The first one no longer works.  It was removed because it made the internal code simpler
+and makes the intention of the code clearer (especially when finding multiple records).
+If this change causes too much pain then please submit a ticket on Github.
+
+
+== 6.0.6 (2014-05-26)
+
+* Don't refer to deprecated set_primary_keys in README (Henare Degan)
+* Fix gemspec dependency (Charlie Savage)
+
+== 6.0.5 (2014-05-20)
+
+* Removed debugging output (Dan Draper)
+* Fixes to ensure that has_one associations work correctly (Dan Draper)
+* Fix postgres db migration failure since no result is returned in some cases (seashell-qd)
+* Fix exception raised in method "id=" (seashell.qd@hotmail.com)
+
 == 6.0.3 (2014-04-28)
 
 * Fixes setting of primary key when CPK is not used for a given model (see #191)

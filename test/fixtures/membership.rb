@@ -1,5 +1,4 @@
 class Membership < ActiveRecord::Base
-  # self.primary_keys = *keys - turns on composite key functionality
   self.primary_keys = :user_id, :group_id
   belongs_to :user
 	belongs_to :group

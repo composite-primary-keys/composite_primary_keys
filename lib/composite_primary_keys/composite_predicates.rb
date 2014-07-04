@@ -9,9 +9,12 @@ module CompositePrimaryKeys
     end
 
     def cpk_or_predicate(predicates)
-      ::Arel::Nodes::Grouping.new(predicates.inject { |memo,node|
+      or_predicate = predicates.map do |predicate|
+        ::Arel::Nodes::Grouping.new(predicate)
+      end.inject do |memo, node|
         ::Arel::Nodes::Or.new(memo, node)
-      })
+      end
+      ::Arel::Nodes::Grouping.new(or_predicate)
     end
 
     def cpk_id_predicate(table, keys, values)
@@ -45,6 +48,4 @@ ActiveRecord::Associations::JoinDependency::JoinAssociation.send(:include, Compo
 ActiveRecord::Associations::Preloader::Association.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Associations::HasManyThroughAssociation.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Relation.send(:include, CompositePrimaryKeys::Predicates)
-
-
-
+ActiveRecord::PredicateBuilder.send(:extend, CompositePrimaryKeys::Predicates)

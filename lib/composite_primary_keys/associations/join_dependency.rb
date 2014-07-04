@@ -1,6 +1,20 @@
 module ActiveRecord
   module Associations
     class JoinDependency
+      class Aliases # :nodoc:
+        def column_alias(node, column)
+          # CPK
+          #@alias_cache[node][column]
+          if column.kind_of?(Array)
+            column.map do |a_column|
+              @alias_cache[node][a_column]
+            end
+          else
+            @alias_cache[node][column]
+          end
+        end
+      end
+
       def instantiate(result_set, aliases)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
         type_caster = result_set.column_type primary_key
@@ -18,8 +32,8 @@ module ActiveRecord
         result_set.each { |row_hash|
           # CPK
           #primary_id = type_caster.type_cast row_hash[primary_key]
-          primary_id = if row_hash[primary_key].kind_of?(Array)
-            row_hash[primary_key].map {|key| type_caster.type_cast key}
+          primary_id = if primary_key.kind_of?(Array)
+            primary_key.map {|key| type_caster.type_cast row_hash[key]}
           else
             type_caster.type_cast row_hash[primary_key]
           end

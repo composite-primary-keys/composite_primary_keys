@@ -85,4 +85,10 @@ class TestFind < ActiveSupport::TestCase
       assert_equal(Department.count, batch.size)
     end
   end
+
+  def test_expand
+    department = departments(:engineering)
+    employees = Employee.where(:department => department)
+    assert_equal(2, employees.count)
+  end
 end

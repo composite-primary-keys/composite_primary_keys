@@ -2,54 +2,105 @@
 
 == Summary
 
-ActiveRecords/Rails famously doesn't support composite primary keys.
-This RubyGem extends the activerecord gem to provide CPK support.
+ActiveRecords infamously doesn't support composite primary keys.
+This gem, composite_primary_keys, or CPK for short, extends ActiveRecord
+to support composite keys.
 
 == Installation
 
     gem install composite_primary_keys
 
+If you are using Rails add the following to your Gemfile:
+
+  gem 'composite_primary_keys', '=x.x.x' (see next section about what verison to use)
+
+== Versions
+
+Every major version of ActiveRecord has included numerous internal changes.  As a result,
+CPK has to be rewritten for each version of ActiveRecord.  To help keep
+things straight, here is the mapping:
+
+    Version 7.x is designed to work with ActiveRecord 4.1.x
+    Version 6.x is designed to work with ActiveRecord 4.0.x
+    Version 5.x is designed to work with ActiveRecord 3.2.x
+    Version 4.x is designed to work with ActiveRecord 3.1.x
+
+== The basics
+
+A model with composite primary keys is defined like this:
+
+  class Membership < ActiveRecord::Base
+    self.primary_keys = :user_id, :group_id
+    belongs_to :user
+    belongs_to :group
+    has_many :statuses, :class_name => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
+  end
+
+Note the addition of the line:
+
+    self.primary_keys = :user_id, :group_id
+
+
+A model associated with a composite key model is defined like this:
+
+  class MembershipStatus < ActiveRecord::Base
+    belongs_to :membership, :foreign_key => [:user_id, :group_id]
+  end
+
+That is, associations can include composite keys too.  All Rails association types are supported. Nice.
+
 == Usage
 
-    require 'composite_primary_keys'
-    class ProductVariation < ActiveRecord::Base
-      self.primary_keys = :product_id, :variation_seq
-    end
+Once you’ve created your models to specify composite primary keys (such as the Membership class)
+and associations (such as MembershipStatus#membership), you can uses them like any normal model
+with associations.
 
-    pv = ProductVariation.find(345, 12)
+But first, lets check out our primary keys.
 
-== Factories
+  MembershipStatus.primary_key # => "id"    # normal single key
+  Membership.primary_key  # => [:user_id, :group_id] # composite keys
+  Membership.primary_key.to_s # => "user_id,group_id"
 
-    class ModelWithCompositeKeys < ActiveRecord::Base
-      self.primary_keys :id, :updated_at
-    end
+Now we want to be able to find instances using the same syntax we always use for ActiveRecords…
 
-    FactoryGirl.define do
-      factory :model_with_composite_keys do
-        sequence( :id ) { |n| [n,Time.now] }
-        name "Brett"
-      end
-    end
+  MembershipStatus.find(1)    # single id returns single instance
+  => <MembershipStatus:0x392a8c8 @attributes={"id"=>"1", "status"=>"Active"}>
 
+  Membership.find([1,1])  # composite ids returns single instance
+  => <Membership:0x39218b0 @attributes={"user_id"=>"1", "group_id"=>"1"}>
 
-It even supports composite foreign keys for associations.
+Notice the use of an array to specify the composite key values.
 
-See http://compositekeys.rubyforge.org for more.
+NOTE - API CHANGE.  CPK Version 6.x and earlier used to allow composite keys to be listed out
+like this:
+
+  Membership.find(1,1)
+
+This usage is no longer supported.
+
+== Databases
+
+CPK supports the following databases:
+
+ * PostgreSQL
+ * MySQL
+ * Oracle
+ * DB2
+ * SQLite
+ * SQLServer
 
 == Running Tests
 
 See test/README_tests.rdoc
 
-== Url
-
-http://compositekeys.rubyforge.org
-
 == Questions, Discussion and Contributions
 
-http://groups.google.com/group/compositekeys
+For help please visit https://github.com/composite-primary-keys/composite_primary_keys.
 
 == Author
 
-Written by Dr Nic Williams, drnicwilliams@gmail.
-Contributions by many!
+First version was written by Dr Nic Williams.
 
+Maintained by Charlie Savage
+
+Contributions by many!
