@@ -77,6 +77,8 @@ module CompositePrimaryKeys
       end
 
       def find_with_ids(*ids)
+        # CPK handle strings that come w/ calling to_param on CPK-enabled models
+        ids = parse_ids(ids)
         raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
 
         expects_array = ids.first.kind_of?(Array)
@@ -84,7 +86,6 @@ module CompositePrimaryKeys
 
         # CPK - don't do this, we want an array of arrays
         #ids = ids.flatten.compact.uniq
-
         case ids.size
           when 0
             raise RecordNotFound, "Couldn't find #{@klass.name} without an ID"
@@ -169,6 +170,28 @@ module CompositePrimaryKeys
         else
           raise_record_not_found_exception!(ids, result.size, expected_size)
         end
+      end
+
+      private
+      def parse_ids(ids)
+        result = []
+        ids.each do |id|
+          if id.is_a?(String)
+            if id.index("/")
+              result << id.split("/").map{|subid| subid.split(",") }
+            elsif id.index(",")
+              result << [id.split(",")]
+            else
+              result << [id]
+            end
+          elsif id.is_a?(Array) && id.count > 1 && id.first.to_s.index(",")
+            result << id.map{|subid| subid.split(",")}
+          else
+            result << [id]
+          end
+        end
+        result = result.flatten(1)
+        return result
       end
     end
   end
