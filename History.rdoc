@@ -1,3 +1,10 @@
+== 7.0.3 (2014-07-04)
+
+* Fixes for Rails 4.1.2+ compatibility (Tom Hughes)
+* Nested attribute fix (Sammy Larb)
+* Test fixes (Sammy Larb)
+* Fixes instantiating join records (Charlie Savage)
+
 == 7.0.2 (2014-06-01)
 
 * Fix id_was when one of the column names is called id (Adrian Hooper)
