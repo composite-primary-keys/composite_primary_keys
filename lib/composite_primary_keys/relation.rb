@@ -81,7 +81,7 @@ module ActiveRecord
       end
     end
 
-    def _update_record(values, id, id_was) # :nodoc:
+    def update_record(values, id, id_was) # :nodoc:
       substitutes, binds = substitute_values values
 
       # CPK
