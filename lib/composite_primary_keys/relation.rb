@@ -60,7 +60,7 @@ module ActiveRecord
 
     def add_cpk_where_values_hash
       class << self
-        def where_values_hash
+        def where_values_hash(relation_table_name = table_name)
           # CPK adds this so that it finds the Equality nodes beneath the And node:
           #equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
           #  node.left.relation.name == table_name
@@ -68,7 +68,7 @@ module ActiveRecord
           nodes_from_and = where_values.grep(Arel::Nodes::And).map {|and_node| and_node.children.grep(Arel::Nodes::Equality) }.flatten
 
           equalities = (nodes_from_and + where_values.grep(Arel::Nodes::Equality)).find_all { |node|
-            node.left.relation.name == table_name
+            node.left.relation.name == relation_table_name
           }
 
           binds = Hash[bind_values.find_all(&:first).map { |column, v| [column.name, v] }]
