@@ -10,6 +10,11 @@ module CompositePrimaryKeys
         #  self.class.arel_table[pk].eq(substitute))
         #relation.bind_values = [[column, id]]
 
+        # run AR's original relation_for_destroy when primary key is not composite
+        if Array(self.class.primary_key).size <= 1
+          return super
+        end
+
         relation = self.class.unscoped
 
         Array(self.class.primary_key).each_with_index do |key, index|

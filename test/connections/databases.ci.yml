@@ -1,0 +1,15 @@
+mysql:
+  adapter: mysql2
+  username: travis
+  password: ""
+  database: composite_primary_keys_unittest
+
+sqlite3:
+  adapter: sqlite3
+  database: db/composite_primary_keys_unittest.sqlite
+
+postgresql:
+  adapter: postgresql
+  database: composite_primary_keys_unittest
+  username: postgres
+  host: localhost
