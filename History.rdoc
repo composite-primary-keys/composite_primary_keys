@@ -1,3 +1,9 @@
+== 7.0.4 (2014-07-?)
+
+* Fix overriding of Relation#where_values_hash (Pavel)
+* Add travis CI support (Pavel)
+* Run AR's original relation_for_destroy when primary key is not composite (Pavel)
+
 == 7.0.3 (2014-07-04)
 
 * Fixes for Rails 4.1.2+ compatibility (Tom Hughes)
