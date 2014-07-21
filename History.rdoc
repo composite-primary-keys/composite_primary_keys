@@ -1,4 +1,8 @@
-== 7.0.4 (2014-07-?)
+== 7.0.5 (2014-07-21)
+
+* Remove overriden Postgresql adapter code (Charlie Savage)
+
+== 7.0.4 (2014-07-09)
 
 * Fix overriding of Relation#where_values_hash (Pavel)
 * Add travis CI support (Pavel)
