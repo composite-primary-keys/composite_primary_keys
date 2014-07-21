@@ -1,13 +1,5 @@
 module ActiveRecord
   module ConnectionAdapters
-    class PostgreSQLColumn
-      # This overide is needed to ensure ActiveRecord::Dirty behaves as expected
-      def type_cast(value)
-        return value if value.kind_of?(Array)
-        super
-      end
-    end
-    
     class PostgreSQLAdapter
       def insert_sql(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
         unless pk
