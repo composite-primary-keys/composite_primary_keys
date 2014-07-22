@@ -3,8 +3,6 @@ module ActiveRecord
   end
 
   class Base
-    include CompositePrimaryKeys::ActiveRecord::Persistence
-    
     INVALID_FOR_COMPOSITE_KEYS = 'Not appropriate for composite primary keys'
     NOT_IMPLEMENTED_YET        = 'Not implemented for composite primary keys yet'
 
