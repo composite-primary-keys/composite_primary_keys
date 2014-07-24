@@ -101,21 +101,6 @@ class TestFind < ActiveSupport::TestCase
     assert_equal([1,3], ref_code.id)
   end
 
-  def test_find_some_with_params_ids
-    params_ids = ReferenceCode.find([1,3], [2,1]).to_param
-    assert_equal "1,3/2,1", params_ids
-
-    ref_codes = ReferenceCode.find(params_ids)
-    assert_kind_of(Array, ref_codes)
-    assert_equal(2, ref_codes.length)
-
-    ref_code = ref_codes[0]
-    assert_equal([1,3], ref_code.id)
-
-    ref_code = ref_codes[1]
-    assert_equal([2,1], ref_code.id)
-  end
-
   def test_find_some_with_array_of_params_id
     params_ids = ReferenceCode.find([1,3], [2,1]).map(&:to_param)
     assert_equal ["1,3", "2,1"], params_ids

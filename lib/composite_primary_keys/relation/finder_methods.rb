@@ -177,9 +177,7 @@ module CompositePrimaryKeys
         result = []
         ids.each do |id|
           if id.is_a?(String)
-            if id.index("/")
-              result << id.split("/").map{|subid| subid.split(",") }
-            elsif id.index(",")
+            if id.index(",")
               result << [id.split(",")]
             else
               result << [id]
