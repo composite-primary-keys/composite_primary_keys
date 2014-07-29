@@ -20,10 +20,6 @@ class TestFind < ActiveSupport::TestCase
     ref_code = ReferenceCode.find([1,3])
     assert_not_nil(ref_code)
     assert_equal([1,3], ref_code.id)
-
-    ref_code = ReferenceCode.find(1,3)
-    assert_not_nil(ref_code)
-    assert_equal([1,3], ref_code.id)
   end
 
   def test_find_some
