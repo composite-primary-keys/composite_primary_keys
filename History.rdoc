@@ -1,6 +1,14 @@
+== 7.0.7 (2014-07-29)
+
+* Add back support for calling find like this (Sammy Larbi):
+
+  Membership.find('1,1')
+
+
 == 7.0.6 (2014-07-22)
 
-* Change the way we override ActiveRecord::Persistence to call sequence of included modules (such as callbacks)
+* Change the way we override ActiveRecord::Persistence to call sequence of included modules such
+  as callbacks (Charlie Savage)
 
 == 7.0.5 (2014-07-21)
 
