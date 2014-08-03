@@ -33,10 +33,10 @@ module ActiveRecord
           # CPK
           #primary_id = type_caster.type_cast row_hash[primary_key]
           primary_id = if primary_key.kind_of?(Array)
-            primary_key.map {|key| type_caster.type_cast row_hash[key]}
-          else
-            type_caster.type_cast row_hash[primary_key]
-          end
+                         primary_key.map {|key| type_caster.type_cast row_hash[key]}
+                       else
+                         type_caster.type_cast row_hash[primary_key]
+                       end
           parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
           construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
         }
@@ -44,49 +44,44 @@ module ActiveRecord
         parents.values
       end
 
-      protected
+      def construct(ar_parent, parent, row, rs, seen, model_cache, aliases)
+        primary_id  = ar_parent.id
 
-      def construct_association(record, join_part, row)
-        return if record.id.to_s != join_part.parent.record_id(row).to_s
-
-        macro = join_part.reflection.macro
-        if macro == :has_one
-          return if record.association_cache.key?(join_part.reflection.name)
-          # CPK
-          # association = join_part.instantiate(row) unless row[join_part.aliased_primary_key].nil?
-          association = association_for_primary_key_from_row(join_part, row)
-
-          set_target_and_inverse(join_part, association, record)
-        else
-          # CPK
-          # association = join_part.instantiate(row) unless row[join_part.aliased_primary_key].nil?
-          association = association_for_primary_key_from_row(join_part, row)
-
-          case macro
-          when :has_many, :has_and_belongs_to_many
-            other = record.association(join_part.reflection.name)
+        parent.children.each do |node|
+          if node.reflection.collection?
+            other = ar_parent.association(node.reflection.name)
             other.loaded!
-            other.target.push(association) if association
-            other.set_inverse_instance(association)
-          when :belongs_to
-            set_target_and_inverse(join_part, association, record)
           else
-            raise ConfigurationError, "unknown macro: #{join_part.reflection.macro}"
+            if ar_parent.association_cache.key?(node.reflection.name)
+              model = ar_parent.association(node.reflection.name).target
+              construct(model, node, row, rs, seen, model_cache, aliases)
+              next
+            end
+          end
+
+          key = aliases.column_alias(node, node.primary_key)
+
+          # CPK
+          if key.is_a?(Array)
+            id = Array(key).map do |column_alias|
+              row[column_alias]
+            end
+            next if id.empty?
+          else
+            id = row[key]
+            next if id.nil?
+          end
+
+          model = seen[parent.base_klass][primary_id][node.base_klass][id]
+
+          if model
+            construct(model, node, row, rs, seen, model_cache, aliases)
+          else
+            model = construct_model(ar_parent, node, row, model_cache, id, aliases)
+            seen[parent.base_klass][primary_id][node.base_klass][id] = model
+            construct(model, node, row, rs, seen, model_cache, aliases)
           end
         end
-        association
-      end
-
-      private
-
-      def association_for_primary_key_from_row(join_part, row)
-        result = nil
-        if (cpk = join_part.aliased_primary_key).is_a?(Array)
-          result = join_part.instantiate(row) if cpk.detect {|pk| row[pk].nil? }.nil?
-        else
-          result = join_part.instantiate(row) unless row[join_part.aliased_primary_key].nil?
-        end
-        result
       end
     end
   end
