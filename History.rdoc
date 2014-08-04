@@ -1,3 +1,8 @@
+== 7.0.9 (2014-08-03)
+
+* Second attemp at fixing instantiation of has_many records via :includes that use composite keys - this
+  time take into account no target records (Charlie Savage)
+
 == 7.0.8 (2014-08-03)
 
 * Fix instantiation of has_many records via :includes that use composite keys (Charlie Savage)
