@@ -64,9 +64,10 @@ module ActiveRecord
           # CPK
           if key.is_a?(Array)
             id = Array(key).map do |column_alias|
-              row[column_alias]
+              value = row[column_alias]
             end
-            next if id.empty?
+            # At least the first value in the key has to be set.  Should we require all values to be set?
+            next if id.first.nil?
           else
             id = row[key]
             next if id.nil?

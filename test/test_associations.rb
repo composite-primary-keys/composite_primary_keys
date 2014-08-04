@@ -43,20 +43,20 @@ class TestAssociations < ActiveSupport::TestCase
     product = products(:second_product)
     product_tarrif = product_tariffs(:second_free)
 
-    # Old style, include a where clause to force eager loading
-    #products = Product.find(:all, :include => :product_tariffs,
-    #                              :conditions => ["product_tariffs.product_id = ?", product.id])
-    products = Product.includes(:product_tariffs).where("product_tariffs.product_id = ?", product.id).references(:product_tariffs)
-
+    # First get a legitimate product tarrif
+    products = Product.includes(:product_tariffs).where('product_tariffs.product_id = ?', product.id).references(:product_tariffs)
     assert_equal(1, products.length)
     assert_equal(product, products.first)
-    assert_equal([product_tarrif], product.product_tariffs)
+    assert_equal([product_tarrif], products.first.product_tariffs)
+  end
 
-    # New style
-    products = Product.includes(:product_tariffs).where('product_tariffs.product_id' => product.id)
+  def test_find_eager_loading_none
+    product = products(:third_product)
+
+    products = Product.includes(:product_tariffs).where(:id => product.id).references(:product_tariffs)
     assert_equal(1, products.length)
     assert_equal(product, products.first)
-    assert_equal([product_tarrif], product.product_tariffs)
+    assert_empty(products.first.product_tariffs)
   end
 
   def test_find_includes_tariffs
