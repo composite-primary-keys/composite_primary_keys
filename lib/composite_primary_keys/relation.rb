@@ -81,16 +81,15 @@ module ActiveRecord
       end
     end
 
+    alias :_update_record_without_cpk :_update_record
+
     def _update_record(values, id, id_was)
+      return _update_record_without_cpk(values, id, id_was) unless self.composite?
       substitutes, binds = substitute_values values
 
       # CPK
-      um = if self.composite?
-        relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
-        relation.arel.compile_update(substitutes, @klass.primary_key)
-      else
-        @klass.unscoped.where(@klass.arel_table[@klass.primary_key].eq(id_was || id)).arel.compile_update(substitutes, @klass.primary_key)
-      end
+      relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+      um = relation.arel.compile_update(substitutes, @klass.primary_key)
 
       @klass.connection.update(
         um,
