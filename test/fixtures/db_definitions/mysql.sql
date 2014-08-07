@@ -108,6 +108,7 @@ create table employees (
 create table comments (
     id int not null auto_increment,
     person_id int default null,
+    shown int default null,
     person_type varchar(100) default null,
     hack_id int default null,
     primary key (id)

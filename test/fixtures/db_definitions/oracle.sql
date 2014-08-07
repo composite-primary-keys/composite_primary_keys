@@ -116,6 +116,7 @@ create sequence comments_seq start with 1000;
 create table comments (
     id          number(11)   not null primary key,
     person_id   number(11)   default null,
+    shown       number(11)   default null,
     person_type varchar(100) default null,
     hack_id     number(11)   default null
 );

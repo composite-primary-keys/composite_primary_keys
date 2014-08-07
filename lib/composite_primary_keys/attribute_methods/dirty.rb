@@ -10,14 +10,7 @@ module ActiveRecord
         else
           attr = attr.to_s
 
-          # The attribute already has an unsaved change.
-          if attribute_changed?(attr)
-            old = @changed_attributes[attr]
-            @changed_attributes.delete(attr) unless _field_changed?(attr, old, value)
-          else
-            old = clone_attribute_value(:read_attribute, attr)
-            @changed_attributes[attr] = old if _field_changed?(attr, old, value)
-          end
+          save_changed_attribute(attr, value)
         end
 
         # Carry on.
