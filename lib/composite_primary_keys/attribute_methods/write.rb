@@ -1,8 +1,7 @@
 module ActiveRecord
   module AttributeMethods
     module Write
-      def write_attribute(attr_name, value)
-        # CPK
+      def write_attribute_with_type_cast(attr_name, value, type_cast_method)
         if attr_name.kind_of?(Array)
           value = [nil]*attr_name.length if value.nil?
           unless value.length == attr_name.length
@@ -18,22 +17,19 @@ module ActiveRecord
           @attributes_cache.delete(attr_name)
           column = column_for_attribute(attr_name)
 
-          unless column || @attributes.has_key?(attr_name)
-            ActiveSupport::Deprecation.warn(
-                "You're trying to create an attribute `#{attr_name}'. Writing arbitrary " \
-                "attributes on a model is deprecated. Please just use `attr_writer` etc."
-            )
+          # If we're dealing with a binary column, write the data to the cache
+          # so we don't attempt to typecast multiple times.
+          if column && column.binary?
+            @attributes_cache[attr_name] = value
           end
-          @attributes[attr_name] = type_cast_attribute_for_write(column, value)
+
+          if column || @attributes.has_key?(attr_name)
+            @attributes[attr_name] = send(type_cast_method, column, value)
+          else
+            raise ActiveModel::MissingAttributeError, "can't write unknown attribute `#{attr_name}'"
+          end
         end
       end
-      alias_method :raw_write_attribute, :write_attribute
     end
   end
-end
-
-ActiveRecord::Base.class_eval do
-  alias_method :raw_write_attribute, :write_attribute
-  alias :[]= :write_attribute
-  public :[]=
 end
