@@ -1,3 +1,9 @@
+== 7.0.10 (2014-08-07)
+
+* Update attribute dirty methods to allow attribute *_was
+  fields to be calculated correctly for enum fields (Zachary Salzbank)
+* Update read/write methods to match latest version of ActiveRecord (Charlie Savage)
+
 == 7.0.9 (2014-08-03)
 
 * Second attemp at fixing instantiation of has_many records via :includes that use composite keys - this
