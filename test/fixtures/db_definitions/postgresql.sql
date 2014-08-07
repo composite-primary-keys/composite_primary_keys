@@ -110,6 +110,7 @@ create table employees (
 create table comments (
     id          serial not null,
     person_id   int          default null,
+    shown       int          default null,
     person_type varchar(100) default null,
     hack_id     int          default null,
     primary key (id)
