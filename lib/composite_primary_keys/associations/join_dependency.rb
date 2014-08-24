@@ -17,7 +17,6 @@ module ActiveRecord
 
       def instantiate(result_set, aliases)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
-        type_caster = result_set.column_type primary_key
 
         seen = Hash.new { |h,parent_klass|
           h[parent_klass] = Hash.new { |i,parent_id|
@@ -31,11 +30,10 @@ module ActiveRecord
 
         result_set.each { |row_hash|
           # CPK
-          #primary_id = type_caster.type_cast row_hash[primary_key]
           primary_id = if primary_key.kind_of?(Array)
-                         primary_key.map {|key| type_caster.type_cast row_hash[key]}
+                         primary_key.map {|key| row_hash[key]}
                        else
-                         type_caster.type_cast row_hash[primary_key]
+                         row_hash[primary_key]
                        end
           parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
           construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)

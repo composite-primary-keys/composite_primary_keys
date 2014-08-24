@@ -26,11 +26,11 @@ module ActiveRecord
       end
     end
 
-    def touch(name = nil)
+    def touch(*names)
       raise ActiveRecordError, "cannot touch on a new record object" unless persisted?
 
       attributes = timestamp_attributes_for_update_in_model
-      attributes << name if name
+      attributes.concat(names)
 
       unless attributes.empty?
         current_time = current_time_from_proper_timezone
@@ -43,15 +43,11 @@ module ActiveRecord
 
         changes[self.class.locking_column] = increment_lock if locking_enabled?
 
-        changed_attributes.except!(*changes.keys)
-
-        relation    = self.class.send(:relation)
-        arel_table  = self.class.arel_table
+        clear_attribute_changes(changes.keys)
         primary_key = self.class.primary_key
-
         # CPK
         #self.class.unscoped.where(primary_key => self[primary_key]).update_all(changes) == 1
-        primary_key_predicate = relation.cpk_id_predicate(arel_table, Array(primary_key), Array(id))
+        primary_key_predicate = self.class.unscoped.cpk_id_predicate(self.class.arel_table, Array(primary_key), Array(id))
         self.class.unscoped.where(primary_key_predicate).update_all(changes) == 1
       else
         true

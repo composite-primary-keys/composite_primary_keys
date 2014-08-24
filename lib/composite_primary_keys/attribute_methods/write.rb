@@ -1,7 +1,7 @@
 module ActiveRecord
   module AttributeMethods
     module Write
-      def write_attribute_with_type_cast(attr_name, value, type_cast_method)
+      def write_attribute_with_type_cast(attr_name, value, should_type_cast)
         if attr_name.kind_of?(Array)
           value = [nil]*attr_name.length if value.nil?
           unless value.length == attr_name.length
@@ -14,20 +14,14 @@ module ActiveRecord
           # CPK
           # attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
           attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite?
-          @attributes_cache.delete(attr_name)
-          column = column_for_attribute(attr_name)
 
-          # If we're dealing with a binary column, write the data to the cache
-          # so we don't attempt to typecast multiple times.
-          if column && column.binary?
-            @attributes_cache[attr_name] = value
-          end
-
-          if column || @attributes.has_key?(attr_name)
-            @attributes[attr_name] = send(type_cast_method, column, value)
+          if should_type_cast
+            @attributes.write_from_user(attr_name, value)
           else
-            raise ActiveModel::MissingAttributeError, "can't write unknown attribute `#{attr_name}'"
+            @attributes.write_from_database(attr_name, value)
           end
+
+          value
         end
       end
     end

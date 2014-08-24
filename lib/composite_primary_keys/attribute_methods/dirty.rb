@@ -10,11 +10,13 @@ module ActiveRecord
         else
           attr = attr.to_s
 
-          save_changed_attribute(attr, value)
-        end
+          old_value = old_attribute_value(attr)
 
-        # Carry on.
-        super(attr, value)
+          result = super
+          store_original_raw_attribute(attr)
+          save_changed_attribute(attr, old_value)
+          result
+        end
       end
     end
   end
