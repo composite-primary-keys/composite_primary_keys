@@ -16,12 +16,7 @@ module ActiveRecord
       def delete_records(records, method)
         ensure_not_nested
 
-        # This is unoptimised; it will load all the target records
-        # even when we just want to delete everything.
-        records = load_target if records == :all
-
         scope = through_association.scope
-
         # CPK
         # scope.where! construct_join_attributes(*records)
         if source_reflection.klass.composite?
@@ -31,26 +26,26 @@ module ActiveRecord
         end
 
         case method
-          when :destroy
-            if scope.klass.primary_key
-              count = scope.destroy_all.length
-            else
-              scope.to_a.each do |record|
-                record.run_callbacks :destroy
-              end
-
-              arel = scope.arel
-
-              stmt = Arel::DeleteManager.new arel.engine
-              stmt.from scope.klass.arel_table
-              stmt.wheres = arel.constraints
-
-              count = scope.klass.connection.delete(stmt, 'SQL', scope.bind_values)
-            end
-          when :nullify
-            count = scope.update_all(source_reflection.foreign_key => nil)
+        when :destroy
+          if scope.klass.primary_key
+            count = scope.destroy_all.length
           else
-            count = scope.delete_all
+            scope.to_a.each do |record|
+              record.run_callbacks :destroy
+            end
+
+            arel = scope.arel
+
+            stmt = Arel::DeleteManager.new arel.engine
+            stmt.from scope.klass.arel_table
+            stmt.wheres = arel.constraints
+
+            count = scope.klass.connection.delete(stmt, 'SQL', scope.bind_values)
+          end
+        when :nullify
+          count = scope.update_all(source_reflection.foreign_key => nil)
+        else
+          count = scope.delete_all
         end
 
         delete_through_records(records)
@@ -60,26 +55,34 @@ module ActiveRecord
           klass.decrement_counter counter, records.map(&:id)
         end
 
-        if through_reflection.macro == :has_many && update_through_counter?(method)
+        if through_reflection.collection? && update_through_counter?(method)
           update_counter(-count, through_reflection)
         end
 
         update_counter(-count)
       end
+      end
 
       def through_records_for(record)
         # CPK
-        #attributes = construct_join_attributes(record)
-        #candidates = Array.wrap(through_association.target)
-        #candidates.find_all { |c| c.attributes.slice(*attributes.keys) == attributes }
-
+        # attributes = construct_join_attributes(record)
+        # candidates = Array.wrap(through_association.target)
+        # candidates.find_all do |c|
+        #   attributes.all? do |key, value|
+        #     c.public_send(key) == value
+        #   end
+        # end
         if record.composite?
           candidates = Array.wrap(through_association.target)
           candidates.find_all { |c| c.attributes.slice(*source_reflection.association_primary_key) == record.ids_hash }
         else
           attributes = construct_join_attributes(record)
           candidates = Array.wrap(through_association.target)
-          candidates.find_all { |c| c.attributes.slice(*attributes.keys) == attributes }
+          candidates.find_all do |c|
+            attributes.all? do |key, value|
+              c.public_send(key) == value
+            end
+          end
         end
       end
 
