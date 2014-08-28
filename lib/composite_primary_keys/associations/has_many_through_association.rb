@@ -61,7 +61,6 @@ module ActiveRecord
 
         update_counter(-count)
       end
-      end
 
       def through_records_for(record)
         # CPK
