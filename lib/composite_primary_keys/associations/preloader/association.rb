@@ -61,16 +61,24 @@ module ActiveRecord
         end
 
         def owners_by_key
-          @owners_by_key ||= owners.group_by do |owner|
-            # CPK
-            # key = owner[owner_key_name]
-            key = Array(owner_key_name).map do |key_name|
-              owner[key_name]
-            end
-            # CPK
-            # key && key.to_s
-            key && key.join(CompositePrimaryKeys::ID_SEP)
-          end
+          @owners_by_key ||= if key_conversion_required?
+                               owners.group_by do |owner|
+                                 # CPK
+                                 # owner[owner_key_name].to_s
+                                 key = Array(owner_key_name).map do |key_name|
+                                   owner[key_name]
+                                 end.join(CompositePrimaryKeys::ID_SEP)
+                               end
+                             else
+                               owners.group_by do |owner|
+                                 # CPK
+                                 # owner[owner_key_name]
+                                 key = Array(owner_key_name).map do |key_name|
+                                   owner[key_name]
+                                 end.join(CompositePrimaryKeys::ID_SEP)
+                               end
+                             end
+                             
         end
       end
     end
