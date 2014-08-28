@@ -47,6 +47,10 @@ directory and run the tests like so:
 
 * ADAPTER=mysql ruby test_equal.rb
 
+Or to run all tests (defined on test_suite.rb):
+
+* ADAPTER=mysql ruby test_suite.rb
+
 == Logging
 
 By default, ActiveRecord's log messages are sent to standard out when
