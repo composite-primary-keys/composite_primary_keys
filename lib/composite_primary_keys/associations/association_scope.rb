@@ -16,10 +16,14 @@ module ActiveRecord
           
           if reflection == chain.last
             # CPK - TODO add back in tracker support
-            #bind_val = bind scope, table.table_name, key.to_s, owner[foreign_key], tracker
-            #scope    = scope.where(table[key].eq(bind_val))
-            predicate = cpk_join_predicate(table, key, owner, foreign_key)
-            scope = scope.where(predicate)
+            if key.kind_of?(Array) || foreign_key.kind_of?(Array)
+              predicate = cpk_join_predicate(table, key, owner, foreign_key)
+              scope = scope.where(predicate)
+            else
+              bind_val = bind scope, table.table_name, key.to_s, owner[foreign_key], tracker
+              scope    = scope.where(table[key].eq(bind_val))
+            end
+            
             
             if reflection.type
               value    = owner.class.base_class.name
