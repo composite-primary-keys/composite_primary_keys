@@ -71,7 +71,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
   end
 
-  def test_association_is_not_cached_to_where_it_returns_the_wrong_one
+  def test_has_one_association_is_not_cached_to_where_it_returns_the_wrong_one
     engineering = departments(:engineering)
     engineering_head = engineering.head
 
@@ -79,6 +79,16 @@ class TestAssociations < ActiveSupport::TestCase
     accounting_head = accounting.head
 
     refute_equal accounting_head, engineering_head
+  end
+
+  def test_has_many_association_is_not_cached_to_where_it_returns_the_wrong_ones
+    steve = employees(:steve)
+    steve_comments = steve.comments
+
+    jill = employees(:jill)
+    jill_comments = jill.comments
+
+    refute_equal jill_comments, steve_comments
   end
 
   def test_find_includes_product_tariffs_product
