@@ -82,13 +82,13 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_association_is_not_cached_to_where_it_returns_the_wrong_ones
-    steve = employees(:steve)
-    steve_comments = steve.comments
+    engineering = departments(:engineering)
+    engineering_employees = engineering.employees
 
-    jill = employees(:jill)
-    jill_comments = jill.comments
+    accounting = departments(:accounting)
+    accounting_employees = accounting.employees
 
-    refute_equal jill_comments, steve_comments
+    refute_equal accounting_employees, engineering_employees
   end
 
   def test_find_includes_product_tariffs_product
@@ -143,11 +143,11 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_through_when_not_pre_loaded
-  	student = Student.first
-  	rooms = student.rooms
-  	assert_equal(1, rooms.size)
-  	assert_equal(1, rooms.first.dorm_id)
-  	assert_equal(1, rooms.first.room_id)
+    student = Student.first
+    rooms = student.rooms
+    assert_equal(1, rooms.size)
+    assert_equal(1, rooms.first.dorm_id)
+    assert_equal(1, rooms.first.room_id)
   end
 
   def test_has_many_through_when_through_association_is_composite

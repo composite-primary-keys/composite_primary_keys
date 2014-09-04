@@ -50,6 +50,8 @@ require 'active_record/associations/join_dependency'
 require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
+require 'active_record/associations/singular_association'
+require 'active_record/associations/collection_association'
 
 
 require 'active_model/dirty'
@@ -91,6 +93,8 @@ require 'composite_primary_keys/associations/join_dependency'
 require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
+require 'composite_primary_keys/associations/singular_association'
+require 'composite_primary_keys/associations/collection_association'
 
 require 'composite_primary_keys/dirty'
 
