@@ -4,7 +4,7 @@ PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'composite_primary_keys'
 require 'minitest/autorun'
-require 'active_support/core_ext' # active record 4.2.0.beta1 relies on it but fails to require it on its own
+#require 'active_support/core_ext' # active record 4.2.0.beta1 relies on it but fails to require it on its own
 require 'active_support/test_case'
 
 # Now load the connection spec
