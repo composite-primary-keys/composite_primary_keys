@@ -16,7 +16,12 @@ class TestValidations < ActiveSupport::TestCase
     exception = assert_raises(ActiveRecord::StatementInvalid) {
       EmployeesGroup.where(employee_id: 1).first.destroy
     }
-    assert_match(/Unknown column 'employees_groups.' in 'where clause/, exception.message)
+    
+    mysql_match = /Unknown column 'employees_groups.' in 'where clause/ =~ exception.message
+    sqlite3_match = /no such column: employees_groups./ =~ exception.message
+    postgresql_match = /PG::SyntaxError: ERROR:  zero-length delimited identifier/ =~ exception.message
+
+    assert(postgresql_match || mysql_match || sqlite3_match)
     assert(EmployeesGroup.all.size == 3)
   end
 end

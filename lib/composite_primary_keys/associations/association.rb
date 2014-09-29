@@ -4,7 +4,7 @@ module ActiveRecord
       def creation_attributes
         attributes = {}
 
-        if (reflection.macro == :has_one || reflection.macro == :has_many) && !options[:through]
+        if (reflection.has_one? || reflection.collection?) && !options[:through]
           # CPK
           # attributes[reflection.foreign_key] = owner[reflection.active_record_primary_key]
           Array(reflection.foreign_key).zip(Array(reflection.active_record_primary_key)).each do |key1, key2|

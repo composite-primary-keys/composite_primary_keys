@@ -10,29 +10,24 @@ module ActiveRecord
         chain.each_with_index do |reflection, i|
           table, foreign_table = tables.shift, tables.first
 
-          if reflection.source_macro == :belongs_to
-            if reflection.options[:polymorphic]
-              key = reflection.association_primary_key(assoc_klass)
-            else
-              key = reflection.association_primary_key
-            end
-
-            foreign_key = reflection.foreign_key
-          else
-            key         = reflection.foreign_key
-            foreign_key = reflection.active_record_primary_key
-          end
-
+          join_keys = reflection.join_keys(assoc_klass)
+          key = join_keys.key
+          foreign_key = join_keys.foreign_key
+          
           if reflection == chain.last
             # CPK - TODO add back in tracker support
-            #bind_val = bind scope, table.table_name, key.to_s, owner[foreign_key], tracker
-            #scope    = scope.where(table[key].eq(bind_val))
-            predicate = cpk_join_predicate(table, key, owner, foreign_key)
-            scope = scope.where(predicate)
-
+            if key.kind_of?(Array) || foreign_key.kind_of?(Array)
+              predicate = cpk_join_predicate(table, key, owner, foreign_key)
+              scope = scope.where(predicate)
+            else
+              bind_val = bind scope, table.table_name, key.to_s, owner[foreign_key], tracker
+              scope    = scope.where(table[key].eq(bind_val))
+            end
+            
+            
             if reflection.type
               value    = owner.class.base_class.name
-              bind_val = bind scope, table.table_name, reflection.type.to_s, value, tracker
+              bind_val = bind scope, table.table_name, reflection.type, value, tracker
               scope    = scope.where(table[reflection.type].eq(bind_val))
             end
           else
@@ -42,7 +37,7 @@ module ActiveRecord
 
             if reflection.type
               value    = chain[i + 1].klass.base_class.name
-              bind_val = bind scope, table.table_name, reflection.type.to_s, value, tracker
+              bind_val = bind scope, table.table_name, reflection.type, value, tracker
               scope    = scope.where(table[reflection.type].eq(bind_val))
             end
 
@@ -66,6 +61,7 @@ module ActiveRecord
             end
 
             scope.where_values += item.where_values
+            scope.bind_values  += item.bind_values
             scope.order_values |= item.order_values
           end
         end

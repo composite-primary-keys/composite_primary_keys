@@ -75,7 +75,13 @@ module ActiveRecord
 
           Hash[equalities.map { |where|
             name = where.left.name
-            [name, binds.fetch(name.to_s) { where.right }]
+            [name, binds.fetch(name.to_s) {
+              case where.right
+              when Array then where.right.map(&:val)
+              else
+                where.right.val
+              end
+            }]
           }]
         end
       end
@@ -89,7 +95,13 @@ module ActiveRecord
         relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
         relation.arel.compile_update(substitutes, @klass.primary_key)
       else
-        @klass.unscoped.where(@klass.arel_table[@klass.primary_key].eq(id_was || id)).arel.compile_update(substitutes, @klass.primary_key)
+        scope = @klass.unscoped
+
+        if @klass.finder_needs_type_condition?
+          scope.unscope!(where: @klass.inheritance_column)
+        end
+        
+        scope.where(@klass.arel_table[@klass.primary_key].eq(id_was || id)).arel.compile_update(substitutes, @klass.primary_key)
       end
 
       @klass.connection.update(

@@ -35,7 +35,7 @@ module CompositePrimaryKeys
         #id_rows.map {|row| row[primary_key]}
         id_rows.map {|row| row.values}
       end
-
+      
       def exists?(conditions = :none)
         # conditions can be:
         #   Array - ['department_id = ? and location_id = ?', 1, 1]
@@ -75,10 +75,10 @@ module CompositePrimaryKeys
 
         connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
       end
-
+      
       def find_with_ids(*ids)
         # CPK handle strings that come w/ calling to_param on CPK-enabled models
-        ids = parse_ids(ids)
+        ids = cpk_parse_ids(ids)
         raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
 
         expects_array = ids.first.kind_of?(Array)
@@ -117,7 +117,6 @@ module CompositePrimaryKeys
           connection.substitute_at(column, bind_values.length - 1)
         end
         relation = relation.where(cpk_id_predicate(table, primary_keys, values))
-
         record = relation.take
         raise_record_not_found_exception!(id, 0, 1) unless record
         record
@@ -170,26 +169,6 @@ module CompositePrimaryKeys
         else
           raise_record_not_found_exception!(ids, result.size, expected_size)
         end
-      end
-
-      private
-      def parse_ids(ids)
-        result = []
-        ids.each do |id|
-          if id.is_a?(String)
-            if id.index(",")
-              result << [id.split(",")]
-            else
-              result << [id]
-            end
-          elsif id.is_a?(Array) && id.count > 1 && id.first.to_s.index(",")
-            result << id.map{|subid| subid.split(",")}
-          else
-            result << [id]
-          end
-        end
-        result = result.flatten(1)
-        return result
       end
     end
   end

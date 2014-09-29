@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>4.1.4'
+  gem 'activerecord', '4.2.0.beta2'
   require 'active_record'
 end
 
@@ -40,16 +40,18 @@ require 'active_record/model_schema'
 require 'active_record/persistence'
 require 'active_record/relation'
 require 'active_record/sanitization'
+require 'active_record/attribute_methods'
 
 require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
 require 'active_record/associations/has_many_association'
 require 'active_record/associations/has_many_through_association'
 require 'active_record/associations/join_dependency'
-require 'active_record/associations/join_dependency/join_part'
 require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
+require 'active_record/associations/singular_association'
+require 'active_record/associations/collection_association'
 
 
 require 'active_model/dirty'
@@ -80,6 +82,7 @@ require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/model_schema'
 require 'composite_primary_keys/relation'
 require 'composite_primary_keys/sanitization'
+require 'composite_primary_keys/attribute_methods'
 require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'
@@ -87,10 +90,11 @@ require 'composite_primary_keys/associations/association_scope'
 require 'composite_primary_keys/associations/has_many_association'
 require 'composite_primary_keys/associations/has_many_through_association'
 require 'composite_primary_keys/associations/join_dependency'
-require 'composite_primary_keys/associations/join_dependency/join_part'
 require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
+require 'composite_primary_keys/associations/singular_association'
+require 'composite_primary_keys/associations/collection_association'
 
 require 'composite_primary_keys/dirty'
 
