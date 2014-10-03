@@ -48,6 +48,10 @@ module ActiveRecord
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
           end
+
+        # CPK Adds support for parsing attributes such that it correctly matches record
+        # id's to_s value. For example: attributes['id'] == [55, "twitter"] will return
+        # "55, twitter", which is == CPK's primary key 'to_s' return
         elsif existing_record = existing_records.detect do |record|
                                   if attributes['id'].is_a?(Array)
                                     record.id.to_s == attributes['id'].join(',')
@@ -60,10 +64,6 @@ module ActiveRecord
             # Make sure we are operating on the actual object which is in the association's
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
-
-            # CPK Adds support for parsing attributes such that it correctly matches record
-            # id's to_s value. For example: attributes['id'] == [55, "twitter"] will return
-            # "55, twitter", which is == CPK's primary key 'to_s' return
             target_record = association.target.detect do |record|
                               if attributes['id'].is_a?(Array)
                                 record.id.to_s == attributes['id'].join(',')
