@@ -43,7 +43,6 @@ module ActiveRecord
 
       attributes_collection.each do |attributes|
         attributes = attributes.with_indifferent_access
-
         if attributes['id'].blank?
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
@@ -54,7 +53,7 @@ module ActiveRecord
         # "55, twitter", which is == CPK's primary key 'to_s' return
         elsif existing_record = existing_records.detect do |record|
                                   if attributes['id'].is_a?(Array)
-                                    record.id.to_s == attributes['id'].join(',')
+                                    record.id.to_s == attributes['id'].join(CompositePrimaryKeys::ID_SEP)
                                    else
                                     record.id.to_s == attributes['id'].to_s
                                   end
@@ -66,7 +65,7 @@ module ActiveRecord
             # Take into account that the proxy_target may have changed due to callbacks
             target_record = association.target.detect do |record|
                               if attributes['id'].is_a?(Array)
-                                record.id.to_s == attributes['id'].join(',')
+                                record.id.to_s == attributes['id'].join(CompositePrimaryKeys::ID_SEP)
                                else
                                 record.id.to_s == attributes['id'].to_s
                               end
