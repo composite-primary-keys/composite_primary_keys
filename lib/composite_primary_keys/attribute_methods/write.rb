@@ -2,6 +2,7 @@ module ActiveRecord
   module AttributeMethods
     module Write
       def write_attribute_with_type_cast(attr_name, value, type_cast_method)
+        # CPK
         if attr_name.kind_of?(Array)
           value = [nil]*attr_name.length if value.nil?
           unless value.length == attr_name.length
