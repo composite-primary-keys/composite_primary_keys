@@ -76,6 +76,9 @@ The first one no longer works.  It was removed because it made the internal code
 and makes the intention of the code clearer (especially when finding multiple records).
 If this change causes too much pain then please submit a ticket on Github.
 
+== 6.0.7 (2014-10-06)
+
+* Support Rails 4.0.6 (Tom Hughes)
 
 == 6.0.6 (2014-05-26)
 
