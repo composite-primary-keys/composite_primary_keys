@@ -1,3 +1,7 @@
+== 6.0.7 (2014-10-06)
+
+* Support Rails 4.0.6 (Tom Hughes)
+
 == 6.0.6 (2014-05-26)
 
 * Don't refer to deprecated set_primary_keys in README (Henare Degan)
