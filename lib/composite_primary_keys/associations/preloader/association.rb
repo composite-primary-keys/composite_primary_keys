@@ -15,14 +15,18 @@ module ActiveRecord
         end
 
         def associated_records_by_owner(preloader)
-          # CPK
           owners_map = owners_by_key
-          #owner_keys = owners_map.keys.compact
-          owner_keys = owners.map do |owner|
-            Array(owner_key_name).map do |owner_key|
-              owner[owner_key]
-            end
-          end.compact.uniq
+          # CPK
+          # owner_keys = owners_map.keys.compact
+          owner_keys = if reflection.foreign_key.is_a?(Array)
+            owners.map do |owner|
+              Array(owner_key_name).map do |owner_key|
+                owner[owner_key]
+              end
+            end.compact.uniq
+          else
+            owners_map.keys.compact
+          end
 
           # Each record may have multiple owners, and vice-versa
           records_by_owner = owners.each_with_object({}) do |owner,h|
@@ -61,16 +65,24 @@ module ActiveRecord
         end
 
         def owners_by_key
-          @owners_by_key ||= owners.group_by do |owner|
-            # CPK
-            # key = owner[owner_key_name]
-            key = Array(owner_key_name).map do |key_name|
-              owner[key_name]
-            end
-            # CPK
-            # key && key.to_s
-            key && key.join(CompositePrimaryKeys::ID_SEP)
-          end
+          @owners_by_key ||= if key_conversion_required?
+                               owners.group_by do |owner|
+                                 # CPK
+                                 # owner[owner_key_name].to_s
+                                 key = Array(owner_key_name).map do |key_name|
+                                   owner[key_name]
+                                 end.join(CompositePrimaryKeys::ID_SEP)
+                               end
+                             else
+                               owners.group_by do |owner|
+                                 # CPK
+                                 # owner[owner_key_name]
+                                 key = Array(owner_key_name).map do |key_name|
+                                   owner[key_name]
+                                 end.join(CompositePrimaryKeys::ID_SEP)
+                               end
+                             end
+                             
         end
       end
     end
