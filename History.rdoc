@@ -1,3 +1,10 @@
+== 7.0.11 (2014-10-06)
+
+* ActiveRecord 4.1.6 support (Tom Hughes, Charlie Savage)
+* Verify MariaDB support and update docs (Isi Robayna)
+* Postgresql binary column support (Piotr Gębala)
+* Fix deleting of records from collection association (akeuk and Charlie Savage)
+
 == 7.0.10 (2014-08-07)
 
 * Update attribute dirty methods to allow attribute *_was
