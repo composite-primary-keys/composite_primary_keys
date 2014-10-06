@@ -111,10 +111,6 @@ module ActiveRecord
         id
       end
 
-      def id_was
-        attribute_was("id")
-      end
-
       def ==(comparison_object)
         return false if !persisted? && comparison_object.object_id != object_id
         return true if equal? comparison_object
