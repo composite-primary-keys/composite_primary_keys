@@ -33,6 +33,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
       :code_label => 'AAA',
       :abbreviation => 'Aaa'
     }]
+
     reference_code = ReferenceCode.find_by_reference_code(code_id)
     assert_kind_of(ReferenceCode, reference_code)
     assert_equal(reference_code.code_label, 'AAA')
