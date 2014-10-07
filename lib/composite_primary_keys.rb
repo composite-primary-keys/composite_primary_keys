@@ -68,7 +68,7 @@ require 'active_record/relation/query_methods'
 require 'active_record/validations/uniqueness'
 
 # CPK files
-require 'composite_primary_keys/active_model/dirty'
+#require 'composite_primary_keys/active_model/dirty'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'
