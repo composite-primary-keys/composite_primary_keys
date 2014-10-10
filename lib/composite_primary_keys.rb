@@ -48,9 +48,6 @@ require 'active_record/associations/join_dependency/join_association'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/preloader/belongs_to'
 
-
-require 'active_model/dirty'
-
 require 'active_record/attribute_methods/primary_key'
 require 'active_record/attribute_methods/dirty'
 require 'active_record/attribute_methods/read'
