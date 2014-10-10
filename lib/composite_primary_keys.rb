@@ -54,7 +54,6 @@ require 'active_record/associations/collection_association'
 require 'active_model/dirty'
 
 require 'active_record/attribute_methods/primary_key'
-require 'active_record/attribute_methods/dirty'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
 require 'active_record/nested_attributes'
@@ -70,7 +69,6 @@ require 'active_record/relation/query_methods'
 require 'active_record/validations/uniqueness'
 
 # CPK files
-require 'composite_primary_keys/active_model/dirty'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'
