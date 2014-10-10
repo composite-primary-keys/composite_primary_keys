@@ -13,10 +13,9 @@ class TestValidations < ActiveSupport::TestCase
     EmployeesGroup.create(employee_id: 3, group_id: 103)
 
     assert_equal(EmployeesGroup.all.size, 3)
-    exception = assert_raises(ActiveRecord::StatementInvalid) {
+    assert_raises(ActiveRecord::StatementInvalid) {
       EmployeesGroup.where(employee_id: 1).first.destroy
     }
-    assert_match(/Unknown column 'employees_groups.' in 'where clause/, exception.message)
     assert(EmployeesGroup.all.size == 3)
   end
 end
