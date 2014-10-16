@@ -83,7 +83,7 @@ create table membership_statuses (
     id integer not null primary key autoincrement,
     user_id int not null,
     group_id int not null,
-	status varchar(50) not null
+    status varchar(50) not null
 );
 
 create table departments (
@@ -111,48 +111,48 @@ create table hacks (
 );
 
 create table restaurants (
-	franchise_id integer not null,
-	store_id integer not null,
-	name varchar(100),
-	primary key (franchise_id, store_id)
+    franchise_id integer not null,
+    store_id integer not null,
+    name varchar(100),
+    primary key (franchise_id, store_id)
 );
 
 create table restaurants_suburbs (
-	franchise_id integer not null,
-	store_id integer not null,
-	city_id integer not null,
-	suburb_id integer not null
+    franchise_id integer not null,
+    store_id integer not null,
+    city_id integer not null,
+    suburb_id integer not null
 );
 
 create table dorms (
-	id integer not null primary key autoincrement
+    id integer not null primary key autoincrement
 );
 
 create table rooms (
-	dorm_id integer not null,
-	room_id integer not null,
-	primary key (dorm_id, room_id)
+    dorm_id integer not null,
+    room_id integer not null,
+    primary key (dorm_id, room_id)
 );
 
 create table room_attributes (
-	id integer not null primary key autoincrement,
-	name varchar(50)
+    id integer not null primary key autoincrement,
+    name varchar(50)
 );
 
 create table room_attribute_assignments (
-	dorm_id integer not null,
-	room_id integer not null,
-	room_attribute_id integer not null
+    dorm_id integer not null,
+    room_id integer not null,
+    room_attribute_id integer not null
 );
 
 create table students (
-	id integer not null primary key autoincrement
+    id integer not null primary key autoincrement
 );
 
 create table room_assignments (
-	student_id integer not null,
-	dorm_id integer not null,
-	room_id integer not null	
+    student_id integer not null,
+    dorm_id integer not null,
+    room_id integer not null
 );
 
 create table seats (
@@ -170,8 +170,8 @@ create table capitols (
 
 create table products_restaurants (
   product_id integer not null,
-	franchise_id integer not null,
-	store_id integer not null
+  franchise_id integer not null,
+  store_id integer not null
 );
 
 create table employees_groups (
@@ -179,3 +179,8 @@ create table employees_groups (
   group_id integer not null
 );
 
+create table model_with_callbacks(
+    reference_type_id int(11),
+    reference_code int(11) not null,
+    primary key (reference_type_id, reference_code)
+);

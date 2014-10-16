@@ -28,7 +28,7 @@ CREATE TABLE tariffs (
     [tariff_id]  [int],
     [start_date] [date],
     [amount]     [int] NULL
-    CONSTRAINT [tariffs_pk] PRIMARY KEY 
+    CONSTRAINT [tariffs_pk] PRIMARY KEY
         ( [tariff_id], [start_date] )
 );
 go
@@ -88,7 +88,7 @@ go
 CREATE TABLE memberships (
     user_id  [int] NOT NULL,
     group_id [int] NOT NULL
-    CONSTRAINT [memberships_pk] PRIMARY KEY 
+    CONSTRAINT [memberships_pk] PRIMARY KEY
         ( [user_id], [group_id] )
 );
 go
@@ -134,7 +134,7 @@ CREATE TABLE restaurants (
     franchise_id [int] NOT NULL,
     store_id     [int] NOT NULL,
     name         [varchar](100)
-    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED
         ( [franchise_id], [store_id] )
 );
 go
@@ -155,7 +155,7 @@ go
 CREATE TABLE rooms (
     dorm_id [int] NOT NULL,
     room_id [int] NOT NULL,
-    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED
         ( [dorm_id], [room_id] )
 );
 go
@@ -197,7 +197,7 @@ go
 CREATE TABLE capitols (
     country varchar(450) NOT NULL,
     city varchar(450) NOT NULL
-    CONSTRAINT [capitols_pk] PRIMARY KEY 
+    CONSTRAINT [capitols_pk] PRIMARY KEY
         ( [country], [city] )
 );
 go
@@ -206,5 +206,13 @@ CREATE TABLE products_restaurants (
     product_id   [int] NOT NULL,
     franchise_id [int] NOT NULL,
     store_id     [int] NOT NULL
+);
+go
+
+CREATE TABLE model_with_callbacks (
+    reference_type_id [int],
+    reference_code    [int],
+    CONSTRAINT [model_with_callbacks_pk] PRIMARY KEY
+        ( [reference_type_id], [reference_code] )
 );
 go
