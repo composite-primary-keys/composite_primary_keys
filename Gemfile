@@ -6,3 +6,4 @@ gem "activerecord", rails_version
 
 gem "mysql2"
 gem 'sqlite3'
+gemspec
