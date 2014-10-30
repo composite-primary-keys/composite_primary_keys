@@ -190,3 +190,9 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table model_with_callbacks (
+    reference_type_id int not null,
+    reference_code int not null,
+    primary key (reference_type_id, reference_code)
+);

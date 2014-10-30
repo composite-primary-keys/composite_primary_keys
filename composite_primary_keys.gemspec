@@ -27,4 +27,5 @@ Gem::Specification.new do |s|
   # Dependencies
   s.required_ruby_version = '>= 1.9.3'
   s.add_dependency('activerecord', '~>4.0.6')
+  s.add_development_dependency('mocha', '~> 1.1.0')
 end

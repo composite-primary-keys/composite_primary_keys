@@ -84,3 +84,6 @@ go
 
 DROP TABLE products_restaurants;
 go
+
+DROP TABLE model_with_callbacks;
+go

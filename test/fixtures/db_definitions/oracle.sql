@@ -205,3 +205,8 @@ create table employees_groups (
   group_id int not null
 );
 
+create table model_with_callbacks(
+    reference_type_id number(11),
+    reference_code    number(11),
+    constraint model_with_callbacks_pk primary key (reference_type_id, reference_code)
+);
