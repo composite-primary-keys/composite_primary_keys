@@ -22,6 +22,7 @@ class TestValidations < ActiveSupport::TestCase
     postgresql_match = /PG::SyntaxError: ERROR:  zero-length delimited identifier/ =~ exception.message
 
     assert(postgresql_match || mysql_match || sqlite3_match)
+
     assert(EmployeesGroup.all.size == 3)
   end
 end
