@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '4.2.0.beta2'
+  gem 'activerecord', '4.2.0.beta4'
   require 'active_record'
 end
 
@@ -110,3 +110,5 @@ require 'composite_primary_keys/relation/predicate_builder'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
+
+require 'composite_primary_keys/composite_relation'
