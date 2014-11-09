@@ -1,5 +1,13 @@
 module ActiveRecord
   module NestedAttributes
+    def cpk_detect_record(id, records)
+      id_string = id.is_a?(Array) ? CompositePrimaryKeys::CompositeKeys.new(id).to_s : id.to_s
+
+      records.detect do |record|
+        record.id.to_s == id_string
+      end
+    end
+
     def assign_nested_attributes_for_collection_association(association_name, attributes_collection)
       options = self.nested_attributes_options[association_name]
 
@@ -48,12 +56,12 @@ module ActiveRecord
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
           end
-        elsif existing_record = existing_records.detect { |record| record.id.to_s == attributes['id'].to_s }
+        elsif existing_record = cpk_detect_record(attributes['id'], existing_records)
           unless call_reject_if(association_name, attributes)
             # Make sure we are operating on the actual object which is in the association's
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
-            target_record = association.target.detect { |record| record.id.to_s == attributes['id'].to_s }
+            target_record = cpk_detect_record(attributes['id'], association.target)
             if target_record
               existing_record = target_record
             else
