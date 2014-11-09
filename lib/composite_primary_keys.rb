@@ -104,3 +104,5 @@ require 'composite_primary_keys/relation/predicate_builder'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
+
+require 'composite_primary_keys/composite_relation'

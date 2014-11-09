@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestDelete < ActiveSupport::TestCase
-  fixtures :departments, :employees, :products, :product_tariffs,
+  fixtures :articles, :departments, :employees, :products, :tariffs, :product_tariffs,
            :reference_types, :reference_codes
   
   CLASSES = {

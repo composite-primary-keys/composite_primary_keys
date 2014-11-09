@@ -84,6 +84,7 @@ CPK supports the following databases:
 
  * PostgreSQL
  * MySQL
+ * MariaDB
  * Oracle
  * DB2
  * SQLite
