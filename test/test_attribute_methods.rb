@@ -51,5 +51,13 @@ class TestAttributeMethods < ActiveSupport::TestCase
     assert_equal([1,1], ref_code.to_key)
   end
 
-
+  def test_id_was
+    rt = ReferenceType.find(1)
+    rt.id = 2
+    assert_equal 1, rt.id_was
+    
+    ref_code = ReferenceCode.find([1, 1])
+    ref_code.id = [1,2]
+    assert_equal [1,1], ref_code.id_was
+  end
 end

@@ -26,12 +26,9 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>4.1.4'
+  gem 'activerecord', '~>4.1.6'
   require 'active_record'
 end
-
-# AM files we override
-require 'active_model/dirty'
 
 # AR files we override
 require 'active_record/counter_cache'
@@ -54,6 +51,7 @@ require 'active_record/associations/preloader/belongs_to'
 
 require 'active_model/dirty'
 
+require 'active_record/attribute_methods/primary_key'
 require 'active_record/attribute_methods/dirty'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
@@ -70,7 +68,6 @@ require 'active_record/relation/query_methods'
 require 'active_record/validations/uniqueness'
 
 # CPK files
-require 'composite_primary_keys/active_model/dirty'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'
@@ -94,6 +91,7 @@ require 'composite_primary_keys/associations/preloader/belongs_to'
 
 require 'composite_primary_keys/dirty'
 
+require 'composite_primary_keys/attribute_methods/primary_key'
 require 'composite_primary_keys/attribute_methods/dirty'
 require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
@@ -109,3 +107,5 @@ require 'composite_primary_keys/relation/predicate_builder'
 require 'composite_primary_keys/relation/query_methods'
 
 require 'composite_primary_keys/validations/uniqueness'
+
+require 'composite_primary_keys/composite_relation'
