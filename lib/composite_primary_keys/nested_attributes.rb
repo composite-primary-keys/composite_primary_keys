@@ -43,17 +43,34 @@ module ActiveRecord
 
       attributes_collection.each do |attributes|
         attributes = attributes.with_indifferent_access
-
         if attributes['id'].blank?
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
           end
-        elsif existing_record = existing_records.detect { |record| record.id.to_s == attributes['id'].to_s }
+
+        # CPK Adds support for parsing attributes such that it correctly matches record
+        # id's to_s value. For example: attributes['id'] == [55, "twitter"] will return
+        # "55, twitter", which is == CPK's primary key 'to_s' return
+        elsif existing_record = existing_records.detect do |record|
+                                  if attributes['id'].is_a?(Array)
+                                    record.id.to_s == attributes['id'].join(CompositePrimaryKeys::ID_SEP)
+                                   else
+                                    record.id.to_s == attributes['id'].to_s
+                                  end
+                                end
+
           unless call_reject_if(association_name, attributes)
             # Make sure we are operating on the actual object which is in the association's
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
-            target_record = association.target.detect { |record| record.id.to_s == attributes['id'].to_s }
+            target_record = association.target.detect do |record|
+                              if attributes['id'].is_a?(Array)
+                                record.id.to_s == attributes['id'].join(CompositePrimaryKeys::ID_SEP)
+                               else
+                                record.id.to_s == attributes['id'].to_s
+                              end
+                            end
+
             if target_record
               existing_record = target_record
             else

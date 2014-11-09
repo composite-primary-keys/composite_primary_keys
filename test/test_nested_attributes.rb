@@ -33,6 +33,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
       :code_label => 'AAA',
       :abbreviation => 'Aaa'
     }]
+
     reference_code = ReferenceCode.find_by_reference_code(code_id)
     assert_kind_of(ReferenceCode, reference_code)
     assert_equal(reference_code.code_label, 'AAA')
@@ -62,5 +63,62 @@ class TestNestedAttributes < ActiveSupport::TestCase
     reference_code.reload
     assert_equal(reference_code.code_label, 'XX')
     assert_equal(reference_code.abbreviation, 'Xx')
+  end
+
+  fixtures :topics, :topic_sources
+
+  def test_nested_attributes_create_with_string_in_primary_key
+    platform = 'instagram'
+
+    topic = topics(:music)
+    topic.update_attribute :topic_sources_attributes, [{
+      :platform => platform,
+      :keywords => 'funk'
+    }]
+    assert_not_nil TopicSource.find_by_platform(platform)
+  end
+
+  def test_nested_attributes_update_with_string_in_primary_key
+    platform = 'instagram'
+
+    topic = topics(:music)
+    topic.update_attribute :topic_sources_attributes, [{
+      :platform => platform,
+      :keywords => 'funk'
+    }]
+    assert_not_nil TopicSource.find_by_platform(platform)
+
+    topic_source = TopicSource.find_by_platform(platform)
+    cpk = CompositePrimaryKeys::CompositeKeys[topic.id, platform]
+    topic.update_attribute :topic_sources_attributes, [{
+      :id => cpk,
+      :keywords => 'jazz'
+    }]
+
+    topic_source = TopicSource.find_by_platform(platform)
+    assert_kind_of(TopicSource, topic_source)
+    assert_equal(topic_source.keywords, 'jazz')
+  end
+
+  def test_nested_attributes_update_with_string_in_primary_key_2
+    topic = topics(:music)
+    topic_source = topic_sources(:music_source)
+
+    topic.update_attributes(:topic_sources_attributes => [{:id => topic_source.id,
+                                                           :keywords => 'classical, jazz'}])
+
+    topic_source.reload
+    assert_equal(topic_source.keywords, 'classical, jazz')
+  end
+
+  def test_nested_attributes_update_with_string_in_primary_key_3
+    topic = topics(:music)
+    topic_source = topic_sources(:music_source)
+
+    topic.update_attributes(:topic_sources_attributes => [{:id => topic_source.id.to_s,
+                                                           :keywords => 'classical, jazz'}])
+
+    topic_source.reload
+    assert_equal(topic_source.keywords, 'classical, jazz')
   end
 end

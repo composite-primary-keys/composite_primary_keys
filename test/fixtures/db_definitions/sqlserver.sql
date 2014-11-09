@@ -1,6 +1,20 @@
 USE [composite_primary_keys_unittest];
 go
 
+CREATE TABLE topics (
+    id          [int] IDENTITY(1000,1) NOT NULL,  
+    name        [varchar](50) default NULL,  
+    feed_size   [int] default NULL
+);
+go
+
+CREATE TABLE topic_sources (
+    topic_id    [int] NOT NULL,
+    platform    [varchar](50) NOT NULL,
+    keywords    [varchar](50) default NULL,
+);
+go
+
 CREATE TABLE reference_types (
     reference_type_id [int] IDENTITY(1000,1) NOT NULL,
     type_label        [varchar](50) NULL,
