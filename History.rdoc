@@ -1,3 +1,9 @@
+== 7.0.12 (2014-11-09)
+
+* ActiveRecord 4.1.7 support (Tom Hughes)
+* Extract CPK methods to its own module and extending instead of opening the singleton class
+  which fixes Marshal#dump (Nicolás Hock Isaza)
+
 == 7.0.11 (2014-10-10)
 
 * ActiveRecord 4.1.6 support (Tom Hughes, Charlie Savage)
