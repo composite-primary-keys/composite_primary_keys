@@ -18,6 +18,16 @@ CREATE TABLE reference_codes (
 );
 go
 
+CREATE TABLE boards (
+    board_id          [int],
+    board_no          [int],
+    text              [varchar](50) NULL,
+    lock_version      [int] DEFAULT 0
+    CONSTRAINT [boards_pk] PRIMARY KEY
+        ( [board_id], [board_no] )
+);
+go
+
 CREATE TABLE products (
     id   [int] IDENTITY(1000,1) NOT NULL,
     name [varchar](50) NULL

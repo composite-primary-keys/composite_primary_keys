@@ -1,0 +1,17 @@
+board1:
+  board_id: 1
+  board_no: 1
+  text: "board a"
+  lock_version: 0
+
+board2:
+  board_id: 1
+  board_no: 2
+  text: "board b"
+  lock_version: 0
+
+board3:
+  board_id: 2
+  board_no: 2
+  text: "board c"
+  lock_version: 0

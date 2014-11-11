@@ -15,6 +15,14 @@ CREATE TABLE reference_codes (
   PRIMARY KEY  (reference_type_id,reference_code)
 );
 
+CREATE TABLE boards (
+  board_id integer NOT NULL,
+  board_no integer NOT NULL,
+  text varchar(50) default NULL,
+  lock_version integer default 0,
+  PRIMARY KEY (board_id, board_no)
+);
+
 CREATE TABLE products (
   id integer NOT NULL,
   name varchar(50) default NULL,

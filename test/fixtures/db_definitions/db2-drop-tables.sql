@@ -1,5 +1,7 @@
 drop table MEMBERSHIPS;                                                                                                                    
 drop table REFERENCE_CODES;                                                                                                                 
+drop table BOARDS;
+
 drop table TARIFFS;                                                                                                                         
 drop table ARTICLES;                                                                                                                        
 drop table GROUPS;                                                                                                                          
