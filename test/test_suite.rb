@@ -8,7 +8,10 @@
   test_composite_arrays
   test_create
   test_delete
+  test_delete_all
+  test_dumpable
   test_dup
+  test_enum
   test_equal
   test_exists
   test_find
