@@ -11,7 +11,6 @@ module ActiveRecord
           else
             # CPK
             # scope = self.scope.where(reflection.klass.primary_key => records)
-            # scope = self.scope.where(reflection.klass.primary_key => records)
             table = Arel::Table.new(reflection.table_name)
             and_conditions = records.map do |record|
               eq_conditions = Array(reflection.association_primary_key).map do |name|
@@ -31,7 +30,13 @@ module ActiveRecord
           if method == :delete_all
             update_counter(-scope.delete_all)
           else
-            update_counter(-scope.update_all(reflection.foreign_key => nil))
+            # CPK
+            # update_counter(-scope.update_all(reflection.foreign_key => nil))
+            update_hash = Array(reflection.foreign_key).inject(Hash.new) do |hash, key|
+              hash[key] = nil
+              hash
+            end
+            update_counter(-scope.update_all(update_hash))
           end
         end
       end

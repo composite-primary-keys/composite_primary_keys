@@ -1,3 +1,18 @@
+== 7.0.12 (2014-11-09)
+
+* ActiveRecord 4.1.7 support (Tom Hughes)
+* Extract CPK methods to its own module and extending instead of opening the singleton class
+  which fixes Marshal#dump (Nicolás Hock Isaza)
+
+== 7.0.11 (2014-10-10)
+
+* ActiveRecord 4.1.6 support (Tom Hughes, Charlie Savage)
+* Verify MariaDB support and update docs (Isi Robayna)
+* Postgresql binary column support (Piotr Gębala)
+* Fix deleting of records from collection association (akeuk and Charlie Savage)
+* Fix invalid include (shiro16)
+* Improve tests (Yann Marquet)
+
 == 7.0.10 (2014-08-07)
 
 * Update attribute dirty methods to allow attribute *_was
@@ -69,6 +84,9 @@ The first one no longer works.  It was removed because it made the internal code
 and makes the intention of the code clearer (especially when finding multiple records).
 If this change causes too much pain then please submit a ticket on Github.
 
+== 6.0.7 (2014-10-06)
+
+* Support Rails 4.0.6 (Tom Hughes)
 
 == 6.0.6 (2014-05-26)
 
