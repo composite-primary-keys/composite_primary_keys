@@ -1,23 +1,5 @@
 module ActiveRecord
   module Core
-    def init_internals
-      # CPK
-      # @attributes.ensure_initialized(self.class.primary_key)
-      Array(self.class.primary_key).each {|key| @attributes.ensure_initialized(key)}
-
-      @aggregation_cache        = {}
-      @association_cache        = {}
-      @readonly                 = false
-      @destroyed                = false
-      @marked_for_destruction   = false
-      @destroyed_by_association = nil
-      @new_record               = true
-      @txn                      = nil
-      @_start_transaction_state = {}
-      @transaction_state        = nil
-      @reflects_state           = [false]
-    end
-
     def initialize_dup(other) # :nodoc:
       @attributes = @attributes.dup
       # CPK
