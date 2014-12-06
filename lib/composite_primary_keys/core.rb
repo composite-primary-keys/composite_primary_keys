@@ -3,7 +3,7 @@ module ActiveRecord
     def init_internals
       # CPK
       # @attributes.ensure_initialized(self.class.primary_key)
-      Array(self.class.primary_key).each {|key| @attributes.ensure_initialized(key)}
+      Array(self.class.primary_key).each {|key| self[key] = nil unless self.attributes.key?(key)}
 
       @aggregation_cache        = {}
       @association_cache        = {}
