@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '4.2.0.beta4'
+  gem 'activerecord', '4.2.0'
   require 'active_record'
 end
 
@@ -57,6 +57,7 @@ require 'active_record/attribute_methods/primary_key'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
 require 'active_record/nested_attributes'
+require 'active_record/attribute_set/builder'
 
 require 'active_record/connection_adapters/abstract_adapter'
 
@@ -99,6 +100,7 @@ require 'composite_primary_keys/attribute_methods/dirty'
 require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
 require 'composite_primary_keys/nested_attributes'
+require 'composite_primary_keys/attribute_set/builder'
 
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
 require 'composite_primary_keys/connection_adapters/abstract/connection_specification_changes'
