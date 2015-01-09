@@ -81,6 +81,21 @@ class TestAssociations < ActiveSupport::TestCase
     refute_equal accounting_head, engineering_head
   end
 
+  def test_has_one_association_primary_key_and_foreign_key_are_present
+    steve = employees(:steve)
+    steve_salary = steve.create_one_salary(year: "2015", month: "1")
+
+    jill = employees(:jill)
+    jill_salary = jill.create_one_salary(year: "2015", month: "1")
+
+    steve_salary.reload
+    jill_salary.reload
+    assert_equal(steve.id, steve_salary.employee_id)
+    assert_equal(1, steve_salary.location_id)
+    assert_equal(jill.id, jill_salary.employee_id)
+    assert_equal(1, jill_salary.location_id)
+  end
+
   def test_has_many_association_is_not_cached_to_where_it_returns_the_wrong_ones
     engineering = departments(:engineering)
     engineering_employees = engineering.employees
@@ -89,6 +104,36 @@ class TestAssociations < ActiveSupport::TestCase
     accounting_employees = accounting.employees
 
     refute_equal accounting_employees, engineering_employees
+  end
+
+  def test_has_many_association_primary_key_and_foreign_key_are_present
+    steve = employees(:steve)
+    steve_salary = steve.salaries.create(year: 2015, month: 1)
+
+    jill = employees(:jill)
+    jill_salary = jill.salaries.create(year: 2015, month: 1)
+
+    steve_salary.reload
+    jill_salary.reload
+    assert_equal(steve.id, steve_salary.employee_id)
+    assert_equal(1, steve_salary.location_id)
+    assert_equal(jill.id, jill_salary.employee_id)
+    assert_equal(1, jill_salary.location_id)
+  end
+
+  def test_belongs_to_association_primary_key_and_foreign_key_are_present
+    salary_01 = Salary.new(year: 2015, month: 1, employee_id: 5, location_id: 1)
+    employee_01 = salary_01.create_employee
+    salary_02 = Salary.new(year: 2015, month: 1, employee_id: 6, location_id: 1)
+    employee_02 = salary_02.create_employee
+
+    employee_01.reload
+    employee_02.reload
+
+    assert_equal(5, employee_01.id)
+    assert_equal(1, employee_01.location_id)
+    assert_equal(6, employee_02.id)
+    assert_equal(1, employee_02.location_id)
   end
 
   def test_find_includes_product_tariffs_product
