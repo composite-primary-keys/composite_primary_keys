@@ -51,7 +51,6 @@ module ActiveRecord
 
       attributes_collection.each do |attributes|
         attributes = attributes.with_indifferent_access
-
         if attributes['id'].blank?
           unless reject_new_record?(association_name, attributes)
             association.build(attributes.except(*UNASSIGNABLE_KEYS))
@@ -62,6 +61,7 @@ module ActiveRecord
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
             target_record = cpk_detect_record(attributes['id'], association.target)
+
             if target_record
               existing_record = target_record
             else

@@ -1,6 +1,12 @@
 USE [composite_primary_keys_unittest];
 go
 
+DROP TABLE topics;
+go
+
+DROP TABLE topic_sources;
+go
+
 DROP TABLE reference_types;
 go
 
