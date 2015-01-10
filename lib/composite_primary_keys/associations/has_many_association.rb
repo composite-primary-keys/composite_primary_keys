@@ -1,6 +1,20 @@
 module ActiveRecord
   module Associations
     class HasManyAssociation
+      def delete_count(method, scope)
+        if method == :delete_all
+          scope.delete_all
+        else
+          # CPK
+          # scope.update_all(reflection.foreign_key => nil)
+          conds = Array(reflection.foreign_key).inject(Hash.new) do |mem, key|
+            mem[key] = nil
+            mem
+          end
+          scope.update_all(conds)
+        end
+      end
+
       def delete_records(records, method)
         if method == :destroy
           records.each(&:destroy!)
