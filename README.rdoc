@@ -25,6 +25,10 @@ things straight, here is the mapping:
     Version 5.x is designed to work with ActiveRecord 3.2.x
     Version 4.x is designed to work with ActiveRecord 3.1.x
 
+Run the following command to list available versions:
+
+    gem list composite_primary_keys -ra
+
 == The basics
 
 A model with composite primary keys is defined like this:
