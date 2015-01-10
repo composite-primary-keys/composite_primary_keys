@@ -44,8 +44,7 @@ module ActiveRecord
       def foreign_key_present?
         if reflection.klass.primary_key
           # CPK
-          #owner.attribute_present?(reflection.association_primary_key)
-          owner.attribute_present?(reflection.association_primary_key)
+          # owner.attribute_present?(reflection.association_primary_key)
           Array(reflection.klass.primary_key).all? {|key| owner.attribute_present?(key)}
         else
           false

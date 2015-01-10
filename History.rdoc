@@ -1,3 +1,7 @@
+== 8.0.0 (2014-01-?)
+
+* ActiveRecord 4.2.* support (Sammy Larbi)
+
 == 7.0.12 (2014-11-09)
 
 * ActiveRecord 4.1.7 support (Tom Hughes)
