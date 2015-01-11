@@ -134,7 +134,8 @@ go
 CREATE TABLE restaurants (
     franchise_id [int] NOT NULL,
     store_id     [int] NOT NULL,
-    name         [varchar](100)
+    name         [varchar](100),
+    lock_version [int] DEFAULT 0
     CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED 
         ( [franchise_id], [store_id] )
 );
