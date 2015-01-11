@@ -15,14 +15,6 @@ create table reference_codes (
     description       varchar2(50) default null
 );
 
-create table board (
-  board_id     number(11),
-  board_no     number(11),
-  text         varchar2(50),
-  lock_version number(11) default 0,
-  constraint board_pk primary key (board_id, board_no)
-);
-
 create sequence products_seq start with 1000;
 
 create table products (

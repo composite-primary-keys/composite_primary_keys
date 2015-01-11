@@ -7,9 +7,6 @@ go
 DROP TABLE reference_codes;
 go
 
-DROP TABLE boards;
-go
-
 DROP TABLE products;
 go
 

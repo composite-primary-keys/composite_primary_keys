@@ -1,7 +1,6 @@
 drop table reference_types;
 drop sequence reference_types_seq;
 drop table reference_codes;
-drop table boards;
 drop table products;
 drop sequence products_seq;
 drop table tariffs;
