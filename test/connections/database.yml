@@ -1,0 +1,18 @@
+# To run tests:
+#  1. Copy this file to test/connections/databases.yml.
+#  2. Update to match the databases you want to test against.
+
+mysql:
+  adapter: mysql2
+  username: root
+  database: composite_primary_keys_unittest
+
+sqlite3:
+  adapter: sqlite3
+  database: db/composite_primary_keys_unittest.sqlite
+
+postgresql:
+  adapter: postgresql
+  database: composite_primary_keys_unittest
+  username: postgres
+  host: localhost
