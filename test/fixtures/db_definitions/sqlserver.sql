@@ -133,7 +133,8 @@ go
 CREATE TABLE restaurants (
     franchise_id [int] NOT NULL,
     store_id     [int] NOT NULL,
-    name         [varchar](100)
+    name         [varchar](100),
+    lock_version [int] DEFAULT 0
     CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED
         ( [franchise_id], [store_id] )
 );
@@ -208,6 +209,7 @@ CREATE TABLE products_restaurants (
     store_id     [int] NOT NULL
 );
 go
+<<<<<<< HEAD
 
 CREATE TABLE model_with_callbacks (
     reference_type_id [int],
@@ -216,3 +218,5 @@ CREATE TABLE model_with_callbacks (
         ( [reference_type_id], [reference_code] )
 );
 go
+=======
+>>>>>>> 1d60d11... Support optimistic lock and lock_version added to existing fixtures.

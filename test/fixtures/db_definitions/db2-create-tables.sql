@@ -94,6 +94,7 @@ create table restaurants (
   franchise_id integer not null,
   store_id integer not null,
   name varchar(100),
+  lock_version integer default 0,
   primary key (franchise_id, store_id)
 );
 
