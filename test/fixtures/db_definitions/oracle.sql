@@ -146,6 +146,7 @@ create table restaurants (
     franchise_id number(11) not null,
     store_id     number(11) not null,
     name         varchar(100),
+    lock_version number(11) default 0,
     constraint restaurants_pk primary key (franchise_id, store_id)
 );
 
