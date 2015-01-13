@@ -52,6 +52,7 @@ require 'active_record/associations/preloader/has_and_belongs_to_many'
 require 'active_model/dirty'
 
 require 'active_record/attribute_methods/dirty'
+require 'active_record/attribute_methods/primary_key'
 require 'active_record/attribute_methods/read'
 require 'active_record/attribute_methods/write'
 require 'active_record/locking/optimistic'
@@ -69,6 +70,7 @@ require 'active_record/validations/uniqueness'
 
 # CPK files
 require 'composite_primary_keys/persistence'
+require 'composite_primary_keys/locking/optimistic'
 require 'composite_primary_keys/active_record_overides'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'
@@ -93,9 +95,9 @@ require 'composite_primary_keys/associations/preloader/has_and_belongs_to_many'
 require 'composite_primary_keys/dirty'
 
 require 'composite_primary_keys/attribute_methods/dirty'
+require 'composite_primary_keys/attribute_methods/primary_key'
 require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
-require 'composite_primary_keys/locking/optimistic'
 require 'composite_primary_keys/nested_attributes'
 
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
