@@ -121,6 +121,16 @@ create table employees (
     primary key (id)
 );
 
+create table salaries (
+    id          serial not null,
+    employee_id int,
+    location_id int,
+    year        int not null,
+    month       int not null,
+    value       int default null,
+    primary key (id)
+);
+
 create table comments (
     id          serial not null,
     person_id   int          default null,

@@ -112,6 +112,15 @@ create table employees (
     location_id integer null
 );
 
+create table salaries (
+    id integer not null primary key autoincrement,
+    employee_id integer,
+    location_id integer,
+    year int not null,
+    month int not null,
+    value int default null
+);
+
 create table comments (
     id integer not null primary key autoincrement,
     person_id int null,
