@@ -1,3 +1,9 @@
+== 6.0.08 (2015-01-24)
+
+* Fix habtm association #delete_records (Uros Jurglic)
+* Support optimistic locking (Toshio Maki)
+* Remove singleton classes on CPK relations (Nicolás Hock Isaza)
+
 == 6.0.7 (2014-10-06)
 
 * Support Rails 4.0.6 (Tom Hughes)
