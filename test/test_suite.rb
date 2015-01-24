@@ -13,6 +13,7 @@
   test_habtm
   test_ids
   test_miscellaneous
+  test_optimistic
   test_pagination
   test_polymorphic
   test_predicates
