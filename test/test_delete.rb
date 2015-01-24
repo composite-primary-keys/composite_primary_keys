@@ -97,6 +97,16 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal records_after, records_before - steve.groups.count
   end
 
+  def test_destroy_has_and_belongs_to_many_on_non_cpk
+    records_before = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+    employee = Employee.create
+    employee.groups << Group.create(name: 'test')
+    employees_groups_count = employee.groups.count
+    employee.destroy!
+    records_after = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+    assert_equal records_before, records_after
+  end
+  
   def test_delete_not_destroy_on_cpk
     tariff = Tariff.where(tariff_id: 2).first
     tariff.delete
