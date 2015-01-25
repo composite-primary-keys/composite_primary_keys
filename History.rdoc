@@ -1,6 +1,16 @@
-== 8.0.0 (2014-01-?)
+== 8.0.1 (2014-01-24)
+
+* Support optimistic lock and lock_version added to existing fixtures (Kirika)
+
+== 8.0.0 (2014-01-10)
 
 * ActiveRecord 4.2.* support (Sammy Larbi)
+
+== 7.0.13 (2015-01-24)
+
+* Support optimistic lock and lock_version added to existing fixtures (Kirika)
+* README change to convey finding available versions (Aaron Bartell)
+* Fixes indentation in product_tariffs (Zaldabus)
 
 == 7.0.12 (2014-11-09)
 
@@ -87,6 +97,12 @@ Note there is one big api change.  Previously, CPK supported both of these calls
 The first one no longer works.  It was removed because it made the internal code simpler
 and makes the intention of the code clearer (especially when finding multiple records).
 If this change causes too much pain then please submit a ticket on Github.
+
+== 6.0.08 (2015-01-24)
+
+* Fix habtm association #delete_records (Uros Jurglic)
+* Support optimistic locking (Toshio Maki)
+* Remove singleton classes on CPK relations (Nicolás Hock Isaza)
 
 == 6.0.7 (2014-10-06)
 
