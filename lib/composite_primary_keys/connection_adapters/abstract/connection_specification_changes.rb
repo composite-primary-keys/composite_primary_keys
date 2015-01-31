@@ -4,6 +4,9 @@ module ActiveRecord
       if (adapter.to_s =~ /postgresql/) or (adapter.to_s =~ /postgis/)
         require "composite_primary_keys/connection_adapters/postgresql_adapter.rb"
       end
+      if (adapter.to_s =~ /sqlserver/)
+        require "composite_primary_keys/connection_adapters/sqlserver_adapter.rb"
+      end
     end
 
     def self.establish_connection(spec = ENV["DATABASE_URL"])
