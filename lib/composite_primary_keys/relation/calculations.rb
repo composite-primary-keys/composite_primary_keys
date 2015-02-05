@@ -18,6 +18,7 @@ module CompositePrimaryKeys
         # Postgresql doesn't like ORDER BY when there are no GROUP BY
         relation = reorder(nil)
 
+        column_alias = column_name
         # CPK
         #if operation == "count" && (relation.limit_value || relation.offset_value)
         if operation == "count"
@@ -28,6 +29,7 @@ module CompositePrimaryKeys
         else
           column = aggregate_column(column_name)
 
+          column_alias = select_value.alias
           select_value = operation_over_aggregate_column(column, operation, distinct)
 
           relation.select_values = [select_value]
@@ -35,7 +37,15 @@ module CompositePrimaryKeys
           query_builder = relation.arel
         end
 
-        type_cast_calculated_value(@klass.connection.select_value(query_builder.to_sql), column_for(column_name), operation)
+        result = @klass.connection.select_all(query_builder, nil, relation.bind_values)
+        row    = result.first
+        value  = row && row.values.first
+        column = result.column_types.fetch(column_alias) do
+          column_for(column_name)
+        end
+
+        type_cast_calculated_value(value, column, operation)
+ 
       end
 
       def build_count_subquery(relation, column_name, distinct)
