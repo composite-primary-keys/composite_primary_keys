@@ -3,7 +3,8 @@ module CompositePrimaryKeys
     extend ActiveSupport::Concern
     included do
       def get_records_with_cpk_support
-        cpk_applies = (target && target.composite?) || (owner && owner.composite?)
+        cpk_applies = (target && target.composite?) || (owner && owner.composite?) ||
+          reflection.foreign_key.is_a?(Array)
         return scope.limit(1).to_a if cpk_applies
         get_records_without_cpk_support
       end
