@@ -13,7 +13,10 @@ namespace :sqlserver do
   task :build_database => :load_connection do
     options_str = connection_string
 
-    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlserver.sql').gsub('/', '\\')
+    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions',
+                       'sqlserver.sql').gsub(File::SEPARATOR,
+                                             File::ALT_SEPARATOR ||
+                                             File::SEPARATOR)
     sh %( #{sql_cmd} #{options_str} -i #{schema} )
   end
 
@@ -21,7 +24,10 @@ namespace :sqlserver do
   task :drop_database => :load_connection do
     options_str = connection_string
 
-    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlserver.drop.sql').gsub('/', '\\')
+    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions',
+                       'sqlserver.drop.sql').gsub(File::SEPARATOR,
+                                                  File::ALT_SEPARATOR ||
+                                                  File::SEPARATOR)
     sh %( #{sql_cmd} #{options_str} -i #{schema} )
   end
 
