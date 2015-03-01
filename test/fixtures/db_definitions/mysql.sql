@@ -119,6 +119,16 @@ create table employees (
     primary key (id)
 );
 
+create table salaries (
+    id int not null auto_increment,
+    employee_id int,
+    location_id int,
+    year int not null,
+    month int not null,
+    value int default null,
+    primary key (id)
+);
+
 create table comments (
     id int not null auto_increment,
     person_id int default null,
@@ -138,6 +148,7 @@ create table restaurants (
     franchise_id int not null,
     store_id int not null,
     name varchar(100),
+    lock_version int default 0,
     primary key (franchise_id, store_id)
 );
 

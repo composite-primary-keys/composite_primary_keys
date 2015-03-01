@@ -19,6 +19,7 @@
   test_ids
   test_miscellaneous
   test_nested_attributes
+  test_optimistic
   test_pagination
   test_polymorphic
   test_predicates
