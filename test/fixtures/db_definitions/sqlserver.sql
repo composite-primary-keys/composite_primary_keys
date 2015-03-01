@@ -2,8 +2,8 @@ USE [composite_primary_keys_unittest];
 go
 
 CREATE TABLE topics (
-    id          [int] IDENTITY(1000,1) NOT NULL,  
-    name        [varchar](50) default NULL,  
+    id          [int] IDENTITY(1000,1) NOT NULL,
+    name        [varchar](50) default NULL,
     feed_size   [int] default NULL
 );
 go
@@ -42,7 +42,7 @@ CREATE TABLE tariffs (
     [tariff_id]  [int],
     [start_date] [date],
     [amount]     [int] NULL
-    CONSTRAINT [tariffs_pk] PRIMARY KEY 
+    CONSTRAINT [tariffs_pk] PRIMARY KEY
         ( [tariff_id], [start_date] )
 );
 go
@@ -102,7 +102,7 @@ go
 CREATE TABLE memberships (
     user_id  [int] NOT NULL,
     group_id [int] NOT NULL
-    CONSTRAINT [memberships_pk] PRIMARY KEY 
+    CONSTRAINT [memberships_pk] PRIMARY KEY
         ( [user_id], [group_id] )
 );
 go
@@ -150,7 +150,7 @@ CREATE TABLE restaurants (
     store_id     [int] NOT NULL,
     name         [varchar](100),
     lock_version [int] DEFAULT 0
-    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED
         ( [franchise_id], [store_id] )
 );
 go
@@ -171,7 +171,7 @@ go
 CREATE TABLE rooms (
     dorm_id [int] NOT NULL,
     room_id [int] NOT NULL,
-    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED
         ( [dorm_id], [room_id] )
 );
 go
@@ -213,7 +213,7 @@ go
 CREATE TABLE capitols (
     country varchar(450) NOT NULL,
     city varchar(450) NOT NULL
-    CONSTRAINT [capitols_pk] PRIMARY KEY 
+    CONSTRAINT [capitols_pk] PRIMARY KEY
         ( [country], [city] )
 );
 go
@@ -222,5 +222,11 @@ CREATE TABLE products_restaurants (
     product_id   [int] NOT NULL,
     franchise_id [int] NOT NULL,
     store_id     [int] NOT NULL
+);
+go
+
+CREATE TABLE employees_groups (
+    employee_id [int] NOT NULL,
+    group_id    [int] NOT NULL
 );
 go

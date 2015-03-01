@@ -90,3 +90,6 @@ go
 
 DROP TABLE products_restaurants;
 go
+
+DROP TABLE employees_groups;
+go
