@@ -16,3 +16,10 @@ postgresql:
   database: composite_primary_keys_unittest
   username: postgres
   host: localhost
+
+sqlserver:
+  adapter: sqlserver
+  database: composite_primary_keys_unittest
+  username: rails
+  host: localhost
+  port: 1433
