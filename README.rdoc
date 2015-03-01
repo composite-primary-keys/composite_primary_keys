@@ -20,6 +20,7 @@ Every major version of ActiveRecord has included numerous internal changes.  As 
 CPK has to be rewritten for each version of ActiveRecord.  To help keep
 things straight, here is the mapping:
 
+    Version 8.x is designed to work with ActiveRecord 4.2.x
     Version 7.x is designed to work with ActiveRecord 4.1.x
     Version 6.x is designed to work with ActiveRecord 4.0.x
     Version 5.x is designed to work with ActiveRecord 3.2.x
