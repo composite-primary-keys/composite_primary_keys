@@ -75,28 +75,32 @@ module CompositePrimaryKeys
 
         connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
       end
-      
+
       def find_with_ids(*ids)
-        # CPK handle strings that come w/ calling to_param on CPK-enabled models
-        ids = cpk_parse_ids(ids)
         raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
 
-        expects_array = ids.first.kind_of?(Array)
+        # CPK
+        #expects_array = ids.first.kind_of?(Array)
+        ids = CompositePrimaryKeys.normalize(ids)
+        expects_array = ids.flatten != ids.flatten(1)
+
         return ids.first if expects_array && ids.first.empty?
 
-        # CPK - don't do this, we want an array of arrays
+        # CPK
         #ids = ids.flatten.compact.uniq
+        ids = expects_array ? ids.first : ids
+
         case ids.size
           when 0
             raise RecordNotFound, "Couldn't find #{@klass.name} without an ID"
           when 1
             result = find_one(ids.first)
-            # CPK
-            # expects_array ? [ result ] : result
-            result
+            expects_array ? [ result ] : result
           else
             find_some(ids)
         end
+      rescue RangeError
+        raise RecordNotFound, "Couldn't find #{@klass.name} with an out of range ID"
       end
 
       def find_one(id)

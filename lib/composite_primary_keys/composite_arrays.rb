@@ -8,8 +8,21 @@ module CompositePrimaryKeys
     end
   end
 
+  def self.normalize(ids)
+    ids.map do |id|
+      if id.is_a?(Array)
+        normalize(id)
+      elsif id.is_a?(String) && id.index(ID_SEP)
+        id.split(ID_SEP)
+      else
+        id
+      end
+    end
+  end
+
   class CompositeKeys < Array
-    def self.parse(value)
+
+  def self.parse(value)
       case value
       when Array
         value.to_composite_keys

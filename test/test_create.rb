@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes, :streets, :suburbs
+  fixtures :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
   
   CLASSES = {
     :single => {
@@ -108,5 +108,50 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(24, suburb.city_id)
     assert_equal(25, suburb.suburb_id)
     assert_equal("My Suburb", suburb.name)
+  end
+
+  def test_has_many_ids_1
+    dorm = dorms(:toyon)
+    room = Room.new(:dorm_id => dorm.id, :room_id => 5)
+    room.save!
+
+    student1 = students(:kelly)
+    student2 = students(:jordan)
+
+    RoomAssignment.delete_all
+
+    assignment1 = RoomAssignment.new(:student_id => student1.id, :dorm_id => room.dorm_id, :room_id => room.room_id)
+    assignment1.save!
+
+    room.room_assignment_ids = [[assignment1.student_id, assignment1.dorm_id, assignment1.room_id]]
+    room.save!
+
+    assert_equal(1, room.room_assignments.length)
+    assert_equal(assignment1, room.room_assignments.first)
+  end
+
+  def test_has_many_ids_2
+    dorm = dorms(:toyon)
+    room = Room.new(:dorm_id => dorm.id, :room_id => 5)
+    room.save!
+
+    student1 = students(:kelly)
+    student2 = students(:jordan)
+
+    RoomAssignment.delete_all
+
+    assignment1 = RoomAssignment.new(:student_id => student1.id, :dorm_id => room.dorm_id, :room_id => room.room_id)
+    assignment1.save!
+
+    assignment2 = RoomAssignment.new(:student_id => student2.id, :dorm_id => room.dorm_id, :room_id => room.room_id)
+    assignment2.save!
+
+    room.room_assignment_ids = [[assignment1.student_id, assignment1.dorm_id, assignment1.room_id],
+                                [assignment2.student_id, assignment2.dorm_id, assignment2.room_id]]
+    room.save!
+
+    assert_equal(2, room.room_assignments.length)
+    assert_equal(assignment1, room.room_assignments[0])
+    assert_equal(assignment2, room.room_assignments[1])
   end
 end
