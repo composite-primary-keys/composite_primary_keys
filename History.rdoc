@@ -1,3 +1,12 @@
+== 8.1.0 (2014-03-23)
+
+* ActiveRecord 4.2.1 support (Charlie Savage)
+* Change parsing of composite ids to fix #290 (Charlie Savage)
+* Add sqlserver setting for test suite (Joachim Herb)
+* Fix sqlserver adapater, isse #224 (Joachim Herb)
+* Update readme file to include version 8.* information (David Silva)
+
+
 == 8.0.1 (2014-01-24)
 
 * Support optimistic lock and lock_version added to existing fixtures (Kirika)
