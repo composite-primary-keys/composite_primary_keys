@@ -42,13 +42,13 @@ class TestAttributes < ActiveSupport::TestCase
       end
     end
   end
-    
+
   def test_brackets_foreign_key_assignment
     tarrif = tariffs(:flat)
     product_tariff = product_tariffs(:first_flat)
     compare_indexes(tarrif, tarrif.class.primary_key, product_tariff, [:tariff_id, :tariff_start_date])
   end
-  
+
   private
 
   def compare_indexes(obj1, indexes1, obj2, indexes2)
