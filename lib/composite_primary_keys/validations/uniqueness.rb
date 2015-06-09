@@ -31,8 +31,14 @@ module ActiveRecord
           relation = relation.and(table[scope_item].eq(scope_value))
         end
 
-        if finder_class.unscoped.where(relation).exists?
-          record.errors.add(attribute, :taken, options.except(:case_sensitive, :scope).merge(:value => value))
+        relation = finder_class.unscoped.where(relation)
+
+        if options[:conditions]
+          relation = relation.merge(options[:conditions])
+        end
+
+        if relation.exists?
+          record.errors.add(attribute, :taken, options.except(:case_sensitive, :scope, :conditions).merge(:value => value))
         end
       end
     end
