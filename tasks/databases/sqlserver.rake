@@ -5,7 +5,7 @@ require 'rbconfig'
 if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
   sql_cmd = "osql"
 else
-  sql_cmd = sqsh
+  sql_cmd = "sqsh"
 end
 
 namespace :sqlserver do
