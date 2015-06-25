@@ -2,9 +2,12 @@ language: ruby
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
-  - rake mysql:build_database
+  - rake sqlite3:build_database postgresql:build_database mysql:build_databas
 
-script: "rake mysql:test"
+script:
+  - rake sqlite3:test
+  - rake postgresql:test
+  - rake mysql:test
 
 rvm:
   - 1.9.3
