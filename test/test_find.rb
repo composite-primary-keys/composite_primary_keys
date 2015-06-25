@@ -116,4 +116,18 @@ class TestFind < ActiveSupport::TestCase
     ref_code = ref_codes[1]
     assert_equal([2,1], ref_code.id)
   end
+
+  fixtures :mittens
+
+  def test_find_one_with_nil_as_part_of_id
+    fully_defined = mittens(:red_pair)
+    assert_equal("1,2", fully_defined.to_param)
+
+    somewhat_lacking = mittens(:blue_pair)
+    assert_equal(",3", somewhat_lacking.to_param)
+    assert_equal([nil, 3], somewhat_lacking.to_key)
+
+    assert_equal('The red ones', Mitten.find([1,2]).name)
+    assert_equal('The blue ones', Mitten.find([nil, 3]).name)
+  end
 end
