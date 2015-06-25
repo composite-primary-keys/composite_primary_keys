@@ -109,3 +109,9 @@ create table products_restaurants (
   franchise_id integer not null,
   store_id integer not null
 );
+
+create table mittens (
+  left_id INTEGER,
+  right_id INTEGER NOT NULL,
+  name varchar(50) NOT NULL
+);
