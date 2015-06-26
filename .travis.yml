@@ -14,3 +14,6 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2
+
+env:
+  CPK_LOGFILE: log/test.log
