@@ -16,4 +16,4 @@ rvm:
   - 2.2
 
 env:
-  CPK_LOGFILE: log/test.log
+  - CPK_LOGFILE=log/test.log
