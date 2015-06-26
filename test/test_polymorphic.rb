@@ -14,6 +14,7 @@ class TestPolymorphic < ActiveSupport::TestCase
   end
 
   def test_has_many_through
+    assert_equal(2, Article.count, 'Baseline sanity check')
     user = users(:santiago)
     article_names = user.articles.collect { |a| a.name }.sort
     assert_equal ['Article One', 'Article Two'], article_names
