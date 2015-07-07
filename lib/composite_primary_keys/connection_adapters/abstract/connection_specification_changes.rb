@@ -65,7 +65,11 @@ module ActiveRecord
       end
 
       delegate :clear_reloadable_connections!,
-        :clear_all_connections!,:verify_active_connections!, :to => :connection_handler
+        :clear_all_connections!, to: :connection_handler
+
+      if self.respond_to? :verify_active_connections!
+        delegate :verify_active_connections!, to: :connection_handler
+      end
     end
   end
 end
