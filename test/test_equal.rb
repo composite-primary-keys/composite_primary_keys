@@ -4,7 +4,7 @@ class TestEqual < ActiveSupport::TestCase
   fixtures :capitols
 
   def test_new
-    assert_not_equal(Capitol.new, Capitol.new)
+    assert_equal(Capitol.new, Capitol.new)
   end
 
   def test_same_new
