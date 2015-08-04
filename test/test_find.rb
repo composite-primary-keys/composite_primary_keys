@@ -2,7 +2,8 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
-  fixtures :capitols, :departments, :reference_types, :reference_codes, :suburbs
+  fixtures :capitols, :departments, :reference_types, :reference_codes,
+    :suburbs, :employees
 
   def test_find_first
     ref_code = ReferenceCode.order('reference_type_id, reference_code').first

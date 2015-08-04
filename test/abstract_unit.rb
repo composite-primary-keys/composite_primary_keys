@@ -30,6 +30,7 @@ class ActiveSupport::TestCase
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   self.use_instantiated_fixtures = false
   self.use_transactional_fixtures = true
+  self.test_order = :random
 
   def assert_date_from_db(expected, actual, message = nil)
     # SQL Server doesn't have a separate column type just for dates, 
