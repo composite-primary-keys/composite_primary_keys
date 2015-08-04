@@ -1,3 +1,10 @@
+== 7.0.14 (2015-08-04)
+
+* Remove overriden Base#==(comparison_object) which had a different behavior than stock AR method
+  for non-peristed objects (Charlie Savage)
+* Update support for Uniquenes validations (Avi Leavitt)
+* Remove call to verify_active_connections! which was removed from AR 4.1 (Steve Pletcher)
+
 == 7.0.13 (2015-01-24)
 
 * Support optimistic lock and lock_version added to existing fixtures (Kirika)
