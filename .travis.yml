@@ -1,4 +1,5 @@
 language: ruby
+sudo: false
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
