@@ -1,3 +1,14 @@
+== 8.1.1 (2015-08-04)
+
+* Updates to make Travis CI green (Laust Rud Jacobsen)
+* Travis CI support (Laust Rud Jacobsen)
+* Remove overriden Base#==(comparison_object) which had a different behavior than stock AR method
+  for non-peristed objects (Charlie Savage)
+* Update support for Uniquenes validations (Avi Leavitt)
+* Remove call to verify_active_connections! which was removed from AR 4.1 (Steve Pletcher)
+* Aligned the establish connection paramater handling to be similar to latest version of rails (Harish Shetty)
+
+
 == 8.1.0 (2014-03-23)
 
 * ActiveRecord 4.2.1 support (Charlie Savage)
@@ -6,7 +17,6 @@
 * Fix sqlserver adapater, isse #224 (Joachim Herb)
 * Update readme file to include version 8.* information (David Silva)
 
-
 == 8.0.1 (2014-01-24)
 
 * Support optimistic lock and lock_version added to existing fixtures (Kirika)
@@ -14,6 +24,13 @@
 == 8.0.0 (2014-01-10)
 
 * ActiveRecord 4.2.* support (Sammy Larbi)
+
+== 7.0.14 (2015-08-04)
+
+* Remove overriden Base#==(comparison_object) which had a different behavior than stock AR method
+  for non-peristed objects (Charlie Savage)
+* Update support for Uniquenes validations (Avi Leavitt)
+* Remove call to verify_active_connections! which was removed from AR 4.1 (Steve Pletcher)
 
 == 7.0.13 (2015-01-24)
 
