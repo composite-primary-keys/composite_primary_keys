@@ -95,9 +95,11 @@ CPK supports the following databases:
  * SQLite
  * SQLServer
 
-== Running Tests
+== Tests
 
-See test/README_tests.rdoc
+[![Build Status](https://travis-ci.org/composite-primary-keys/composite_primary_keys.svg)](https://travis-ci.org/composite-primary-keys/composite_primary_keys)
+
+See test/README_tests.rdoc for more information about running tests.
 
 == Questions, Discussion and Contributions
 
@@ -110,3 +112,4 @@ First version was written by Dr Nic Williams.
 Maintained by Charlie Savage
 
 Contributions by many!
+
