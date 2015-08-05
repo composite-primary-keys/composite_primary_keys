@@ -50,10 +50,6 @@ class TestDelete < ActiveSupport::TestCase
     end
   end
 
-  def test_delete_all_with_joins
-    ReferenceCode.joins(:reference_type).where(:reference_type_id => 1).delete_all
-  end
-
   def test_clear_association
     department = Department.find([1,1])
     assert_equal(2, department.employees.size, "Before clear employee count should be 2.")
