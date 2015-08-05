@@ -2,13 +2,18 @@ language: ruby
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
-  - rake mysql:build_database
+  - rake mysql:build_database postgresql:build_database sqlite3:build_database
 
-script: "rake mysql:test"
+script:
+  - "rake postgresql:test"
+  - "rake sqlite3:test"
+  - "rake mysql:test"
 
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.2
+  - 2.1
+  - 2.2
+
 env:
-  - RAILS_VERSION=4.1.4
+  - CPK_LOGFILE=log/test.log

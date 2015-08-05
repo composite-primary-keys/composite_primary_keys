@@ -122,18 +122,19 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_belongs_to_association_primary_key_and_foreign_key_are_present
-    salary_01 = Salary.new(year: 2015, month: 1, employee_id: 5, location_id: 1)
+    bogus_foreign_key = 2_500_000
+    salary_01 = Salary.new(
+      year: 2015,
+      month: 1,
+      employee_id: bogus_foreign_key,
+      location_id: 1
+    )
     employee_01 = salary_01.create_employee
-    salary_02 = Salary.new(year: 2015, month: 1, employee_id: 6, location_id: 1)
-    employee_02 = salary_02.create_employee
-
     employee_01.reload
-    employee_02.reload
 
-    assert_equal(5, employee_01.id)
+    assert_equal(salary_01.employee_id, employee_01.id, "Generated id used")
+    assert_not_equal(bogus_foreign_key, employee_01.id, "Bogus value ignored")
     assert_equal(1, employee_01.location_id)
-    assert_equal(6, employee_02.id)
-    assert_equal(1, employee_02.location_id)
   end
 
   def test_find_includes_product_tariffs_product

@@ -62,6 +62,8 @@ class TestHabtm < ActiveSupport::TestCase
 
   def test_habtm_clear_cpk_owner_side_only
     subway = restaurants(:subway_one)
+    assert_equal 0, subway.products.size, 'Baseline'
+
     first_product = products(:first_product)
     second_product = products(:second_product)
     subway.products << first_product << second_product
@@ -74,6 +76,8 @@ class TestHabtm < ActiveSupport::TestCase
 
   def test_habtm_clear_cpk_association_side_only
     product = products(:first_product)
+    assert_equal 0, product.restaurants.size, 'Baseline'
+
     subway_one = restaurants(:subway_one)
     subway_two = restaurants(:subway_two)
     product.restaurants << subway_one << subway_two

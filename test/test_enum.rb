@@ -6,9 +6,9 @@ class TestEnum < ActiveSupport::TestCase
   def test_enum_was
     comment = Comment.first
     assert_nil comment.shown
-    puts "comment.changed_attributes = #{comment.changed_attributes.inspect}"
+    assert_equal({}, comment.changed_attributes)
     comment.shown = :true
-    puts "comment.changed_attributes = #{comment.changed_attributes.inspect}"
+    assert_equal({ "shown" => nil }, comment.changed_attributes)
     assert_equal 'true', comment.shown
     assert_nil comment.shown_was
 
