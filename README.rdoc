@@ -97,7 +97,7 @@ CPK supports the following databases:
 
 == Tests
 
-[![Build Status](https://travis-ci.org/composite-primary-keys/composite_primary_keys.svg)](https://travis-ci.org/composite-primary-keys/composite_primary_keys)
+Travis build status: {<img src="https://travis-ci.org/composite-primary-keys/composite_primary_keys.svg" alt="Build Status" />}[https://travis-ci.org/composite-primary-keys/composite_primary_keys]
 
 See test/README_tests.rdoc for more information about running tests.
 
