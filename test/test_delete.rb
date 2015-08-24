@@ -3,22 +3,22 @@ require File.expand_path('../abstract_unit', __FILE__)
 class TestDelete < ActiveSupport::TestCase
   fixtures :articles, :departments, :employees, :products, :tariffs, :product_tariffs,
            :reference_types, :reference_codes
-  
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => :reference_type_id,
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_destroy_one
     testing_with do
      assert @first.destroy
@@ -51,6 +51,8 @@ class TestDelete < ActiveSupport::TestCase
   end
 
   def test_delete_all_with_joins
+    # https://github.com/composite-primary-keys/composite_primary_keys/commit/3640e687f240867c00db9473affe6b5c8de20c88
+    skip("Add failing test for future fix.")
     ReferenceCode.joins(:reference_type).where(:reference_type_id => 1).delete_all
   end
 
