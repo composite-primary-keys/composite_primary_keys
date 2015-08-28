@@ -18,7 +18,6 @@ module CompositePrimaryKeys
         # Postgresql doesn't like ORDER BY when there are no GROUP BY
         relation = reorder(nil)
 
-        column_alias = column_name
         # CPK
         #if operation == "count" && (relation.limit_value || relation.offset_value)
         if operation == "count"
@@ -29,7 +28,6 @@ module CompositePrimaryKeys
         else
           column = aggregate_column(column_name)
 
-          column_alias = select_value.alias
           select_value = operation_over_aggregate_column(column, operation, distinct)
 
           relation.select_values = [select_value]
