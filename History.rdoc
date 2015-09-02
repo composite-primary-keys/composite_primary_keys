@@ -1,3 +1,7 @@
+== 7.0.15 (2015-09-02)
+
+* Fix bug in calculations - such as average (Charlie Savage)
+
 == 7.0.14 (2015-08-04)
 
 * Remove overriden Base#==(comparison_object) which had a different behavior than stock AR method
