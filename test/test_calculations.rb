@@ -34,4 +34,9 @@ class TestCalculations < ActiveSupport::TestCase
     count = Tariff.includes(:product_tariffs).references(:product_tariffs).where("product_tariffs.tariff_id = ?", 2).count
     assert_equal(1, count)
   end
+
+  def test_average
+    average = Tariff.average(:amount)
+    assert_equal(50, average)
+  end
 end

@@ -29,8 +29,8 @@ module CompositePrimaryKeys
         else
           column = aggregate_column(column_name)
 
-          column_alias = select_value.alias
           select_value = operation_over_aggregate_column(column, operation, distinct)
+          column_alias = select_value.alias
 
           relation.select_values = [select_value]
 
