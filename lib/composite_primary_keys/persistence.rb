@@ -1,5 +1,20 @@
 module ActiveRecord
   module Persistence
+    def _create_record(attribute_names = self.attribute_names)
+      attributes_values = arel_attributes_with_values_for_create(attribute_names)
+
+      new_id = self.class.unscoped.insert attributes_values
+
+      # CPK
+      # If one of the key columns is set up in a Postgres database with a SEQUENCE or MySQL with AUTO_INCREMENT,
+      # then because of memoization that attribute comes back as nil instead of reporting its new integer value.
+      #self.id ||= new_id if self.class.primary_key
+      self.id = new_id if self.class.primary_key
+
+      @new_record = false
+      id
+    end
+
     def relation_for_destroy
       # CPK
       if self.composite?
