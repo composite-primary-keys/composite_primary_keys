@@ -20,7 +20,7 @@ module ActiveRecord
           where_hash[key.to_s] = self[key]
         end
 
-        # CPK      
+        # CPK
         #relation.bind_values = [[column, id]]
 
         relation = self.class.unscoped.where(where_hash)
@@ -76,7 +76,7 @@ module ActiveRecord
           stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
         end
       end
-      klass.connection.update stmt.to_sql
+      klass.connection.update stmt
     end
   end
 end
