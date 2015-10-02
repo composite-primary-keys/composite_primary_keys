@@ -3,25 +3,25 @@ require File.expand_path('../abstract_unit', __FILE__)
 class TestDelete < ActiveSupport::TestCase
   fixtures :articles, :departments, :employees, :products, :tariffs, :product_tariffs,
            :reference_types, :reference_codes
-  
+
   CLASSES = {
-    :single => {
-      :class => ReferenceType,
-      :primary_keys => :reference_type_id,
-    },
-    :dual   => { 
-      :class => ReferenceCode,
-      :primary_keys => [:reference_type_id, :reference_code],
-    },
+      :single => {
+          :class => ReferenceType,
+          :primary_keys => :reference_type_id,
+      },
+      :dual   => {
+          :class => ReferenceCode,
+          :primary_keys => [:reference_type_id, :reference_code],
+      },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_destroy_one
     testing_with do
-     assert @first.destroy
+      assert @first.destroy
     end
   end
 
@@ -91,22 +91,29 @@ class TestDelete < ActiveSupport::TestCase
 
   def test_destroy_has_and_belongs_to_many_on_non_cpk
     steve = employees(:steve)
-    records_before = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+    records_before = ActiveRecord::Base.connection.execute('select * from employees_groups')
     steve.destroy
-    records_after = ActiveRecord::Base.connection.execute("select * from employees_groups").count
-    assert_equal records_after, records_before - steve.groups.count
+    records_after = ActiveRecord::Base.connection.execute('select * from employees_groups')
+    if records_before.kind_of?(Array)
+      assert_equal records_after.count, records_before.count - steve.groups.count
+    else # OCI8::Cursor for oracle_enhanced adapter
+      assert_equal records_after.row_count, records_before.row_count - steve.groups.count
+    end
   end
 
-  def test_destroy_has_and_belongs_to_many_on_non_cpk
-    records_before = ActiveRecord::Base.connection.execute("select * from employees_groups").count
+  def test_create_destroy_has_and_belongs_to_many_on_non_cpk
+    records_before = ActiveRecord::Base.connection.execute('select * from employees_groups')
     employee = Employee.create
     employee.groups << Group.create(name: 'test')
-    employees_groups_count = employee.groups.count
     employee.destroy!
-    records_after = ActiveRecord::Base.connection.execute("select * from employees_groups").count
-    assert_equal records_before, records_after
+    records_after = ActiveRecord::Base.connection.execute('select * from employees_groups')
+    if records_before.kind_of?(Array)
+      assert_equal records_before.count, records_after.count
+    else # OCI8::Cursor for oracle_enhanced adapter
+      assert_equal records_before.row_count, records_after.row_count
+    end
   end
-  
+
   def test_delete_not_destroy_on_cpk
     tariff = Tariff.where(tariff_id: 2).first
     tariff.delete
