@@ -46,3 +46,7 @@ drop table seats;
 drop table capitols;
 drop table products_restaurants;
 drop table employees_groups;
+drop table items;
+drop sequence items_seq;
+drop table item_attribs;
+drop sequence item_attribs_seq;

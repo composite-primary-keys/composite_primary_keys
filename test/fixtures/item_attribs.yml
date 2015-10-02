@@ -1,0 +1,23 @@
+item_attrib1:
+  id: 1
+  item_id: 1
+  key: pattern
+  value: striped
+
+item_attrib2:
+  id: 2
+  item_id: 1
+  key: color
+  value: red
+
+item_attrib3:
+  id: 3
+  item_id: 2
+  key: pattern
+  value: checked
+
+item_attrib4:
+  id: 4
+  item_id: 2
+  key: color
+  value: blue

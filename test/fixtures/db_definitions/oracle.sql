@@ -234,3 +234,21 @@ create table employees_groups (
   group_id int not null
 );
 
+create sequence items_seq start with 1000;
+
+create table items (
+    id        number(11) not null,
+    item_no   number(11) not null,
+    item_size number(3)  not null,
+    name      varchar(50) not null,
+    constraint items_pk primary key (item_no, item_size)
+);
+
+create sequence item_attribs_seq start with 1000;
+
+create table item_attribs (
+    id      number(11) not null primary key,
+    item_id number(11) not null,
+    key     varchar(25) not null,
+    value   varchar(100) not null
+);
