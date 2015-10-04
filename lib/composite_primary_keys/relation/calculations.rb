@@ -21,7 +21,7 @@ module CompositePrimaryKeys
         column_alias = column_name
 
         bind_values = nil
-        
+
         # CPK
         # if operation == "count" && (relation.limit_value || relation.offset_value)
         if operation == "count"
@@ -34,8 +34,9 @@ module CompositePrimaryKeys
           column = aggregate_column(column_name)
 
           select_value = operation_over_aggregate_column(column, operation, distinct)
-          column_alias = select_value.alias
 
+          column_alias = select_value.alias
+          column_alias ||= @klass.connection.column_name_for_operation(operation, select_value)
           relation.select_values = [select_value]
 
           query_builder = relation.arel
@@ -69,6 +70,7 @@ module CompositePrimaryKeys
         subquery = relation.arel.as(subquery_alias)
 
         sm = Arel::SelectManager.new relation.engine
+        sm.bind_values = relation.arel.bind_values
         # CPK
         # select_value = operation_over_aggregate_column(column_alias, 'count', distinct)
         select_value = operation_over_aggregate_column(Arel.sql("*"), 'count', false)

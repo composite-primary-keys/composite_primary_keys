@@ -16,6 +16,8 @@ module ActiveRecord
       def expand_hash_conditions_for_aggregates(attrs)
         expanded_attrs = {}
         attrs.each do |attr, value|
+          # CPK
+          # if aggregation = reflect_on_aggregation(attr.to_sym)
           if attr.is_a?(CompositePrimaryKeys::CompositeKeys)
             attr.each_with_index do |key,i|
               expanded_attrs[key] = value.respond_to?(:flatten) ? value.flatten[i] : value
@@ -38,13 +40,13 @@ module ActiveRecord
 
       def quoted_id
         # CPK
-        #quote_value(id, column_for_attribute(self.class.primary_key))
+        # self.class.quote_value(id, column_for_attribute(self.class.primary_key))
         if self.composite?
-          [self.class.primary_keys, ids].
-            transpose.
-            map {|attr_name,id| quote_value(id, column_for_attribute(attr_name))}
+          [self.class.primary_keys, ids].transpose.map { |attr_name,id|
+            self.class.quote_value(id, column_for_attribute(attr_name))
+          }
         else
-          quote_value(id, column_for_attribute(self.class.primary_key))
+          self.class.quote_value(id, column_for_attribute(self.class.primary_key))
         end
       end
     end

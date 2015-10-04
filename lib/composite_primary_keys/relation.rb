@@ -16,20 +16,23 @@ module ActiveRecord
       extend CompositePrimaryKeys::CompositeRelation
     end
 
-    # CPK adds this so that it finds the Equality nodes beneath the And node:
-    # equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
-    #  node.left.relation.name == table_name
-    # }
     alias :where_values_hash_without_cpk :where_values_hash
     def where_values_hash(relation_table_name = table_name)
-      nodes_from_and = where_values.grep(Arel::Nodes::And).map {|and_node| and_node.children.grep(Arel::Nodes::Equality) }.flatten
+      # CPK
+      nodes_from_and = where_values.grep(Arel::Nodes::And).map { |and_node|
+        and_node.children.grep(Arel::Nodes::Equality)
+      }.flatten
 
+      # CPK
+      # equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
+      #   node.left.relation.name == relation_table_name
+      # }
       equalities = (nodes_from_and + where_values.grep(Arel::Nodes::Equality)).find_all { |node|
         node.left.relation.name == relation_table_name
       }
 
       binds = Hash[bind_values.find_all(&:first).map { |column, v| [column.name, v] }]
-      
+
       Hash[equalities.map { |where|
         name = where.left.name
         [name, binds.fetch(name.to_s) {
@@ -48,6 +51,7 @@ module ActiveRecord
       # CPK
       um = if self.composite?
         relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+
         relation.arel.compile_update(substitutes, @klass.primary_key)
       else
         scope = @klass.unscoped
@@ -55,8 +59,11 @@ module ActiveRecord
         if @klass.finder_needs_type_condition?
           scope.unscope!(where: @klass.inheritance_column)
         end
-        
-        scope.where(@klass.arel_table[@klass.primary_key].eq(id_was || id)).arel.compile_update(substitutes, @klass.primary_key)
+
+        relation = scope.where(@klass.primary_key => (id_was || id))
+        binds += relation.bind_values
+
+        relation.arel.compile_update(substitutes, @klass.primary_key)
       end
 
       @klass.connection.update(

@@ -54,13 +54,19 @@ module ActiveRecord
             records_for(slice)
           }
 
+          # CPK
+          # @preloaded_records.map { |record|
+          #   key = record[association_key_name]
+          #   key = key.to_s if key_conversion_required?
+          #
+          #   [record, key]
+          # }
           @preloaded_records.map { |record|
-            # CPK
-            #[record, record[association_key_name]]
-            owner_key = Array(association_key_name).map do |key_name|
+            key = Array(association_key_name).map do |key_name|
               record[key_name]
             end.join(CompositePrimaryKeys::ID_SEP)
-            [record, owner_key]
+
+            [record, key]
           }
         end
 
@@ -69,7 +75,7 @@ module ActiveRecord
                                owners.group_by do |owner|
                                  # CPK
                                  # owner[owner_key_name].to_s
-                                 key = Array(owner_key_name).map do |key_name|
+                                 Array(owner_key_name).map do |key_name|
                                    owner[key_name]
                                  end.join(CompositePrimaryKeys::ID_SEP)
                                end
@@ -77,7 +83,7 @@ module ActiveRecord
                                owners.group_by do |owner|
                                  # CPK
                                  # owner[owner_key_name]
-                                 key = Array(owner_key_name).map do |key_name|
+                                 Array(owner_key_name).map do |key_name|
                                    owner[key_name]
                                  end.join(CompositePrimaryKeys::ID_SEP)
                                end
