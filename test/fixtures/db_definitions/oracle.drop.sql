@@ -50,3 +50,7 @@ drop table items;
 drop sequence items_seq;
 drop table item_attribs;
 drop sequence item_attribs_seq;
+drop table item_infos;
+drop sequence item_infos_seq;
+drop table item_groups_items;
+drop table item_groups;

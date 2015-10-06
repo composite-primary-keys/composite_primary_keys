@@ -62,4 +62,27 @@ class TestForeignKeyId < ActiveSupport::TestCase
     assert_not(item_attribs.loaded?)
     assert_equal(2, item_attribs.count)
   end
+
+  def test_simple_add_to_association_fires_insert
+    item = Item.find([11111, 10])
+    itemattribs = ItemAttrib.new(:key => 'test_key', :value => 'test_value')
+    assert_equal(2, item.item_attribs.count)
+    item.item_attribs << itemattribs
+
+    ia = ItemAttrib.where(:key => 'test_key', :value => 'test_value')
+    assert_not_nil(ia)
+    assert_not_empty(ia)
+    assert_equal(1, ia.count)
+    assert_equal(ia[0].item_id, item['id'])
+
+    item.item_attribs.reload
+    assert_equal(3, item.item_attribs.count)
+  end
+
+  def test_group_by_id_column_not_by_pk
+    grouped_count = ItemAttrib.group(:item_id).count
+    assert_equal 2, grouped_count.size
+    assert_equal 2, grouped_count[1]
+    assert_equal 2, grouped_count[2]
+  end
 end
