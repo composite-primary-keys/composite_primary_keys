@@ -32,6 +32,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pg')
   s.add_development_dependency('mysql2')
-  s.add_development_dependency('ruby-oci8')
-  s.add_development_dependency('activerecord-oracle_enhanced-adapter')
+
+  # Oracle not supported for CI
+  # s.add_development_dependency('ruby-oci8')
+  # s.add_development_dependency('activerecord-oracle_enhanced-adapter')
 end
