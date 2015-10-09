@@ -3,11 +3,11 @@ print "Using native Oracle Enhanced\n"
 require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 
 def connection_string
-  "#{SPEC['username']}/#{SPEC['password']}@#{SPEC['host']}"
+  "#{SPEC['username']}/#{SPEC['password']}@//#{SPEC['host']}:#{SPEC['port']}/#{SPEC['database']}"
 end
 
 # Adapter config setup in locals/database_connections.rb
-SPEC = CompositePrimaryKeys::ConnectionSpec[:oracle]
+SPEC = CompositePrimaryKeys::ConnectionSpec[:oracle_enhanced]
 ActiveRecord::Base.establish_connection(SPEC)
 
 # Change default options for Oracle Enhanced adapter
