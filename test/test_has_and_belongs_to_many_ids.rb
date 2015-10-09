@@ -15,8 +15,13 @@ class TestHasAndBelongsToManyIds < ActiveSupport::TestCase
     ig2.items << i2
 
     ig1 = ItemGroup.find([1, 'one'])
-    assert_equal(1, ig1.items.count)
+    assert_equal(2, ig1.items.count)
     assert_equal(Item.find([11111, 10]), ig1.items[0])
+    assert_equal(Item.find([11111, 11]), ig1.items[1])
+
+    ig2 = ItemGroup.find([2, 'two'])
+    assert_equal(1, ig2.items.count)
+    assert_equal(Item.find([11111, 11]), ig2.items[0])
   end
 
   def test_habtm_item_groups_insert

@@ -79,6 +79,7 @@ require 'composite_primary_keys/relation'
 require 'composite_primary_keys/sanitization'
 require 'composite_primary_keys/attribute_set/builder'
 require 'composite_primary_keys/attribute_methods'
+require 'composite_primary_keys/autosave_associations'
 require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'
