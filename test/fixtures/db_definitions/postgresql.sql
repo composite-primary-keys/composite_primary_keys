@@ -218,3 +218,40 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table items (
+  id        serial not null,
+  item_no   int not null,
+  item_size int not null,
+  name      varchar(50) not null,
+  primary key (item_no, item_size)
+);
+
+create table item_attribs (
+  id      serial not null,
+  item_id int not null,
+  key     varchar(25) not null,
+  value   varchar(100) not null,
+  primary key (id)
+);
+
+create table item_infos (
+  id      serial not null,
+  item_id int not null,
+  info    varchar(100) not null,
+  primary key (id)
+);
+
+create table item_groups (
+  item_group_id      int not null,
+  item_group_name    varchar(100) not null,
+  group_desc         varchar(100) not null,
+  primary key (item_group_id, item_group_name)
+);
+
+create table item_groups_items (
+  item_id         int not null,
+  item_group_id   int not null,
+  item_group_name varchar(100) not null,
+  primary key (item_id, item_group_id, item_group_name)
+);
