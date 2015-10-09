@@ -224,3 +224,43 @@ CREATE TABLE products_restaurants (
     store_id     [int] NOT NULL
 );
 go
+
+CREATE TABLE items (
+    id          [int] IDENTITY(1000,1) PRIMARY KEY NOT NULL
+    item_no     [int] not null,
+    item_size   [int]  not null,
+    name      varchar(100) not null,
+    constraint [items_pk] PRIMARY KEY (item_no, item_size)
+);
+go
+
+CREATE TABLE item_attribs (
+    id          [int] IDENTITY(1000,1) PRIMARY KEY NOT NULL
+    item_id     [int] not null,
+    key         varchar(25) not null,
+    value       varchar(100) not null
+);
+go
+
+create table item_infos (
+    id          [int] IDENTITY(1000,1) PRIMARY KEY NOT NULL
+    item_id     [int] not null,
+    info        varchar(100) not null
+);
+go
+
+create table item_groups (
+    item_group_id      [int] not null,
+    item_group_name    varchar(100) not null,
+    group_desc         varchar(100) not null,
+    constraint item_groups_pk primary key (item_group_id, item_group_name)
+);
+go
+
+create table item_groups_items (
+    item_id         [int] not null,
+    item_group_id   [int] not null,
+    item_group_name varchar(100) not null,
+    constraint item_groups_items_pk primary key (item_id, item_group_id, item_group_name)
+);
+go

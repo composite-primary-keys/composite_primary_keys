@@ -90,3 +90,18 @@ go
 
 DROP TABLE products_restaurants;
 go
+
+DROP TABLE items;
+go
+
+DROP TABLE item_attribs;
+go
+
+DROP TABLE item_infos;
+go
+
+DROP TABLE item_groups_items;
+go
+
+DROP TABLE item_groups;
+go
