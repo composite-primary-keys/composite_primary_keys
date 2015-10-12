@@ -94,9 +94,9 @@ class TestDelete < ActiveSupport::TestCase
     records_before = ActiveRecord::Base.connection.execute('select * from employees_groups')
     steve.destroy
     records_after = ActiveRecord::Base.connection.execute('select * from employees_groups')
-    if records_before.kind_of?(Array)
+    if records_before.respond_to?(:count)
       assert_equal records_after.count, records_before.count - steve.groups.count
-    else # OCI8::Cursor for oracle_enhanced adapter
+    elsif records_before.respond_to?(:row_count) # OCI8:Cursor for oracle adapter
       assert_equal records_after.row_count, records_before.row_count - steve.groups.count
     end
   end
@@ -107,9 +107,9 @@ class TestDelete < ActiveSupport::TestCase
     employee.groups << Group.create(name: 'test')
     employee.destroy!
     records_after = ActiveRecord::Base.connection.execute('select * from employees_groups')
-    if records_before.kind_of?(Array)
+    if records_before.respond_to?(:count)
       assert_equal records_before.count, records_after.count
-    else # OCI8::Cursor for oracle_enhanced adapter
+    elsif records_before.respond_to?(:row_count) # OCI8:Cursor for oracle adapter
       assert_equal records_before.row_count, records_after.row_count
     end
   end
