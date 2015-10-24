@@ -3,9 +3,13 @@ module ActiveRecord
     def find
       if model_class
         # CPK
-        # model_class.find(fixture[model_class.primary_key])
-        ids = self.ids(model_class.primary_key)
-        model_class.find(ids)
+        # model_class.unscoped do
+        #   model_class.find(fixture[model_class.primary_key])
+        # end
+        model_class.unscoped do
+          ids = self.ids(model_class.primary_key)
+          model_class.find(ids)
+        end
       else
         raise FixtureClassNotFound, "No class attached to find."
       end

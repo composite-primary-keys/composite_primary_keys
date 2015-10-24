@@ -4,7 +4,7 @@ module CompositePrimaryKeys::ActiveRecord::QueryMethods
     # CPK
     # order_query = ["#{quoted_table_name}.#{quoted_primary_key} ASC"] if order_query.empty?
 
-    # break apart CPKs 
+    # break apart CPKs
     order_query = primary_key.map do |key|
       "#{quoted_table_name}.#{connection.quote_column_name(key)} ASC"
     end if order_query.empty?
@@ -25,7 +25,7 @@ module CompositePrimaryKeys::ActiveRecord::QueryMethods
   end
 
 
-  def order(*args)    
+  def order(*args)
     args.map! do |arg|
       if arg.is_a?(Arel::Nodes::Ordering) && arg.expr.name.is_a?(Array)
         arg = arg.expr.name.map do |key|

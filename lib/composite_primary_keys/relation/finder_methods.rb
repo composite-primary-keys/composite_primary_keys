@@ -11,7 +11,7 @@ module CompositePrimaryKeys
           if relation.limit_value
             limited_ids = limited_ids_for(relation)
             # CPK
-            #limited_ids.empty? ? relation.none! : relation.where!(table[primary_key].in(limited_ids))
+            # limited_ids.empty? ? relation.none! : relation.where!(table[primary_key].in(limited_ids))
             limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
           end
           relation.except(:limit, :offset)
@@ -20,16 +20,17 @@ module CompositePrimaryKeys
 
       def limited_ids_for(relation)
         # CPK
-        #values = @klass.connection.columns_for_distinct(
-        #  "#{quoted_table_name}.#{quoted_primary_key}", relation.order_values)
+        # values = @klass.connection.columns_for_distinct(
+        #     "#{quoted_table_name}.#{quoted_primary_key}", relation.order_values)
         columns = @klass.primary_keys.map do |key|
           "#{quoted_table_name}.#{connection.quote_column_name(key)}"
         end
         values = @klass.connection.columns_for_distinct(columns, relation.order_values)
 
         relation = relation.except(:select).select(values).distinct!
+        arel = relation.arel
 
-        id_rows = @klass.connection.select_all(relation.arel, 'SQL', relation.bind_values)
+        id_rows = @klass.connection.select_all(arel, 'SQL', arel.bind_values + relation.bind_values)
 
         # CPK
         #id_rows.map {|row| row[primary_key]}
@@ -37,12 +38,14 @@ module CompositePrimaryKeys
       end
       
       def exists?(conditions = :none)
-        # conditions can be:
-        #   Array - ['department_id = ? and location_id = ?', 1, 1]
-        #   Array -> [1,2]
-        #   CompositeKeys -> [1,2]
+        if ::ActiveRecord::Base === conditions
+          conditions = conditions.id
+          ::ActiveSupport::Deprecation.warn(<<-MSG.squish)
+          You are passing an instance of ActiveRecord::Base to `exists?`.
+          Please pass the id of the object by calling `.id`
+          MSG
+        end
 
-        conditions = conditions.id if ::ActiveRecord::Base === conditions
         return false if !conditions
 
         relation = apply_join_dependency(self, construct_join_dependency)
@@ -50,14 +53,14 @@ module CompositePrimaryKeys
 
         relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
 
-        # CPK
-        #case conditions
-        #when Array, Hash
-        #  relation = relation.where(conditions)
-        #else
-        #  relation = relation.where(table[primary_key].eq(conditions)) if conditions != :none
-        #end
-
+        # case conditions
+        # when Array, Hash
+        #   relation = relation.where(conditions)
+        # else
+        #   unless conditions == :none
+        #     relation = relation.where(primary_key => conditions)
+        #   end
+        # end
         case conditions
         when CompositePrimaryKeys::CompositeKeys
           relation = relation.where(cpk_id_predicate(table, primary_key, conditions))
@@ -80,14 +83,14 @@ module CompositePrimaryKeys
         raise UnknownPrimaryKey.new(@klass) if primary_key.nil?
 
         # CPK
-        #expects_array = ids.first.kind_of?(Array)
+        # expects_array = ids.first.kind_of?(Array)
         ids = CompositePrimaryKeys.normalize(ids)
         expects_array = ids.flatten != ids.flatten(1)
 
         return ids.first if expects_array && ids.first.empty?
 
         # CPK
-        #ids = ids.flatten.compact.uniq
+        # ids = ids.flatten.compact.uniq
         ids = expects_array ? ids.first : ids
 
         case ids.size
@@ -105,24 +108,27 @@ module CompositePrimaryKeys
 
       def find_one(id)
         # CPK
-        #id = id.id if ActiveRecord::Base === id
-        id = id.id if ::ActiveRecord::Base === id
+        # if ActiveRecord::Base === id
+        if ::ActiveRecord::Base === id
+          id = id.id
+          ActiveSupport::Deprecation.warn(<<-MSG.squish)
+          You are passing an instance of ActiveRecord::Base to `find`.
+          Please pass the id of the object by calling `.id`
+          MSG
+        end
 
-        # CPK
-        #column = columns_hash[primary_key]
-        #substitute = connection.substitute_at(column, bind_values.length)
-        #relation = where(table[primary_key].eq(substitute))
-        #relation.bind_values += [[column, id]]
-        #record = relation.take
         relation = self
         values = primary_keys.each_with_index.map do |primary_key, i|
           column = columns_hash[primary_key]
           relation.bind_values += [[column, id[i]]]
           connection.substitute_at(column, bind_values.length - 1)
         end
+
         relation = relation.where(cpk_id_predicate(table, primary_keys, values))
         record = relation.take
+
         raise_record_not_found_exception!(id, 0, 1) unless record
+
         record
       end
 

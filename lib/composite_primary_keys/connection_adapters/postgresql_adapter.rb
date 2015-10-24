@@ -8,10 +8,13 @@ module ActiveRecord
           pk = primary_key(table_ref) if table_ref
         end
 
-        if pk
+        if pk && use_insert_returning?
           # CPK
-          # select_value("#{sql} RETURNING #{quote_column_name(pk)}")
+          # select_value("#{sql} RETURNING #{quote_column_names(pk)}")
           select_value("#{sql} RETURNING #{quote_column_names(pk)}")
+        elsif pk
+          super
+          last_insert_id_value(sequence_name || default_sequence_name(table_ref, pk))
         else
           super
         end
@@ -25,16 +28,17 @@ module ActiveRecord
           pk = primary_key(table_ref) if table_ref
         end
 
-        # CPK
-        # sql = "#{sql} RETURNING #{quote_column_name(pk)}" if pk
-        sql = "#{sql} RETURNING #{quote_column_names(pk)}" if pk
+        if pk && use_insert_returning?
+          # CPK
+          # sql = "#{sql} RETURNING #{quote_column_names(pk)}"
+          sql = "#{sql} RETURNING #{quote_column_names(pk)}"
+        end
 
         [sql, binds]
       end
 
       # Returns a single value if query returns a single element
-      # otherwise returns an array coresponding to the composite keys
-      #
+      # otherwise returns an array corresponding to the composite keys
       def last_inserted_id(result)
         row = result && result.rows.first
         if Array === row

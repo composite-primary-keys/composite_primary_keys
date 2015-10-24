@@ -1,10 +1,10 @@
 module ActiveRecord
   class Base
     def self.load_cpk_adapter(adapter)
-      if (adapter.to_s =~ /postgresql/) or (adapter.to_s =~ /postgis/)
+      if adapter.to_s =~ /postgresql/ || adapter.to_s =~ /postgis/
         require "composite_primary_keys/connection_adapters/postgresql_adapter.rb"
       end
-      if (adapter.to_s =~ /sqlserver/)
+      if adapter.to_s =~ /sqlserver/
         require "composite_primary_keys/connection_adapters/sqlserver_adapter.rb"
       end
     end

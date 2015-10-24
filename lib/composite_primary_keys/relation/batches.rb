@@ -2,33 +2,39 @@ module CompositePrimaryKeys
   module ActiveRecord
     module Batches
       def find_in_batches(options = {})
+        options.assert_valid_keys(:start, :batch_size)
+
         relation = self
+        start = options[:start]
+        batch_size = options[:batch_size] || 1000
 
-        unless arel.orders.blank? && arel.taken.blank?
-          ::ActiveRecord::Base.logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
+        unless block_given?
+          return to_enum(:find_in_batches, options) do
+            total = start ? where(table[primary_key].gteq(start)).size : size
+            (total - 1).div(batch_size) + 1
+          end
         end
 
-        if (finder_options = options.except(:start, :batch_size)).present?
-          raise "You can't specify an order, it's forced to be #{batch_order}" if options[:order].present?
-          raise "You can't specify a limit, it's forced to be the batch_size"  if options[:limit].present?
-
-          relation = apply_finder_options(finder_options)
+        if logger && (arel.orders.present? || arel.taken.present?)
+          logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
         end
-
-        start = options.delete(:start).to_i
-        batch_size = options.delete(:batch_size) || 1000
 
         relation = relation.reorder(batch_order).limit(batch_size)
 
         # CPK
-        # records = relation.where(table[primary_key].gteq(start)).all
-        records = self.primary_key.reduce(relation) do |rel, key|
-          rel.where(table[key].gteq(start))
-        end
+        # records = start ? relation.where(table[primary_key].gteq(start)).to_a : relation.to_a
+        records = if start
+                    self.primary_key.reduce(relation) do |rel, key|
+                      rel.where(table[key].gteq(start))
+                    end
+                  else
+                    relation.to_a
+                  end
 
         while records.any?
           records_size = records.size
           primary_key_offset = records.last.id
+          raise "Primary key not included in the custom select clause" unless primary_key_offset
 
           yield records
 
@@ -51,11 +57,9 @@ module CompositePrimaryKeys
 
               Arel::Nodes::Grouping.new(and_clause)
             end.reduce(:or)
-
-            records = relation.where(query)
-          else
-            raise "Primary key not included in the custom select clause"
           end
+
+          records = relation.where(query)
         end
       end
 
@@ -70,7 +74,7 @@ module CompositePrimaryKeys
 
       def batch_order
         # CPK
-        #"#{quoted_table_name}.#{quoted_primary_key} ASC"
+        # "#{quoted_table_name}.#{quoted_primary_key} ASC"
         self.primary_key.map do |key|
           "#{quoted_table_name}.#{key} ASC"
         end.join(",")
