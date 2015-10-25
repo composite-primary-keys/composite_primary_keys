@@ -1,7 +1,7 @@
 require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 
-namespace :oracle do
+namespace :oracle_enhanced do
   desc 'Build the Oracle test database'
   task :build_database => :load_connection do
     options_str = connection_string
@@ -22,6 +22,6 @@ namespace :oracle do
   task :rebuild_database => [:drop_database, :build_database]
 
   task :load_connection do
-    require File.join(PROJECT_ROOT, "test", "connections", "native_oracle", "connection")
+    require File.join(PROJECT_ROOT, "test", "connections", "native_oracle_enhanced", "connection")
   end
 end

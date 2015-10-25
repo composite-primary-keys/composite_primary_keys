@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestPolymorphic < ActiveSupport::TestCase
-  fixtures :users, :employees, :comments, :hacks, :articles
+  fixtures :users, :employees, :comments, :hacks, :articles, :readings
 
   def test_polymorphic_has_many
     comments = Hack.find(7).comments

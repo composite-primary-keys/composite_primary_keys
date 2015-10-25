@@ -20,8 +20,9 @@ class TestValidations < ActiveSupport::TestCase
     mysql_match = /Unknown column 'employees_groups.' in 'where clause/ =~ exception.message
     sqlite3_match = /no such column: employees_groups./ =~ exception.message
     postgresql_match = /PG::SyntaxError: ERROR:  zero-length delimited identifier/ =~ exception.message
+    oracle_match = /OCIError: ORA-01741: illegal zero-length identifier/ =~ exception.message
 
-    assert(postgresql_match || mysql_match || sqlite3_match)
+    assert(postgresql_match || mysql_match || sqlite3_match || oracle_match)
 
     assert(EmployeesGroup.all.size == 3)
   end

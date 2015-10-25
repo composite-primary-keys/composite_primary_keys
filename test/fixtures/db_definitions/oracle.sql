@@ -3,13 +3,13 @@ create sequence topics_seq start with 1000;
 create table topics (
     id          number(11)  primary key,
     name        varchar(50) default null,  
-    feed_size   number(11)  default null,
+    feed_size   number(11)  default null
 );
 
 create table topic_sources (
     topic_id number(11),
     platform varchar(50),
-    keywords varchar(50) default null,
+    keywords varchar(50) default null
 );
 
 create sequence reference_types_seq start with 1000;
@@ -40,6 +40,8 @@ create table tariffs (
     tariff_id  number(11),
     start_date date,
     amount     number(11) default null,
+    created_at timestamp,
+    updated_at timestamp,
     constraint tariffs_pk primary key (tariff_id, start_date)
 );
 
@@ -125,6 +127,17 @@ create table employees (
     location_id   number(11) default null
 );
 
+create sequence salaries_seq start with 1000;
+
+create table salaries (
+    id          number(11) not null primary key,
+    employee_id number(11) default null,
+    location_id number(11) default null,
+    year        int not null,
+    month       int not null,
+    value       int default null
+);
+
 create sequence comments_seq start with 1000;
 
 create table comments (
@@ -205,8 +218,8 @@ create table seats (
 );
 
 create table capitols (
-    country varchar2(2000) not null,
-    city varchar2(2000) not null,
+    country varchar2(100) not null,
+    city varchar2(100) not null,
     primary key (country, city)
 );
 
