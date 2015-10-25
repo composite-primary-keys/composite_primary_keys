@@ -136,7 +136,7 @@ module CompositePrimaryKeys
         # CPK
         # result = where(table[primary_key].in(ids)).to_a
 
-        result = ids.map do |cpk_ids|
+        cpks = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
             cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
           else
@@ -146,21 +146,22 @@ module CompositePrimaryKeys
           unless cpk_ids.length == @klass.primary_keys.length
             raise "#{cpk_ids.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
           end
+          cpk_ids
+        end
 
-          new_relation = clone
-          [@klass.primary_keys, cpk_ids].transpose.map do |key, id|
-            new_relation = new_relation.where(key => id)
-          end
+        new_relation = clone
+        placeholders = Array.new(cpks.length) { '(?)' }.join(',')
+        pks = @klass.primary_keys.join(',')
+        new_relation = new_relation.where("(#{pks}) IN (#{placeholders})", *cpks)
 
-          records = new_relation.to_a
+        records = new_relation.to_a
 
-          if records.empty?
-            conditions = new_relation.arel.where_sql
-            raise(::ActiveRecord::RecordNotFound,
-                  "Couldn't find #{@klass.name} with ID=#{cpk_ids} #{conditions}")
-          end
-          records
-        end.flatten
+        if records.empty?
+          conditions = new_relation.arel.where_sql
+          raise(::ActiveRecord::RecordNotFound,
+                "Couldn't find #{@klass.name} with ID=#{cpks} #{conditions}")
+        end
+        result = records.flatten
 
         expected_size =
           if limit_value && ids.size > limit_value
