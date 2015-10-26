@@ -6,14 +6,16 @@ namespace :oracle do
   task :build_database => :load_connection do
     options_str = connection_string
 
-    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.sql')
-    sh %( sqlplus #{options_str} < #{schema} )
+    sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.sql')
+    sh %( sqlplus #{options_str} < #{sql} )
   end
 
   desc 'Drop the Oracle test database'
-  task :drop_database => :load_connection do 
+  task :drop_database => :load_connection do
     options_str = connection_string
-    sh %( sqlplus #{options_str} < #{File.join(SCHEMA_PATH, 'oracle.drop.sql')} )
+
+    sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.drop.sql')
+    sh %( sqlplus #{options_str} < #{sql} )
   end
 
   desc 'Rebuild the Oracle test database'

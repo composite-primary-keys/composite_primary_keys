@@ -7,7 +7,7 @@ module ActiveRecord
           _read_attribute(attr_name, &block)
         else
           name = attr_name.to_s
-          name = self.class.primary_key if name == 'id' && !@attributes.key?('id')
+          name = self.class.primary_key if name == 'id'.freeze && !@attributes.key?('id')
           _read_attribute(name, &block)
         end
       end

@@ -9,12 +9,21 @@ module CompositePrimaryKeys
     end
 
     def cpk_or_predicate(predicates)
-      or_predicate = predicates.map do |predicate|
-        ::Arel::Nodes::Grouping.new(predicate)
-      end.inject do |memo, node|
-        ::Arel::Nodes::Or.new(memo, node)
+      if predicates.length <= 1
+        predicates
+      else
+        predicates_copy = predicates.dup
+        or_predicate = ::Arel::Nodes::Or.new(*(predicates_copy.slice!(0,2)))
+        predicates_copy.inject(or_predicate) do |mem, predicate|
+          ::Arel::Nodes::Or.new(mem, predicate)
+        end
+        # or_predicate = predicates.map do |predicate|
+        #   ::Arel::Nodes::Grouping.new(predicate)
+        # end.inject do |memo, node|
+        #   ::Arel::Nodes::Or.new(memo, node)
+        # end
+        ::Arel::Nodes::Grouping.new(or_predicate)
       end
-      ::Arel::Nodes::Grouping.new(or_predicate)
     end
 
     def cpk_id_predicate(table, keys, values)
