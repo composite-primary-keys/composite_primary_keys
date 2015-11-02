@@ -3,7 +3,7 @@ module CompositePrimaryKeys
     module Persistence
       def relation_for_destroy
         return super unless composite?
-        
+
         where_hash = {}
         primary_keys = Array(self.class.primary_key)
 
@@ -17,7 +17,7 @@ module CompositePrimaryKeys
 
         relation = self.class.unscoped.where(where_hash)
       end
-      
+
 
       def touch(name = nil)
         attributes = timestamp_attributes_for_update_in_model
@@ -48,9 +48,9 @@ module CompositePrimaryKeys
 
       def _update_record(attribute_names = @attributes.keys)
         return super(attribute_names) unless composite?
-        
+
         klass = self.class
-        
+
         attributes_with_values = arel_attributes_with_values_for_update(attribute_names)
         return 0 if attributes_with_values.empty?
 
@@ -61,8 +61,8 @@ module CompositePrimaryKeys
         else
           stmt = klass.unscoped.where(ids_hash).arel.compile_update(attributes_with_values)
         end
-        
-        klass.connection.update stmt.to_sql
+
+        klass.connection.update stmt
       end
     end
   end
