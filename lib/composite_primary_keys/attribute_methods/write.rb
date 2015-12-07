@@ -14,7 +14,7 @@ module ActiveRecord
           attr_name = attr_name.to_s
           # CPK
           # attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
-          attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite?
+          attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite? && !has_attribute?('id')
 
           if should_type_cast
             @attributes.write_from_user(attr_name, value)
