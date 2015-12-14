@@ -30,6 +30,9 @@ unless defined?(ActiveRecord)
   require 'active_record'
 end
 
+# Arel files we override
+require 'arel/visitors/to_sql'
+
 # AR files we override
 require 'active_record/counter_cache'
 require 'active_record/fixtures'
@@ -66,6 +69,8 @@ require 'active_record/relation/query_methods'
 require 'active_record/validations/uniqueness'
 
 # CPK files
+require 'composite_primary_keys/arel/visitors/to_sql'
+
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'

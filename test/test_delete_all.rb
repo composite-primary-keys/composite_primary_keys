@@ -18,4 +18,9 @@ class TestValidations < ActiveSupport::TestCase
     }
     assert(EmployeesGroup.all.size == 3)
   end
+
+  # This test fails, requires fixin arel
+  def test_delete_all_with_joins
+    ReferenceCode.joins(:reference_type).where(:reference_type_id => 1).delete_all
+  end
 end
