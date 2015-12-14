@@ -28,7 +28,7 @@ class TestValidations < ActiveSupport::TestCase
   end
 
   # This test fails, requires fixin arel
-  #def test_delete_all_with_joins
-  #  ReferenceCode.joins(:reference_type).where(:reference_type_id => 1).delete_all
-  #end
+  def test_delete_all_with_joins
+    ReferenceCode.joins(:reference_type).where(:reference_type_id => 1).delete_all
+  end
 end
