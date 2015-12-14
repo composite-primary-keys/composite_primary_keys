@@ -1,18 +1,22 @@
 module Arel
   module Visitors
     class ToSql
-      def visit_Arel_Nodes_In o, a
+      def visit_Arel_Nodes_In o, collector
         if Array === o.right && o.right.empty?
-          '1=0'
+          collector << '1=0'
         else
-          a = o.left if Arel::Attributes::Attribute === o.left
           # CPK
-          #"#{visit o.left, a} IN (#{visit o.right, a})"
+          # collector = visit o.left, collector
           if o.left.name.is_a?(Array)
-          "(#{visit o.left, a}) IN (#{visit o.right, a})"
+            collector << "("
+            collector = visit(o.left, collector)
+            collector << ")"
           else
-            "#{visit o.left, a} IN (#{visit o.right, a})"
+            collector = visit o.left, collector
           end
+
+          collector << " IN ("
+          visit(o.right, collector) << ")"
         end
       end
     end
