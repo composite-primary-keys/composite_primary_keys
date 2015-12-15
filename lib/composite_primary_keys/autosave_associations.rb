@@ -16,11 +16,28 @@ module ActiveRecord
 
             # CPK
             # association_id = record.send(reflection.options[:primary_key] || :id)
-            if reflection.options[:primary_key].to_s == 'id'
-              association_id = record['id']
-            else
-              association_id = record.send(reflection.options[:primary_key] || :id)
-            end
+#            if reflection.options[:primary_key].to_s == 'id'
+#              association_id = record['id']
+#            else
+#              association_id = record.send(reflection.options[:primary_key] || :id)
+#            end
+
+# CPK
+# association_id = record.send(reflection.options[:primary_key] || :id)
+if reflection.options[:primary_key].to_s == 'id'
+  association_id = record['id']
+else
+  if reflection.options[:primary_key].nil? || !reflection.options[:primary_key].is_a?(Array)
+    association_id = record.send(reflection.options[:primary_key] || :id)
+  else
+    association_id = []
+    reflection.options[:primary_key].each do |key|
+      association_id << record.send(key)
+    end
+  end
+  #association_id = record.send(reflection.options[:primary_key] || :id)
+end
+
 
             self[reflection.foreign_key] = association_id
             association.loaded!
