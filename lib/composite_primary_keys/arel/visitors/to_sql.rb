@@ -7,7 +7,7 @@ module Arel
         else
           # CPK
           # collector = visit o.left, collector
-          if o.left.name.is_a?(Array)
+          if o.left.respond_to?(:name) && o.left.name.is_a?(Array)
             collector << "("
             collector = visit(o.left, collector)
             collector << ")"
