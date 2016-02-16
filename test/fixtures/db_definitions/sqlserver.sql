@@ -230,3 +230,10 @@ CREATE TABLE employees_groups (
     group_id    [int] NOT NULL
 );
 go
+
+CREATE TABLE mittens (
+    left_id  [int],
+    right_id [int]         NOT NULL,
+    name     [varchar](50) NOT NULL
+);
+go
