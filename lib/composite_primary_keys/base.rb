@@ -21,7 +21,8 @@ module ActiveRecord
         end
       end
 
-      def primary_key_with_composite_key_support=(keys)
+      alias_method :primary_key_without_composite_key_support=, :primary_key=
+      def primary_key=(keys)
         unless keys.kind_of?(Array)
           self.primary_key_without_composite_key_support = keys
           return
@@ -34,7 +35,6 @@ module ActiveRecord
           include CompositeInstanceMethods
         EOV
       end
-      alias_method_chain :primary_key=, :composite_key_support
       alias_method :primary_keys=, :primary_key=
 
       def set_primary_keys(*keys)

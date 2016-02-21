@@ -30,17 +30,17 @@ module CompositePrimaryKeys
         relation = relation.except(:select).select(values).distinct!
         arel = relation.arel
 
-        id_rows = @klass.connection.select_all(arel, 'SQL', arel.bind_values + relation.bind_values)
+        id_rows = @klass.connection.select_all(arel, 'SQL', relation.bound_attributes)
 
         # CPK
         #id_rows.map {|row| row[primary_key]}
         id_rows.map {|row| row.values}
       end
-      
+
       def exists?(conditions = :none)
-        if ::ActiveRecord::Base === conditions
+        if Base === conditions
           conditions = conditions.id
-          ::ActiveSupport::Deprecation.warn(<<-MSG.squish)
+          ActiveSupport::Deprecation.warn(<<-MSG.squish)
           You are passing an instance of ActiveRecord::Base to `exists?`.
           Please pass the id of the object by calling `.id`
           MSG
@@ -49,34 +49,32 @@ module CompositePrimaryKeys
         return false if !conditions
 
         relation = apply_join_dependency(self, construct_join_dependency)
-        return false if ::ActiveRecord::NullRelation === relation
+        return false if ActiveRecord::NullRelation === relation
 
-        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
+        relation = relation.except(:select, :order).select(ONE_AS_ONE).limit(1)
 
-        # case conditions
-        # when Array, Hash
-        #   relation = relation.where(conditions)
-        # else
-        #   unless conditions == :none
-        #     relation = relation.where(primary_key => conditions)
-        #   end
-        # end
         case conditions
-        when CompositePrimaryKeys::CompositeKeys
-          relation = relation.where(cpk_id_predicate(table, primary_key, conditions))
-        when Array
-          pk_length = @klass.primary_keys.length
+          # CPK
+          when CompositePrimaryKeys::CompositeKeys
+            relation = relation.where(cpk_id_predicate(table, primary_key, conditions))
+          # CPK
+          when Array
+            pk_length = @klass.primary_keys.length
 
-          if conditions.length == pk_length # E.g. conditions = ['France', 'Paris']
-            return self.exists?(conditions.to_composite_keys)
-          else # Assume that conditions contains where relation
+            if conditions.length == pk_length # E.g. conditions = ['France', 'Paris']
+              return self.exists?(conditions.to_composite_keys)
+            else # Assume that conditions contains where relation
+              relation = relation.where(conditions)
+            end
+          when Array, Hash
             relation = relation.where(conditions)
-          end
-        when Hash
-          relation = relation.where(conditions)
+          else
+            unless conditions == :none
+              relation = relation.where(primary_key => conditions)
+            end
         end
 
-        connection.select_value(relation, "#{name} Exists", relation.bind_values) ? true : false
+        connection.select_value(relation, "#{name} Exists", relation.bound_attributes) ? true : false
       end
 
       def find_with_ids(*ids)
@@ -86,7 +84,6 @@ module CompositePrimaryKeys
         # expects_array = ids.first.kind_of?(Array)
         ids = CompositePrimaryKeys.normalize(ids)
         expects_array = ids.flatten != ids.flatten(1)
-
         return ids.first if expects_array && ids.first.empty?
 
         # CPK
@@ -117,14 +114,9 @@ module CompositePrimaryKeys
           MSG
         end
 
-        relation = self
-        values = primary_keys.each_with_index.map do |primary_key, i|
-          column = columns_hash[primary_key]
-          relation.bind_values += [[column, id[i]]]
-          connection.substitute_at(column, bind_values.length - 1)
-        end
-
-        relation = relation.where(cpk_id_predicate(table, primary_keys, values))
+        # CPK
+        #relation = where(primary_key => id)
+        relation = where(cpk_id_predicate(table, primary_keys, id))
         record = relation.take
 
         raise_record_not_found_exception!(id, 0, 1) unless record
@@ -133,15 +125,16 @@ module CompositePrimaryKeys
       end
 
       def find_some(ids)
-        # CPK
-        # result = where(table[primary_key].in(ids)).to_a
+        return find_some_ordered(ids) unless order_values.present?
 
+        # CPK
+        # result = where(primary_key => ids).to_a
         result = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
-            cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
-          else
-            cpk_ids.to_composite_keys
-          end
+                      cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
+                    else
+                      cpk_ids.to_composite_keys
+                    end
 
           unless cpk_ids.length == @klass.primary_keys.length
             raise "#{cpk_ids.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
@@ -163,11 +156,11 @@ module CompositePrimaryKeys
         end.flatten
 
         expected_size =
-          if limit_value && ids.size > limit_value
-            limit_value
-          else
-            ids.size
-          end
+            if limit_value && ids.size > limit_value
+              limit_value
+            else
+              ids.size
+            end
 
         # 11 ids with limit 3, offset 9 should give 2 results.
         if offset_value && (ids.size - offset_value < expected_size)
