@@ -27,11 +27,11 @@ Gem::Specification.new do |s|
   # Dependencies
   s.required_ruby_version = '>= 1.9.3'
 
-  s.add_dependency('activerecord', '~> 4.2.0')
+  s.add_dependency('activerecord', '~> 5.0.0.beta2')
 
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pg')
-  s.add_development_dependency('mysql2', '0.3.20')
+  s.add_development_dependency('mysql2')
 
   # Oracle not supported by Travis CI
   # s.add_development_dependency('ruby-oci8')
