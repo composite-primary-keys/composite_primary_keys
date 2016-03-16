@@ -53,6 +53,72 @@ module ActiveRecord
       def composite?
         false
       end
+
+      def find_in_batches(options = {})
+        return super unless primary_key.is_a?(Array)
+
+        batch_size = options[:batch_size] || 100000
+        number_of_rows = count(primary_key.first)
+        row_number = 0
+
+        start_pk = order(*primary_key).first.attributes.slice(*primary_key)
+        end_id = order(*primary_key).last.attributes.slice(*primary_key)
+
+        while row_number < number_of_rows
+          end_row_number = row_number + batch_size - 1
+          end_row_number = number_of_rows - 1 if end_row_number > number_of_rows - 1
+
+          # Force the necessary sorting; AR as is will sort a PK table incorrectly
+          start_key = order(*primary_key).
+                      offset(row_number).
+                      first.
+                      attributes.
+                      slice(*primary_key)
+
+          end_key =   order(*(primary_key.map { |k| "#{k} ASC" })).
+                      offset(end_row_number).
+                      first.
+                      attributes.
+                      slice(*primary_key)
+
+          relation = self
+          lower_bounds = []
+          upper_bounds = []
+
+          # Iterate through the PKs positionally; when we have found a discrepancy between start and end
+          # then we know that's where the boundaries are
+          primary_key.each do |col|
+            if start_key[col] == end_key[col]
+              relation = relation.where("`#{col}` = '#{start_key[col]}'")
+            else
+              lower_bounds << [col, start_key[col]]
+              upper_bounds << [col, end_key[col]]
+            end
+          end
+
+          relation = relation.where(build_batch_case(lower_bounds, '>')) unless lower_bounds.empty?
+          relation = relation.where(build_batch_case(upper_bounds, '<')) unless upper_bounds.empty?
+
+          yield(relation)
+
+          row_number = end_row_number + 1
+        end
+      end
+
+      private
+
+      def build_batch_case(bounds, operator)
+        bounds = bounds.dup
+        bound = bounds.shift
+        if bounds.empty?
+          "#{bound[0]} #{operator}= '#{bound[1]}' "
+        else
+          sql_case = "CASE WHEN #{bound[0]} = '#{bound[1]}' THEN "
+          sql_case += build_batch_case(bounds, operator)
+          sql_case += "ELSE #{bound[0]} #{operator} '#{bound[1]}' END "
+          sql_case
+        end
+      end
     end
 
     def composite?
