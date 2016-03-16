@@ -57,12 +57,10 @@ module ActiveRecord
       def find_in_batches(options = {})
         return super unless primary_key.is_a?(Array)
 
+        # Unfortunately .count uses a subquery temp table, which is a big problem when your table is large
+        number_of_rows = count(primary_key.first)
         batch_size = options[:batch_size] || 100000
         row_number = 0
-
-        # Rails .count unfortunately likes to make a subquery, which is not a tenable solution when
-        # your table is pushing 1B rows
-        number_of_rows = connection.execute("SELECT COUNT(*) FROM #{table_name}").first.first
 
         while row_number < number_of_rows
           end_row_number = row_number + batch_size - 1
@@ -89,7 +87,7 @@ module ActiveRecord
           # then we know that's where the boundaries are
           primary_key.each do |col|
             if start_key[col] == end_key[col]
-              relation = relation.where("`#{col}` = '#{start_key[col]}'")
+              relation = relation.where("#{col} = '#{start_key[col]}'")
             else
               lower_bounds << [col, start_key[col]]
               upper_bounds << [col, end_key[col]]
@@ -99,7 +97,7 @@ module ActiveRecord
           relation = relation.where(build_batch_case(lower_bounds, '>')) unless lower_bounds.empty?
           relation = relation.where(build_batch_case(upper_bounds, '<')) unless upper_bounds.empty?
 
-          yield(relation)
+          yield(relation.order(*primary_key))
 
           row_number = end_row_number + 1
         end
