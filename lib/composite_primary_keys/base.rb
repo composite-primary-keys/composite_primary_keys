@@ -58,11 +58,11 @@ module ActiveRecord
         return super unless primary_key.is_a?(Array)
 
         batch_size = options[:batch_size] || 100000
-        number_of_rows = count(primary_key.first)
         row_number = 0
 
-        start_pk = order(*primary_key).first.attributes.slice(*primary_key)
-        end_id = order(*primary_key).last.attributes.slice(*primary_key)
+        # Rails .count unfortunately likes to make a subquery, which is not a tenable solution when
+        # your table is pushing 1B rows
+        number_of_rows = connection.execute("SELECT COUNT(*) FROM #{table_name}").first.first
 
         while row_number < number_of_rows
           end_row_number = row_number + batch_size - 1
