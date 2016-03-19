@@ -5,24 +5,15 @@ module ActiveRecord
       if self.composite?
         relation = self.class.unscoped
 
-        Array(self.class.primary_key).each_with_index do |key, index|
-          column     = self.class.columns_hash[key]
-          substitute = self.class.connection.substitute_at(column, index)
-          relation = relation.where(self.class.arel_table[key].eq(substitute))
-          relation.bind_values += [[column, self[key]]]
+        Array(self.class.primary_key).each do |key|
+          column     = self.class.arel_table[key]
+          value      = self[key]
+          relation = relation.where(column.eq(value))
         end
 
         relation
       else
-        pk         = self.class.primary_key
-        column     = self.class.columns_hash[pk]
-        substitute = self.class.connection.substitute_at(column, 0)
-
-        relation = self.class.unscoped.where(
-          self.class.arel_table[pk].eq(substitute))
-
-        relation.bind_values = [[column, id]]
-        relation
+        self.class.unscoped.where(self.class.primary_key => id)
       end
     end
 
