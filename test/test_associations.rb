@@ -81,6 +81,16 @@ class TestAssociations < ActiveSupport::TestCase
     refute_equal accounting_head, engineering_head
   end
 
+  def test_association_with_composite_primary_key_can_be_autosaved
+    room = Room.new(dorm_id: 1000, room_id: 1001)
+    room_assignment = RoomAssignment.new(student_id: 1000)
+    room_assignment.room = room
+    room_assignment.save
+    room_assignment.reload
+    assert_equal(room_assignment.dorm_id, 1000)
+    assert_equal(room_assignment.room_id, 1001)
+  end
+
   def test_has_one_association_primary_key_and_foreign_key_are_present
     steve = employees(:steve)
     steve_salary = steve.create_one_salary(year: "2015", month: "1")

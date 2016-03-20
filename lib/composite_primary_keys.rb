@@ -97,6 +97,7 @@ require 'composite_primary_keys/associations/singular_association'
 require 'composite_primary_keys/associations/collection_association'
 
 require 'composite_primary_keys/dirty'
+require 'composite_primary_keys/autosave_association'
 
 require 'composite_primary_keys/attribute_methods/primary_key'
 require 'composite_primary_keys/attribute_methods/dirty'
