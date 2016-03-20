@@ -50,7 +50,7 @@ module ActiveRecord
             other = ar_parent.association(node.reflection.name)
             other.loaded!
           else
-            if ar_parent.association_cache.key?(node.reflection.name)
+            if ar_parent.association_cached?(node.reflection.name)
               model = ar_parent.association(node.reflection.name).target
               construct(model, node, row, rs, seen, model_cache, aliases)
               next
