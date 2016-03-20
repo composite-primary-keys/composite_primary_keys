@@ -204,3 +204,37 @@ create table employees_groups (
   group_id integer not null
 );
 
+create table items (
+    id        integer not null,
+    item_no   int(11) not null,
+    item_size int(3)  not null,
+    name      varchar(50) not null,
+    primary key (item_no, item_size)
+);
+
+create table item_attribs (
+    id      integer not null primary key autoincrement,
+    item_id integer not null,
+    key     varchar(25) not null,
+    value   varchar(100) not null
+);
+
+create table item_infos (
+    id      integer not null primary key,
+    item_id integer not null,
+    info    varchar(100) not null
+);
+
+create table item_groups (
+    item_group_id      int(11) not null,
+    item_group_name    varchar(100) not null,
+    group_desc         varchar(100) not null,
+    primary key (item_group_id, item_group_name)
+);
+
+create table item_groups_items (
+    item_id         integer not null,
+    item_group_id   int(11) not null,
+    item_group_name varchar(100) not null,
+    primary key (item_id, item_group_id, item_group_name)
+);

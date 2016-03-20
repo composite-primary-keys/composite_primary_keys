@@ -1,0 +1,15 @@
+itemgroup1:
+  item_group_id: 1
+  item_group_name: one
+  group_desc: first itemgroup
+
+itemgroup2:
+  item_group_id: 2
+  item_group_name: two
+  group_desc: second itemgroup
+
+itemgroup3:
+  item_group_id: 3
+  item_group_name: three
+  group_desc: third itemgroup
+

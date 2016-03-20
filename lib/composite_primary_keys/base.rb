@@ -25,6 +25,10 @@ module ActiveRecord
       def primary_key=(keys)
         unless keys.kind_of?(Array)
           self.primary_key_without_composite_key_support = keys
+          # TODO this is only a quick fix. Can the be achieved in a better way?
+          class_eval <<-EOV
+            include ForceIdInstanceMethods
+          EOV
           return
         end
 
@@ -123,6 +127,24 @@ module ActiveRecord
 
       def to_param
         persisted? ? to_key.join(CompositePrimaryKeys::ID_SEP) : nil
+      end
+    end
+
+    # Ensures that id and id= methods are not overridden by generated attribute methods for id column
+    module ForceIdInstanceMethods
+
+      # Returns the primary key value.
+      def id
+        if pk = self.class.primary_key
+          sync_with_transaction_state
+          _read_attribute(pk)
+        end
+      end
+
+      # Sets the primary key value.
+      def id=(value)
+        sync_with_transaction_state
+        write_attribute(self.class.primary_key, value) if self.class.primary_key
       end
     end
   end
