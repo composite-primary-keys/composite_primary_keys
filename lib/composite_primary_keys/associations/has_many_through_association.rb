@@ -19,7 +19,8 @@ module ActiveRecord
         scope = through_association.scope
         # CPK
         # scope.where! construct_join_attributes(*records)
-        if source_reflection.klass.composite?
+        source_klass = source_reflection.polymorphic? ? klass : source_reflection.klass
+        if source_klass.composite?
           scope.where! cpk_join_through_predicate(*records)
         else
           scope.where! construct_join_attributes(*records)

@@ -24,4 +24,11 @@ class TestPolymorphic < ActiveSupport::TestCase
     user = users(:santiago)
     assert_equal(['andrew'], user.hacks.collect { |a| a.name }.sort)
   end
+  
+  def test_has_many_through_with_polymorphic_source
+    user = users(:santiago)
+    user_to_associate = users(:drnic)
+    user.update_attributes :persons => [user_to_associate]
+    assert_equal user.persons, [user_to_associate]
+  end
 end
