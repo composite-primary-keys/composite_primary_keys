@@ -3,7 +3,7 @@ module ActiveRecord
     module Read
       def read_attribute(attr_name, &block)
         # CPK
-        if attr_name.kind_of?(Array)
+        if attr_name.kind_of?(Array) || attr_name.to_s == 'id'.freeze && @attributes.key?('id')
           _read_attribute(attr_name, &block)
         else
           name = attr_name.to_s
