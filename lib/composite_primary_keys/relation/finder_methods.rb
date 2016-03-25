@@ -38,7 +38,7 @@ module CompositePrimaryKeys
       end
 
       def exists?(conditions = :none)
-        if Base === conditions
+        if ::ActiveRecord::Base === conditions
           conditions = conditions.id
           ActiveSupport::Deprecation.warn(<<-MSG.squish)
           You are passing an instance of ActiveRecord::Base to `exists?`.
@@ -49,9 +49,9 @@ module CompositePrimaryKeys
         return false if !conditions
 
         relation = apply_join_dependency(self, construct_join_dependency)
-        return false if ActiveRecord::NullRelation === relation
+        return false if ::ActiveRecord::NullRelation === relation
 
-        relation = relation.except(:select, :order).select(ONE_AS_ONE).limit(1)
+        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
 
         case conditions
           # CPK
