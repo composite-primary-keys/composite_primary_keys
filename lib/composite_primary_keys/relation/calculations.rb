@@ -14,44 +14,40 @@ module CompositePrimaryKeys
         end
       end
 
-      # def execute_simple_calculation(operation, column_name, distinct)
-#         # Postgresql doesn't like ORDER BY when there are no GROUP BY
-#         relation = unscope(:order)
-#
-#         column_alias = column_name
-#
-#         bind_values = nil
-#
-#         # CPK
-#         # if operation == "count" && (relation.limit_value || relation.offset_value)
-#         if operation == "count"
-#           # Shortcut when limit is zero.
-#           return 0 if relation.limit_value == 0
-#
-#           query_builder = build_count_subquery(relation, column_name, distinct)
-#           bind_values = query_builder.bind_values + relation.bind_values
-#         else
-#           column = aggregate_column(column_name)
-#
-#           select_value = operation_over_aggregate_column(column, operation, distinct)
-#
-#           column_alias = select_value.alias
-#           column_alias ||= @klass.connection.column_name_for_operation(operation, select_value)
-#           relation.select_values = [select_value]
-#
-#           query_builder = relation.arel
-#           bind_values = query_builder.bind_values + relation.bind_values
-#         end
-#
-#         result = @klass.connection.select_all(query_builder, nil, bound_attributes)
-#         row    = result.first
-#         value  = row && row.values.first
-#         column = result.column_types.fetch(column_alias) do
-#           type_for(column_name)
-#         end
-#
-#         type_cast_calculated_value(value, column, operation)
-#       end
+      def execute_simple_calculation(operation, column_name, distinct) #:nodoc:
+        # PostgreSQL doesn't like ORDER BY when there are no GROUP BY
+        relation = unscope(:order)
+
+        column_alias = column_name
+
+        # CPK
+        # if operation == "count" && (relation.limit_value || relation.offset_value)
+        if operation == "count"
+          # Shortcut when limit is zero.
+          return 0 if relation.limit_value == 0
+
+          query_builder = build_count_subquery(relation, column_name, distinct)
+        else
+          column = aggregate_column(column_name)
+
+          select_value = operation_over_aggregate_column(column, operation, distinct)
+
+          column_alias = select_value.alias
+          column_alias ||= @klass.connection.column_name_for_operation(operation, select_value)
+          relation.select_values = [select_value]
+
+          query_builder = relation.arel
+        end
+
+        result = @klass.connection.select_all(query_builder, nil, bound_attributes)
+        row    = result.first
+        value  = row && row.values.first
+        column = result.column_types.fetch(column_alias) do
+          type_for(column_name)
+        end
+
+        type_cast_calculated_value(value, column, operation)
+      end
 
       def build_count_subquery(relation, column_name, distinct)
         return super(relation, column_name, distinct) unless column_name.kind_of?(Array)
