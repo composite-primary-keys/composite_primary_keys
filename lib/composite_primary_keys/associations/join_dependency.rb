@@ -18,9 +18,9 @@ module ActiveRecord
       def instantiate(result_set, aliases)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
-        seen = Hash.new { |h,parent_klass|
-          h[parent_klass] = Hash.new { |i,parent_id|
-            i[parent_id] = Hash.new { |j,child_klass| j[child_klass] = {} }
+        seen = Hash.new { |i, object_id|
+          i[object_id] = Hash.new { |j, child_class|
+            j[child_class] = {}
           }
         }
 
@@ -28,33 +28,41 @@ module ActiveRecord
         parents = model_cache[join_root]
         column_aliases = aliases.column_aliases join_root
 
-        result_set.each { |row_hash|
-          # CPK
-          primary_id = if primary_key.kind_of?(Array)
-                         primary_key.map {|key| row_hash[key]}
-                       else
-                         row_hash[primary_key]
-                       end
-          parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
-          construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+        message_bus = ActiveSupport::Notifications.instrumenter
+
+        payload = {
+          record_count: result_set.length,
+          class_name: join_root.base_klass.name
         }
+
+        message_bus.instrument('instantiation.active_record', payload) do
+          result_set.each { |row_hash|
+            # CPK
+            parent_key = if primary_key.kind_of?(Array)
+                           primary_key.map {|key| row_hash[key]}
+                         else
+                           primary_key ? row_hash[primary_key] : row_hash
+                         end
+
+            parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases)
+            construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+          }
+        end
 
         parents.values
       end
 
       def construct(ar_parent, parent, row, rs, seen, model_cache, aliases)
-        primary_id  = ar_parent.id
+        return if ar_parent.nil?
 
         parent.children.each do |node|
           if node.reflection.collection?
             other = ar_parent.association(node.reflection.name)
             other.loaded!
-          else
-            if ar_parent.association_cache.key?(node.reflection.name)
-              model = ar_parent.association(node.reflection.name).target
-              construct(model, node, row, rs, seen, model_cache, aliases)
-              next
-            end
+          elsif ar_parent.association_cached?(node.reflection.name)
+            model = ar_parent.association(node.reflection.name).target
+            construct(model, node, row, rs, seen, model_cache, aliases)
+            next
           end
 
           key = aliases.column_alias(node, node.primary_key)
@@ -65,19 +73,25 @@ module ActiveRecord
               value = row[column_alias]
             end
             # At least the first value in the key has to be set.  Should we require all values to be set?
-            next if id.first.nil?
-          else
+            id = nil if id.first.nil?
+          else # original
             id = row[key]
-            next if id.nil?
           end
 
-          model = seen[parent.base_klass][primary_id][node.base_klass][id]
+          if id.nil? # duplicating this so it is clear what remained unchanged from the original
+            nil_association = ar_parent.association(node.reflection.name)
+            nil_association.loaded!
+            next
+          end
+
+          model = seen[ar_parent.object_id][node.base_klass][id]
 
           if model
             construct(model, node, row, rs, seen, model_cache, aliases)
           else
             model = construct_model(ar_parent, node, row, model_cache, id, aliases)
-            seen[parent.base_klass][primary_id][node.base_klass][id] = model
+            model.readonly!
+            seen[ar_parent.object_id][node.base_klass][id] = model
             construct(model, node, row, rs, seen, model_cache, aliases)
           end
         end
