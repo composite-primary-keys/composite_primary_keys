@@ -17,29 +17,44 @@ module ActiveRecord
       end
     end
 
-    def touch(*names)
+    def touch(*names, time: nil)
       raise ActiveRecordError, "cannot touch on a new record object" unless persisted?
 
+      time ||= current_time_from_proper_timezone
       attributes = timestamp_attributes_for_update_in_model
       attributes.concat(names)
 
       unless attributes.empty?
-        current_time = current_time_from_proper_timezone
         changes = {}
 
         attributes.each do |column|
           column = column.to_s
-          changes[column] = write_attribute(column, current_time)
+          changes[column] = write_attribute(column, time)
         end
-
-        changes[self.class.locking_column] = increment_lock if locking_enabled?
 
         clear_attribute_changes(changes.keys)
         primary_key = self.class.primary_key
+        scope = self.class.unscoped.where(primary_key => _read_attribute(primary_key))
+
+        if locking_enabled?
+          locking_column = self.class.locking_column
+          scope = scope.where(locking_column => _read_attribute(locking_column))
+          changes[locking_column] = increment_lock
+        end
+
         # CPK
-        #self.class.unscoped.where(primary_key => self[primary_key]).update_all(changes) == 1
-        primary_key_predicate = self.class.unscoped.cpk_id_predicate(self.class.arel_table, Array(primary_key), Array(id))
-        self.class.unscoped.where(primary_key_predicate).update_all(changes) == 1
+        if composite?
+          primary_key_predicate = self.class.unscoped.cpk_id_predicate(self.class.arel_table, Array(primary_key), Array(id))
+          scope = self.class.unscoped.where(primary_key_predicate)
+        end
+
+        result = scope.update_all(changes) == 1
+
+        if !result && locking_enabled?
+          raise ActiveRecord::StaleObjectError.new(self, "touch")
+        end
+
+        result
       else
         true
       end
