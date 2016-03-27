@@ -16,35 +16,6 @@ module ActiveRecord
       extend CompositePrimaryKeys::CompositeRelation
     end
 
-    # alias :where_values_hash_without_cpk :where_values_hash
-    # def where_values_hash(relation_table_name = table_name)
-    #   # CPK
-    #   nodes_from_and = where_values.grep(Arel::Nodes::And).map { |and_node|
-    #     and_node.children.grep(Arel::Nodes::Equality)
-    #   }.flatten
-    #
-    #   # CPK
-    #   # equalities = where_values.grep(Arel::Nodes::Equality).find_all { |node|
-    #   #   node.left.relation.name == relation_table_name
-    #   # }
-    #   equalities = (nodes_from_and + where_values.grep(Arel::Nodes::Equality)).find_all { |node|
-    #     node.left.relation.name == relation_table_name
-    #   }
-    #
-    #   binds = Hash[bind_values.find_all(&:first).map { |column, v| [column.name, v] }]
-    #
-    #   Hash[equalities.map { |where|
-    #     name = where.left.name
-    #     [name, binds.fetch(name.to_s) {
-    #       case where.right
-    #       when Array then where.right.map(&:val)
-    #       else
-    #         where.right.val
-    #       end
-    #     }]
-    #   }]
-    # end
-
     def _update_record(values, id, id_was) # :nodoc:
       substitutes, binds = substitute_values values
 
