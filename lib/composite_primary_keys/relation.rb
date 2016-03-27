@@ -50,28 +50,28 @@ module ActiveRecord
 
       scope = @klass.unscoped
 
+      if @klass.finder_needs_type_condition?
+        scope.unscope!(where: @klass.inheritance_column)
+      end
+
       # CPK
-      um = if self.composite?
-             relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+      if self.composite?
+        relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+      else
+        relation = scope.where(@klass.primary_key => (id_was || id))
+      end
 
-             relation.arel.compile_update(substitutes, @klass.primary_key)
-           else
-              if @klass.finder_needs_type_condition?
-                scope.unscope!(where: @klass.inheritance_column)
-              end
 
-              relation = scope.where(@klass.primary_key => (id_was || id))
-              bvs = binds + relation.bound_attributes
-              um = relation
-                       .arel
-                       .compile_update(substitutes, @klass.primary_key)
+      bvs = binds + relation.bound_attributes
+      um = relation
+        .arel
+        .compile_update(substitutes, @klass.primary_key)
 
-              @klass.connection.update(
-                  um,
-                  'SQL',
-                  bvs,
-              )
-           end
+      @klass.connection.update(
+        um,
+        'SQL',
+        bvs,
+      )
     end
   end
 end

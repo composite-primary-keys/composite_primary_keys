@@ -11,6 +11,10 @@ module ActiveRecord
     def assign_nested_attributes_for_collection_association(association_name, attributes_collection)
       options = self.nested_attributes_options[association_name]
 
+      if attributes_collection.respond_to?(:permitted?)
+        attributes_collection = attributes_collection.to_h
+      end
+
       unless attributes_collection.is_a?(Hash) || attributes_collection.is_a?(Array)
         raise ArgumentError, "Hash or Array expected, got #{attributes_collection.class.name} (#{attributes_collection.inspect})"
       end
@@ -36,10 +40,8 @@ module ActiveRecord
                              attribute_ids = attribute_collection['id'] || attribute_collection[:id]
                              if attribute_ids
                                ids = CompositePrimaryKeys::CompositeKeys.parse(attribute_ids)
-                               eq_predicates = association.klass.primary_key.zip(ids).map do |primary_key, value|
-                                 association.klass.arel_table[primary_key].eq(value)
-                               end
-                               association.scope.where(*eq_predicates).to_a
+                               eq_predicates = Class.new.extend(CompositePrimaryKeys::Predicates).cpk_id_predicate(association.klass.arel_table, association.klass.primary_key, ids)
+                               association.scope.where(eq_predicates).to_a
                              else
                                []
                              end
@@ -50,6 +52,9 @@ module ActiveRecord
                          end
 
       attributes_collection.each do |attributes|
+        if attributes.respond_to?(:permitted?)
+          attributes = attributes.to_h
+        end
         attributes = attributes.with_indifferent_access
         if attributes['id'].blank?
           unless reject_new_record?(association_name, attributes)
