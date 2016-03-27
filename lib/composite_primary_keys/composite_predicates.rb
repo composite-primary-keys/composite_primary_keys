@@ -14,7 +14,7 @@ module CompositePrimaryKeys
       else
         predicates_copy = predicates.dup
         or_predicate = ::Arel::Nodes::Or.new(*(predicates_copy.slice!(0,2)))
-        predicates_copy.inject(or_predicate) do |mem, predicate|
+        or_predicate = predicates_copy.inject(or_predicate) do |mem, predicate|
           ::Arel::Nodes::Or.new(mem, predicate)
         end
         # or_predicate = predicates.map do |predicate|
@@ -22,6 +22,7 @@ module CompositePrimaryKeys
         # end.inject do |memo, node|
         #   ::Arel::Nodes::Or.new(memo, node)
         # end
+
         ::Arel::Nodes::Grouping.new(or_predicate)
       end
     end
