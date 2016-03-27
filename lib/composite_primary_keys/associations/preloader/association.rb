@@ -10,7 +10,7 @@ module ActiveRecord
             predicate = cpk_in_predicate(table, reflection.foreign_key, ids)
             scope.where(predicate)
           else
-            scope.where(association_key.in(ids))
+            scope.where(association_key_name => ids)
           end
         end
 
@@ -88,7 +88,7 @@ module ActiveRecord
                                  end.join(CompositePrimaryKeys::ID_SEP)
                                end
                              end
-                             
+
         end
       end
     end
