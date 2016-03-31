@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class EmployeesGroup < ActiveRecord::Base
-  
+
 end
 
 class TestValidations < ActiveSupport::TestCase
@@ -13,16 +13,11 @@ class TestValidations < ActiveSupport::TestCase
     EmployeesGroup.create(employee_id: 3, group_id: 103)
 
     assert_equal(EmployeesGroup.all.size, 3)
-    exception = assert_raises(ActiveRecord::StatementInvalid) {
+    exception = assert_raises(NoMethodError) {
       EmployeesGroup.where(employee_id: 1).first.destroy
     }
-    
-    mysql_match = /Unknown column 'employees_groups.' in 'where clause/ =~ exception.message
-    sqlite3_match = /no such column: employees_groups./ =~ exception.message
-    postgresql_match = /PG::SyntaxError: ERROR:  zero-length delimited identifier/ =~ exception.message
-    oracle_match = /OCIError: ORA-01741: illegal zero-length identifier/ =~ exception.message
 
-    assert(postgresql_match || mysql_match || sqlite3_match || oracle_match)
+    assert(/undefined method `to_sym' for nil:NilClass/ =~ exception.message)
 
     assert(EmployeesGroup.all.size == 3)
   end
