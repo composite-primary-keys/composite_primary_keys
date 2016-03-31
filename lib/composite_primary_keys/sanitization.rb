@@ -1,18 +1,23 @@
 module ActiveRecord
   module Sanitization
     module ClassMethods
+
       protected
       # Accepts a hash of SQL conditions and replaces those attributes
-      # that correspond to a +composed_of+ relationship with their expanded
-      # aggregate attribute values.
+      # that correspond to a {#composed_of}[rdoc-ref:Aggregations::ClassMethods#composed_of]
+      # relationship with their expanded aggregate attribute values.
+      #
       # Given:
-      #     class Person < ActiveRecord::Base
-      #       composed_of :address, class_name: "Address",
-      #         mapping: [%w(address_street street), %w(address_city city)]
-      #     end
+      #
+      #   class Person < ActiveRecord::Base
+      #     composed_of :address, class_name: "Address",
+      #       mapping: [%w(address_street street), %w(address_city city)]
+      #   end
+      #
       # Then:
-      #     { address: Address.new("813 abc st.", "chicago") }
-      #       # => { address_street: "813 abc st.", address_city: "chicago" }
+      #
+      #   { address: Address.new("813 abc st.", "chicago") }
+      #   # => { address_street: "813 abc st.", address_city: "chicago" }
       def expand_hash_conditions_for_aggregates(attrs)
         expanded_attrs = {}
         attrs.each do |attr, value|
@@ -40,13 +45,13 @@ module ActiveRecord
 
       def quoted_id
         # CPK
-        # self.class.quote_value(id, column_for_attribute(self.class.primary_key))
+        # self.class.quote_value(@attributes[self.class.primary_key].value_for_database)
         if self.composite?
           [self.class.primary_keys, ids].transpose.map { |attr_name,id|
-            self.class.quote_value(id, column_for_attribute(attr_name))
+            self.class.quote_value(@attributes[attr_name].value_for_database)
           }
         else
-          self.class.quote_value(id, column_for_attribute(self.class.primary_key))
+          self.class.quote_value(@attributes[self.class.primary_key].value_for_database)
         end
       end
     end
