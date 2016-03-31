@@ -1,46 +1,48 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Batches
-      def find_in_batches(options = {})
-        options.assert_valid_keys(:start, :batch_size)
-
+      def in_batches(of: 1000, start: nil, finish: nil, load: false)
         relation = self
-        start = options[:start]
-        batch_size = options[:batch_size] || 1000
-
         unless block_given?
-          return to_enum(:find_in_batches, options) do
-            total = start ? where(table[primary_key].gteq(start)).size : size
-            (total - 1).div(batch_size) + 1
-          end
+          return BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
         end
 
         if logger && (arel.orders.present? || arel.taken.present?)
           logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
         end
 
-        relation = relation.reorder(batch_order).limit(batch_size)
+        relation = relation.reorder(batch_order).limit(of)
+        relation = apply_limits(relation, start, finish)
+        batch_relation = relation
 
-        # CPK
-        # records = start ? relation.where(table[primary_key].gteq(start)).to_a : relation.to_a
-        records = if start
-                    self.primary_key.reduce(relation) do |rel, key|
-                      rel.where(table[key].gteq(start))
-                    end
-                  else
-                    relation.to_a
-                  end
+        loop do
+          if load
+            records = batch_relation.records
+            ids = records.map(&:id)
+            # CPK
+            # yielded_relation = self.where(primary_key => ids)
+            yielded_relation = self.where(cpk_in_predicate(table, primary_keys, ids))
+            yielded_relation.load_records(records)
+          else
+            # CPK
+            # ids = batch_relation.pluck(primary_key)
+            ids = batch_relation.pluck(*Array(primary_keys))
+            # CPK
+            # yielded_relation = self.where(primary_key => ids)
+            yielded_relation = self.where(cpk_in_predicate(table, primary_keys, ids))
+          end
 
-        while records.any?
-          records_size = records.size
-          primary_key_offset = records.last.id
-          raise "Primary key not included in the custom select clause" unless primary_key_offset
+          break if ids.empty?
 
-          yield records
+          primary_key_offset = ids.last
+          raise ArgumentError.new("Primary key not included in the custom select clause") unless primary_key_offset
 
-          break if records_size < batch_size
+          yield yielded_relation
 
-          if primary_key_offset
+          break if ids.length < of
+          # CPK
+          # batch_relation = relation.where(arel_attribute(primary_key).gt(primary_key_offset))
+          batch_relation = if composite?
             # CPK
             # Lexicographically select records
             #
@@ -57,15 +59,16 @@ module CompositePrimaryKeys
 
               Arel::Nodes::Grouping.new(and_clause)
             end.reduce(:or)
+            relation.where(query)
+          else
+            relation.where(arel_attribute(primary_key).gt(primary_key_offset))
           end
-
-          records = relation.where(query)
         end
       end
 
       private
 
-      # Helper method to collect prefixes of an array:
+      # CPK Helper method to collect prefixes of an array:
       # prefixes([:a, :b, :c]) => [[:a], [:a, :b], [:a, :b, :c]]
       #
       def prefixes(ary)

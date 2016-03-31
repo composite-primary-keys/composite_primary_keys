@@ -87,6 +87,16 @@ class TestFind < ActiveSupport::TestCase
     end
   end
 
+  def test_in_batches_of_1
+    num_found = 0
+    Department.in_batches(of: 1) do |batch|
+      batch.each do |dept|
+        num_found += 1
+      end
+    end
+    assert_equal(Department.count, num_found)
+  end
+
   def test_expand
     department = departments(:engineering)
     employees = Employee.where(:department => department)
