@@ -338,4 +338,10 @@ class TestAssociations < ActiveSupport::TestCase
     associations = group.association(:memberships)
     assert_equal(false, associations.send('foreign_key_present?'))
   end
+
+  def test_ids_equals_for_non_CPK_case
+    article = Article.new
+    article.reading_ids = Reading.pluck(:id)
+    assert_equal article.reading_ids, Reading.pluck(:id)
+  end
 end
