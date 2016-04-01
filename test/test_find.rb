@@ -103,6 +103,12 @@ class TestFind < ActiveSupport::TestCase
     assert_equal(2, employees.count)
   end
 
+  def test_expand_with_multiple
+    departments = Department.all
+    employees = Employee.where(:department => departments)
+    assert_equal(4, employees.count)
+  end
+
   def test_find_one_with_params_id
     params_id = ReferenceCode.find([1,3]).to_param
     assert_equal params_id, "1,3"
