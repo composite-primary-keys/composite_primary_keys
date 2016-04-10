@@ -15,7 +15,7 @@ module ActiveRecord
 
         binds = self.binds.map { |attr| [attr.name, attr.value] }.to_h
 
-        equalities.map { |node|
+        equalities.map do |node|
           name = node.left.name
           [name, binds.fetch(name.to_s) {
             case node.right
@@ -24,8 +24,8 @@ module ActiveRecord
               node.right.val
             end
           }]
-        }.to_h
+        end.to_h
       end
-		end
-	end
+    end
+  end
 end

@@ -22,7 +22,7 @@ module CompositePrimaryKeys
 
   class CompositeKeys < Array
 
-  def self.parse(value)
+    def self.parse(value)
       case value
       when Array
         value.to_composite_keys
