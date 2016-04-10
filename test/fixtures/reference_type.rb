@@ -7,6 +7,6 @@ class ReferenceType < ActiveRecord::Base
   validates_uniqueness_of :type_label
 
   before_destroy do |record|
-    a = record
+    record
   end
 end

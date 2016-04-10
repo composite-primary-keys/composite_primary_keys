@@ -116,7 +116,6 @@ class TestCreate < ActiveSupport::TestCase
     room.save!
 
     student1 = students(:kelly)
-    student2 = students(:jordan)
 
     RoomAssignment.delete_all
 
