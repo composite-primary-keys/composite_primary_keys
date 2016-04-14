@@ -1,7 +1,7 @@
 module CompositePrimaryKeys
   module CollectionAssociation
     def get_records
-      cpk_applies = (target && target.respond_to?(:composite?) && target.composite?) || (owner && owner.respond_to?(:composite?) && owner.composite?)
+      cpk_applies = target.try(:composite?) || owner.try(:composite?)
       return scope.to_a if cpk_applies
       super
     end
