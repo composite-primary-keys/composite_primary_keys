@@ -29,6 +29,7 @@ module CompositePrimaryKeys
       key2_fields = Array(key2).map {|key| table2[key]}
 
       eq_predicates = key1_fields.zip(key2_fields).map do |key_field1, key_field2|
+        key_field2 = Arel::Nodes::Quoted.new(key_field2) unless Arel::Attributes::Attribute === key_field2
         key_field1.eq(key_field2)
       end
       cpk_and_predicate(eq_predicates)
