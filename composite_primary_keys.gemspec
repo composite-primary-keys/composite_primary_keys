@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   # Dependencies
-  s.required_ruby_version = '>= 1.9.3'
+  s.required_ruby_version = '>= 2.2.2'
 
   s.add_dependency('activerecord', '~> 5.0.0.beta3')
 
