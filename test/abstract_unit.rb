@@ -1,3 +1,5 @@
+ENV["TESTING_CPK"] = "true"
+
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 # To make debugging easier, test within this source tree versus an installed gem

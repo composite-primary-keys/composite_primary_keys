@@ -66,7 +66,7 @@ require 'active_record/relation/finder_methods'
 require 'active_record/relation/predicate_builder'
 require 'active_record/relation/query_methods'
 
-require 'active_record/validations/uniqueness'
+require 'active_record/validations/uniqueness' unless ENV["TESTING_CPK"] == "true"
 
 # CPK files
 require 'composite_primary_keys/persistence'
