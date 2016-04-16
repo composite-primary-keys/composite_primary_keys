@@ -1,3 +1,6 @@
+== 9.0.0.beta1 (2015-08-04)
+* Rails 5 support (Sammy Larbi)
+
 == 8.1.1 (2015-08-04)
 
 * Updates to make Travis CI green (Laust Rud Jacobsen)
