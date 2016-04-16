@@ -48,7 +48,7 @@ module ActiveRecord
         else
           self.primary_keys = keys
         end
-     end
+      end
 
       def composite?
         false
@@ -65,7 +65,7 @@ module ActiveRecord
       end
 
       def primary_key=(keys)
-        primary_keys = keys
+        self.primary_keys = keys
       end
 
       def composite?

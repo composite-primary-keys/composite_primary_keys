@@ -2,7 +2,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
   fixtures :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
-  
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
@@ -101,7 +101,7 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(200, restaurant.store_id)
     assert_equal("My Store", restaurant.name)
 
-    assert_equal(1, restaurant.suburbs(true).length)
+    assert_equal(1, restaurant.suburbs.reload.length)
 
     # Test suburbs
     suburb = restaurant.suburbs[0]
@@ -116,7 +116,6 @@ class TestCreate < ActiveSupport::TestCase
     room.save!
 
     student1 = students(:kelly)
-    student2 = students(:jordan)
 
     RoomAssignment.delete_all
 

@@ -1,3 +1,5 @@
+ENV["TESTING_CPK"] = "true"
+
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
 # To make debugging easier, test within this source tree versus an installed gem
@@ -13,7 +15,6 @@ spec_name = ENV['ADAPTER'] || 'postgresql'
 spec = CompositePrimaryKeys::ConnectionSpec[spec_name]
 
 # And now connect to the database
-adapter = spec['adapter']
 require File.join(PROJECT_ROOT, "test", "connections", "native_#{spec_name}", "connection")
 
 # Tell active record about the configuration
@@ -26,14 +27,14 @@ I18n.config.enforce_available_locales = true
 
 class ActiveSupport::TestCase
   include ActiveRecord::TestFixtures
-  
+
   self.fixture_path = File.dirname(__FILE__) + "/fixtures/"
   self.use_instantiated_fixtures = false
-  self.use_transactional_fixtures = true
+  self.use_transactional_tests = true
   self.test_order = :random
 
   def assert_date_from_db(expected, actual, message = nil)
-    # SQL Server doesn't have a separate column type just for dates, 
+    # SQL Server doesn't have a separate column type just for dates,
     # so the time is in the string and incorrectly formatted
     if current_adapter?(:SQLServerAdapter)
       assert_equal expected.strftime("%Y/%m/%d 00:00:00"), actual.strftime("%Y/%m/%d 00:00:00")
@@ -60,11 +61,11 @@ class ActiveSupport::TestCase
   def assert_no_queries(&block)
     assert_queries(0, &block)
   end
-  
+
   cattr_accessor :classes
 
   protected
-  
+
   def testing_with(&block)
     classes.keys.each do |key_test|
       @key_test = key_test
@@ -75,15 +76,15 @@ class ActiveSupport::TestCase
       yield
     end
   end
-  
+
   def first_id
     ids = (1..@primary_keys.length).map {|num| 1}
     composite? ? ids.to_composite_ids : ids.first
   end
-  
+
   def composite?
     @key_test != :single
-  end  
+  end
 
   # Oracle metadata is in all caps.
   def with_quoted_identifiers(s)

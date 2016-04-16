@@ -62,10 +62,6 @@ class TestFind < ActiveSupport::TestCase
       ReferenceCode.find(['999', '999'])
     end
 
-    connection = ActiveRecord::Base.connection
-    ref_type_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_type_id')}"
-    ref_code_quoted = "#{connection.quote_table_name('reference_codes')}.#{connection.quote_column_name('reference_code')}"
-
     expected = "Couldn't find all ReferenceCodes with 'reference_type_id,reference_code': (999, 999) (found 0 results, but was looking for 1)"
     assert_equal(with_quoted_identifiers(expected), error.message)
   end
@@ -87,10 +83,26 @@ class TestFind < ActiveSupport::TestCase
     end
   end
 
+  def test_in_batches_of_1
+    num_found = 0
+    Department.in_batches(of: 1) do |batch|
+      batch.each do |dept|
+        num_found += 1
+      end
+    end
+    assert_equal(Department.count, num_found)
+  end
+
   def test_expand
     department = departments(:engineering)
     employees = Employee.where(:department => department)
     assert_equal(2, employees.count)
+  end
+
+  def test_expand_with_multiple
+    departments = Department.all
+    employees = Employee.where(:department => departments)
+    assert_equal(4, employees.count)
   end
 
   def test_find_one_with_params_id

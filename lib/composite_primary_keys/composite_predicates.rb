@@ -9,21 +9,12 @@ module CompositePrimaryKeys
     end
 
     def cpk_or_predicate(predicates)
-      if predicates.length <= 1
-        predicates
-      else
-        predicates_copy = predicates.dup
-        or_predicate = ::Arel::Nodes::Or.new(*(predicates_copy.slice!(0,2)))
-        predicates_copy.inject(or_predicate) do |mem, predicate|
-          ::Arel::Nodes::Or.new(mem, predicate)
-        end
-        # or_predicate = predicates.map do |predicate|
-        #   ::Arel::Nodes::Grouping.new(predicate)
-        # end.inject do |memo, node|
-        #   ::Arel::Nodes::Or.new(memo, node)
-        # end
-        ::Arel::Nodes::Grouping.new(or_predicate)
+      or_predicate = predicates.map do |predicate|
+        ::Arel::Nodes::Grouping.new(predicate)
+      end.inject do |memo, node|
+        ::Arel::Nodes::Or.new(memo, node)
       end
+      ::Arel::Nodes::Grouping.new(or_predicate)
     end
 
     def cpk_id_predicate(table, keys, values)
@@ -38,6 +29,7 @@ module CompositePrimaryKeys
       key2_fields = Array(key2).map {|key| table2[key]}
 
       eq_predicates = key1_fields.zip(key2_fields).map do |key_field1, key_field2|
+        key_field2 = Arel::Nodes::Quoted.new(key_field2) unless Arel::Attributes::Attribute === key_field2
         key_field1.eq(key_field2)
       end
       cpk_and_predicate(eq_predicates)

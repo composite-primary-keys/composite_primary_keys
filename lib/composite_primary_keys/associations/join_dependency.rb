@@ -2,83 +2,101 @@ module ActiveRecord
   module Associations
     class JoinDependency
       class Aliases # :nodoc:
-        def column_alias(node, column)
-          # CPK
-          #@alias_cache[node][column]
-          if column.kind_of?(Array)
-            column.map do |a_column|
-              @alias_cache[node][a_column]
+        silence_warnings do
+          def column_alias(node, column)
+            # CPK
+            #@alias_cache[node][column]
+            if column.kind_of?(Array)
+              column.map do |a_column|
+                @alias_cache[node][a_column]
+              end
+            else
+              @alias_cache[node][column]
             end
-          else
-            @alias_cache[node][column]
           end
         end
       end
 
-      def instantiate(result_set, aliases)
-        primary_key = aliases.column_alias(join_root, join_root.primary_key)
+      silence_warnings do
+        def instantiate(result_set, aliases)
+          primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
-        seen = Hash.new { |h,parent_klass|
-          h[parent_klass] = Hash.new { |i,parent_id|
-            i[parent_id] = Hash.new { |j,child_klass| j[child_klass] = {} }
+          seen = Hash.new { |i, object_id|
+            i[object_id] = Hash.new { |j, child_class|
+              j[child_class] = {}
+            }
           }
-        }
 
-        model_cache = Hash.new { |h,klass| h[klass] = {} }
-        parents = model_cache[join_root]
-        column_aliases = aliases.column_aliases join_root
+          model_cache = Hash.new { |h,klass| h[klass] = {} }
+          parents = model_cache[join_root]
+          column_aliases = aliases.column_aliases join_root
 
-        result_set.each { |row_hash|
-          # CPK
-          primary_id = if primary_key.kind_of?(Array)
-                         primary_key.map {|key| row_hash[key]}
-                       else
-                         row_hash[primary_key]
-                       end
-          parent = parents[primary_id] ||= join_root.instantiate(row_hash, column_aliases)
-          construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
-        }
+          message_bus = ActiveSupport::Notifications.instrumenter
 
-        parents.values
-      end
+          payload = {
+            record_count: result_set.length,
+            class_name: join_root.base_klass.name
+          }
 
-      def construct(ar_parent, parent, row, rs, seen, model_cache, aliases)
-        primary_id  = ar_parent.id
+          message_bus.instrument('instantiation.active_record', payload) do
+            result_set.each { |row_hash|
+              # CPK
+              parent_key = if primary_key.kind_of?(Array)
+                             primary_key.map {|key| row_hash[key]}
+                           else
+                             primary_key ? row_hash[primary_key] : row_hash
+                           end
 
-        parent.children.each do |node|
-          if node.reflection.collection?
-            other = ar_parent.association(node.reflection.name)
-            other.loaded!
-          else
-            if ar_parent.association_cached?(node.reflection.name)
+              parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases)
+              construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+            }
+          end
+
+          parents.values
+        end
+
+        def construct(ar_parent, parent, row, rs, seen, model_cache, aliases)
+          return if ar_parent.nil?
+
+          parent.children.each do |node|
+            if node.reflection.collection?
+              other = ar_parent.association(node.reflection.name)
+              other.loaded!
+            elsif ar_parent.association_cached?(node.reflection.name)
               model = ar_parent.association(node.reflection.name).target
               construct(model, node, row, rs, seen, model_cache, aliases)
               next
             end
-          end
 
-          key = aliases.column_alias(node, node.primary_key)
+            key = aliases.column_alias(node, node.primary_key)
 
-          # CPK
-          if key.is_a?(Array)
-            id = Array(key).map do |column_alias|
-              value = row[column_alias]
+            # CPK
+            if key.is_a?(Array)
+              id = Array(key).map do |column_alias|
+                row[column_alias]
+              end
+              # At least the first value in the key has to be set.  Should we require all values to be set?
+              id = nil if id.first.nil?
+            else # original
+              id = row[key]
             end
-            # At least the first value in the key has to be set.  Should we require all values to be set?
-            next if id.first.nil?
-          else
-            id = row[key]
-            next if id.nil?
-          end
 
-          model = seen[parent.base_klass][primary_id][node.base_klass][id]
+            if id.nil? # duplicating this so it is clear what remained unchanged from the original
+              nil_association = ar_parent.association(node.reflection.name)
+              nil_association.loaded!
+              next
+            end
 
-          if model
-            construct(model, node, row, rs, seen, model_cache, aliases)
-          else
-            model = construct_model(ar_parent, node, row, model_cache, id, aliases)
-            seen[parent.base_klass][primary_id][node.base_klass][id] = model
-            construct(model, node, row, rs, seen, model_cache, aliases)
+            model = seen[ar_parent.object_id][node.base_klass][id]
+
+            if model
+              construct(model, node, row, rs, seen, model_cache, aliases)
+            else
+              model = construct_model(ar_parent, node, row, model_cache, id, aliases)
+              model.readonly!
+              seen[ar_parent.object_id][node.base_klass][id] = model
+              construct(model, node, row, rs, seen, model_cache, aliases)
+            end
           end
         end
       end

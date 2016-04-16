@@ -38,7 +38,7 @@ module CompositePrimaryKeys
       end
 
       def exists?(conditions = :none)
-        if Base === conditions
+        if ::ActiveRecord::Base === conditions
           conditions = conditions.id
           ActiveSupport::Deprecation.warn(<<-MSG.squish)
           You are passing an instance of ActiveRecord::Base to `exists?`.
@@ -49,9 +49,9 @@ module CompositePrimaryKeys
         return false if !conditions
 
         relation = apply_join_dependency(self, construct_join_dependency)
-        return false if ActiveRecord::NullRelation === relation
+        return false if ::ActiveRecord::NullRelation === relation
 
-        relation = relation.except(:select, :order).select(ONE_AS_ONE).limit(1)
+        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
 
         case conditions
           # CPK
@@ -103,6 +103,59 @@ module CompositePrimaryKeys
         raise RecordNotFound, "Couldn't find #{@klass.name} with an out of range ID"
       end
 
+      def last(limit = nil)
+        return find_last(limit) if loaded? || limit_value
+
+        result = limit(limit || 1)
+        # CPK
+        # result.order!(arel_attribute(primary_key)) if order_values.empty? && primary_key
+        if order_values.empty? && primary_key
+          if composite?
+            result.order!(primary_keys.map { |pk| arel_attribute(pk).asc })
+          elsif
+            result.order!(arel_attribute(primary_key))
+          end
+        end
+
+        result = result.reverse_order!
+
+        limit ? result.reverse : result.first
+      rescue ::ActiveRecord::IrreversibleOrderError
+        ActiveSupport::Deprecation.warn(<<-WARNING.squish)
+            Finding a last element by loading the relation when SQL ORDER
+            can not be reversed is deprecated.
+            Rails 5.1 will raise ActiveRecord::IrreversibleOrderError in this case.
+            Please call `to_a.last` if you still want to load the relation.
+        WARNING
+        find_last(limit)
+      end
+
+
+      def find_nth_with_limit(index, limit)
+        # TODO: once the offset argument is removed from find_nth,
+        # find_nth_with_limit_and_offset can be merged into this method
+        #
+        # CPK
+        # relation = if order_values.empty? && primary_key
+        #             order(arel_attribute(primary_key).asc)
+        #           else
+        #             self
+        #           end
+
+        relation = self
+
+        if order_values.empty? && primary_key
+          if composite?
+            relation = relation.order(primary_keys.map { |pk| arel_attribute(pk).asc })
+          elsif
+            relation = relation.order(arel_attribute(primary_key).asc)
+          end
+        end
+
+        relation = relation.offset(index) unless index.zero?
+        relation.limit(limit).to_a
+      end
+
       def find_one(id)
         # CPK
         # if ActiveRecord::Base === id
@@ -125,42 +178,31 @@ module CompositePrimaryKeys
       end
 
       def find_some(ids)
+        # CPK
+        if composite?
+          ids = if ids.length == 1
+            ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
+          else
+            ids.to_composite_keys
+          end
+        end
+
         return find_some_ordered(ids) unless order_values.present?
 
         # CPK
         # result = where(primary_key => ids).to_a
-        result = ids.map do |cpk_ids|
-          cpk_ids = if cpk_ids.length == 1
-                      cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
-                    else
-                      cpk_ids.to_composite_keys
-                    end
-
-          unless cpk_ids.length == @klass.primary_keys.length
-            raise "#{cpk_ids.inspect}: Incorrect number of primary keys for #{@klass.name}: #{@klass.primary_keys.inspect}"
-          end
-
-          new_relation = clone
-          [@klass.primary_keys, cpk_ids].transpose.map do |key, id|
-            new_relation = new_relation.where(key => id)
-          end
-
-          records = new_relation.to_a
-
-          if records.empty?
-            conditions = new_relation.arel.where_sql
-            raise(::ActiveRecord::RecordNotFound,
-                  "Couldn't find #{@klass.name} with ID=#{cpk_ids} #{conditions}")
-          end
-          records
-        end.flatten
+        result = if composite?
+          result = where(cpk_in_predicate(table, primary_keys, ids)).to_a
+        else
+          result = where(primary_key => ids).to_a
+        end
 
         expected_size =
-            if limit_value && ids.size > limit_value
-              limit_value
-            else
-              ids.size
-            end
+          if limit_value && ids.size > limit_value
+            limit_value
+          else
+            ids.size
+          end
 
         # 11 ids with limit 3, offset 9 should give 2 results.
         if offset_value && (ids.size - offset_value < expected_size)
@@ -171,6 +213,38 @@ module CompositePrimaryKeys
           result
         else
           raise_record_not_found_exception!(ids, result.size, expected_size)
+        end
+      end
+
+      def find_some_ordered(ids)
+        ids = ids.slice(offset_value || 0, limit_value || ids.size) || []
+
+        # CPK
+        # result = except(:limit, :offset).where(primary_key => ids).records
+        result = if composite?
+          except(:limit, :offset).where(cpk_in_predicate(table, primary_keys, ids)).records
+        else
+          except(:limit, :offset).where(primary_key => ids).records
+        end
+
+        if result.size == ids.size
+          pk_type = @klass.type_for_attribute(primary_key)
+
+          records_by_id = result.index_by(&:id)
+          # CPK
+          # ids.map { |id| records_by_id.fetch(pk_type.cast(id)) }
+          if composite?
+            ids.map do |id|
+              typecasted_id = primary_keys.zip(id).map do |col, val|
+                @klass.type_for_attribute(col).cast(val)
+              end
+              records_by_id.fetch(typecasted_id)
+            end
+          else
+            ids.map { |id| records_by_id.fetch(pk_type.cast(id)) }
+          end
+        else
+          raise_record_not_found_exception!(ids, result.size, ids.size)
         end
       end
     end

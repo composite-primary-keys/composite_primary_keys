@@ -8,70 +8,81 @@ module ActiveRecord
       end
     end
 
-    def assign_nested_attributes_for_collection_association(association_name, attributes_collection)
-      options = self.nested_attributes_options[association_name]
+    silence_warnings do
+      def assign_nested_attributes_for_collection_association(association_name, attributes_collection)
+        options = self.nested_attributes_options[association_name]
 
-      unless attributes_collection.is_a?(Hash) || attributes_collection.is_a?(Array)
-        raise ArgumentError, "Hash or Array expected, got #{attributes_collection.class.name} (#{attributes_collection.inspect})"
-      end
+        if attributes_collection.respond_to?(:permitted?)
+          attributes_collection = attributes_collection.to_h
+        end
 
-      check_record_limit!(options[:limit], attributes_collection)
+        unless attributes_collection.is_a?(Hash) || attributes_collection.is_a?(Array)
+          raise ArgumentError, "Hash or Array expected, got #{attributes_collection.class.name} (#{attributes_collection.inspect})"
+        end
 
-      if attributes_collection.is_a? Hash
-        keys = attributes_collection.keys
-        attributes_collection = if keys.include?('id') || keys.include?(:id)
-                                  [attributes_collection]
-                                else
-                                  attributes_collection.values
-                                end
-      end
+        check_record_limit!(options[:limit], attributes_collection)
 
-      association = association(association_name)
+        if attributes_collection.is_a? Hash
+          keys = attributes_collection.keys
+          attributes_collection = if keys.include?('id') || keys.include?(:id)
+                                    [attributes_collection]
+                                  else
+                                    attributes_collection.values
+                                  end
+        end
 
-      existing_records = if association.loaded?
-                           association.target
-                         # CPK
-                         elsif association.reflection.klass.composite?
-                           attributes_collection.map do |attribute_collection|
-                             attribute_ids = attribute_collection['id'] || attribute_collection[:id]
-                             if attribute_ids
-                               ids = CompositePrimaryKeys::CompositeKeys.parse(attribute_ids)
-                               eq_predicates = association.klass.primary_key.zip(ids).map do |primary_key, value|
-                                 association.klass.arel_table[primary_key].eq(value)
+        association = association(association_name)
+
+        existing_records = if association.loaded?
+                             association.target
+                           # CPK
+                           elsif association.reflection.klass.composite?
+                             attributes_collection.map do |attribute_collection|
+                               attribute_ids = attribute_collection['id'] || attribute_collection[:id]
+                               if attribute_ids
+                                 ids = CompositePrimaryKeys::CompositeKeys.parse(attribute_ids)
+                                 eq_predicates = Class.new.extend(CompositePrimaryKeys::Predicates).cpk_id_predicate(association.klass.arel_table, association.klass.primary_key, ids)
+                                 association.scope.where(eq_predicates).to_a
+                               else
+                                 []
                                end
-                               association.scope.where(*eq_predicates).to_a
-                             else
-                               []
-                             end
-                           end.flatten.compact
-                         else
-                           attribute_ids = attributes_collection.map {|a| a['id'] || a[:id] }.compact
-                           attribute_ids.empty? ? [] : association.scope.where(association.klass.primary_key => attribute_ids)
-                         end
+                             end.flatten.compact
+                           else
+                             attribute_ids = attributes_collection.map {|a| a['id'] || a[:id] }.compact
+                             attribute_ids.empty? ? [] : association.scope.where(association.klass.primary_key => attribute_ids)
+                           end
 
-      attributes_collection.each do |attributes|
-        attributes = attributes.with_indifferent_access
-        if attributes['id'].blank?
-          unless reject_new_record?(association_name, attributes)
-            association.build(attributes.except(*UNASSIGNABLE_KEYS))
+        attributes_collection.each do |attributes|
+          if attributes.respond_to?(:permitted?)
+            attributes = attributes.to_h
           end
-        elsif existing_record = cpk_detect_record(attributes['id'], existing_records)
-          unless call_reject_if(association_name, attributes)
-            # Make sure we are operating on the actual object which is in the association's
-            # proxy_target array (either by finding it, or adding it if not found)
-            # Take into account that the proxy_target may have changed due to callbacks
-            target_record = cpk_detect_record(attributes['id'], association.target)
-
-            if target_record
-              existing_record = target_record
-            else
-              association.add_to_target(existing_record, :skip_callbacks)
+          attributes = attributes.with_indifferent_access
+          if attributes['id'].blank?
+            unless reject_new_record?(association_name, attributes)
+              new_record = association.build(attributes.except(*UNASSIGNABLE_KEYS))
+              public_send("#{self.attributes.keys.first}_will_change!") # TODO CPK: Note: Is this a bug in Rails? We need to somehow set the parent model as changed even when changes are only adding new records to an association. This is not the way to do it, but I am not sure how it should be done.
+              new_record
             end
+          elsif existing_record = cpk_detect_record(attributes['id'], existing_records)
+            unless call_reject_if(association_name, attributes)
+              # Make sure we are operating on the actual object which is in the association's
+              # proxy_target array (either by finding it, or adding it if not found)
+              # Take into account that the proxy_target may have changed due to callbacks
+              target_record = cpk_detect_record(attributes['id'], association.target)
 
-            assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
+              if target_record
+                existing_record = target_record
+              else
+                association.add_to_target(existing_record, :skip_callbacks)
+              end
+
+              result_from_assign = assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
+              public_send("#{self.attributes.keys.first}_will_change!") # TODO CPK: Note: Is this a bug in Rails? We need to somehow set the parent model as changed even when changes are only adding new records to an association. This is not the way to do it, but I am not sure how it should be done.
+              result_from_assign
+            end
+          else
+            raise_nested_attributes_record_not_found!(association_name, attributes['id'])
           end
-        else
-          raise_nested_attributes_record_not_found!(association_name, attributes['id'])
         end
       end
     end

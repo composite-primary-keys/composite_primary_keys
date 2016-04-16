@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>5.0.0.beta2'
+  gem 'activerecord', '~>5.0.0.beta3'
   require 'active_record'
 end
 
@@ -60,12 +60,13 @@ require 'active_record/nested_attributes'
 require 'active_record/connection_adapters/abstract_adapter'
 
 require 'active_record/relation/batches'
+require 'active_record/relation/where_clause'
 require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
 require 'active_record/relation/predicate_builder'
 require 'active_record/relation/query_methods'
 
-require 'active_record/validations/uniqueness'
+require 'active_record/validations/uniqueness' unless ENV["TESTING_CPK"] == "true"
 
 # CPK files
 require 'composite_primary_keys/persistence'
@@ -94,7 +95,6 @@ require 'composite_primary_keys/associations/collection_association'
 require 'composite_primary_keys/dirty'
 
 require 'composite_primary_keys/attribute_methods/primary_key'
-require 'composite_primary_keys/attribute_methods/dirty'
 require 'composite_primary_keys/attribute_methods/read'
 require 'composite_primary_keys/attribute_methods/write'
 require 'composite_primary_keys/locking/optimistic'
@@ -104,6 +104,7 @@ require 'composite_primary_keys/connection_adapters/abstract_adapter'
 require 'composite_primary_keys/connection_adapters/abstract/connection_specification_changes'
 
 require 'composite_primary_keys/relation/batches'
+require 'composite_primary_keys/relation/where_clause'
 require 'composite_primary_keys/relation/calculations'
 require 'composite_primary_keys/relation/finder_methods'
 require 'composite_primary_keys/relation/predicate_builder'
