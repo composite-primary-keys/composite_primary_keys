@@ -3,6 +3,30 @@ require File.expand_path('../abstract_unit', __FILE__)
 class TestHabtm < ActiveSupport::TestCase
   fixtures :suburbs, :restaurants, :restaurants_suburbs, :products
 
+  def test_no_cpk
+    # This test makes sure we don't break anything in standard rails by using CPK
+    groups = Group.all
+
+    # First test records
+    employee = Employee.first
+    assert_equal(0, employee.groups.length)
+    employee.groups = groups
+    employee.reload
+    assert_equal(groups, employee.groups)
+  end
+
+  def test_no_cpk_ids
+    # This test makes sure we don't break anything in standard rails by using CPK
+    groups = Group.all
+
+    employee = Employee.last
+    assert_equal(0, employee.groups.length)
+    employee.group_ids = groups.map {|group| group.id}
+    employee.group_ids = [groups.first.id]
+    employee.reload
+    assert_equal([groups.first], employee.groups)
+  end
+
   def test_has_and_belongs_to_many
     @restaurant = Restaurant.find([1,1])
     assert_equal 2, @restaurant.suburbs.size
@@ -42,7 +66,7 @@ class TestHabtm < ActiveSupport::TestCase
     product = products(:first_product)
     subway = restaurants(:subway_one)
     product.restaurants << subway
-    
+
     # reload
     # test positive
     product = products(:first_product)
@@ -106,7 +130,7 @@ class TestHabtm < ActiveSupport::TestCase
     # an array it will be evaluated as 3[0], which is 1, which would
     # delete product_one's associations rather than product_three's
     product_three.restaurants.clear
-    
+
     # reload to force reload of associations
     product_one = Product.find(1)
     assert_equal 2, product_one.restaurants.size
