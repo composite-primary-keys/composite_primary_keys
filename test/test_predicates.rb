@@ -1,12 +1,12 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
-class TestEqual < ActiveSupport::TestCase
+class TestPredicates < ActiveSupport::TestCase
   fixtures :departments
 
   include CompositePrimaryKeys::Predicates
 
   def test_or
-    dep = Arel::Table.new(:departments)
+    dep = Department.arel_table
 
     predicates = Array.new
 
@@ -23,7 +23,7 @@ class TestEqual < ActiveSupport::TestCase
   end
 
   def test_and
-    dep = Arel::Table.new(:departments)
+    dep = Department.arel_table
 
     predicates = Array.new
 
