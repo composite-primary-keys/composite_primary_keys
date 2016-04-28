@@ -111,12 +111,7 @@ module CompositePrimaryKeys
         #relation.bind_values += [[column, id]]
         #record = relation.take
         relation = self
-        values = primary_keys.each_with_index.map do |primary_key, i|
-          column = columns_hash[primary_key]
-          relation.bind_values += [[column, id[i]]]
-          connection.substitute_at(column, bind_values.length - 1)
-        end
-        relation = relation.where(cpk_id_predicate(table, primary_keys, values))
+        relation = relation.where(cpk_id_predicate(table, primary_keys, id))
 
         record = relation.take
         raise_record_not_found_exception!(id, 0, 1) unless record
