@@ -1,3 +1,18 @@
+== 9.0.0.beta1 (2015-08-04)
+* Rails 5 support (Sammy Larbi)
+
+== 8.1.3 (2016-04-16)
+
+* Make CPK work for Arel::Attributes::Attribute (Rick Xing)
+* Change autosave_association.rb so that association autosave can work (Rick Xing)
+* Fix exception when saving "other_ids=" with a has_many :through association where the source
+  association is polymorphic (Tye Shavik)
+* Fix Arel::Nodes::In where left side is not a column (Tye Shavik)
+
+== 8.1.2 (2015-12-13)
+
+* Fix failing tests
+
 == 8.1.1 (2015-08-04)
 
 * Updates to make Travis CI green (Laust Rud Jacobsen)
