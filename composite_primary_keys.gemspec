@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   # Dependencies
   s.required_ruby_version = '>= 2.2.2'
 
-  s.add_dependency('activerecord', '~> 5.0.0.beta3')
+  s.add_dependency('activerecord', '~> 5.0.0.beta4')
 
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pg')
