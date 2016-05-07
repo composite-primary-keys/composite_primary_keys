@@ -12,7 +12,8 @@ module ActiveRecord
     def self.establish_connection(spec = nil)
       spec     ||= ActiveRecord::ConnectionHandling::DEFAULT_ENV.call.to_sym
       resolver =   ConnectionAdapters::ConnectionSpecification::Resolver.new configurations
-      spec     =   resolver.spec(spec)
+      spec     =   resolver.spec(spec, self == Base ? "primary" : name)
+      self.connection_specification_name = spec.name
 
       # CPK
       load_cpk_adapter(spec.config[:adapter])
@@ -22,7 +23,7 @@ module ActiveRecord
       end
 
       remove_connection
-      connection_handler.establish_connection self, spec
+      connection_handler.establish_connection spec
     end
 
     class << self
@@ -44,20 +45,20 @@ module ActiveRecord
       end
 
       def connection_pool
-        connection_handler.retrieve_connection_pool(self)
+        connection_handler.retrieve_connection_pool(connection_specification_name)
       end
 
       def retrieve_connection
-        connection_handler.retrieve_connection(self)
+        connection_handler.retrieve_connection(connection_specification_name)
       end
 
       # Returns true if Active Record is connected.
       def connected?
-        connection_handler.connected?(self)
+        connection_handler.connected?(connection_specification_name)
       end
 
-      def remove_connection(klass = self)
-        connection_handler.remove_connection(klass)
+      def remove_connection(id = connection_specification_name)
+        connection_handler.remove_connection(id)
       end
 
       def clear_active_connections!
