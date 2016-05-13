@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestHabtm < ActiveSupport::TestCase
-  fixtures :suburbs, :restaurants, :restaurants_suburbs, :products
+  fixtures :suburbs, :restaurants, :restaurants_suburbs, :products, :groups, :employees
 
   def test_no_cpk
     # This test makes sure we don't break anything in standard rails by using CPK
