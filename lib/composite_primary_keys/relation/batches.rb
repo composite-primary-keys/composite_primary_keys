@@ -1,14 +1,14 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Batches
-      def in_batches(of: 1000, start: nil, finish: nil, load: false)
+      def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil)
         relation = self
         unless block_given?
           return BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
         end
 
-        if logger && (arel.orders.present? || arel.taken.present?)
-          logger.warn("Scoped order and limit are ignored, it's forced to be batch order and batch size")
+        if arel.orders.present? || arel.taken.present?
+          act_on_order_or_limit_ignored(error_on_ignore)
         end
 
         relation = relation.reorder(batch_order).limit(of)
