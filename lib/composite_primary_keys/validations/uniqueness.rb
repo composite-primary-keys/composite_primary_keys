@@ -27,7 +27,7 @@ module ActiveRecord
         end
 
         Array.wrap(options[:scope]).each do |scope_item|
-          scope_value = record.send(scope_item)
+          scope_value = record.read_attribute(scope_item)
           relation = relation.and(table[scope_item].eq(scope_value))
         end
 
