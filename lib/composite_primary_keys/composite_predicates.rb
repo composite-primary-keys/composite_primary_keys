@@ -8,17 +8,22 @@ module CompositePrimaryKeys
       end
     end
 
-    def cpk_or_predicate(predicates)
+    def cpk_or_predicate(predicates, group = true)
       if predicates.length <= 1
         predicates.first
       else
-        predicates_copy = predicates.dup
-        predicate = predicates_copy.shift
+        split_point = predicates.length / 2
+        predicates_first_half = predicates[0...split_point]
+        predicates_second_half = predicates[split_point..-1]
 
-        or_predicate = predicates_copy.inject(predicate) do |mem, predicate|
-          ::Arel::Nodes::Or.new(mem, predicate)
+        or_predicate = ::Arel::Nodes::Or.new(cpk_or_predicate(predicates_first_half, false),
+                                             cpk_or_predicate(predicates_second_half, false))
+
+        if group
+          ::Arel::Nodes::Grouping.new(or_predicate)
+        else
+          or_predicate
         end
-        ::Arel::Nodes::Grouping.new(or_predicate)
       end
     end
 
