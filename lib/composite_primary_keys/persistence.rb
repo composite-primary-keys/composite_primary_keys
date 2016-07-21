@@ -57,5 +57,51 @@ module ActiveRecord
         true
       end
     end
+
+    def save(*)
+      create_or_update
+    rescue ActiveRecord::RecordInvalid
+      false
+    end
+
+    def save!(*)
+      create_or_update || raise(RecordNotSaved)
+    end
+
+    private
+
+    def create_or_update
+      raise ReadOnlyRecord if readonly?
+      result = new_record? ? _create_record : _update_record
+      result != false
+    end
+
+    # Updates the associated record with values matching those of the instance attributes.
+    # Returns the number of affected rows.
+    def _update_record(attribute_names = @attributes.keys)
+      attributes_values = arel_attributes_with_values_for_update(attribute_names)
+      if attributes_values.empty?
+        0
+      else
+        self.class.unscoped._update_record attributes_values, id, id_was
+      end
+    end
+
+    # Creates a record with values matching those of the instance attributes
+    # and returns its id.
+    def _create_record(attribute_names = @attributes.keys)
+      attributes_values = arel_attributes_with_values_for_create(attribute_names)
+
+      new_id = self.class.unscoped.insert attributes_values
+      self.id ||= new_id if self.class.primary_key
+
+      # CPK
+      if self.class.primary_key && self.id.is_a?(Array) && new_id.is_a?(Array)
+        self.id = self.id.map.with_index{|x,i| x or new_id[i]}
+      end
+
+      @new_record = false
+      id
+    end
   end
 end
