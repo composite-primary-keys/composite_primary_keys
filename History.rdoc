@@ -1,7 +1,7 @@
 == 8.1.4 (2016-07-27)
 
 * Create OR predicates in a nicely balanced tree fixing #320 (Nathan Samson)
-
+* Fix find in batches (apurvis)
 
 == 8.1.3 (2016-04-16)
 
