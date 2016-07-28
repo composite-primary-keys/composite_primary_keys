@@ -1,3 +1,6 @@
+== 9.0.1 (2016-07-27)
+* Create OR predicates in a nicely balanced tree fixing #320 (Nathan Samson)
+
 == 9.0.0 (2016-07-06)
 * Support connection_specification_name in rails5.0.0.rc1 (pocari)
 
