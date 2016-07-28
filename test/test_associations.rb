@@ -106,6 +106,17 @@ class TestAssociations < ActiveSupport::TestCase
     refute_equal accounting_employees, engineering_employees
   end
 
+  def test_has_many_replace
+    tariff = tariffs(:flat)
+    assert_equal(1, tariff.product_tariffs.length)
+
+    tariff.product_tariffs = [product_tariffs(:first_free), product_tariffs(:second_free)]
+    tariff.reload
+
+    assert_equal(2, tariff.product_tariffs.length)
+    refute(tariff.product_tariffs.include?(tariff))
+  end
+
   def test_has_many_association_primary_key_and_foreign_key_are_present
     steve = employees(:steve)
     steve_salary = steve.salaries.create(year: 2015, month: 1)
@@ -257,7 +268,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_not_nil(department.head)
   end
 
-  def test_has_many_build__simple_key
+  def test_has_many_build_simple_key
     user = users(:santiago)
     reading = user.readings.build
     assert_equal user.id, reading.user_id
