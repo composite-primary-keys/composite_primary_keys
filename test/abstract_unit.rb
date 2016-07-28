@@ -8,9 +8,6 @@ require 'composite_primary_keys'
 require 'minitest/autorun'
 require 'active_support/test_case'
 
-require 'minitest/reporters'
-MiniTest::Reporters.use!
-
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
 
