@@ -27,7 +27,7 @@ class TestPredicates < ActiveSupport::TestCase
 
     predicates = Array.new
 
-    number_of_predicates = 300 # This should really be big
+    number_of_predicates = 3000 # This should really be big
     number_of_predicates.times do |i|
       predicates << dep[:id].eq(i)
     end
