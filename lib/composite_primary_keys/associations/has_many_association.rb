@@ -7,13 +7,15 @@ module ActiveRecord
         if method == :destroy
           records.each(&:destroy!)
           update_counter(-records.length) unless reflection.inverse_updates_counter_cache?
-        else
-          # Zerista
-          #scope = self.scope.where(reflection.klass.primary_key => records)
+          return
+        # Zerista
+        elsif self.reflection.klass.composite?
           predicate = cpk_in_predicate(self.scope.table, self.reflection.klass.primary_keys, records.map(&:id))
           scope = self.scope.where(predicate)
-          update_counter(-delete_count(method, scope))
+        else
+          scope = self.scope.where(reflection.klass.primary_key => records)
         end
+        update_counter(-delete_count(method, scope))
       end
 
         def delete_count(method, scope)
