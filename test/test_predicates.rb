@@ -16,7 +16,7 @@ class TestPredicates < ActiveSupport::TestCase
 
     connection = ActiveRecord::Base.connection
     quoted = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
-    expected = "((#{quoted} = 0) OR (#{quoted} = 1) OR (#{quoted} = 2))"
+    expected = "(#{quoted} = 0 OR #{quoted} = 1 OR #{quoted} = 2)"
 
     pred = cpk_or_predicate(predicates)
     assert_equal(with_quoted_identifiers(expected), pred.to_sql)
@@ -27,7 +27,7 @@ class TestPredicates < ActiveSupport::TestCase
 
     predicates = Array.new
 
-    number_of_predicates = 30000 # This should really be big
+    number_of_predicates = 300 # This should really be big
     number_of_predicates.times do |i|
       predicates << dep[:id].eq(i)
     end
