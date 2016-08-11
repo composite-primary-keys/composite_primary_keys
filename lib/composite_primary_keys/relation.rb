@@ -71,13 +71,14 @@ module ActiveRecord
         stmt = Arel::DeleteManager.new
         stmt.from(table)
 
-        if joins_values.any?
-          # CPK
-          #@klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
+        # CPK
+        if joins_values.any? && @klass.composite?
           arel_attributes = Array(primary_key).map do |key|
             arel_attribute(key)
           end.to_composite_keys
           @klass.connection.join_to_delete(stmt, arel, arel_attributes)
+        elsif joins_values.any?
+          @klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
         else
           stmt.wheres = arel.constraints
         end
