@@ -33,6 +33,14 @@ module CompositePrimaryKeys
       end
     end
 
+    def in(other)
+      case other
+        when Arel::SelectManager
+          CompositePrimaryKeys::Nodes::In.new(self, other.ast)
+      end
+    end
+
+
     def to_s
       # Doing this makes it easier to parse Base#[](attr_name)
       join(ID_SEP)

@@ -113,3 +113,6 @@ require 'composite_primary_keys/relation/query_methods'
 require 'composite_primary_keys/validations/uniqueness'
 
 require 'composite_primary_keys/composite_relation'
+
+require 'composite_primary_keys/arel/in'
+require 'composite_primary_keys/arel/to_sql'

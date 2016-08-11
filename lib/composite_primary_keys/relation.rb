@@ -46,5 +46,47 @@ module ActiveRecord
         )
       end
     end
+
+    def delete_all(conditions = nil)
+      invalid_methods = INVALID_METHODS_FOR_DELETE_ALL.select { |method|
+        if MULTI_VALUE_METHODS.include?(method)
+          send("#{method}_values").any?
+        elsif SINGLE_VALUE_METHODS.include?(method)
+          send("#{method}_value")
+        elsif CLAUSE_METHODS.include?(method)
+          send("#{method}_clause").any?
+        end
+      }
+      if invalid_methods.any?
+        raise ActiveRecordError.new("delete_all doesn't support #{invalid_methods.join(', ')}")
+      end
+
+      if conditions
+        ActiveSupport::Deprecation.warn(<<-MESSAGE.squish)
+          Passing conditions to delete_all is deprecated and will be removed in Rails 5.1.
+          To achieve the same use where(conditions).delete_all.
+        MESSAGE
+        where(conditions).delete_all
+      else
+        stmt = Arel::DeleteManager.new
+        stmt.from(table)
+
+        if joins_values.any?
+          # CPK
+          #@klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
+          arel_attributes = Array(primary_key).map do |key|
+            arel_attribute(key)
+          end.to_composite_keys
+          @klass.connection.join_to_delete(stmt, arel, arel_attributes)
+        else
+          stmt.wheres = arel.constraints
+        end
+
+        affected = @klass.connection.delete(stmt, 'SQL', bound_attributes)
+
+        reset
+        affected
+      end
+    end
   end
 end
