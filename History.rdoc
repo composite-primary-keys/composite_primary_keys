@@ -1,4 +1,4 @@
-== 9.0.3 (2016-08-17)
+== 9.0.4 (2016-08-17)
 * Do not set associations to readonly.  See https://github.com/rails/rails/issues/24093 (Charlie Savage)
 
 == 9.0.2 (2016-08-10)

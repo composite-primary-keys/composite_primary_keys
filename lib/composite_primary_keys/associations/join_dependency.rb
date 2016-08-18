@@ -93,7 +93,6 @@ module ActiveRecord
               construct(model, node, row, rs, seen, model_cache, aliases)
             else
               model = construct_model(ar_parent, node, row, model_cache, id, aliases)
-              model.readonly!
               seen[ar_parent.object_id][node.base_klass][id] = model
               construct(model, node, row, rs, seen, model_cache, aliases)
             end
