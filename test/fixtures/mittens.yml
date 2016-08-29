@@ -1,0 +1,9 @@
+red_pair:
+  left_id: 1
+  right_id: 2
+  name: The red ones
+
+blue_pair:
+  left_id: NULL
+  right_id: 3
+  name: The blue ones

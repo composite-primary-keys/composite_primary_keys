@@ -216,3 +216,9 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table mittens (
+  left_id INTEGER,
+  right_id INTEGER NOT NULL,
+  name varchar(50) NOT NULL
+);

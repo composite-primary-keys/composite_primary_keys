@@ -234,3 +234,9 @@ create table employees_groups (
   group_id int not null
 );
 
+create table mittens (
+  left_id number(11),
+  right_id number(11) NOT NULL,
+  name varchar(50) NOT NULL,
+  primary key (left_id, right_id)
+);
