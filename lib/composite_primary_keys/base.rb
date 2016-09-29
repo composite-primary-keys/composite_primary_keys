@@ -16,9 +16,8 @@ module ActiveRecord
 
       # Don't like this method name, but its modeled after how AR does it
       def reset_primary_keys
-        if self != base_class
-          self.primary_keys = base_class.primary_keys
-        end
+        return if self == base_class
+        self.primary_keys = base_class.primary_keys || base_class.primary_key
       end
 
       alias_method :primary_key_without_composite_key_support=, :primary_key=
