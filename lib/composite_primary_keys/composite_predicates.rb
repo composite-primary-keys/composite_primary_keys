@@ -4,17 +4,16 @@ module CompositePrimaryKeys
       if predicates.length == 1
         predicates.first
       else
-        Arel::Nodes::And.new(predicates)
+        ::Arel::Nodes::And.new(predicates)
       end
     end
 
-    def cpk_or_predicate(predicates)
-      or_predicate = predicates.map do |predicate|
-        ::Arel::Nodes::Grouping.new(predicate)
-      end.inject do |memo, node|
-        ::Arel::Nodes::Or.new(memo, node)
+    def cpk_or_predicate(predicates, table = nil)
+      if predicates.size > 100
+        cpk_or_predicate_manual(predicates, table)
+      else
+        cpk_or_predicate_arel(predicates)
       end
-      ::Arel::Nodes::Grouping.new(or_predicate)
     end
 
     def cpk_id_predicate(table, keys, values)
@@ -38,8 +37,43 @@ module CompositePrimaryKeys
       and_predicates = ids.map do |id|
         cpk_id_predicate(table, primary_keys, id)
       end
-      cpk_or_predicate(and_predicates)
+      cpk_or_predicate(and_predicates, table)
     end
+
+    private
+
+    def figure_engine(table)
+      case table
+        when Arel::Nodes::TableAlias
+          table.left.engine
+        when Arel::Table
+          table.engine
+        when ::ActiveRecord::Base
+          table
+        else
+          nil
+      end
+    end
+
+    def cpk_or_predicate_manual(predicates, table = nil)
+      engine = figure_engine(table)
+      predicates = predicates.map do |predicate|
+        predicate_sql = engine ? predicate.to_sql(engine) : predicate.to_sql
+        "(#{predicate_sql})"
+      end
+      predicates = "(#{predicates.join(" OR ")})"
+      Arel::Nodes::SqlLiteral.new(predicates)
+    end
+
+    def cpk_or_predicate_arel(predicates)
+      or_predicate = predicates.map do |predicate|
+        ::Arel::Nodes::Grouping.new(predicate)
+      end.inject do |memo, node|
+        ::Arel::Nodes::Or.new(memo, node)
+      end
+      ::Arel::Nodes::Grouping.new(or_predicate)
+    end
+
   end
 end
 
