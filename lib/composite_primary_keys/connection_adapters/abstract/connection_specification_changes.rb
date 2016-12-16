@@ -10,6 +10,13 @@ module ActiveRecord
     end
 
     def self.establish_connection(spec = nil)
+      # NOTE: When passing a string `spec` such as `"development"`,
+      # it needs to be casted to symbol `:development`,
+      # due to the `resolver` expecting a Hash or a symbol.
+      if spec.is_a?(String)
+        spec.to_sym!
+      end
+
       spec     ||= ActiveRecord::ConnectionHandling::DEFAULT_ENV.call.to_sym
       resolver =   ConnectionAdapters::ConnectionSpecification::Resolver.new configurations
       spec     =   resolver.spec(spec, self == Base ? "primary" : name)
