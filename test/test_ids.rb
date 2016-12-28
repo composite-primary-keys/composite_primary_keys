@@ -4,7 +4,7 @@ class ChildCpkTest < ReferenceCode
 end
 
 class TestIds < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes
+  fixtures :reference_types, :reference_codes, :pk_called_ids
   
   CLASSES = {
     :single => {
@@ -18,6 +18,10 @@ class TestIds < ActiveSupport::TestCase
     :dual_strs   => {
       :class => ReferenceCode,
       :primary_keys => ['reference_type_id', 'reference_code'],
+    },
+    :pk_called_id => {
+      :class => PkCalledId,
+      :primary_keys => ['id', 'reference_code'],
     },
   }
 
