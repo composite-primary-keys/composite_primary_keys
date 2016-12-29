@@ -153,4 +153,12 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(assignment1, room.room_assignments[0])
     assert_equal(assignment2, room.room_assignments[1])
   end
+
+  def test_create_article_invalid_id
+    error = assert_raises(ActiveRecord::RecordInvalid) do
+      article = Article.create!(:id => 1)
+    end
+
+    assert_equal('Validation failed: Id has already been taken', error.to_s)
+  end
 end
