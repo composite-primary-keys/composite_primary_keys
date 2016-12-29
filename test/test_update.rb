@@ -62,10 +62,12 @@ class TestUpdate < ActiveSupport::TestCase
 
   def test_update_all
     assert_nothing_raised do
-      reference_code = ReferenceCode.create
+      reference_code = ReferenceCode.first
       primary_key = reference_code.class.primary_key
-      ReferenceCode.where(primary_key => reference_code[primary_key]).
-        update_all(description: 'random value')
+      ReferenceCode.where(primary_key => reference_code[primary_key]).update_all(description: 'random value')
+
+      reference_code.reload
+      assert_equal('random value', reference_code.description)
     end
   end
 end
