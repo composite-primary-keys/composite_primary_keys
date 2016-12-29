@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2006-2012 Nic Williams and Charlie Savage
+# Copyright (c) 2006-2016 Nic Williams and Charlie Savage
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -89,7 +89,6 @@ require 'composite_primary_keys/associations/join_dependency'
 require 'composite_primary_keys/associations/join_dependency/join_association'
 require 'composite_primary_keys/associations/preloader/association'
 require 'composite_primary_keys/associations/preloader/belongs_to'
-require 'composite_primary_keys/associations/singular_association'
 require 'composite_primary_keys/associations/collection_association'
 
 require 'composite_primary_keys/attribute_methods/primary_key'

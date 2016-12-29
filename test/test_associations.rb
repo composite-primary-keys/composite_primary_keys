@@ -74,9 +74,11 @@ class TestAssociations < ActiveSupport::TestCase
   def test_has_one_association_is_not_cached_to_where_it_returns_the_wrong_one
     engineering = departments(:engineering)
     engineering_head = engineering.head
+    assert_equal(employees(:sarah), engineering_head)
 
     accounting = departments(:accounting)
     accounting_head = accounting.head
+    assert_equal(employees(:steve), accounting_head)
 
     refute_equal accounting_head, engineering_head
   end
