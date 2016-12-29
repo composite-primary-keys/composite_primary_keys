@@ -40,8 +40,6 @@ class TestUpdate < ActiveSupport::TestCase
     obj = ReferenceCode.find([1,1])
     obj.reference_type_id = 2
     obj.reference_code = 3
-    assert(obj.primary_key_changed?)
-    assert_equal({"reference_type_id" => 1, "reference_code" => 1}, obj.primary_key_was)
     assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
     assert(obj.save)
     assert(obj.reload)
