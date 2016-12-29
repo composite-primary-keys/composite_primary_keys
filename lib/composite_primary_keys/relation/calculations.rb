@@ -35,7 +35,11 @@ module CompositePrimaryKeys
           query_builder = relation.arel
         end
 
-        type_cast_calculated_value(@klass.connection.select_value(query_builder.to_sql), column_for(column_name), operation)
+        result = @klass.connection.select_all(query_builder, nil, relation.bind_values)
+        row    = result.first
+        value  = row && row.values.first
+
+        type_cast_calculated_value(value, column_for(column_name), operation)
       end
 
       def build_count_subquery(relation, column_name, distinct)
