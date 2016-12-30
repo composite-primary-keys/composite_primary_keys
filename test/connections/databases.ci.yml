@@ -4,9 +4,9 @@ mysql:
   password: ""
   database: composite_primary_keys_unittest
 
-sqlite3:
+sqlite:
   adapter: sqlite3
-  database: db/composite_primary_keys_unittest.sqlite
+  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
 
 postgresql:
   adapter: postgresql

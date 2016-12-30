@@ -7,9 +7,9 @@ mysql:
   username: root
   database: composite_primary_keys_unittest
 
-sqlite3:
+sqlite:
   adapter: sqlite3
-  database: db/composite_primary_keys_unittest.sqlite
+  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
 
 postgresql:
   adapter: postgresql
@@ -23,3 +23,9 @@ sqlserver:
   username: rails
   host: localhost
   port: 1433
+
+ibm_db:
+  database: "ocdpdev"
+  username: "db2inst1"
+  password: "password"
+  host: '192.168.2.21'

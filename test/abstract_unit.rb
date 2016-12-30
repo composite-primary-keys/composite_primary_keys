@@ -11,11 +11,12 @@ require 'active_support/test_case'
 # Now load the connection spec
 require File.join(PROJECT_ROOT, "test", "connections", "connection_spec")
 
-spec_name = ENV['ADAPTER'] || 'postgresql'
+spec_name = ENV['ADAPTER'] || 'sqlite'
 spec = CompositePrimaryKeys::ConnectionSpec[spec_name]
+puts "Loaded #{spec_name}"
 
 # And now connect to the database
-require File.join(PROJECT_ROOT, "test", "connections", "native_#{spec_name}", "connection")
+ActiveRecord::Base.establish_connection(spec)
 
 # Tell active record about the configuration
 ActiveRecord::Base.configurations[:test] = spec
