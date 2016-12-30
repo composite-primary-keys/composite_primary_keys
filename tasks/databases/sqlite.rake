@@ -14,6 +14,7 @@ namespace :sqlite do
 
   desc 'Drop the sqlite test database'
   task :drop_database do
+    spec = CompositePrimaryKeys::ConnectionSpec['sqlite']
     sh %{ rm -f #{spec['database']} }
   end
 

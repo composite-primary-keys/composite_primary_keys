@@ -216,3 +216,12 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table pk_called_ids (
+    id int not null,
+    reference_code    int         not null,
+    code_label        varchar(50) default null,
+    abbreviation      varchar(50) default null,
+    description       varchar(50) default null,
+    primary key (id, reference_code)
+);

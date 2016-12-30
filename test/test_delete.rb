@@ -56,8 +56,8 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal(4, Department.count)
 
     Department.joins(:employees).
-               where('departments.department_id = ?',  department.department_id).
-               where('departments.location_id = ?',  department.location_id).
+               where('departments.department_id = ?', department.department_id).
+               where('departments.location_id = ?', department.location_id).
                delete_all
 
     assert_equal(3, Department.count)
