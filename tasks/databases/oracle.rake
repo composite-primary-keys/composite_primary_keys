@@ -1,9 +1,11 @@
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
-require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-
 namespace :oracle do
+  task :setup do
+    require 'bundler'
+    Bundler.require(:default, :oracle)
+  end
+
   desc 'Build the Oracle test database'
-  task :build_database do
+  task :build_database => :setup do
     options_str = connection_string
 
     sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.sql')
@@ -11,7 +13,7 @@ namespace :oracle do
   end
 
   desc 'Drop the Oracle test database'
-  task :drop_database do
+  task :drop_database => :setup do
     options_str = connection_string
 
     sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.drop.sql')
