@@ -1,9 +1,11 @@
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
-require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-
 namespace :sqlite do
+  task :setup do
+    require 'bundler'
+    Bundler.require(:default, :sqlite)
+  end
+
   desc 'Build the sqlite test database'
-  task :build_database do
+  task :build_database => :setup do
     spec = CompositePrimaryKeys::ConnectionSpec['sqlite']
     schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlite.sql')
     FileUtils.mkdir_p(File.dirname(spec['database']))
@@ -13,7 +15,7 @@ namespace :sqlite do
   end
 
   desc 'Drop the sqlite test database'
-  task :drop_database do
+  task :drop_database => :setup do
     spec = CompositePrimaryKeys::ConnectionSpec['sqlite']
     sh %{ rm -f #{spec['database']} }
   end

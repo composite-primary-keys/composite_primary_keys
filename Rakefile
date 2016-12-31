@@ -8,6 +8,9 @@ require 'rubygems/package_task'
 ::PROJECT_ROOT = File.expand_path(".")
 ::GEM_NAME = 'composite_primary_keys'
 
+require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
+require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
+
 # Read the spec file
 spec = Gem::Specification.load("#{GEM_NAME}.gemspec")
 

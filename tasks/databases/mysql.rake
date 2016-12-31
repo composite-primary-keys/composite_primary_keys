@@ -1,8 +1,10 @@
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
-require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-
 namespace :mysql do
-  task :create_database do
+  task :setup do
+    require 'bundler'
+    Bundler.require(:default, :mysql)
+  end
+
+  task :create_database => :setup do
     spec = CompositePrimaryKeys::ConnectionSpec['mysql']
     ActiveRecord::Base.clear_all_connections!
     new_spec = spec.dup
@@ -27,7 +29,7 @@ namespace :mysql do
   end
 
   desc 'Drop the MySQL test database'
-  task :drop_database  do
+  task :drop_database => :setup do
     spec = CompositePrimaryKeys::ConnectionSpec['mysql']
     connection = ActiveRecord::Base.establish_connection(spec)
     ActiveRecord::Base.connection.drop_database(spec['database'])

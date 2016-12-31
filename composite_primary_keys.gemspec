@@ -29,12 +29,16 @@ Gem::Specification.new do |s|
 
   s.add_dependency('activerecord', '~> 5.0.0')
 
+  s.add_development_dependency('rake')
+  s.add_development_dependency('mysql2')
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pg')
-  s.add_development_dependency('mysql2')
-  s.add_development_dependency('rake')
 
-  # Oracle not supported by Travis CI
+  # Sql server
+  #s.add_development_dependency('tiny_tds')
+  #s.add_development_dependency('activerecord-sqlserver-adapter')
+
+  # Oracle
   # s.add_development_dependency('ruby-oci8')
   # s.add_development_dependency('activerecord-oracle_enhanced-adapter')
 end

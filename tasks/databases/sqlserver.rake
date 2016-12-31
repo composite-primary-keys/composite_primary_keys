@@ -1,27 +1,43 @@
-require File.join(PROJECT_ROOT, 'lib', 'composite_primary_keys')
-require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
-
 namespace :sqlserver do
-  desc 'Build the SQL Server test database'
-  task :build_database => :load_connection do
-    options_str = connection_string
+  task :setup do
+    require 'bundler'
+    Bundler.require(:default, :sqlserver)
+  end
+
+  task :create_database => :setup do
+    spec = CompositePrimaryKeys::ConnectionSpec['sqlserver']
+    database = spec.delete('database')
+    ActiveRecord::Base.clear_all_connections!
+
+    ActiveRecord::Base.establish_connection(spec)
+    ActiveRecord::Base.connection.execute("CREATE DATABASE [#{database}]")
+    ActiveRecord::Base.clear_all_connections!
+  end
+
+  task :build_database => :create_database do
+    spec = CompositePrimaryKeys::ConnectionSpec['sqlserver']
+    ActiveRecord::Base.establish_connection(spec)
 
     schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlserver.sql')
-    sh %( sqsh #{options_str} -i #{schema} )
+    sql = File.read(schema)
+    ActiveRecord::Base.connection.execute(sql)
+    ActiveRecord::Base.clear_all_connections!
   end
 
   desc 'Drop the SQL Server test database'
-  task :drop_database => :load_connection do 
-    options_str = connection_string
-    
-    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'sqlserver.drop.sql')
-    sh %( sqsh #{options_str} -i #{schema} )
+  task :drop_database => :setup do
+    spec = CompositePrimaryKeys::ConnectionSpec['sqlserver']
+    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.establish_connection(spec)
+    database = spec.delete('database')
+    ActiveRecord::Base.connection.execute(<<-SQL)
+      USE master;
+      ALTER DATABASE [#{database}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+      DROP DATABASE [#{database}];
+    SQL
+    ActiveRecord::Base.clear_all_connections!
   end
 
   desc 'Rebuild the SQL Server test database'
   task :rebuild_database => [:drop_database, :build_database]
-
-  task :load_connection do
-    require File.join(PROJECT_ROOT, "test", "connections", "native_sqlserver", "connection")
-  end
 end
