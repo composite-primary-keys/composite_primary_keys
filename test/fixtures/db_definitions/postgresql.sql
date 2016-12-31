@@ -41,9 +41,9 @@ create table tariffs (
     tariff_id  int  not null,
     start_date date not null,
     amount     int  default null,
-    primary key (tariff_id, start_date),
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    primary key (tariff_id, start_date)
 );
 
 create table product_tariffs (
