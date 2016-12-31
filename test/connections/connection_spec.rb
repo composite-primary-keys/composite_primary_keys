@@ -4,7 +4,7 @@ require 'erb'
 module CompositePrimaryKeys
   class ConnectionSpec
     def self.[](adapter)
-      config[adapter.to_s]
+      config[adapter.to_s].dup
     end
 
     private
