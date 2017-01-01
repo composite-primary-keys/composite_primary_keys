@@ -4,12 +4,13 @@ mysql:
   password: ""
   database: composite_primary_keys_unittest
 
-sqlite:
-  adapter: sqlite3
-  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
-
 postgresql:
   adapter: postgresql
   database: composite_primary_keys_unittest
   username: postgres
   host: localhost
+
+sqlite:
+  adapter: sqlite3
+  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
+
