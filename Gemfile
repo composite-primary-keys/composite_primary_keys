@@ -23,6 +23,7 @@ end
 
 group :oracle do
   gem 'ruby-oci8'
+  gem 'ruby-plsql'
   gem 'activerecord-oracle_enhanced-adapter'
 end
 

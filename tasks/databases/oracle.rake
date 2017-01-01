@@ -6,18 +6,34 @@ namespace :oracle do
 
   desc 'Build the Oracle test database'
   task :build_database => :setup do
-    options_str = connection_string
+    spec = CompositePrimaryKeys::ConnectionSpec['oracle']
+    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.establish_connection(spec)
 
-    sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.sql')
-    sh %( sqlplus #{options_str} < #{sql} )
+    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.sql')
+    sql = File.read(schema)
+
+    sql.split(';').each do |command|
+      ActiveRecord::Base.connection.execute(command)
+    end
+
+    ActiveRecord::Base.clear_all_connections!
   end
 
   desc 'Drop the Oracle test database'
   task :drop_database => :setup do
-    options_str = connection_string
+    spec = CompositePrimaryKeys::ConnectionSpec['oracle']
+    ActiveRecord::Base.clear_all_connections!
+    ActiveRecord::Base.establish_connection(spec)
 
-    sql = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.drop.sql')
-    sh %( sqlplus #{options_str} < #{sql} )
+    schema = File.join(PROJECT_ROOT, 'test', 'fixtures', 'db_definitions', 'oracle.drop.sql')
+    sql = File.read(schema)
+
+    sql.split(';').each do |command|
+      ActiveRecord::Base.connection.execute(command)
+    end
+
+    ActiveRecord::Base.clear_all_connections!
   end
 
   desc 'Rebuild the Oracle test database'

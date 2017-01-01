@@ -2,14 +2,23 @@
 #  1. Copy this file to test/connections/databases.yml.
 #  2. Update to match the databases you want to test against.
 
+ibm_db:
+  database: "ocdpdev"
+  username: "db2inst1"
+  password: "password"
+  host: '192.168.2.21'
+
 mysql:
   adapter: mysql2
   username: root
   database: composite_primary_keys_unittest
 
-sqlite:
-  adapter: sqlite3
-  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
+oracle:
+  adapter: oracle_enhanced
+  database: xe
+  username: SYSTEM
+  password: oracle
+  host: localhost
 
 postgresql:
   adapter: postgresql
@@ -17,15 +26,13 @@ postgresql:
   username: postgres
   host: localhost
 
+sqlite:
+  adapter: sqlite3
+  database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
+
 sqlserver:
   adapter: sqlserver
   database: composite_primary_keys_unittest
   username: rails
   host: localhost
   port: 1433
-
-ibm_db:
-  database: "ocdpdev"
-  username: "db2inst1"
-  password: "password"
-  host: '192.168.2.21'

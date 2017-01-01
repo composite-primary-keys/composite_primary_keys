@@ -12,7 +12,6 @@ require 'active_support/test_case'
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 require File.join(PROJECT_ROOT, 'test', 'connections', 'connection_spec')
 
-
 spec = CompositePrimaryKeys::ConnectionSpec[spec_name]
 puts "Loaded #{spec_name}"
 
