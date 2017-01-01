@@ -23,6 +23,7 @@
   test_pagination
   test_polymorphic
   test_predicates
+  test_preload
   test_santiago
   test_serialize
   test_touch
