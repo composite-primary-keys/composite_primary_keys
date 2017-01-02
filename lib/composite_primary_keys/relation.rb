@@ -47,6 +47,36 @@ module ActiveRecord
       end
     end
 
+    def update_all(updates)
+      raise ArgumentError, "Empty list of attributes to change" if updates.blank?
+
+      stmt = Arel::UpdateManager.new
+
+      stmt.set Arel.sql(@klass.send(:sanitize_sql_for_assignment, updates))
+      stmt.table(table)
+
+      if joins_values.any?
+        # CPK
+        #@klass.connection.join_to_update(stmt, arel, arel_attribute(primary_key))
+        if primary_key.kind_of?(Array)
+          attributes = primary_key.map do |key|
+            arel_attribute(key)
+          end
+          @klass.connection.join_to_update(stmt, arel, attributes.to_composite_keys)
+        else
+          @klass.connection.join_to_update(stmt, arel, arel_attribute(primary_key))
+        end
+      else
+        stmt.key = arel_attribute(primary_key)
+        stmt.take(arel.limit)
+        stmt.order(*arel.orders)
+        stmt.wheres = arel.constraints
+      end
+
+      @klass.connection.update stmt, 'SQL', bound_attributes
+    end
+
+
     def delete_all(conditions = nil)
       invalid_methods = INVALID_METHODS_FOR_DELETE_ALL.select { |method|
         if MULTI_VALUE_METHODS.include?(method)

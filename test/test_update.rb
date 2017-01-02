@@ -59,12 +59,17 @@ class TestUpdate < ActiveSupport::TestCase
   end
 
   def test_update_all
-    assert_nothing_raised do
-      reference_code = ReferenceCode.first
-      primary_key = reference_code.class.primary_key
-      ReferenceCode.where(primary_key => reference_code[primary_key]).update_all(description: 'random value')
+    ReferenceCode.update_all(description: 'random value')
 
-      reference_code.reload
+    ReferenceCode.all.each do |reference_code|
+      assert_equal('random value', reference_code.description)
+    end
+  end
+
+  def test_update_all_join
+    ReferenceCode.joins(:reference_type).update_all(description: 'random value')
+
+    ReferenceCode.all.each do |reference_code|
       assert_equal('random value', reference_code.description)
     end
   end
