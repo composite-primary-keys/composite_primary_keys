@@ -156,7 +156,7 @@ class TestCreate < ActiveSupport::TestCase
 
   def test_create_article_invalid_id
     error = assert_raises(ActiveRecord::RecordInvalid) do
-      article = Article.create!(:id => 1)
+      article = Article.create!(:id => 1, :name => 'Duplicate Article')
     end
 
     assert_equal('Validation failed: Id has already been taken', error.to_s)
