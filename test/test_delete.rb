@@ -4,50 +4,28 @@ class TestDelete < ActiveSupport::TestCase
   fixtures :articles, :departments, :employees, :products, :tariffs, :product_tariffs,
            :reference_types, :reference_codes
 
-  CLASSES = {
-      :single => {
-          :class => ReferenceType,
-          :primary_keys => :reference_type_id,
-      },
-      :dual   => {
-          :class => ReferenceCode,
-          :primary_keys => [:reference_type_id, :reference_code],
-      },
-  }
+  def test_delete_one
+    assert_equal(5, ReferenceCode.count)
+    ReferenceCode.first.delete
+    assert_equal(4, ReferenceCode.count)
+  end
 
-  def setup
-    self.class.classes = CLASSES
+  def test_delete_one_with_id
+    assert_equal(5, ReferenceCode.count)
+    ReferenceCode.delete(ReferenceCode.first.id)
+    assert_equal(4, ReferenceCode.count)
   end
 
   def test_destroy_one
-    testing_with do
-      assert @first.destroy
-    end
-  end
-
-  def test_destroy_one_alone_via_class
-    testing_with do
-      assert @klass.destroy(@first.id)
-    end
-  end
-
-  def test_delete_one_alone
-    testing_with do
-      assert @klass.delete(@first.id)
-    end
-  end
-
-  def test_delete_many
-    testing_with do
-      to_delete = @klass.limit(2)
-      assert_equal 2, to_delete.length
-    end
+    assert_equal(5, ReferenceCode.count)
+    ReferenceCode.first.destroy
+    assert_equal(4, ReferenceCode.count)
   end
 
   def test_delete_all
-    testing_with do
-      @klass.delete_all
-    end
+    refute_empty(ReferenceCode.all)
+    ReferenceCode.delete_all
+    assert_empty(ReferenceCode.all)
   end
 
   def test_delete_all_with_join
