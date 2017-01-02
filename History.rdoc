@@ -1,3 +1,10 @@
+== 9.0.5 (2017-01-02)
+
+* Don't nest PK twice when looking up id, fixes #319 (Kerey Roper)
+* Simplify database setup  for tests (Charlie Savage)
+* Revamp gem management (Charlie Savage)
+* Improve update_all support (Charlie Savage)
+
 == 9.0.4 (2016-08-17)
 * Do not set associations to readonly.  See https://github.com/rails/rails/issues/24093 (Charlie Savage)
 
@@ -12,6 +19,10 @@
 
 == 9.0.0.beta1 (2016-04-16)
 * Rails 5 beta support (Sammy Larbi)
+
+== 8.1.5 (2017-01-01)
+
+* Don't nest PK twice when looking up id, fixes #319 (Kerey Roper)
 
 == 8.1.4 (2016-07-27)
 
