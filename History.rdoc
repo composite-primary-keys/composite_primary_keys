@@ -1,3 +1,7 @@
+== 8.1.5 (2017-01-01)
+
+* Don't nest PK twice when looking up id, fixes #319 (Kerey Roper)
+
 == 8.1.4 (2016-07-27)
 
 * Create OR predicates in a nicely balanced tree fixing #320 (Nathan Samson)
