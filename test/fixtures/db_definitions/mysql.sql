@@ -1,5 +1,5 @@
 create table topics (
-    id int not null auto_increment,  
+    id int not null auto_increment,
     name varchar(50) default null,  
     feed_size int default null, 
     primary key (id)
@@ -224,13 +224,4 @@ create table pk_called_ids (
   abbreviation varchar(50) default null,
   description varchar(50) default null,
   primary key (id, reference_code)
-);
-
-create table pk_called_ids (
-    id int not null,
-    reference_code    int         not null,
-    code_label        varchar(50) default null,
-    abbreviation      varchar(50) default null,
-    description       varchar(50) default null,
-    primary key (id, reference_code)
 );
