@@ -19,13 +19,13 @@ class TestPreload < ActiveSupport::TestCase
     comment = Comment.where(id: [1, 2, 3]).all
     persons = comment.map(&:person)
     persons.each do |person|
-      assert person.is_a?(ActiveRecord::Base)
+      assert_kind_of(ActiveRecord::Base, person)
     end
 
     comment = Comment.where(id: [1, 2, 3]).preload(:person).all
     persons = comment.map(&:person)
     persons.each do |person|
-      assert person.is_a?(ActiveRecord::Base)
+      assert_kind_of(ActiveRecord::Base, person)
     end
   end
 

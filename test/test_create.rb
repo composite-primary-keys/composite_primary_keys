@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
-  fixtures :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
+  fixtures :articles, :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
 
   CLASSES = {
     :single => {
@@ -156,7 +156,7 @@ class TestCreate < ActiveSupport::TestCase
 
   def test_create_article_invalid_id
     error = assert_raises(ActiveRecord::RecordInvalid) do
-      article = Article.create!(:id => 1, :name => 'Duplicate Article')
+      article = Article.create!(:id => 1)
     end
 
     assert_equal('Validation failed: Id has already been taken', error.to_s)
