@@ -5,6 +5,7 @@ debug.log
 local/*.rb
 pkg
 db
+.bundle/config
 
 /doc
 /.idea
