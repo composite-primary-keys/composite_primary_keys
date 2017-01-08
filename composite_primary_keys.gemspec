@@ -34,6 +34,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency('sqlite3')
   s.add_development_dependency('pg')
 
+  # DB2
+  #s.add_development_dependency('ibm_db')
+
   # Sql server
   #s.add_development_dependency('tiny_tds')
   #s.add_development_dependency('activerecord-sqlserver-adapter')

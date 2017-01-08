@@ -1,3 +1,8 @@
+== 9.0.6 (2017-01-08)
+
+* Uncomment tests (Sammy Larbi)
+* Update readme (Charlie Savage)
+
 == 9.0.5 (2017-01-02)
 
 * Don't nest PK twice when looking up id, fixes #319 (Kerey Roper)

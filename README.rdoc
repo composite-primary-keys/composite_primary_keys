@@ -98,9 +98,69 @@ CPK supports the following databases:
 
 == Tests
 
+To run tests you first need to install the appropriate gems for the database you want to test.  Database gems are
+divided into the following bundler groups:
+
+ * mysql
+ * oracle
+ * postgresql
+ * sqlite
+ * sqlserver
+
+Since it is likely you do not have all the above databases installed on your computer, you want to install just the
+gems for your database.  For example, to test postgresql you would install the appropriate gems like this:
+
+  bundler install --without "mysql oracle sqlite sqlserver"
+
+Once you have installed the appropriate gems, the next step is to create the test database. There is a rake
+command for each database. Using our example:
+
+  rake postgresql:build_database
+
+You can also rebuild the database if it already exists using this command:
+
+  rake postgresql:rebuild_database
+
+To get a list of commands for your database use:
+
+  Rake -T
+
+Finally, to run tests:
+
+  rake postgresql:test
+
 Travis build status: {<img src="https://travis-ci.org/composite-primary-keys/composite_primary_keys.svg" alt="Build Status" />}[https://travis-ci.org/composite-primary-keys/composite_primary_keys]
 
-See test/README_tests.rdoc for more information about running tests.
+=== DB2
+
+DB2 is no longer supported due to difficulties in getting the ibm_db2 gem to build.  Thus tests
+have not been run against db2.
+
+=== MariaDb (mysql)
+
+MariaDb is fully supported with all tests passing.
+
+=== Oracle
+
+Oracle is fully supported with all tests passing.
+
+=== Postgresql
+
+Postgresql is fully supported with all tests passing.
+
+=== Sqlite 3
+
+The sqlite database is created at the path composite_primary_keys/db.  Note you must *first* create the database using the
+built-in rake task before running tests:
+
+  rake sqlite:build_database
+
+Note not all tests currently pass on sqlite3.  These failures happen when trying to DELETE records where the query
+includes a JOIN.
+
+=== SqlServer
+
+SqlServer is partially supported.  There are a number of failing tests - patches welcomed.
 
 == Questions, Discussion and Contributions
 
