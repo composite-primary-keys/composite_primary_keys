@@ -116,6 +116,7 @@ create table employees (
     id int not null auto_increment,
     department_id int default null,
     location_id int default null,
+    name varchar(100) not null default 'anonymous',
     primary key (id)
 );
 

@@ -118,6 +118,7 @@ create table employees (
     id            serial not null,
     department_id int default null,
     location_id   int default null,
+    name          text not null default 'anonymous',
     primary key (id)
 );
 

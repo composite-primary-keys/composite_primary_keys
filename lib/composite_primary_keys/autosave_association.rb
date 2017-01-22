@@ -47,8 +47,9 @@ module ActiveRecord
           if autosave && record.marked_for_destruction?
             record.destroy
           elsif autosave != false
-            # it will fail to use "#send(reflection.options[:primary_key])" for CPK
-            key = reflection.options[:primary_key] ? record.read_attribute(reflection.options[:primary_key]) : id
+            # CPK
+            #key = reflection.options[:primary_key] ? send(reflection.options[:primary_key]) : id
+            key = reflection.options[:primary_key] ? read_attribute(reflection.options[:primary_key]) : id
 
             if (autosave && record.changed_for_autosave?) || new_record? || record_changed?(reflection, record, key)
               unless reflection.through_reflection

@@ -109,6 +109,7 @@ create table departments (
 create table employees (
     id integer not null primary key autoincrement,
     department_id integer null,
+    name text not null default 'anonymous',
     location_id integer null
 );
 
@@ -203,4 +204,3 @@ create table employees_groups (
   employee_id integer not null,
   group_id integer not null
 );
-

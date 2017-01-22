@@ -91,6 +91,13 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(room_assignment.room_id, 1001)
   end
 
+  def test_association_with_composite_primary_key_can_be_autosaved_on_update
+    robert = employees(:robert)
+    robert_salary = robert.create_one_salary(year: "2015", month: "1")
+    robert.update(name: robert.name.reverse)
+    assert_equal(robert.id, robert_salary.employee_id)
+  end
+
   def test_has_one_association_primary_key_and_foreign_key_are_present
     steve = employees(:steve)
     steve_salary = steve.create_one_salary(year: "2015", month: "1")

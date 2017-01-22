@@ -126,7 +126,8 @@ go
 CREATE TABLE employees (
     id            [int] IDENTITY(1000,1) NOT NULL,
     department_id [int] NULL,
-    location_id   [int] NULL
+    location_id   [int] NULL,
+    name          varchar(100) NOT NULL
 );
 go
 

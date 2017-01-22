@@ -7,5 +7,6 @@ class Employee < ActiveRecord::Base
           :foreign_key => [:employee_id, :location_id]
         has_one :one_salary, :class_name => "Salary",
           :primary_key => [:id, :location_id],
-          :foreign_key => [:employee_id, :location_id]
+          :foreign_key => [:employee_id, :location_id],
+          :inverse_of => :employee
 end

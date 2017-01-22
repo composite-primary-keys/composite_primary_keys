@@ -2,18 +2,22 @@ steve:
   id: 1
   department_id: 1
   location_id: 1
+  name: steve
 
 jill:
   id: 2
   department_id: 1
   location_id: 1
+  name: jill
 
 sarah:
   id: 3
   department_id: 2
   location_id: 1
+  name: sarah
 
 robert:
   id: 4
   department_id: 2
   location_id: 1
+  name: robert
