@@ -116,6 +116,7 @@ create table employees (
     id int not null auto_increment,
     department_id int default null,
     location_id int default null,
+    name varchar(100) not null default 'anonymous',
     primary key (id)
 );
 
@@ -215,4 +216,13 @@ create table products_restaurants (
 create table employees_groups (
   employee_id int not null,
   group_id int not null
+);
+
+create table pk_called_ids (
+    id serial not null,
+    reference_code    int         not null,
+    code_label        varchar(50) default null,
+    abbreviation      varchar(50) default null,
+    description       varchar(50) default null,
+    primary key (id, reference_code)
 );

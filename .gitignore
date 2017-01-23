@@ -13,3 +13,4 @@ db
 
 test/connections/databases.yml
 Gemfile.lock
+vendor/bundle

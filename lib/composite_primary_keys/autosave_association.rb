@@ -17,8 +17,9 @@ module ActiveRecord
             saved = record.save(:validate => !autosave) if record.new_record? || (autosave && record.changed_for_autosave?)
 
             if association.updated?
-              # it will fail to use "#record.send(reflection.options[:primary_key] || :id)" for CPK
-              association_id = record.read_attribute(reflection.options[:primary_key] || :id)
+              # CPK
+              # association_id = record.send(reflection.options[:primary_key] || :id)
+              association_id = reflection.options[:primary_key] ? record.read_attribute(reflection.options[:primary_key]) : record.id
               self[reflection.foreign_key] = association_id
               association.loaded!
             end
@@ -46,8 +47,9 @@ module ActiveRecord
           if autosave && record.marked_for_destruction?
             record.destroy
           elsif autosave != false
-            # it will fail to use "#send(reflection.options[:primary_key])" for CPK
-            key = reflection.options[:primary_key] ? record.read_attribute(reflection.options[:primary_key]) : id
+            # CPK
+            #key = reflection.options[:primary_key] ? send(reflection.options[:primary_key]) : id
+            key = reflection.options[:primary_key] ? read_attribute(reflection.options[:primary_key]) : id
 
             if (autosave && record.changed_for_autosave?) || new_record? || record_changed?(reflection, record, key)
               unless reflection.through_reflection
