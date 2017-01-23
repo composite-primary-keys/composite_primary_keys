@@ -206,7 +206,7 @@ create table employees_groups (
 );
 
 create table pk_called_ids (
-    id serial not null,
+    id integer not null,
     reference_code    int         not null,
     code_label        varchar(50) default null,
     abbreviation      varchar(50) default null,
