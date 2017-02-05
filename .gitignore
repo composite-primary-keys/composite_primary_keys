@@ -12,3 +12,4 @@ db
 *.swp
 
 test/connections/databases.yml
+Gemfile.lock

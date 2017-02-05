@@ -4,6 +4,10 @@ class TestEqual < ActiveSupport::TestCase
   fixtures :capitols
 
   def test_new
+    assert_nil(Capitol.new.to_param)
+    assert_equal([nil, nil], Capitol.new.ids)
+    refute(Capitol.new.equal?(Capitol.new))
+    refute(Capitol.new == Capitol.new)
     assert_not_equal(Capitol.new, Capitol.new)
   end
 
