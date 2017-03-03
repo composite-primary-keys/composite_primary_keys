@@ -123,7 +123,7 @@ class TestCreate < ActiveSupport::TestCase
     assignment1 = RoomAssignment.new(:student_id => student1.id, :dorm_id => room.dorm_id, :room_id => room.room_id)
     assignment1.save!
 
-    room.room_assignment_ids = [[assignment1.student_id, assignment1.dorm_id, assignment1.room_id]]
+    room.room_assignments = [assignment1]
     room.save!
 
     assert_equal(1, room.room_assignments.length)
@@ -146,8 +146,7 @@ class TestCreate < ActiveSupport::TestCase
     assignment2 = RoomAssignment.new(:student_id => student2.id, :dorm_id => room.dorm_id, :room_id => room.room_id)
     assignment2.save!
 
-    room.room_assignment_ids = [[assignment1.student_id, assignment1.dorm_id, assignment1.room_id],
-                                [assignment2.student_id, assignment2.dorm_id, assignment2.room_id]]
+    room.room_assignments = [assignment1,assignment2]
     room.save!
 
     assert_equal(2, room.room_assignments.length)
