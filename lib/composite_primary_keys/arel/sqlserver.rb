@@ -26,9 +26,9 @@ module Arel
               t[name]
             end
           when NilClass
-            [t[column_name]]
-          else
             nil
+          else
+            [t[column_name]]
         end
       end
     end
