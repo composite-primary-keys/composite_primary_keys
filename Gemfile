@@ -28,5 +28,5 @@ end
 
 group :sqlserver do
   gem 'tiny_tds'
-  gem 'activerecord-sqlserver-adapter', :git => 'https://github.com/rails-sqlserver/activerecord-sqlserver-adapter.git'
+  gem 'activerecord-sqlserver-adapter', '5.0.6'
 end
