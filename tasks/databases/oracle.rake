@@ -14,7 +14,7 @@ namespace :oracle do
     sql = File.read(schema)
 
     sql.split(';').each do |command|
-      ActiveRecord::Base.connection.execute(command)
+      ActiveRecord::Base.connection.execute(command) unless command.blank?
     end
 
     ActiveRecord::Base.clear_all_connections!
