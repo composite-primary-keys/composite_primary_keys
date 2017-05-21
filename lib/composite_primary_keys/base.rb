@@ -7,20 +7,6 @@ module ActiveRecord
     NOT_IMPLEMENTED_YET        = 'Not implemented for composite primary keys yet'
 
     class << self
-      def primary_keys
-        unless defined?(@primary_keys)
-          reset_primary_keys
-        end
-        @primary_keys
-      end
-
-      # Don't like this method name, but its modeled after how AR does it
-      def reset_primary_keys
-        if self != base_class
-          self.primary_keys = base_class.primary_keys
-        end
-      end
-
       alias_method :primary_key_without_composite_key_support=, :primary_key=
       def primary_key=(keys)
         unless keys.kind_of?(Array)
@@ -60,6 +46,20 @@ module ActiveRecord
     end
 
     module CompositeClassMethods
+      def primary_keys
+        unless defined?(@primary_keys)
+          reset_primary_keys
+        end
+        @primary_keys
+      end
+
+      # Don't like this method name, but its modeled after how AR does it
+      def reset_primary_keys
+        if self != base_class
+          self.primary_keys = base_class.primary_keys
+        end
+      end
+
       def primary_key
         primary_keys
       end
