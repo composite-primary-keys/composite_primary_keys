@@ -18,6 +18,10 @@ puts "Loaded #{spec_name}"
 # And now connect to the database
 ActiveRecord::Base.establish_connection(spec)
 
+if ActiveRecord::Base.connection.is_a?(ActiveRecord::ConnectionAdapters::SQLite3Adapter)
+  require 'composite_primary_keys/connection_adapters/sqlite3_adapter'
+end
+
 # Tell active record about the configuration
 ActiveRecord::Base.configurations[:test] = spec
 
