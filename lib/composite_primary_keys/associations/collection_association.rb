@@ -6,6 +6,23 @@ module CompositePrimaryKeys
       super
     end
 
+    def ids_reader
+      if loaded?
+        load_target.map do |record|
+          if reflection.association_primary_key.is_a?(Array)
+            reflection.association_primary_key.map { |key| record.send(key) }
+          else
+            record.send(reflection.association_primary_key)
+          end
+        end
+      else
+        @association_ids ||= (
+        column = "#{reflection.quoted_table_name}.#{reflection.association_primary_key}"
+        scope.pluck(column)
+        )
+      end
+    end
+
     def ids_writer(ids)
       pk_type = reflection.primary_key_type
       ids = Array(ids).reject(&:blank?)
