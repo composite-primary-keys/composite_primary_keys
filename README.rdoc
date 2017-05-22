@@ -20,12 +20,13 @@ Every major version of ActiveRecord has included numerous internal changes.  As 
 CPK has to be rewritten for each version of ActiveRecord.  To help keep
 things straight, here is the mapping:
 
-    Version 9.x is designed to work with ActiveRecord 5.0.x
-    Version 8.x is designed to work with ActiveRecord 4.2.x
-    Version 7.x is designed to work with ActiveRecord 4.1.x
-    Version 6.x is designed to work with ActiveRecord 4.0.x
-    Version 5.x is designed to work with ActiveRecord 3.2.x
-    Version 4.x is designed to work with ActiveRecord 3.1.x
+    Version 10.x is designed to work with ActiveRecord 5.1.x (note this is in progress)
+    Version  9.x is designed to work with ActiveRecord 5.0.x
+    Version  8.x is designed to work with ActiveRecord 4.2.x
+    Version  7.x is designed to work with ActiveRecord 4.1.x
+    Version  6.x is designed to work with ActiveRecord 4.0.x
+    Version  5.x is designed to work with ActiveRecord 3.2.x
+    Version  4.x is designed to work with ActiveRecord 3.1.x
 
 Run the following command to list available versions:
 
@@ -155,8 +156,8 @@ built-in rake task before running tests:
 
   rake sqlite:build_database
 
-Note not all tests currently pass on sqlite3.  These failures happen when trying to DELETE records where the query
-includes a JOIN.
+For sqlite3 to work correctly, you must manually require 'composite_primary_keys/connection_adapters/sqlite3_adapter' after
+loading the CPK gem.
 
 === SqlServer
 
