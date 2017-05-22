@@ -1,3 +1,15 @@
+== 9.0.7 (2017-05-22)
+
+* Update sqlite3 to support deletes and updates (Charlie Savage)
+* Specify version for sql server gem so it works with Rails 5.0 (Charlie Savage)
+* Use `datetime` datatype to address Invalid default value for updated_at (Yasuo Honda)
+* Fix ORA-00900 error when it attempts to execute blank statement (pustomytnyk)
+* Override ActiveRecord::Associations::CollectionAssociation#ids_reader (pustomytnyk)
+* Only define #primary_keys if #primary_keys=(value) is called (Charlie Savage)
+* Change `timestamp` to `datetime` for MySQL as ActiveRecord timestamps type does (Oriol Collel)
+* Fix incorrect case statement to get PK for SQLServer (Oriol Collel)
+* Fixes random failures in test_preload_of_polymorphic_association (Boris Peterbarg)
+
 == 9.0.6 (2017-01-08)
 
 * Uncomment tests (Sammy Larbi)
