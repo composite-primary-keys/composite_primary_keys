@@ -2,6 +2,20 @@ module ActiveRecord
   module AttributeMethods
     module Write
       silence_warnings do
+        def write_attribute(attr_name, value)
+          name = if self.class.attribute_alias?(attr_name)
+            # CPK
+            # self.class.attribute_alias(attr_name).to_s
+            self.class.attribute_alias(attr_name)
+          else
+            # CPK
+            # attr_name.to_s
+            attr_name
+          end
+
+          write_attribute_with_type_cast(name, value, true)
+        end
+
         def write_attribute_with_type_cast(attr_name, value, should_type_cast)
           # CPK
           if attr_name.kind_of?(Array)
