@@ -3,9 +3,9 @@ module ActiveRecord
     class Preloader
       class Association
         silence_warnings do
-          def query_scope(ids)
+          def records_for(ids)
             # CPK
-            # scope.where(association_key.in(ids))
+            # scope.where(association_key_name => ids)
 
             if reflection.foreign_key.is_a?(Array)
               predicate = cpk_in_predicate(table, reflection.foreign_key, ids)
