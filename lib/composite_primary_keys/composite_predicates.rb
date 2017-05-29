@@ -51,6 +51,7 @@ module CompositePrimaryKeys
       end
       cpk_or_predicate(and_predicates)
     end
+    module_function :cpk_in_predicate, :cpk_id_predicate, :cpk_or_predicate, :cpk_and_predicate
   end
 end
 

@@ -93,13 +93,19 @@ class TestFind < ActiveSupport::TestCase
     assert_equal(Department.count, num_found)
   end
 
-  def test_expand
+  def test_find_by_one_association
     department = departments(:engineering)
     employees = Employee.where(:department => department)
-    assert_equal(2, employees.count)
+    assert_equal(2, employees.to_a.count)
   end
 
-  def test_expand_with_multiple
+  def test_find_by_all_associations
+    departments = Department.all
+    employees = Employee.where(:department => departments)
+    assert_equal(4, employees.to_a.count)
+  end
+
+  def test_expand_all
     departments = Department.all
     employees = Employee.where(:department => departments)
     assert_equal(4, employees.count)
