@@ -29,7 +29,7 @@ module CompositePrimaryKeys
       ids.map! { |i| pk_type.cast(i) }
       # CPK
       if reflection.association_primary_key.is_a?(Array)
-        predicate = Class.new.extend(CompositePrimaryKeys::Predicates).cpk_in_predicate(klass.arel_table, reflection.association_primary_key, ids)
+        predicate = CompositePrimaryKeys::Predicates.cpk_in_predicate(klass.arel_table, reflection.association_primary_key, ids)
         records = klass.where(predicate).index_by do |r|
           reflection.association_primary_key.map{ |k| r.send(k) }
         end.values_at(*ids)

@@ -41,7 +41,7 @@ module ActiveRecord
                                attribute_ids = attribute_collection['id'] || attribute_collection[:id]
                                if attribute_ids
                                  ids = CompositePrimaryKeys::CompositeKeys.parse(attribute_ids)
-                                 eq_predicates = Class.new.extend(CompositePrimaryKeys::Predicates).cpk_id_predicate(association.klass.arel_table, association.klass.primary_key, ids)
+                                 eq_predicates = CompositePrimaryKeys::Predicates.cpk_id_predicate(association.klass.arel_table, association.klass.primary_key, ids)
                                  association.scope.where(eq_predicates).to_a
                                else
                                  []
