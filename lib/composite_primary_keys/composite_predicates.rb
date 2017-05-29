@@ -1,5 +1,9 @@
 module CompositePrimaryKeys
   module Predicates
+    # Similar to module_function, but does not make instance methods private.
+    # https://idiosyncratic-ruby.com/8-self-improvement.html
+    extend self
+
     def cpk_and_predicate(predicates)
       if predicates.length == 1
         predicates.first
@@ -51,7 +55,6 @@ module CompositePrimaryKeys
       end
       cpk_or_predicate(and_predicates)
     end
-    module_function :cpk_in_predicate, :cpk_id_predicate, :cpk_or_predicate, :cpk_and_predicate
   end
 end
 
