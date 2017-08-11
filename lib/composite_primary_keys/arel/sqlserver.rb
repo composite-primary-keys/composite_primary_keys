@@ -16,7 +16,8 @@ module Arel
 
       def primary_Key_From_Table t
         return unless t
-        column_name = schema_cache.primary_keys(t.name) || column_cache(t.name).first.second.try(:name)
+        column_name = @connection.schema_cache.primary_keys(t.name) ||
+          @connection.schema_cache.columns_hash(t.name).first.try(:second).try(:name)
 
         # CPK
         # column_name ? t[column_name] : nil
