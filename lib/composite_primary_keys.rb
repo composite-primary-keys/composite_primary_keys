@@ -64,7 +64,6 @@ require 'active_record/relation/batches'
 require 'active_record/relation/where_clause'
 require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
-require 'active_record/relation/predicate_builder/association_query_handler'
 require 'active_record/relation/query_methods'
 
 # CPK files
