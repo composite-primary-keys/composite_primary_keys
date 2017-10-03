@@ -8,7 +8,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     code_id = 1001
 
     reference_type = reference_types(:name_prefix)
-    reference_type.update_attribute :reference_codes_attributes, [{
+    reference_type.update_attributes :reference_codes_attributes => [{
       :reference_code => code_id,
       :code_label => 'XX',
       :abbreviation => 'Xx'
@@ -20,7 +20,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     code_id = 1002
 
     reference_type = reference_types(:name_prefix)
-    reference_type.update_attribute :reference_codes_attributes, [{
+    reference_type.update_attributes :reference_codes_attributes => [{
       :reference_code => code_id,
       :code_label => 'XX',
       :abbreviation => 'Xx'
@@ -28,7 +28,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
 
     reference_code = ReferenceCode.find_by_reference_code(code_id)
     cpk = CompositePrimaryKeys::CompositeKeys[reference_type.reference_type_id, code_id]
-    reference_type.update_attribute :reference_codes_attributes, [{
+    reference_type.update_attributes :reference_codes_attributes => [{
       :id => cpk,
       :code_label => 'AAA',
       :abbreviation => 'Aaa'
@@ -71,7 +71,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     platform = 'instagram'
 
     topic = topics(:music)
-    topic.update_attribute :topic_sources_attributes, [{
+    topic.update_attributes :topic_sources_attributes => [{
       :platform => platform,
       :keywords => 'funk'
     }]
@@ -82,7 +82,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     platform = 'instagram'
 
     topic = topics(:music)
-    topic.update_attribute :topic_sources_attributes, [{
+    topic.update_attributes :topic_sources_attributes => [{
       :platform => platform,
       :keywords => 'funk'
     }]
@@ -90,7 +90,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
 
     topic_source = TopicSource.find_by_platform(platform)
     cpk = CompositePrimaryKeys::CompositeKeys[topic.id, platform]
-    topic.update_attribute :topic_sources_attributes, [{
+    topic.update_attributes :topic_sources_attributes => [{
       :id => cpk,
       :keywords => 'jazz'
     }]
