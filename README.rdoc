@@ -12,7 +12,7 @@ to support composite keys.
 
 If you are using Rails add the following to your Gemfile:
 
-  gem 'composite_primary_keys', '=x.x.x' (see next section about what verison to use)
+  gem 'composite_primary_keys', '=x.x.x' (see next section about what version to use)
 
 == Versions
 
