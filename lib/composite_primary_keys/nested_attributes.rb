@@ -59,9 +59,7 @@ module ActiveRecord
           attributes = attributes.with_indifferent_access
           if attributes['id'].blank?
             unless reject_new_record?(association_name, attributes)
-              new_record = association.build(attributes.except(*UNASSIGNABLE_KEYS))
-              public_send("#{self.attributes.keys.first}_will_change!") # TODO CPK: Note: Is this a bug in Rails? We need to somehow set the parent model as changed even when changes are only adding new records to an association. This is not the way to do it, but I am not sure how it should be done.
-              new_record
+              association.build(attributes.except(*UNASSIGNABLE_KEYS))
             end
           elsif existing_record = cpk_detect_record(attributes['id'], existing_records)
             unless call_reject_if(association_name, attributes)
@@ -76,9 +74,7 @@ module ActiveRecord
                 association.add_to_target(existing_record, :skip_callbacks)
               end
 
-              result_from_assign = assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
-              public_send("#{self.attributes.keys.first}_will_change!") # TODO CPK: Note: Is this a bug in Rails? We need to somehow set the parent model as changed even when changes are only adding new records to an association. This is not the way to do it, but I am not sure how it should be done.
-              result_from_assign
+              assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
             end
           else
             raise_nested_attributes_record_not_found!(association_name, attributes['id'])
