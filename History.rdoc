@@ -1,3 +1,10 @@
+== 10.0.0 (2017-10-08)
+
+* Support ActiveRecord 5.1.x (Pinak Thakkar, Jordan Owens)
+* Fix Paper Trail compatibility (Sean Linsley)
+* Fix typo in Readme (Mike Gunderloy)
+* Improved sql server support (Artyom Nikolaev)
+
 == 9.0.7 (2017-05-22)
 
 * Update sqlite3 to support deletes and updates (Charlie Savage)
