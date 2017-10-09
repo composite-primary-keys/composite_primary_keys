@@ -47,15 +47,16 @@ module ActiveRecord
 
     module CompositeClassMethods
       def primary_keys
-        unless defined?(@primary_keys)
-          reset_primary_keys
-        end
+        @primary_keys = reset_primary_keys unless defined? @primary_keys
         @primary_keys
       end
 
       # Don't like this method name, but its modeled after how AR does it
-      def reset_primary_keys
-        if self != base_class
+       def reset_primary_keys #:nodoc:
+        if self == base_class
+          # CPK
+          self.primary_keys = get_primary_key(base_class.name)
+        else
           self.primary_keys = base_class.primary_keys
         end
       end
