@@ -56,7 +56,7 @@ module ActiveRecord
       # Don't like this method name, but its modeled after how AR does it
       def reset_primary_keys
         if self != base_class
-          self.primary_keys = base_class.primary_keys
+          self.primary_keys = base_class.primary_keys if base_class.primary_keys.present?
         end
       end
 
