@@ -1,3 +1,7 @@
+== 9.0.8 (2017-10-11)
+
+* Fix Paper Trail compatibility (Sean Linsley)
+
 == 9.0.7 (2017-05-22)
 
 * Update sqlite3 to support deletes and updates (Charlie Savage)
