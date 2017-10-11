@@ -1,9 +1,17 @@
+== 10.0.1 (2017-10-08)
+
+* Fixed an error that happened when a table attribute had the same name as the table (Taishi Kasuga)
+
 == 10.0.0 (2017-10-08)
 
 * Support ActiveRecord 5.1.x (Pinak Thakkar, Jordan Owens)
 * Fix Paper Trail compatibility (Sean Linsley)
 * Fix typo in Readme (Mike Gunderloy)
 * Improved sql server support (Artyom Nikolaev)
+
+== 9.0.8 (2017-10-11)
+
+* Fix Paper Trail compatibility (Sean Linsley)
 
 == 9.0.7 (2017-05-22)
 
