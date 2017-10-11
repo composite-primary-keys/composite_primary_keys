@@ -1,7 +1,6 @@
 module ActiveRecord
   module Associations
     class AssociationScope
-
       def self.get_bind_values(owner, chain)
         binds = []
         last_reflection = chain.last
@@ -29,18 +28,16 @@ module ActiveRecord
         foreign_key = join_keys.foreign_key
 
         # CPK
-        #value = transform_value(owner[foreign_key])
-        #scope = scope.where(table.name => { key => value })
-        mappings = Array(key).zip(Array(foreign_key))
-        joins = mappings.reduce(Hash.new) do |hash, mapping|
-          hash[mapping.first] = transform_value(owner[mapping.last])
-          hash
+        # value = transform_value(owner[foreign_key])
+        # scope = apply_scope(scope, table, key, value)
+        Array(key).zip(Array(foreign_key)).each do |a_join_key, a_foreign_key|
+          value = transform_value(owner[a_foreign_key])
+          scope = apply_scope(scope, table, a_join_key, value)
         end
-        scope = scope.where(table.name => joins)
 
         if reflection.type
           polymorphic_type = transform_value(owner.class.base_class.name)
-          scope = scope.where(table.name => { reflection.type => polymorphic_type })
+          scope = apply_scope(scope, table, reflection.type, polymorphic_type)
         end
 
         scope
@@ -57,10 +54,10 @@ module ActiveRecord
 
         if reflection.type
           value = transform_value(next_reflection.klass.base_class.name)
-          scope = scope.where(table.name => { reflection.type => value })
+          scope = apply_scope(scope, table, reflection.type, value)
         end
 
-        scope = scope.joins(join(foreign_table, constraint))
+        scope.joins!(join(foreign_table, constraint))
       end
     end
   end
