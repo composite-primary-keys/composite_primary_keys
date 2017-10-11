@@ -1,0 +1,11 @@
+ugly_thing_x:
+  id: 1
+  same_named_thing_id: 1
+
+ugly_thing_y:
+  id: 2
+  same_named_thing_id: 2
+
+ugly_thing_z:
+  id: 3
+  same_named_thing_id: 3

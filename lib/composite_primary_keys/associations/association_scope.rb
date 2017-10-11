@@ -36,7 +36,12 @@ module ActiveRecord
           hash[mapping.first] = transform_value(owner[mapping.last])
           hash
         end
-        scope = scope.where(table.name => joins)
+
+        if scope.table == table
+          scope = scope.where(joins)
+        else
+          scope = scope.where(table.name => joins)
+        end
 
         if reflection.type
           polymorphic_type = transform_value(owner.class.base_class.name)

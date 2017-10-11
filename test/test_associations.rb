@@ -3,7 +3,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 class TestAssociations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
-           :departments, :employees, :memberships, :membership_statuses
+           :departments, :employees, :memberships, :membership_statuses, :same_named_things, :ugly_things
 
   def test_products
     assert_not_nil products(:first_product).product_tariffs
@@ -345,5 +345,9 @@ class TestAssociations < ActiveSupport::TestCase
     article = Article.new
     article.reading_ids = Reading.pluck(:id)
     assert_equal article.reading_ids, Reading.pluck(:id)
+  end
+
+  def test_association_works_even_if_the_table_has_same_named_columns
+    assert_equal SameNamedThing.first, UglyThing.first.same_named_thing
   end
 end

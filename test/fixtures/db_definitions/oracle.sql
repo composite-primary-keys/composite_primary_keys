@@ -244,3 +244,15 @@ create table pk_called_ids (
     description       varchar(50) default null,
     constraint pk_called_ids_pk primary key (id, reference_code)
 );
+
+create table same_named_things (
+    id number(11) not null,
+    same_named_things varchar(50) not null,
+    primary key (id)
+);
+
+create table ugly_things (
+    id number(11) not null,
+    same_named_thing_id number(11) not null,
+    primary key (id)
+);

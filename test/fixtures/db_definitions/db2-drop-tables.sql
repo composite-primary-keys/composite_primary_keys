@@ -17,3 +17,5 @@ drop table RESTAURANTS_SUBURBS;
 drop table PRODUCTS_RESTAURANTS;
 drop table TOPICS;
 drop table TOPIC_SOURCES;
+drop table SAME_NAMED_THINGS;
+drop table UGLY_THINGS;

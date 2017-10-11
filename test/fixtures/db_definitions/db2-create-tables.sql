@@ -124,3 +124,15 @@ create table products_restaurants (
   franchise_id integer not null,
   store_id integer not null
 );
+
+create table same_named_things (
+    id integer not null,
+    same_named_things varchar(50) not null,
+    primary key (id)
+);
+
+create table ugly_things (
+    id integer not null,
+    same_named_thing_id integer not null,
+    primary key (id)
+);
