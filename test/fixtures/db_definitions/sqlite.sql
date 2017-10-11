@@ -212,3 +212,15 @@ create table pk_called_ids (
     description       varchar(50) default null,
     primary key (id, reference_code)
 );
+
+create table same_named_things (
+    id integer not null,
+    same_named_things varchar(50) not null,
+    primary key (id)
+);
+
+create table ugly_things (
+    id integer not null,
+    same_named_thing_id integer not null,
+    primary key (id)
+);

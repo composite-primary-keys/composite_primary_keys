@@ -36,11 +36,12 @@ module ActiveRecord
           hash[mapping.first] = transform_value(owner[mapping.last])
           hash
         end
-        scope = scope.where(table.name => joins)
+
+        scope = cpk_apply_scope(scope, table, joins)
 
         if reflection.type
           polymorphic_type = transform_value(owner.class.base_class.name)
-          scope = scope.where(table.name => { reflection.type => polymorphic_type })
+          scope = cpk_apply_scope(scope, table, { reflection.type => polymorphic_type })
         end
 
         scope
@@ -57,10 +58,20 @@ module ActiveRecord
 
         if reflection.type
           value = transform_value(next_reflection.klass.base_class.name)
-          scope = scope.where(table.name => { reflection.type => value })
+          scope = cpk_apply_scope(scope, table, { reflection.type => value })
         end
 
         scope = scope.joins(join(foreign_table, constraint))
+      end
+
+      private
+
+      def cpk_apply_scope(scope, table, joins)
+        if scope.table == table
+          scope.where(joins)
+        else
+          scope.where(table.name => joins)
+        end
       end
     end
   end

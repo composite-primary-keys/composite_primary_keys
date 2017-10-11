@@ -210,3 +210,13 @@ CREATE TABLE pk_called_ids (
     CONSTRAINT [pk_called_ids_pk] PRIMARY KEY
         ( [id], [reference_code] )
 );
+
+CREATE TABLE same_named_things (
+    id [int] PRIMARY KEY NOT NULL,
+    same_named_things [varchar](50) NOT NULL
+);
+
+CREATE TABLE ugly_things (
+    id [int] PRIMARY KEY NOT NULL,
+    same_named_thing_id [int] NOT NULL
+);

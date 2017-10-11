@@ -1,0 +1,11 @@
+same_named_thing_x:
+  id: 1
+  same_named_things: 'x'
+
+same_named_thing_y:
+  id: 2
+  same_named_things: 'y'
+
+same_named_thing_z:
+  id: 3
+  same_named_things: 'z'
