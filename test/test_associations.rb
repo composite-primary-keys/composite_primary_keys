@@ -71,6 +71,16 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
   end
 
+  def test_association_with_composite_primary_key_can_be_autosaved
+    room = Room.new(dorm_id: 1000, room_id: 1001)
+    room_assignment = RoomAssignment.new(student_id: 1000)
+    room_assignment.room = room
+    room_assignment.save
+    room_assignment.reload
+    assert_equal(room_assignment.dorm_id, 1000)
+    assert_equal(room_assignment.room_id, 1001)
+  end
+
   def test_has_one_association_is_not_cached_to_where_it_returns_the_wrong_one
     engineering = departments(:engineering)
     engineering_head = engineering.head
