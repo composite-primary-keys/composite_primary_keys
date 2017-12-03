@@ -7,7 +7,7 @@ module ActiveRecord
           # quoted_pk = SQLServer::Utils.extract_identifiers(pk).quoted
           # sql.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT INSERTED.#{quoted_pk}"
           quoted_pks = [pk].flatten.map {|pk| "INSERTED.#{SQLServer::Utils.extract_identifiers(pk).quoted}"}
-          sql.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT #{quoted_pks.join(", ")}"
+          sql.dup.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT #{quoted_pks.join(", ")}"
         else
           "#{sql}; SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident"
         end
