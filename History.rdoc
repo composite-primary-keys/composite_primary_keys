@@ -1,3 +1,9 @@
+== 10.0.2 (2017-12-02)
+
+* Fix frozen string mutation for mysql (Sergey Sein)
+* Fix autosave for belongs_to associations (Fabian Mersch)
+* Require a minimum of activerecord version 5.1.4 (Charlie Savage)
+
 == 10.0.1 (2017-10-08)
 
 * Fixed an error that happened when a table attribute had the same name as the table (Taishi Kasuga)
