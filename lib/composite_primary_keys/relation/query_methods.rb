@@ -2,27 +2,39 @@ module CompositePrimaryKeys
   module ActiveRecord
     module QueryMethods
       def reverse_sql_order(order_query)
-        # CPK
-        # order_query = ["#{quoted_table_name}.#{quoted_primary_key} ASC"] if order_query.empty?
+        if order_query.empty?
+          # CPK
+          # return [arel_attribute(primary_key).desc] if primary_key
 
-        # break apart CPKs
-        order_query = primary_key.map do |key|
-          "#{quoted_table_name}.#{connection.quote_column_name(key)} ASC"
-        end if order_query.empty?
+          if primary_key
+            # break apart CPKs
+            return primary_key.map do |key|
+              arel_attribute(key).desc
+            end
+          else
+            raise IrreversibleOrderError,
+                  "Relation has no current order and table has no primary key to be used as default order"
+          end
+        end
 
-        order_query.map do |o|
+        order_query.flat_map do |o|
           case o
+            when Arel::Attribute
+              o.desc
             when Arel::Nodes::Ordering
               o.reverse
-            when String, Symbol
-              o.to_s.split(',').collect do |s|
+            when String
+              if does_not_support_reverse?(o)
+                raise IrreversibleOrderError, "Order #{o.inspect} can not be reversed automatically"
+              end
+              o.split(",").map! do |s|
                 s.strip!
-                s.gsub!(/\sasc\Z/i, ' DESC') || s.gsub!(/\sdesc\Z/i, ' ASC') || s.concat(' DESC')
+                s.gsub!(/\sasc\Z/i, " DESC") || s.gsub!(/\sdesc\Z/i, " ASC") || (s << " DESC")
               end
             else
               o
           end
-        end.flatten
+        end
       end
     end
   end

@@ -16,46 +16,20 @@ module ActiveRecord
       extend CompositePrimaryKeys::CompositeRelation
     end
 
-    silence_warnings do
-      def _update_record(values, id, id_was) # :nodoc:
-        substitutes, binds = substitute_values values
-
-        scope = @klass.unscoped
-
-        if @klass.finder_needs_type_condition?
-          scope.unscope!(where: @klass.inheritance_column)
-        end
-
-        # CPK
-        if self.composite?
-          relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
-        else
-          relation = scope.where(@klass.primary_key => (id_was || id))
-        end
-
-
-        bvs = binds + relation.bound_attributes
-        um = relation
-          .arel
-          .compile_update(substitutes, @klass.primary_key)
-
-        @klass.connection.update(
-          um,
-          'SQL',
-          bvs,
-        )
-      end
-    end
-
     def update_all(updates)
       raise ArgumentError, "Empty list of attributes to change" if updates.blank?
+
+      if eager_loading?
+        relation = apply_join_dependency
+        return relation.update_all(updates)
+      end
 
       stmt = Arel::UpdateManager.new
 
       stmt.set Arel.sql(@klass.send(:sanitize_sql_for_assignment, updates))
       stmt.table(table)
 
-      if joins_values.any?
+      if has_join_values?
         # CPK
         #@klass.connection.join_to_update(stmt, arel, arel_attribute(primary_key))
         if primary_key.kind_of?(Array)
@@ -73,51 +47,42 @@ module ActiveRecord
         stmt.wheres = arel.constraints
       end
 
-      @klass.connection.update stmt, 'SQL', bound_attributes
+      @klass.connection.update stmt, "#{@klass} Update All"
     end
 
-
-    def delete_all(conditions = nil)
-      invalid_methods = INVALID_METHODS_FOR_DELETE_ALL.select { |method|
-        if MULTI_VALUE_METHODS.include?(method)
-          send("#{method}_values").any?
-        elsif SINGLE_VALUE_METHODS.include?(method)
-          send("#{method}_value")
-        elsif CLAUSE_METHODS.include?(method)
-          send("#{method}_clause").any?
-        end
-      }
+    def delete_all
+      invalid_methods = INVALID_METHODS_FOR_DELETE_ALL.select do |method|
+        value = get_value(method)
+        SINGLE_VALUE_METHODS.include?(method) ? value : value.any?
+      end
       if invalid_methods.any?
         raise ActiveRecordError.new("delete_all doesn't support #{invalid_methods.join(', ')}")
       end
 
-      if conditions
-        ActiveSupport::Deprecation.warn(<<-MESSAGE.squish)
-          Passing conditions to delete_all is deprecated and will be removed in Rails 5.1.
-          To achieve the same use where(conditions).delete_all.
-        MESSAGE
-        where(conditions).delete_all
-      else
-        stmt = Arel::DeleteManager.new
-        stmt.from(table)
-
-        # CPK
-        if joins_values.any? && @klass.composite?
-          arel_attributes = Array(primary_key).map do |key|
-            arel_attribute(key)
-          end.to_composite_keys
-          @klass.connection.join_to_delete(stmt, arel, arel_attributes)
-        elsif joins_values.any?
-          @klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
-        else
-          stmt.wheres = arel.constraints
-        end
-
-        affected = @klass.connection.delete(stmt, 'SQL', bound_attributes)
-
-        reset
-        affected
+      if eager_loading?
+        relation = apply_join_dependency
+        return relation.delete_all
       end
+
+      stmt = Arel::DeleteManager.new
+      stmt.from(table)
+
+      # CPK
+      if joins_values.any? && @klass.composite?
+        arel_attributes = Array(primary_key).map do |key|
+          arel_attribute(key)
+        end.to_composite_keys
+        @klass.connection.join_to_delete(stmt, arel, arel_attributes)
+      elsif has_join_values?
+        @klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
+      else
+        stmt.wheres = arel.constraints
+      end
+
+      affected = @klass.connection.delete(stmt, "#{@klass} Destroy")
+
+      reset
+      affected
     end
   end
 end

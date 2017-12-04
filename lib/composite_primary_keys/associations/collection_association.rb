@@ -24,9 +24,10 @@ module CompositePrimaryKeys
     end
 
     def ids_writer(ids)
-      pk_type = reflection.primary_key_type
+      pk_type = reflection.association_primary_key_type
       ids = Array(ids).reject(&:blank?)
       ids.map! { |i| pk_type.cast(i) }
+
       # CPK
       if reflection.association_primary_key.is_a?(Array)
         predicate = CompositePrimaryKeys::Predicates.cpk_in_predicate(klass.arel_table, reflection.association_primary_key, ids)
@@ -34,11 +35,19 @@ module CompositePrimaryKeys
           reflection.association_primary_key.map{ |k| r.send(k) }
         end.values_at(*ids)
       else
-        records = klass.where(reflection.association_primary_key => ids).index_by do |r|
-          r.send(reflection.association_primary_key)
-        end.values_at(*ids)
+        primary_key = reflection.association_primary_key
+        records = klass.where(primary_key => ids).index_by do |r|
+          r.public_send(primary_key)
+        end.values_at(*ids).compact
       end
-      replace(records)
+
+      if records.size != ids.size
+        found_ids = records.map { |record| record.public_send(primary_key) }
+        not_found_ids = ids - found_ids
+        klass.all.raise_record_not_found_exception!(ids, records.size, ids.size, primary_key, not_found_ids)
+      else
+        replace(records)
+      end
     end
   end
 end

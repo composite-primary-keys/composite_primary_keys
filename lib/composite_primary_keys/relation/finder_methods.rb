@@ -1,9 +1,8 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
-      def apply_join_dependency(relation, join_dependency)
-        relation = relation.except(:includes, :eager_load, :preload)
-        relation = relation.joins join_dependency
+      def apply_join_dependency(join_dependency = construct_join_dependency)
+        relation = except(:includes, :eager_load, :preload).joins!(join_dependency)
 
         if using_limitable_reflections?(join_dependency.reflections)
           relation
@@ -11,7 +10,7 @@ module CompositePrimaryKeys
           if relation.limit_value
             limited_ids = limited_ids_for(relation)
             # CPK
-            # limited_ids.empty? ? relation.none! : relation.where!(table[primary_key].in(limited_ids))
+            # limited_ids.empty? ? relation.none! : relation.where!(primary_key => limited_ids)
             limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
           end
           relation.except(:limit, :offset)
@@ -21,37 +20,28 @@ module CompositePrimaryKeys
       def limited_ids_for(relation)
         # CPK
         # values = @klass.connection.columns_for_distinct(
-        #     "#{quoted_table_name}.#{quoted_primary_key}", relation.order_values)
+        #     connection.column_name_from_arel_node(arel_attribute(primary_key)),
+        #     relation.order_values
+        # )
         columns = @klass.primary_keys.map do |key|
           "#{quoted_table_name}.#{connection.quote_column_name(key)}"
         end
         values = @klass.connection.columns_for_distinct(columns, relation.order_values)
 
         relation = relation.except(:select).select(values).distinct!
-        arel = relation.arel
 
-        id_rows = @klass.connection.select_all(arel, 'SQL', relation.bound_attributes)
-
+        id_rows = skip_query_cache_if_necessary { @klass.connection.select_all(relation.arel, "SQL") }
         # CPK
-        #id_rows.map {|row| row[primary_key]}
-        id_rows.map {|row| row.values}
+        # id_rows.map { |row| row[primary_key] }
+         id_rows.map do |row|
+           @klass.primary_keys.map do |key|
+            row[key]
+           end
+         end
       end
 
-      def exists?(conditions = :none)
-        if ::ActiveRecord::Base === conditions
-          conditions = conditions.id
-          ActiveSupport::Deprecation.warn(<<-MSG.squish)
-          You are passing an instance of ActiveRecord::Base to `exists?`.
-          Please pass the id of the object by calling `.id`
-          MSG
-        end
-
-        return false if !conditions
-
-        relation = apply_join_dependency(self, construct_join_dependency)
-        return false if ::ActiveRecord::NullRelation === relation
-
-        relation = relation.except(:select, :order).select(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit(1)
+      def construct_relation_for_exists(conditions)
+        relation = except(:select, :distinct, :order)._select!(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit!(1)
 
         case conditions
           # CPK
@@ -62,7 +52,7 @@ module CompositePrimaryKeys
             pk_length = @klass.primary_keys.length
 
             if conditions.length == pk_length # E.g. conditions = ['France', 'Paris']
-              return self.exists?(conditions.to_composite_keys)
+              return self.construct_relation_for_exists(conditions.to_composite_keys)
             else # Assume that conditions contains where relation
               relation = relation.where(conditions)
             end
@@ -74,7 +64,7 @@ module CompositePrimaryKeys
             end
         end
 
-        connection.select_value(relation, "#{name} Exists", relation.bound_attributes) ? true : false
+        relation
       end
 
       def find_with_ids(*ids)
@@ -90,17 +80,21 @@ module CompositePrimaryKeys
         # ids = ids.flatten.compact.uniq
         ids = expects_array ? ids.first : ids
 
+        model_name = @klass.name
+
         case ids.size
           when 0
-            raise RecordNotFound, "Couldn't find #{@klass.name} without an ID"
+            error_message = "Couldn't find #{model_name} without an ID"
+            raise RecordNotFound.new(error_message, model_name, primary_key)
           when 1
             result = find_one(ids.first)
             expects_array ? [ result ] : result
           else
             find_some(ids)
         end
-      rescue RangeError
-        raise RecordNotFound, "Couldn't find #{@klass.name} with an out of range ID"
+      rescue ::RangeError
+        error_message = "Couldn't find #{model_name} with an out of range ID"
+        raise RecordNotFound.new(error_message, model_name, primary_key, ids)
       end
 
       def last(limit = nil)
@@ -128,32 +122,6 @@ module CompositePrimaryKeys
             Please call `to_a.last` if you still want to load the relation.
         WARNING
         find_last(limit)
-      end
-
-
-      def find_nth_with_limit(index, limit)
-        # TODO: once the offset argument is removed from find_nth,
-        # find_nth_with_limit_and_offset can be merged into this method
-        #
-        # CPK
-        # relation = if order_values.empty? && primary_key
-        #             order(arel_attribute(primary_key).asc)
-        #           else
-        #             self
-        #           end
-
-        relation = self
-
-        if order_values.empty? && primary_key
-          if composite?
-            relation = relation.order(primary_keys.map { |pk| arel_attribute(pk).asc })
-          elsif
-            relation = relation.order(arel_attribute(primary_key).asc)
-          end
-        end
-
-        relation = relation.offset(index) unless index.zero?
-        relation.limit(limit).to_a
       end
 
       def find_one(id)
@@ -245,6 +213,16 @@ module CompositePrimaryKeys
           end
         else
           raise_record_not_found_exception!(ids, result.size, ids.size)
+        end
+      end
+
+      def ordered_relation
+        if order_values.empty? && primary_key
+          # CPK
+          #order(arel_attribute(primary_key).asc)
+          order(Array(primary_key).map {|key| arel_attribute(key).asc})
+        else
+          self
         end
       end
     end

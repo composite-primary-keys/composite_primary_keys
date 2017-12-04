@@ -36,7 +36,7 @@ module CompositePrimaryKeys
     def in(other)
       case other
         when Arel::SelectManager
-          CompositePrimaryKeys::Nodes::In.new(self, other.ast)
+          Arel::Nodes::In.new(self, other.ast)
       end
     end
 

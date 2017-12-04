@@ -22,10 +22,12 @@ module ActiveRecord
         binds
       end
 
-      def last_chain_scope(scope, table, reflection, owner)
+      def last_chain_scope(scope, reflection, owner)
         join_keys = reflection.join_keys
         key = join_keys.key
         foreign_key = join_keys.foreign_key
+
+        table = reflection.aliased_table
 
         # CPK
         # value = transform_value(owner[foreign_key])
@@ -43,10 +45,13 @@ module ActiveRecord
         scope
       end
 
-      def next_chain_scope(scope, table, reflection, foreign_table, next_reflection)
+      def next_chain_scope(scope, reflection, next_reflection)
         join_keys = reflection.join_keys
         key = join_keys.key
         foreign_key = join_keys.foreign_key
+
+        table = reflection.aliased_table
+        foreign_table = next_reflection.aliased_table
 
         # CPK
         # constraint = table[key].eq(foreign_table[foreign_key])

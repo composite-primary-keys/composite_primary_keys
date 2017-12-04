@@ -1,8 +1,6 @@
 module ActiveRecord
   module Sanitization
     module ClassMethods
-      protected
-
       def expand_hash_conditions_for_aggregates(attrs)
         expanded_attrs = {}
         attrs.each do |attr, value|

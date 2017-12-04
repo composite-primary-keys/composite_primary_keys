@@ -62,7 +62,7 @@ class TestFind < ActiveSupport::TestCase
       ReferenceCode.find(['999', '999'])
     end
 
-    expected = "Couldn't find all ReferenceCodes with 'reference_type_id,reference_code': (999, 999) (found 0 results, but was looking for 1)"
+    expected = "Couldn't find all ReferenceCodes with 'reference_type_id,reference_code': (999, 999) (found 0 results, but was looking for 1)."
     assert_equal(with_quoted_identifiers(expected), error.message)
   end
 

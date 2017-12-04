@@ -1,3 +1,7 @@
+== 11.0.0.beta1 (2017-12-03)
+
+* ActiveRecord 5.2.beta2 support (Charlie Savage)
+
 == 10.0.2 (2017-12-02)
 
 * Fix frozen string mutation for mysql (Sergey Sein)

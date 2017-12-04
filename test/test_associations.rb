@@ -28,12 +28,6 @@ class TestAssociations < ActiveSupport::TestCase
 
   # Its not generating the instances of associated classes from the rows
   def test_find_includes
-    # Old style
-    products = Product.includes(:product_tariffs).all
-    assert_equal(3, products.length)
-    assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
-
-    # New style
     products = Product.includes(:product_tariffs)
     assert_equal(3, products.length)
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
@@ -60,12 +54,6 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_find_includes_tariffs
-    # Old style
-    tariffs = Tariff.includes(:product_tariffs)
-    assert_equal(3, tariffs.length)
-    assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
-
-    # New style
     tariffs = Tariff.includes(:product_tariffs)
     assert_equal(3, tariffs.length)
     assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
@@ -141,6 +129,7 @@ class TestAssociations < ActiveSupport::TestCase
       employee_id: bogus_foreign_key,
       location_id: 1
     )
+    salary_01.save!
     employee_01 = salary_01.create_employee
     employee_01.reload
 
@@ -189,14 +178,6 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, products.length)
 
     product_tariffs_length = products.inject(0) {|sum, product| sum + product.product_tariffs.length}
-    assert_equal(3, product_tariffs_length)
-  end
-
-  def test_find_tariffs_includes
-    tariffs = Tariff.includes(:product_tariffs => :product)
-    assert_equal(3, tariffs.length)
-
-    product_tariffs_length = tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length}
     assert_equal(3, product_tariffs_length)
   end
 
@@ -296,6 +277,11 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(1, dorm.rooms[0].room_id)
     assert_equal(2, dorm.rooms[1].room_id)
     assert_equal(3, dorm.rooms[2].room_id)
+  end
+
+  def test_has_many_with_foreign_composite_key
+    tariff = Tariff.find_by('tariff_id = ?', 2)
+    assert_equal(2, tariff.product_tariffs.length)
   end
 
   def test_joins_has_many_with_primary_key

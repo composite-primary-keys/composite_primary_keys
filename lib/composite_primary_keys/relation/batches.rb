@@ -76,11 +76,9 @@ module CompositePrimaryKeys
       end
 
       def batch_order
-        # CPK
-        # "#{quoted_table_name}.#{quoted_primary_key} ASC"
         self.primary_key.map do |key|
-          "#{quoted_table_name}.#{key} ASC"
-        end.join(",")
+          arel_attribute(key).asc
+        end
       end
     end
   end

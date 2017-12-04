@@ -1,12 +1,18 @@
 module Arel
   module Visitors
     class ToSql
-      def visit_CompositePrimaryKeys_Nodes_In o, collector
-        collector << "("
-        visit(o.left, collector)
-        collector << ")"
-        collector << " IN ("
-        visit(o.right, collector) << ")"
+      def visit_Arel_Nodes_In o, collector
+        if Array === o.right && o.right.empty?
+          collector << '1=0'
+        else
+          # CPK
+          collector << "("
+          collector = visit o.left, collector
+          # CPK
+          collector << ")"
+          collector << " IN ("
+          visit(o.right, collector) << ")"
+        end
       end
 
       def visit_CompositePrimaryKeys_CompositeKeys o, collector
