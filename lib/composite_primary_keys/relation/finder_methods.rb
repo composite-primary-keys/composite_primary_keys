@@ -23,8 +23,9 @@ module CompositePrimaryKeys
         #     connection.column_name_from_arel_node(arel_attribute(primary_key)),
         #     relation.order_values
         # )
+
         columns = @klass.primary_keys.map do |key|
-          "#{quoted_table_name}.#{connection.quote_column_name(key)}"
+          connection.column_name_from_arel_node(arel_attribute(key))
         end
         values = @klass.connection.columns_for_distinct(columns, relation.order_values)
 
@@ -32,12 +33,12 @@ module CompositePrimaryKeys
 
         id_rows = skip_query_cache_if_necessary { @klass.connection.select_all(relation.arel, "SQL") }
         # CPK
-        # id_rows.map { |row| row[primary_key] }
-         id_rows.map do |row|
-           @klass.primary_keys.map do |key|
+        #id_rows.map { |row| row[primary_key] }
+        id_rows.map do |row|
+          @klass.primary_keys.map do |key|
             row[key]
-           end
-         end
+          end
+        end
       end
 
       def construct_relation_for_exists(conditions)
