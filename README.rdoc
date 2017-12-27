@@ -60,7 +60,7 @@ That is, associations can include composite keys too.  All Rails association typ
 == Usage
 
 Once you’ve created your models to specify composite primary keys (such as the Membership class)
-and associations (such as MembershipStatus#membership), you can uses them like any normal model
+and associations (such as MembershipStatus#membership), you can use them like any normal model
 with associations.
 
 But first, lets check out our primary keys.
