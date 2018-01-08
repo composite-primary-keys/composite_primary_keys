@@ -1,6 +1,6 @@
 module Arel
   module Visitors
-    class SQLServer
+    class SQLServer < Arel::Visitors::ToSql
       def make_Fetch_Possible_And_Deterministic o
         return if o.limit.nil? && o.offset.nil?
         t = table_From_Statement o
