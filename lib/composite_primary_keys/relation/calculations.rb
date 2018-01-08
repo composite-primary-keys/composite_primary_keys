@@ -18,14 +18,14 @@ module CompositePrimaryKeys
         column_alias = column_name
 
         # CPK
-        if self.composite? && operation == "count"
+        # if operation == "count" && has_limit_or_offset?
+        #   # Shortcut when limit is zero.
+        #   return 0 if limit_value == 0
+        #
+        #   query_builder = build_count_subquery(spawn, column_name, distinct)
+        if operation == "count"
           relation = unscope(:order)
           query_builder = build_count_subquery(relation, column_name, distinct)
-        elsif operation == "count" && has_limit_or_offset?
-          # Shortcut when limit is zero.
-          return 0 if limit_value == 0
-
-          query_builder = build_count_subquery(spawn, column_name, distinct)
         else
           # PostgreSQL doesn't like ORDER BY when there are no GROUP BY
           relation = unscope(:order).distinct!(false)
