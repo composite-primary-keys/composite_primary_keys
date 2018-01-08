@@ -1,4 +1,8 @@
-== 11.0.0.beta3 (2017-12-10)
+== 11.0.0.beta4 (2018-01-08)
+
+* Try again on Calculations#execute_simple_calculation for ActiveRecord 5.2.beta2 (Charlie Savage)
+
+== 11.0.0.beta3 (2018-01-07)
 
 * Fix typo in Readme.doc (Lopez Lucien)
 * Fix Calculations#execute_simple_calculation for ActiveRecord 5.2.beta2 (Charlie Savage)
