@@ -1,5 +1,6 @@
 == 11.0.0.beta3 (2017-12-10)
 
+* Fix typo in Readme.doc (Lopez Lucien)
 * Fix Calculations#execute_simple_calculation for ActiveRecord 5.2.beta2 (Charlie Savage)
 
 == 11.0.0.beta2 (2017-12-10)
