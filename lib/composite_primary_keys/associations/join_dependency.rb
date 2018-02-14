@@ -18,7 +18,7 @@ module ActiveRecord
       end
 
       silence_warnings do
-        def instantiate(result_set, aliases)
+        def instantiate(result_set, &block)
           primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
           seen = Hash.new { |i, object_id|
@@ -47,7 +47,7 @@ module ActiveRecord
                              primary_key ? row_hash[primary_key] : row_hash
                            end
 
-              parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases)
+              parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases, &block)
               construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
             }
           end
