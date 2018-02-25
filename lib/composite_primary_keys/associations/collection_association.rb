@@ -1,18 +1,18 @@
 module CompositePrimaryKeys
   module CollectionAssociation
     def ids_writer(ids)
-      pk_type = reflection.association_primary_key_type
+      primary_key = reflection.association_primary_key
+      pk_type = klass.type_for_attribute(primary_key)
       ids = Array(ids).reject(&:blank?)
       ids.map! { |i| pk_type.cast(i) }
 
-      # CPK
-      if reflection.association_primary_key.is_a?(Array)
+      # CPK-
+      if primary_key.is_a?(Array)
         predicate = CompositePrimaryKeys::Predicates.cpk_in_predicate(klass.arel_table, reflection.association_primary_key, ids)
         records = klass.where(predicate).index_by do |r|
           reflection.association_primary_key.map{ |k| r.send(k) }
         end.values_at(*ids)
       else
-        primary_key = reflection.association_primary_key
         records = klass.where(primary_key => ids).index_by do |r|
           r.public_send(primary_key)
         end.values_at(*ids).compact
