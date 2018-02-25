@@ -1,4 +1,4 @@
-== 10.0.3 (2018-10-02)
+== 10.0.3 (2018-02-25)
 
 * Require a minimum of activerecord version 5.1.5 (Tom Hughes)
 
