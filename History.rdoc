@@ -20,6 +20,10 @@
 
 * ActiveRecord 5.2.beta2 support (Charlie Savage)
 
+== 10.0.3 (2018-02-25)
+
+* Require a minimum of activerecord version 5.1.5 (Tom Hughes)
+
 == 10.0.2 (2017-12-02)
 
 * Fix frozen string mutation for mysql (Sergey Sein)
