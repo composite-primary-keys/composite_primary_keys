@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~> 5.2.0.beta2'
+  gem 'activerecord', '~> 5.2.0.rc1'
   require 'active_record'
 end
 
@@ -111,4 +111,7 @@ require 'composite_primary_keys/relation/query_methods'
 require 'composite_primary_keys/composite_relation'
 
 require 'composite_primary_keys/arel/to_sql'
-require 'composite_primary_keys/arel/sqlserver'
+
+# SQL Servers Support - uncomment these lines
+#require 'activerecord-sqlserver-adapter/arel/visitors/sqlserver'
+#require 'composite_primary_keys/arel/sqlserver'

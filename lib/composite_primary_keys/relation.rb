@@ -1,8 +1,8 @@
 module ActiveRecord
   class Relation
     alias :initialize_without_cpk :initialize
-    def initialize(klass, table, predicate_builder, values = {})
-      initialize_without_cpk(klass, table, predicate_builder, values)
+    def initialize(klass, table: klass.arel_table, predicate_builder: klass.predicate_builder, values: {})
+      initialize_without_cpk(klass, table: table, predicate_builder: predicate_builder, values: values)
       add_cpk_support if klass && klass.composite?
     end
 

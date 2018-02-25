@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', '~> 5.2.0.beta2'
+gem 'activerecord', '~> 5.2.0.rc1'
 gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
@@ -26,7 +26,7 @@ group :sqlite do
   gem 'sqlite3'
 end
 
-# TODO - activerecord-sqlserver-adapter requires AR 5.1.0.rc2
+# TODO - activerecord-sqlserver-adapter requires AR 5.1.0
 # group :sqlserver do
 #   gem 'tiny_tds'
 #   gem 'activerecord-sqlserver-adapter', :git => 'https://github.com/rails-sqlserver/activerecord-sqlserver-adapter.git'
