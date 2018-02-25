@@ -30,22 +30,22 @@ module ActiveRecord
       end
     end
 
-    # def relation_for_destroy
-    #   # CPK
-    #   if self.composite?
-    #     relation = self.class.unscoped
-    #
-    #     Array(self.class.primary_key).each do |key|
-    #       column     = self.class.arel_table[key]
-    #       value      = self[key]
-    #       relation = relation.where(column.eq(value))
-    #     end
-    #
-    #     relation
-    #   else
-    #     self.class.unscoped.where(self.class.primary_key => id)
-    #   end
-    # end
+    def _relation_for_itself
+      # CPK
+      if self.composite?
+        relation = self.class.unscoped
+
+        Array(self.class.primary_key).each do |key|
+          column     = self.class.arel_table[key]
+          value      = self[key]
+          relation = relation.where(column.eq(value))
+        end
+
+        relation
+      else
+        self.class.unscoped.where(self.class.primary_key => id)
+      end
+    end
 
     def touch(*names, time: nil)
       raise ActiveRecordError, "cannot touch on a new record object" unless persisted?

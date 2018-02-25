@@ -68,12 +68,12 @@ module ActiveRecord
       stmt.from(table)
 
       # CPK
-      if joins_values.any? && @klass.composite?
+      if has_join_values? && @klass.composite?
         arel_attributes = Array(primary_key).map do |key|
           arel_attribute(key)
         end.to_composite_keys
         @klass.connection.join_to_delete(stmt, arel, arel_attributes)
-      elsif has_join_values?
+      elsif has_join_values? || has_limit_or_offset?
         @klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
       else
         stmt.wheres = arel.constraints
