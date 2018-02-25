@@ -58,11 +58,9 @@ module CompositePrimaryKeys
               relation = relation.where(conditions)
             end
           when Array, Hash
-            relation = relation.where(conditions)
+            relation.where!(conditions)
           else
-            unless conditions == :none
-              relation = relation.where(primary_key => conditions)
-            end
+            relation.where!(primary_key => conditions) unless conditions == :none
         end
 
         relation

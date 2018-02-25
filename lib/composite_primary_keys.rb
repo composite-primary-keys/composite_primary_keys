@@ -68,6 +68,8 @@ require 'active_record/relation/finder_methods'
 require 'active_record/relation/query_methods'
 require 'active_record/relation/predicate_builder/association_query_value'
 
+require 'active_record/validations/uniqueness'
+
 # CPK files
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
@@ -107,6 +109,8 @@ require 'composite_primary_keys/relation/calculations'
 require 'composite_primary_keys/relation/finder_methods'
 require 'composite_primary_keys/relation/predicate_builder/association_query_value'
 require 'composite_primary_keys/relation/query_methods'
+
+require 'composite_primary_keys/validations/uniqueness'
 
 require 'composite_primary_keys/composite_relation'
 
