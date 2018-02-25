@@ -1,6 +1,6 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
-class TestCalculations < ActiveSupport::TestCase
+class TestCounterCache < ActiveSupport::TestCase
   fixtures :tariffs
 
   def test_update_counter
