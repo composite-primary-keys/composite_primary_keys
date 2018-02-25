@@ -4,11 +4,13 @@ module ActiveRecord
       def queries
         # CPK
         if associated_table.association_join_foreign_key.is_a?(Array)
-          result = associated_table.association_join_foreign_key.zip(ids).reduce(Hash.new) do |hash, pair|
-            hash[pair.first.to_s] = pair.last
-            hash
+          if ids.is_a?(ActiveRecord::Relation)
+            ids.map do |id|
+              id.ids_hash
+            end
+          else
+            [associated_table.association_join_foreign_key.zip(ids).to_h]
           end
-          [result]
         else
           [associated_table.association_join_foreign_key.to_s => ids]
         end
