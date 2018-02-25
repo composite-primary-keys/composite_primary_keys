@@ -1,3 +1,8 @@
+== 11.0.0.rc1 (2018-02-25)
+
+* Update to ActiveRecord 5.2.rc1 (Charlie Savage)
+* Fix uniquness check (Charlie Savage)
+
 == 11.0.0.beta4 (2018-01-08)
 
 * Try again on Calculations#execute_simple_calculation for ActiveRecord 5.2.beta2 (Charlie Savage)
