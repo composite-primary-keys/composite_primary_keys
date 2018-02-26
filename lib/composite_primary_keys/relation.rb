@@ -69,7 +69,7 @@ module ActiveRecord
 
       # CPK
       if has_join_values? && @klass.composite?
-        arel_attributes = Array(primary_key).map do |key|
+        arel_attributes = primary_key.map do |key|
           arel_attribute(key)
         end.to_composite_keys
         @klass.connection.join_to_delete(stmt, arel, arel_attributes)

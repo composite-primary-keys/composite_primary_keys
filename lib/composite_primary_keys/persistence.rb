@@ -1,6 +1,25 @@
 module ActiveRecord
   module Persistence
     module ClassMethods
+      def delete(id_or_array)
+        # CPK
+        if self.composite?
+          id_or_array = if id_or_array.is_a?(CompositePrimaryKeys::CompositeKeys)
+                          [id_or_array]
+                        else
+                          Array(id_or_array)
+                        end
+
+          id_or_array.each do |id|
+            # Is the passed in id actually a record?
+            id = id.kind_of?(::ActiveRecord::Base) ? id.id : id
+            where(cpk_id_predicate(self.arel_table, self.primary_key, id)).delete_all
+          end
+        else
+          where(primary_key => id_or_array).delete_all
+        end
+      end
+
       def _update_record(values, id, id_was) # :nodoc:
         # # CPK
         # if self.composite?
