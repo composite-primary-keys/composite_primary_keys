@@ -1,3 +1,8 @@
+== 11.0.0.rc2 (2018-02-25)
+
+* Fix mysql deletion failure (Charlie Savage)
+* Clean test run for postgresql, mysql and sqlite3 (Charlie Savage)
+
 == 11.0.0.rc1 (2018-02-25)
 
 * Update to ActiveRecord 5.2.rc1 (Charlie Savage)
