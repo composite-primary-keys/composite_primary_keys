@@ -28,7 +28,12 @@ module ActiveRecord
 
         # CPK
         if self.composite?
-          relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
+          # Not sure if this is a good idea, but replace nil id_was with the new id
+          id_update = id_was.each_with_index.map do |value, i|
+            value || id[i]
+          end
+
+          relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_update))
         else
           relation = scope.where(@klass.primary_key => (id_was || id))
         end
