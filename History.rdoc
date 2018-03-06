@@ -1,3 +1,7 @@
+== 9.0.9 (2018-03-06)
+
+* Fix update statements that incorrectly pass NULL values for the primary key components (Sean Linsley)
+
 == 9.0.8 (2017-10-11)
 
 * Fix Paper Trail compatibility (Sean Linsley)
