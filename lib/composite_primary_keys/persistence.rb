@@ -1,5 +1,24 @@
 module ActiveRecord
   module Persistence
+
+    def _create_record(attribute_names = self.attribute_names)
+      attributes_values = arel_attributes_with_values_for_create(attribute_names)
+
+      new_id = self.class._insert_record(attributes_values)
+      # CPK
+      if composite? && self[:id].nil? && self.class.primary_key.include?("id")
+        self[:id] = new_id
+      else
+        self.id ||= new_id if self.class.primary_key
+      end
+
+      @new_record = false
+
+      yield(self) if block_given?
+
+      id
+    end
+
     module ClassMethods
       def delete(id_or_array)
         # CPK

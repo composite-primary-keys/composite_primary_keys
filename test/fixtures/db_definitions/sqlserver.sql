@@ -27,6 +27,16 @@ CREATE TABLE reference_codes (
     description       [varchar](50) NULL
 );
 
+CREATE TABLE reference_serials (
+    id                [int] IDENTITY(1000,1) NOT NULL,
+    reference_code    [int] NOT NULL,
+    code_label        [varchar](50) NULL,
+    abbreviation      [varchar](50) NULL,
+    description       [varchar](50) NULL,
+    CONSTRAINT [reference_serials_pk] PRIMARY KEY
+        ( [id], [reference_code] )
+);
+
 CREATE TABLE products (
     id   [int] IDENTITY(1000,1) NOT NULL,
     name [varchar](50) NULL

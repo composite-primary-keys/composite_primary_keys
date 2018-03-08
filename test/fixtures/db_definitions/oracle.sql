@@ -29,6 +29,17 @@ create table reference_codes (
     description       varchar(50) default null
 );
 
+create sequence reference_serials_seq start with 1000;
+
+create table reference_serials (
+    id             number(11) not null,
+    reference_code number(11) not null,
+    code_label     varchar(50) default null,
+    abbreviation   varchar(50) default null,
+    description    varchar(50) default null,
+    constraint reference_serials_pk primary key (id, reference_code)
+);
+
 create sequence products_seq start with 1000;
 
 create table products (

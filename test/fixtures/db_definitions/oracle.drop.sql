@@ -4,6 +4,8 @@ drop table topic_sources;
 drop table reference_types;
 drop sequence reference_types_seq;
 drop table reference_codes;
+drop table reference_serials;
+drop table reference_serials_seq;
 drop table products;
 drop sequence products_seq;
 drop table tariffs;

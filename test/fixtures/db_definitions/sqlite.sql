@@ -28,6 +28,14 @@ create table reference_codes (
     primary key (reference_type_id, reference_code)
 );
 
+create table reference_serials (
+    id integer not null primary key autoincrement,
+    reference_code int not null,
+    code_label varchar(50) default null,
+    abbreviation varchar(50) default null,
+    description varchar(50) default null
+);
+
 create table products (
     id int(11) not null primary key,
     name varchar(50) default null,

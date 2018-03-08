@@ -13,6 +13,11 @@ class TestCreate < ActiveSupport::TestCase
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
       :create => {:reference_type_id => 1, :reference_code => 20, :code_label => 'NEW_CODE', :abbreviation => 'New Code'}
+    },
+    :serial_dual => {
+      :class => ReferenceSerial,
+      :primary_keys => [:id, :reference_code],
+      :create => { :reference_code => 20, :code_label => 'NEW_CODE', :abbreviation => 'New Code' }
     }
   }
 
@@ -160,5 +165,12 @@ class TestCreate < ActiveSupport::TestCase
     end
 
     assert_equal('Validation failed: Id has already been taken', error.to_s)
+  end
+
+  def test_serial_composite
+    serial = ReferenceSerial.new(reference_code: 20, code_label: 'NEW_CODE', abbreviation: 'New Code')
+    serial.save!
+    assert_not_nil(serial[:id])
+    assert_equal(serial[:reference_code], 20)
   end
 end
