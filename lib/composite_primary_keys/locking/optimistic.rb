@@ -5,50 +5,40 @@ module ActiveRecord
       private
 
       silence_warnings do
-        def _update_record(attribute_names = @attributes.keys) #:nodoc:
+        def _update_row(attribute_names, attempted_action = "update")
           return super unless locking_enabled?
-          return 0 if attribute_names.empty?
-
-          lock_col = self.class.locking_column
-          previous_lock_value = send(lock_col).to_i
-          increment_lock
-
-          attribute_names += [lock_col]
-          attribute_names.uniq!
 
           begin
-            relation = self.class.unscoped
+            locking_column = self.class.locking_column
+            previous_lock_value = read_attribute_before_type_cast(locking_column)
+            attribute_names << locking_column
 
-            if self.composite?
-              affected_rows = relation.where(
-                  relation.cpk_id_predicate(relation.table, self.class.primary_key, id_was)
-              ).where(
-                  lock_col => previous_lock_value
-              ).update_all(
-                  Hash[attributes_for_update(attribute_names).map do |name|
-                         [name, _read_attribute(name)]
-                       end]
+            self[locking_column] += 1
+
+            if composite?
+              affected_rows = self.class.unscoped._update_record(
+                  arel_attributes_with_values(attribute_names),
+                  Hash[self.class.primary_key.zip(id_in_database)].merge(
+                      locking_column => previous_lock_value
+                  )
               )
             else
-              affected_rows = relation.where(
-                  self.class.primary_key => id,
-                  lock_col => previous_lock_value,
-              ).update_all(
-                  Hash[attributes_for_update(attribute_names).map do |name|
-                       [name, _read_attribute(name)]
-                     end]
+              affected_rows = self.class.unscoped._update_record(
+                  arel_attributes_with_values(attribute_names),
+                  self.class.primary_key => id_in_database,
+                  locking_column         => previous_lock_value
               )
             end
 
-            unless affected_rows == 1
-              raise ActiveRecord::StaleObjectError.new(self, "update")
+            if affected_rows != 1
+              raise ActiveRecord::StaleObjectError.new(self, attempted_action)
             end
 
             affected_rows
 
-          # If something went wrong, revert the version.
+              # If something went wrong, revert the locking_column value.
           rescue Exception
-            send(lock_col + '=', previous_lock_value)
+            self[locking_column] = previous_lock_value.to_i
             raise
           end
         end
