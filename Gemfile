@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', ['~>5.1.0', '>= 5.1.5']
+gem 'activerecord', ['~>5.1.0', '<= 5.1.5']
 gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
