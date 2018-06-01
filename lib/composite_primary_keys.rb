@@ -114,3 +114,5 @@ require 'composite_primary_keys/composite_relation'
 require 'composite_primary_keys/arel/in'
 require 'composite_primary_keys/arel/to_sql'
 require 'composite_primary_keys/arel/sqlserver'
+
+require 'composite_primary_keys/errors'

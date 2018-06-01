@@ -86,6 +86,14 @@ module CompositePrimaryKeys
         expects_array = ids.flatten != ids.flatten(1)
         return ids.first if expects_array && ids.first.empty?
 
+        if primary_key.is_a?(Array)
+          ids.each do |search_id|
+            next if search_id.is_a?(Array) && search_id.compact.length == primary_key.length
+            raise CompositePrimaryKeys::IncompleteArgumentsError
+                    .new(@klass, primary_key, search_id)
+          end
+        end
+
         # CPK
         # ids = ids.flatten.compact.uniq
         ids = expects_array ? ids.first : ids

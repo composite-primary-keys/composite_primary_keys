@@ -120,6 +120,44 @@ class TestFind < ActiveSupport::TestCase
     assert_equal([1,3], ref_code.id)
   end
 
+  def test_find_with_incomplete_id
+    begin
+      ReferenceCode.find(1)
+    rescue StandardError => e
+      assert_kind_of(CompositePrimaryKeys::IncompleteArgumentsError, e)
+      assert_match('primary_key: ["reference_type_id", "reference_code"]', e.message)
+      assert_match('args: 1', e.message)
+      assert_match('class: ReferenceCode', e.message)
+    end
+  end
+
+  def test_find_some_with_incomplete_id
+    begin
+      ReferenceCode.find([1,1], 2)
+    rescue StandardError => e
+      assert_kind_of(CompositePrimaryKeys::IncompleteArgumentsError, e)
+      assert_match('args: 2', e.message)
+    end
+  end
+
+  def test_find_with_malformed_string
+    begin
+      ReferenceCode.find('1,1', '1,')
+    rescue StandardError => e
+      assert_kind_of(CompositePrimaryKeys::IncompleteArgumentsError, e)
+      assert_match('args: ["1"]', e.message)
+    end
+  end
+
+  def test_find_with_nil_value
+    begin
+      ReferenceCode.find([1,nil])
+    rescue StandardError => e
+      assert_kind_of(CompositePrimaryKeys::IncompleteArgumentsError, e)
+      assert_match('args: [1, nil]', e.message)
+    end
+  end
+
   def test_find_some_with_array_of_params_id
     params_ids = ReferenceCode.find([1,3], [2,1]).map(&:to_param)
     assert_equal ["1,3", "2,1"], params_ids
