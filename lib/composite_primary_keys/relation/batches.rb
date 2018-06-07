@@ -59,7 +59,7 @@ module CompositePrimaryKeys
             end.reduce(:or)
           end
 
-          records = relation.where(query)
+          records = relation.where(query).to_a
         end
       end
 
