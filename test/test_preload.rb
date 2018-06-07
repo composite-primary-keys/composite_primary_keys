@@ -91,4 +91,11 @@ class TestPreload < ActiveSupport::TestCase
     assert_equal(1, employees.first.groups_2.size)
     assert_equal(2, employees.second.groups_2.size)
   end
+
+  def test_preload_settings_inversion
+    users = User.preload(:readings).all
+    reading = users.first.readings.first
+
+    assert_equal(true, reading.association(:user).loaded?)
+  end
 end

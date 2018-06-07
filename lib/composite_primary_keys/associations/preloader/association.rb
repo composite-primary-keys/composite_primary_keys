@@ -43,6 +43,8 @@ module ActiveRecord
               records.each do |record, owner_key|
                 owners_map[owner_key].each do |owner|
                   records_by_owner[owner] << record
+                  association = owner.association(reflection.name)
+                  association.set_inverse_instance(record)
                 end
               end
             end
