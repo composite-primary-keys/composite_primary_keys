@@ -9,7 +9,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 # end
 
 group :mysql do
-  gem 'mysql2'
+  gem 'mysql2', '~> 0.4.0'
 end
 
 group :oracle do
