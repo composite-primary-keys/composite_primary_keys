@@ -21,41 +21,33 @@ module ActiveRecord
       end
 
       def _update_record(values, constraints) # :nodoc:
-        # # CPK
-        # if self.composite?
-        #   relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_was || id))
-        # else
-        #   relation = scope.where(@klass.primary_key => (id_was || id))
-        # end
-
         # CPK
-        # bind = predicate_builder.build_bind_attribute(primary_key, id_was || id)
-        # um = arel_table.where(
-        #     arel_attribute(primary_key).eq(bind)
-        # ).compile_update(_substitute_values(values), primary_key)
-
-        # CPK
-        if self.composite?
-          predicate = cpk_id_predicate(arel_table, primary_key, constraints[primary_key])
-          um = arel_table.where(predicate).compile_update(_substitute_values(values), primary_key)
-        else
-          constraints = _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
-
-          um = arel_table.where(
-            constraints.reduce(&:and)
-          ).compile_update(_substitute_values(values), primary_key)
+        if self.composite? && constraints[primary_key]
+          primary_key_values = constraints.delete(primary_key)
+          primary_key.each_with_index do |key, i|
+           constraints[key] = primary_key_values[i]
+          end
         end
+
+        constraints = _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
+
+        um = arel_table.where(
+          constraints.reduce(&:and)
+        ).compile_update(_substitute_values(values), primary_key)
 
         connection.update(um, "#{self} Update")
       end
 
       def _delete_record(constraints) # :nodoc:
         # CPK
-        constraints = if self.composite?
-          [cpk_id_predicate(arel_table, primary_key, constraints[primary_key])]
-        else
-          _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
+        if self.composite? && constraints[primary_key]
+          primary_key_values = constraints.delete(primary_key)
+          primary_key.each_with_index do |key, i|
+            constraints[key] = primary_key_values[i]
+          end
         end
+
+        constraints = _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
 
         dm = Arel::DeleteManager.new
         dm.from(arel_table)
