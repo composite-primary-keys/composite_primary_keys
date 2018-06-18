@@ -17,7 +17,7 @@ module ActiveRecord
     end
 
     silence_warnings do
-      def _update_record(values, id, id_was) # :nodoc:
+      def _update_record(values, constraints) # :nodoc:
         substitutes, binds = substitute_values values
 
         scope = @klass.unscoped
@@ -27,15 +27,21 @@ module ActiveRecord
         end
 
         # CPK
+        # relation = scope.where(constraints)
         if self.composite?
-          # Not sure if this is a good idea, but replace nil id_was with the new id
-          id_update = id_was.each_with_index.map do |value, i|
-            value || id[i]
+          if constraints[@klass.primary_key]
+            cpks   = @klass.primary_key.zip(constraints[@klass.primary_key]).to_h
+            others = constraints.except(@klass.primary_key)
+          else
+            cpks   = Hash.new
+            others = Hash.new
+            constraints.each do |field, value|
+              (@klass.primary_key.include?(field) ? cpks : others)[field] = value
+            end
           end
-
-          relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, @klass.primary_key, id_update))
+          relation = @klass.unscoped.where(cpk_id_predicate(@klass.arel_table, cpks.keys, cpks.values)).where(others)
         else
-          relation = scope.where(@klass.primary_key => (id_was || id))
+          relation = scope.where(constraints)
         end
 
 
