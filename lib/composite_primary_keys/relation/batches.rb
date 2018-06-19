@@ -7,11 +7,17 @@ module CompositePrimaryKeys
           return BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
         end
 
-        if arel.orders.present? || arel.taken.present?
-          act_on_order_or_limit_ignored(error_on_ignore)
+        if arel.orders.present?
+          act_on_ignored_order(error_on_ignore)
         end
 
-        relation = relation.reorder(batch_order).limit(of)
+        batch_limit = of
+        if limit_value
+          remaining   = limit_value
+          batch_limit = remaining if remaining < batch_limit
+        end
+
+        relation = relation.reorder(batch_order).limit(batch_limit)
         relation = apply_limits(relation, start, finish)
         batch_relation = relation
 
@@ -39,9 +45,22 @@ module CompositePrimaryKeys
 
           yield yielded_relation
 
-          break if ids.length < of
+          break if ids.length < batch_limit
+
+          if limit_value
+            remaining -= ids.length
+
+            if remaining == 0
+              # Saves a useless iteration when the limit is a multiple of the
+              # batch size.
+              break
+            elsif remaining < batch_limit
+              relation = relation.limit(remaining)
+            end
+          end
+
           # CPK
-          # batch_relation = relation.where(arel_attribute(primary_key).gt(primary_key_offset))
+          batch_relation = relation.where(arel_attribute(primary_key).gt(primary_key_offset))
           batch_relation = if composite?
             # CPK
             # Lexicographically select records
