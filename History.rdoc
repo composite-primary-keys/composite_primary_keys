@@ -1,5 +1,6 @@
-== 11.0.1 (?)
+== 11.0.1 (2018-06-20)
 * Fix in_batches (Urmo Rae)
+* Fix apply_join_dependency (Charlie Savage)
 
 == 11.0.0 (2018-06-18)
 * Update to ActiveRecord 5.2 (Charlie Savage)
