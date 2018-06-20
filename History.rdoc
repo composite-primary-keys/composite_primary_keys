@@ -1,3 +1,6 @@
+== 11.0.1 (?)
+* Fix in_batches (Urmo Rae)
+
 == 11.0.0 (2018-06-18)
 * Update to ActiveRecord 5.2 (Charlie Savage)
 * Fixes for AR 5.2 persistence changes (Erik Rothoff, Charlie Savage)
@@ -29,6 +32,9 @@
 == 11.0.0.beta1 (2017-12-03)
 
 * ActiveRecord 5.2.beta2 support (Charlie Savage)
+
+== 10.0.5 (?)
+* Fix in_batches (Urmo Rae)
 
 == 10.0.4 (2018-06-17)
 
