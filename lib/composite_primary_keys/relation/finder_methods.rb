@@ -1,19 +1,27 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
-      def apply_join_dependency(join_dependency = construct_join_dependency)
+      def apply_join_dependency(eager_loading: true)
+        join_dependency = construct_join_dependency
         relation = except(:includes, :eager_load, :preload).joins!(join_dependency)
 
-        if using_limitable_reflections?(join_dependency.reflections)
-          relation
-        else
-          if relation.limit_value
+        if eager_loading && !using_limitable_reflections?(join_dependency.reflections)
+          if has_limit_or_offset?
             limited_ids = limited_ids_for(relation)
+
             # CPK
             # limited_ids.empty? ? relation.none! : relation.where!(primary_key => limited_ids)
             limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
+
           end
-          relation.except(:limit, :offset)
+          relation.limit_value = relation.offset_value = nil
+        end
+
+        if block_given?
+          relation._select!(join_dependency.aliases.columns)
+          yield relation, join_dependency
+        else
+          relation
         end
       end
 
