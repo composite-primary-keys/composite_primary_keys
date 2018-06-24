@@ -1,3 +1,7 @@
+== 9.0.10 (2018-06-24)
+
+* Fix AR 5.0.7 (Jordan Owens)
+
 == 9.0.9 (2018-03-06)
 
 * Fix update statements that incorrectly pass NULL values for the primary key components (Sean Linsley)
