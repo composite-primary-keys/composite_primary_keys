@@ -1,4 +1,4 @@
-== 10.0.5 (?)
+== 10.0.5 (2018-06-24)
 * Fix in_batches (Urmo Rae)
 
 == 10.0.4 (2018-06-17)
@@ -27,6 +27,10 @@
 * Fix Paper Trail compatibility (Sean Linsley)
 * Fix typo in Readme (Mike Gunderloy)
 * Improved sql server support (Artyom Nikolaev)
+
+== 9.0.10 (2018-06-24)
+
+* Fix AR 5.0.7 (Jordan Owens)
 
 == 9.0.8 (2017-10-11)
 
