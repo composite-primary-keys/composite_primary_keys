@@ -2,16 +2,22 @@ module ActiveRecord
   module AttributeMethods
     module Read
       def read_attribute(attr_name, &block)
+        name = if self.class.attribute_alias?(attr_name)
+                 # CPK
+                 # self.class.attribute_alias(attr_name).to_s
+                 self.class.attribute_alias(attr_name)
+               else
+                 # CPK
+                 # attr_name.to_s
+                 attr_name
+               end
+
+        primary_key = self.class.primary_key
         # CPK
-        if attr_name.kind_of?(Array) || attr_name.to_s == 'id'.freeze && @attributes.key?('id')
-          _read_attribute(attr_name, &block)
-        else
-          name = attr_name.to_s
-          # CPK
-          #name = self.class.primary_key if name == 'id'.freeze
-          name = self.class.primary_key if name == 'id'.freeze && !composite?
-          _read_attribute(name, &block)
-        end
+        # name = primary_key if name == "id".freeze && primary_key
+        name = primary_key if name == "id".freeze && primary_key && !composite?
+        sync_with_transaction_state if name == primary_key
+        _read_attribute(name, &block)
       end
 
       def _read_attribute(attr_name)

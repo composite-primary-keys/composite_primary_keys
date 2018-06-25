@@ -3,41 +3,35 @@ module ActiveRecord
     module Write
       def write_attribute(attr_name, value)
         name = if self.class.attribute_alias?(attr_name)
-          # CPK
-          # self.class.attribute_alias(attr_name).to_s
-          self.class.attribute_alias(attr_name)
-        else
-          # CPK
-          # attr_name.to_s
-          attr_name
-        end
+                 # CPK
+                 #self.class.attribute_alias(attr_name).to_s
+                 self.class.attribute_alias(attr_name)
+               else
+                 # CPK
+                 # attr_name.to_s
+                 attr_name
+               end
 
-        write_attribute_with_type_cast(name, value, true)
+        primary_key = self.class.primary_key
+        # CPK
+        # name = primary_key if name == "id".freeze && primary_key
+        name = primary_key if name == "id".freeze && primary_key && !composite?
+        sync_with_transaction_state if name == primary_key
+        _write_attribute(name, value)
       end
 
-      def write_attribute_with_type_cast(attr_name, value, should_type_cast)
+      def _write_attribute(attr_name, value) # :nodoc:
         # CPK
         if attr_name.kind_of?(Array)
-          value = [nil]*attr_name.length if value.nil?
-          unless value.length == attr_name.length
-            raise "Number of attr_names #{attr_name.inspect} and values #{value.inspect} do not match"
+          attr_name.each_with_index do |attr_child_name, i|
+            child_value = value ? value[i] : value
+            @attributes.write_from_user(attr_child_name.to_s, child_value)
           end
-          [attr_name, value].transpose.map {|name,val| write_attribute(name, val)}
-          value
         else
-          attr_name = attr_name.to_s
-          # CPK
-          # attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key
-          attr_name = self.class.primary_key if attr_name == 'id' && self.class.primary_key && !self.composite?
-
-          if should_type_cast
-            @attributes.write_from_user(attr_name, value)
-          else
-            @attributes.write_cast_value(attr_name, value)
-          end
-
-          value
+          @attributes.write_from_user(attr_name.to_s, value)
         end
+
+        value
       end
     end
   end

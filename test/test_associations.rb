@@ -237,7 +237,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal({"department_id"=>[1, 2]}, steve.changes)
   end
 
-  def test_composite_belongs_to__setting_to_nil
+  def test_composite_belongs_to_setting_to_nil
     room_assignment = room_assignments(:jacksons_room)
     # This was raising an error before:
     #   NoMethodError: undefined method `length' for nil:NilClass
