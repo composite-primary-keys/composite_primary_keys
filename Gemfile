@@ -26,8 +26,6 @@ group :sqlite do
   gem 'sqlite3'
 end
 
-# TODO - activerecord-sqlserver-adapter requires AR 5.1.0
-# group :sqlserver do
-#   gem 'tiny_tds'
-#   gem 'activerecord-sqlserver-adapter', :git => 'https://github.com/rails-sqlserver/activerecord-sqlserver-adapter.git'
-# end
+group :sqlserver do
+  gem 'activerecord-sqlserver-adapter'
+end
