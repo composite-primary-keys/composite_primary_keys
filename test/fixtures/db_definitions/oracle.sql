@@ -244,3 +244,8 @@ create table pk_called_ids (
     description       varchar(50) default null,
     constraint pk_called_ids_pk primary key (id, reference_code)
 );
+
+create table authors (
+    id         number(11) primary key,
+    reading_id number(11)
+);

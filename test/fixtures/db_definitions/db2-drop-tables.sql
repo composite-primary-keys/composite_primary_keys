@@ -17,3 +17,4 @@ drop table RESTAURANTS_SUBURBS;
 drop table PRODUCTS_RESTAURANTS;
 drop table TOPICS;
 drop table TOPIC_SOURCES;
+drop table AUTHORS;

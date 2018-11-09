@@ -210,3 +210,8 @@ CREATE TABLE pk_called_ids (
     CONSTRAINT [pk_called_ids_pk] PRIMARY KEY
         ( [id], [reference_code] )
 );
+
+CREATE TABLE authors (
+    id         [int] IDENTITY(1000,1) NOT NULL,
+    reading_id [int]
+);

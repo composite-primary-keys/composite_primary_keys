@@ -225,3 +225,9 @@ create table pk_called_ids (
   description varchar(50) default null,
   primary key (id, reference_code)
 );
+
+create table authors (
+  id integer not null,
+  reading_id integer,
+  primary key (id)
+);

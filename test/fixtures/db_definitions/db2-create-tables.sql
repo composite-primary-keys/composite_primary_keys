@@ -124,3 +124,9 @@ create table products_restaurants (
   franchise_id integer not null,
   store_id integer not null
 );
+
+CREATE TABLE authors (
+  id integer NOT NULL,
+  reading_id integer default NULL,
+  PRIMARY KEY  (id)
+);
