@@ -16,13 +16,17 @@ module ActiveRecord
           updates << sanitize_sql_for_assignment(touch_updates) unless touch_updates.empty?
         end
 
+        if id.is_a?(Relation) && self == id.klass
+          relation = id
         # CPK
-        if primary_key.is_a?(Array)
+        elsif primary_key.is_a?(Array)
           predicate = self.cpk_id_predicate(self.arel_table, self.primary_key, id)
-          unscoped.where(predicate).update_all updates.join(", ")
+          relation = unscoped.where!(predicate)
         else
-          unscoped.where(primary_key => id).update_all updates.join(", ")
+          relation = unscoped.where!(primary_key => id)
         end
+
+        relation.update_all updates.join(", ")
       end
     end
   end

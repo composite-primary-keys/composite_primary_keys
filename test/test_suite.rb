@@ -6,6 +6,7 @@
   test_calculations
   test_callbacks
   test_composite_arrays
+  test_counter_cache
   test_create
   test_delete
   test_dumpable
