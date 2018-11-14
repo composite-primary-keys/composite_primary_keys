@@ -111,7 +111,8 @@ CREATE TABLE departments (
 CREATE TABLE employees (
     id            [int] IDENTITY(1000,1) NOT NULL,
     department_id [int] NULL,
-    location_id   [int] NULL
+    location_id   [int] NULL,
+    name [varchar](50) NOT NULL
 );
 
 CREATE TABLE comments (

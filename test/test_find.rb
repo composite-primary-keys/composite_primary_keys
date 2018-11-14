@@ -102,13 +102,13 @@ class TestFind < ActiveSupport::TestCase
   def test_find_by_all_associations
     departments = Department.all
     employees = Employee.where(:department => departments)
-    assert_equal(4, employees.to_a.count)
+    assert_equal(5, employees.to_a.count)
   end
 
   def test_expand_all
     departments = Department.all
     employees = Employee.where(:department => departments)
-    assert_equal(4, employees.count)
+    assert_equal(5, employees.count)
   end
 
   def test_find_one_with_params_id

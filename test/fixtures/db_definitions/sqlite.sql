@@ -109,16 +109,8 @@ create table departments (
 create table employees (
     id integer not null primary key autoincrement,
     department_id integer null,
-    location_id integer null
-);
-
-create table salaries (
-    id integer not null primary key autoincrement,
-    employee_id integer,
-    location_id integer,
-    year int not null,
-    month int not null,
-    value int default null
+    location_id integer null,
+    name varchar(50) not null
 );
 
 create table comments (

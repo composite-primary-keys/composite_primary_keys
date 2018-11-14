@@ -116,16 +116,7 @@ create table employees (
     id int not null auto_increment,
     department_id int default null,
     location_id int default null,
-    primary key (id)
-);
-
-create table salaries (
-    id int not null auto_increment,
-    employee_id int,
-    location_id int,
-    year int not null,
-    month int not null,
-    value int default null,
+    name varchar(50) default null,
     primary key (id)
 );
 

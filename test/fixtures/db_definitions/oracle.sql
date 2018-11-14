@@ -124,18 +124,8 @@ create sequence employees_seq start with 1000;
 create table employees (
     id            number(11) not null primary key,
     department_id number(11) default null,
-    location_id   number(11) default null
-);
-
-create sequence salaries_seq start with 1000;
-
-create table salaries (
-    id          number(11) not null primary key,
-    employee_id number(11) default null,
-    location_id number(11) default null,
-    year        int not null,
-    month       int not null,
-    value       int default null
+    location_id   number(11) default null,
+    name          varchar(50) not null
 );
 
 create sequence comments_seq start with 1000;

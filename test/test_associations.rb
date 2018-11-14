@@ -82,18 +82,27 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_one_association_primary_key_and_foreign_key_are_present
-    steve = employees(:steve)
-    steve_salary = steve.create_one_salary(year: "2015", month: "1")
+    department = departments(:human_resources)
 
-    jill = employees(:jill)
-    jill_salary = jill.create_one_salary(year: "2015", month: "1")
+    assert_equal(1, department.employees.count)
+    assert_equal('Mindy', department.employees[0].name)
 
-    steve_salary.reload
-    jill_salary.reload
-    assert_equal(steve.id, steve_salary.employee_id)
-    assert_equal(1, steve_salary.location_id)
-    assert_equal(jill.id, jill_salary.employee_id)
-    assert_equal(1, jill_salary.location_id)
+    head = department.create_head(name: 'Rick')
+    assert_equal(department.department_id, head.department_id)
+    assert_equal(department.location_id, head.location_id)
+
+    department.reload
+    assert_equal(1, department.employees.count)
+    assert_equal('Rick', department.employees[0].name)
+  end
+
+  def test_has_one_autosave
+    department = departments(:engineering)
+    assert_equal('Sarah', department.head.name)
+
+    department.head.name = 'Sarah1'
+    department.save!
+    assert_equal('Sarah1', department.head.name)
   end
 
   def test_has_many_association_is_not_cached_to_where_it_returns_the_wrong_ones
@@ -107,35 +116,18 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_many_association_primary_key_and_foreign_key_are_present
-    steve = employees(:steve)
-    steve_salary = steve.salaries.create(year: 2015, month: 1)
+    department = departments(:accounting)
+    assert_equal(2, department.employees.count)
+    assert_equal('Steve', department.employees[0].name)
+    assert_equal('Jill', department.employees[1].name)
 
-    jill = employees(:jill)
-    jill_salary = jill.salaries.create(year: 2015, month: 1)
+    head = department.employees.create(name: 'Rick')
 
-    steve_salary.reload
-    jill_salary.reload
-    assert_equal(steve.id, steve_salary.employee_id)
-    assert_equal(1, steve_salary.location_id)
-    assert_equal(jill.id, jill_salary.employee_id)
-    assert_equal(1, jill_salary.location_id)
-  end
-
-  def test_belongs_to_association_primary_key_and_foreign_key_are_present
-    bogus_foreign_key = 2_500_000
-    salary_01 = Salary.new(
-      year: 2015,
-      month: 1,
-      employee_id: bogus_foreign_key,
-      location_id: 1
-    )
-    salary_01.save!
-    employee_01 = salary_01.create_employee
-    employee_01.reload
-
-    assert_equal(salary_01.employee_id, employee_01.id, "Generated id used")
-    assert_not_equal(bogus_foreign_key, employee_01.id, "Bogus value ignored")
-    assert_equal(1, employee_01.location_id)
+    department.reload
+    assert_equal(3, department.employees.count)
+    assert_equal('Steve', department.employees[0].name)
+    assert_equal('Jill', department.employees[1].name)
+    assert_equal('Rick', department.employees[2].name)
   end
 
   def test_find_includes_product_tariffs_product

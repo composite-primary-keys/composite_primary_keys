@@ -105,7 +105,7 @@ class TestDelete < ActiveSupport::TestCase
 
   def test_create_destroy_has_and_belongs_to_many_on_non_cpk
     records_before = ActiveRecord::Base.connection.execute('select * from employees_groups')
-    employee = Employee.create
+    employee = Employee.create!(department_id: 3, location_id: 2, name: 'Jon')
     employee.groups << Group.create(name: 'test')
     employee.destroy!
     records_after = ActiveRecord::Base.connection.execute('select * from employees_groups')

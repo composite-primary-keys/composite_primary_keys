@@ -118,16 +118,7 @@ create table employees (
     id            serial not null,
     department_id int default null,
     location_id   int default null,
-    primary key (id)
-);
-
-create table salaries (
-    id          serial not null,
-    employee_id int,
-    location_id int,
-    year        int not null,
-    month       int not null,
-    value       int default null,
+    name          text not null,
     primary key (id)
 );
 

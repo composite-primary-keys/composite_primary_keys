@@ -23,8 +23,6 @@ drop table memberships;
 drop table membership_statuses;
 drop sequence membership_statuses_seq;
 drop table departments;
-drop table salaries;
-drop sequence salaries_seq;
 drop table employees;
 drop sequence employees_seq;
 drop table comments;
