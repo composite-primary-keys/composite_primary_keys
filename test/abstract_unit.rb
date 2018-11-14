@@ -1,4 +1,4 @@
-spec_name = ENV['ADAPTER'] || 'postgresql'
+spec_name = ENV['ADAPTER'] || 'mysql'
 require 'bundler'
 Bundler.require(:default, spec_name.to_sym)
 

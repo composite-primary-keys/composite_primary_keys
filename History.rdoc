@@ -1,3 +1,7 @@
+== 11.1.0 (2018-06-25)
+* Support ActiveRecord 5.2.1 (S1Artem Tselovalnikov, Caleb Buxton, Charlie Savage)
+* Fix counter cache (Tomonori Murakami)
+
 == 11.0.3 (2018-06-25)
 * Fix overridden attribute readers and writers (Charlie Savage)
 
