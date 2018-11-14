@@ -1,6 +1,7 @@
-== 11.1.0 (2018-06-25)
+== 11.1.0 (2018-11-14)
 * Support ActiveRecord 5.2.1 (S1Artem Tselovalnikov, Caleb Buxton, Charlie Savage)
 * Fix counter cache (Tomonori Murakami)
+* Fix error on autosave has_one relations when the :primary_key option is set (Charlie Savage)
 
 == 11.0.3 (2018-06-25)
 * Fix overridden attribute readers and writers (Charlie Savage)
