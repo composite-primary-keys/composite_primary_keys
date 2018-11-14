@@ -29,3 +29,7 @@ end
 group :sqlserver do
   gem 'activerecord-sqlserver-adapter'
 end
+
+group :test do
+  gem 'minitest'
+end
