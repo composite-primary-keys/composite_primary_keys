@@ -11,7 +11,8 @@ module ActiveRecord
         end
 
         if touch
-          touch_updates = touch_updates(touch)
+          names = touch if touch != true
+          touch_updates = touch_attributes_with_time(*names)
           updates << sanitize_sql_for_assignment(touch_updates) unless touch_updates.empty?
         end
 

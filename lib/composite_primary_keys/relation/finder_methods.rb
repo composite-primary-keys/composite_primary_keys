@@ -18,7 +18,7 @@ module CompositePrimaryKeys
         end
 
         if block_given?
-          relation._select!(join_dependency.aliases.columns)
+          join_dependency.apply_column_aliases(relation)
           yield relation, join_dependency
         else
           relation
