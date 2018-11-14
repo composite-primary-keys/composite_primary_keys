@@ -93,8 +93,8 @@ class TestPreload < ActiveSupport::TestCase
   end
 
   def test_preload_settings_inversion
-    users = User.preload(:readings).all
-    reading = users.first.readings.first
+    user = User.preload(:readings).find_by!(:name => 'Santiago')
+    reading = user.readings.first
     assert_equal(true, reading.association(:user).loaded?)
   end
 end
