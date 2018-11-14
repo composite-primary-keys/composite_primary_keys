@@ -20,8 +20,7 @@ Every major version of ActiveRecord has included numerous internal changes.  As 
 CPK has to be rewritten for each version of ActiveRecord.  To help keep
 things straight, here is the mapping:
 
-    Version 11.1 is designed to work with ActiveRecord >= 5.2.1
-    Version 11.x is designed to work with ActiveRecord 5.2.x (note this is in progress)
+    Version 11.x is designed to work with ActiveRecord 5.2.x
     Version 10.x is designed to work with ActiveRecord 5.1.x
     Version  9.x is designed to work with ActiveRecord 5.0.x
     Version  8.x is designed to work with ActiveRecord 4.2.x
