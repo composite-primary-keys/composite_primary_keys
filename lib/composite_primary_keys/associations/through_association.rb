@@ -1,6 +1,9 @@
 module ActiveRecord
   module Associations
     module ThroughAssociation
+
+      private
+
       original_construct_join_attributes = instance_method(:construct_join_attributes)
 
       define_method(:construct_join_attributes) do |*records|
