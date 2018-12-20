@@ -15,7 +15,7 @@ module ActiveRecord
 
         # subselect.project Arel.sql(key.name)
         arel_table = select.engine.arel_table
-        subselect.project *key.name.map{|x| arel_table[x]}
+        subselect.project *[key].map { |x| arel_table[x.name] }
         subselect.from subsubselect.as('__active_record_temp')
       end
     end
