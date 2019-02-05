@@ -2,7 +2,7 @@ module ActiveRecord
   module ConnectionAdapters
     module PostgreSQL
       module DatabaseStatements
-        def sql_for_insert(sql, pk, id_value, sequence_name, binds) # :nodoc:
+        def sql_for_insert(sql, pk, sequence_name, binds) # :nodoc:
           if pk.nil?
             # Extract the table from the insert sql. Yuck.
             table_ref = extract_table_ref_from_insert_sql(sql)
