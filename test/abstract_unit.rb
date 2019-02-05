@@ -19,7 +19,7 @@ puts "Loaded #{spec_name}"
 ActiveRecord::Base.establish_connection(spec)
 
 # Tell active record about the configuration
-ActiveRecord::Base.configurations[:test] = spec
+ActiveRecord::Base.configurations = {test: spec}
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
