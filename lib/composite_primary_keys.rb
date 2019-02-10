@@ -65,9 +65,6 @@ require 'active_record/relation/where_clause'
 require 'active_record/relation/calculations'
 require 'active_record/relation/finder_methods'
 require 'active_record/relation/query_methods'
-require 'active_record/relation/predicate_builder/association_query_value'
-
-require 'active_record/validations/uniqueness'
 
 # CPK files
 require 'composite_primary_keys/persistence'
