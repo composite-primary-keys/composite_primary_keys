@@ -121,7 +121,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal('Steve', department.employees[0].name)
     assert_equal('Jill', department.employees[1].name)
 
-    head = department.employees.create(name: 'Rick')
+    department.employees.create(name: 'Rick')
 
     department.reload
     assert_equal(3, department.employees.count)
