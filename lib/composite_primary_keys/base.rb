@@ -52,7 +52,7 @@ module ActiveRecord
       end
 
       # Don't like this method name, but its modeled after how AR does it
-       def reset_primary_keys #:nodoc:
+      def reset_primary_keys #:nodoc:
         if self == base_class
           # CPK
           self.primary_keys = get_primary_key(base_class.name)
