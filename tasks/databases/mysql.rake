@@ -10,7 +10,7 @@ namespace :mysql do
     new_spec = spec.dup
     new_spec.delete('database')
     connection = ActiveRecord::Base.establish_connection(new_spec)
-    ActiveRecord::Base.connection.create_database(spec['database'])
+    ActiveRecord::Base.connection.create_database(spec['database'], charset: spec['charset'] || 'utf8mb4')
     ActiveRecord::Base.clear_all_connections!
   end
 
