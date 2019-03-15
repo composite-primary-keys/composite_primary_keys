@@ -1,14 +1,11 @@
 module ActiveRecord
   module Associations
     module ThroughAssociation
+      alias :original_construct_join_attributes :construct_join_attributes
 
-      private
-
-      original_construct_join_attributes = instance_method(:construct_join_attributes)
-
-      define_method(:construct_join_attributes) do |*records|
+      def construct_join_attributes(*records)
+        # CPK
         if source_reflection.klass.composite?
-          # CPK
           ensure_mutable
 
           ids = records.map do |record|
@@ -19,7 +16,7 @@ module ActiveRecord
 
           cpk_in_predicate(through_association.scope.klass.arel_table, source_reflection.foreign_key, ids)
         else
-          original_construct_join_attributes.bind(self).call(*records)
+          original_construct_join_attributes(*records)
         end
       end
     end
