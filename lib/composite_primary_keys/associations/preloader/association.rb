@@ -43,7 +43,7 @@ module ActiveRecord
                       convert_key(key)
                     end
                   else
-                    record[association_key_name]
+                    convert_key(record[association_key_name])
                   end
 
             owner = owners_by_key[key]

@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestPreload < ActiveSupport::TestCase
-  fixtures :comments, :users, :employees, :groups, :hacks
+  fixtures :comments, :users, :employees, :groups, :hacks, :readings
 
   class UserForPreload < User
     has_many :comments_with_include_condition, -> { where('person_type = ?', 'User')},
