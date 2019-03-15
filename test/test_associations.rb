@@ -59,6 +59,15 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tariffs.inject(0) {|sum, tariff| sum + tariff.product_tariffs.length})
   end
 
+  def test_find_each_does_not_throw_error
+    tariffs = Tariff.includes(:product_tariffs)
+    worked = false
+    tariffs.first.product_tariffs.order(:tariff_id).find_each do |pt|
+      worked = true
+    end
+    assert worked
+  end
+
   def test_association_with_composite_primary_key_can_be_autosaved
     room = Room.new(dorm_id: 1000, room_id: 1001)
     room_assignment = RoomAssignment.new(student_id: 1000)
