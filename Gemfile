@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'activerecord', '6.0.0.beta2'
+gem 'activerecord', '6.0.0.beta3'
 gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
