@@ -48,6 +48,17 @@ class TestCreate < ActiveSupport::TestCase
     end
   end
 
+  def test_create_generated_keys
+    # Not all databases support columns with multiple identity fields
+    if defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) ||
+       defined?(ActiveRecord::ConnectionAdapters::SQLite3)
+
+      suburb = Suburb.create!(:name => 'Capitol Hill')
+      refute_nil(suburb.city_id)
+      refute_nil(suburb.suburb_id)
+    end
+  end
+
   def test_create_on_association
     suburb = Suburb.first
     suburb.streets.create(:name => "my street")

@@ -56,5 +56,25 @@ module ActiveRecord
         connection.delete(dm, "#{self} Destroy")
       end
     end
+
+    def _create_record(attribute_names = self.attribute_names)
+      attribute_names &= self.class.column_names
+      attributes_values = attributes_with_values_for_create(attribute_names)
+
+      new_id = self.class._insert_record(attributes_values)
+
+      # CPK
+      if self.composite? && self.id.compact.empty?
+        self.id = new_id
+      else
+        self.id ||= new_id if self.class.primary_key
+      end
+
+      @new_record = false
+
+      yield(self) if block_given?
+
+      id
+    end
   end
 end

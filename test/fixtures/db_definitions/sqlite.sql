@@ -20,8 +20,8 @@ create table reference_types (
 );
 
 create table reference_codes (
-    reference_type_id int(11),
-    reference_code int(11) not null,
+    reference_type_id int,
+    reference_code int not null,
     code_label varchar(50) default null,
     abbreviation varchar(50) default null,
     description varchar(50) default null,
@@ -29,14 +29,14 @@ create table reference_codes (
 );
 
 create table products (
-    id int(11) not null primary key,
+    id int not null primary key,
     name varchar(50) default null,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
 
 create table tariffs (
-    tariff_id int(11) not null,
+    tariff_id int not null,
     start_date date not null,
     amount integer(11) default null,
     created_at TIMESTAMP,
@@ -45,23 +45,23 @@ create table tariffs (
 );
 
 create table product_tariffs (
-    product_id int(11) not null,
-    tariff_id int(11) not null,
+    product_id int not null,
+    tariff_id int not null,
     tariff_start_date date not null,
     primary key (product_id, tariff_id, tariff_start_date)
 );
 
 create table suburbs (
-    city_id int(11) not null,
-    suburb_id int(11) not null,
+    city_id int identity(1,1) not null,
+    suburb_id int identity(1,1) not null,
     name varchar(50) not null,
     primary key (city_id, suburb_id)
 );
 
 create table streets (
     id integer not null primary key autoincrement,
-    city_id int(11) not null,
-    suburb_id int(11) not null,
+    city_id int not null,
+    suburb_id int not null,
     name varchar(50) not null
 );
 
@@ -77,9 +77,9 @@ create table articles (
 
 create table readings (
     id integer not null primary key autoincrement,
-    user_id int(11) not null,
-    article_id int(11) not null,
-    rating int(11) not null
+    user_id int not null,
+    article_id int not null,
+    rating int not null
 );
 
 create table groups (
