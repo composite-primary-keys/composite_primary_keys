@@ -33,6 +33,11 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, products.inject(0) {|sum, product| sum + product.product_tariffs.length})
   end
 
+  def test_find_includes_2
+    products = ProductTariff.where(:tariff_id => 2).order('product_id, tariff_id').includes(:tariff)
+    assert_equal(2, products.length)
+  end
+
   def test_find_includes_eager_loading
     product = products(:second_product)
     product_tarrif = product_tariffs(:second_free)
