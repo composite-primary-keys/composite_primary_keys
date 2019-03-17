@@ -1,3 +1,10 @@
+== 11.2.0 (2019-03-16)
+* When creating new records, honor composite key autoincrementing fields if possible (Antti Pitkänen)
+* Update Association#run to more closely match ActiveRecord (Fabian Mersch)
+* Updates needed due to changes in ActiveRecord (Sammy Larbi)
+* Fix construct_join_attributes method (Brad Slaughter)
+* Fix destroy_all on HABTM (Brad Slaughter)
+
 == 11.1.0 (2018-11-14)
 * Support ActiveRecord 5.2.1 (S1Artem Tselovalnikov, Caleb Buxton, Charlie Savage)
 * Fix counter cache (Tomonori Murakami)
