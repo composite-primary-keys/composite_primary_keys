@@ -23,7 +23,7 @@ group :postgresql do
 end
 
 group :sqlite do
-  gem 'sqlite3'
+  gem 'sqlite3', '=1.4.0'
 end
 
 group :sqlserver do
