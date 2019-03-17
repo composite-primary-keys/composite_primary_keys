@@ -62,11 +62,7 @@ require 'active_record/connection_adapters/abstract_adapter'
 require 'active_record/connection_adapters/abstract_mysql_adapter'
 require 'active_record/connection_adapters/postgresql/database_statements'
 
-require 'active_record/relation/batches'
 require 'active_record/relation/where_clause'
-require 'active_record/relation/calculations'
-require 'active_record/relation/finder_methods'
-require 'active_record/relation/query_methods'
 require 'active_record/relation/predicate_builder/association_query_value'
 
 require 'active_record/validations/uniqueness'
