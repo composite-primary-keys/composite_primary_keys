@@ -4,9 +4,9 @@ gem 'activerecord', '~> 5.2.1'
 gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
-# group :db2 do
-#   gem 'ibm_db'
-# end
+group :db2 do
+  gem 'ibm_db'
+end
 
 group :mysql do
   gem 'mysql2'
@@ -23,7 +23,7 @@ group :postgresql do
 end
 
 group :sqlite do
-  gem 'sqlite3', '=1.4.0'
+  gem 'sqlite3'
 end
 
 group :sqlserver do
