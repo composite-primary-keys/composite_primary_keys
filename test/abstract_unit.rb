@@ -18,12 +18,8 @@ puts "Loaded #{spec_name}"
 # And now connect to the database
 ActiveRecord::Base.establish_connection(spec)
 
-if defined?(ActiveRecord::ConnectionAdapters::SQLite3Adapter)
-  require 'composite_primary_keys/connection_adapters/sqlite3_adapter'
-end
-
 # Tell active record about the configuration
-ActiveRecord::Base.configurations[:test] = spec
+ActiveRecord::Base.configurations = {test: spec}
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')

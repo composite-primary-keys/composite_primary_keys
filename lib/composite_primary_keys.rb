@@ -26,7 +26,7 @@ $:.unshift(File.dirname(__FILE__)) unless
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~> 5.2.1'
+  gem 'activerecord', '6.0.0.beta3'
   require 'active_record'
 end
 
@@ -63,9 +63,6 @@ require 'active_record/connection_adapters/abstract_mysql_adapter'
 require 'active_record/connection_adapters/postgresql/database_statements'
 
 require 'active_record/relation/where_clause'
-require 'active_record/relation/predicate_builder/association_query_value'
-
-require 'active_record/validations/uniqueness'
 
 # CPK files
 require 'composite_primary_keys/persistence'

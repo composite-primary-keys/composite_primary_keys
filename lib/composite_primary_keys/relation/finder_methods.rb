@@ -1,8 +1,8 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
-      def apply_join_dependency(eager_loading: true)
-        join_dependency = construct_join_dependency
+      def apply_join_dependency(eager_loading: group_values.empty?)
+        join_dependency = construct_join_dependency(eager_load_values + includes_values)
         relation = except(:includes, :eager_load, :preload).joins!(join_dependency)
 
         if eager_loading && !using_limitable_reflections?(join_dependency.reflections)
@@ -18,7 +18,6 @@ module CompositePrimaryKeys
         end
 
         if block_given?
-          join_dependency.apply_column_aliases(relation)
           yield relation, join_dependency
         else
           relation
@@ -33,7 +32,7 @@ module CompositePrimaryKeys
         # )
 
         columns = @klass.primary_keys.map do |key|
-          connection.column_name_from_arel_node(arel_attribute(key))
+          connection.visitor.compile(arel_attribute(key))
         end
         values = @klass.connection.columns_for_distinct(columns, relation.order_values)
 

@@ -8,7 +8,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     code_id = 1001
 
     reference_type = reference_types(:name_prefix)
-    reference_type.update_attributes :reference_codes_attributes => [{
+    reference_type.update :reference_codes_attributes => [{
       :reference_code => code_id,
       :code_label => 'XX',
       :abbreviation => 'Xx'
@@ -20,7 +20,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     code_id = 1002
 
     reference_type = reference_types(:name_prefix)
-    reference_type.update_attributes :reference_codes_attributes => [{
+    reference_type.update :reference_codes_attributes => [{
       :reference_code => code_id,
       :code_label => 'XX',
       :abbreviation => 'Xx'
@@ -28,7 +28,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
 
     reference_code = ReferenceCode.find_by_reference_code(code_id)
     cpk = CompositePrimaryKeys::CompositeKeys[reference_type.reference_type_id, code_id]
-    reference_type.update_attributes :reference_codes_attributes => [{
+    reference_type.update :reference_codes_attributes => [{
       :id => cpk,
       :code_label => 'AAA',
       :abbreviation => 'Aaa'
@@ -43,7 +43,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     reference_type = reference_types(:gender)
     reference_code = reference_codes(:gender_male)
 
-    reference_type.update_attributes(:reference_codes_attributes => [{:id => reference_code.id,
+    reference_type.update(:reference_codes_attributes => [{:id => reference_code.id,
                                                                       :code_label => 'XX',
                                                                       :abbreviation => 'Xx'}])
 
@@ -56,7 +56,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     reference_type = reference_types(:gender)
     reference_code = reference_codes(:gender_male)
 
-    reference_type.update_attributes(:reference_codes_attributes => [{:id => reference_code.id.to_s,
+    reference_type.update(:reference_codes_attributes => [{:id => reference_code.id.to_s,
                                                                       :code_label => 'XX',
                                                                       :abbreviation => 'Xx'}])
 
@@ -71,7 +71,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     platform = 'instagram'
 
     topic = topics(:music)
-    topic.update_attributes :topic_sources_attributes => [{
+    topic.update :topic_sources_attributes => [{
       :platform => platform,
       :keywords => 'funk'
     }]
@@ -82,7 +82,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     platform = 'instagram'
 
     topic = topics(:music)
-    topic.update_attributes :topic_sources_attributes => [{
+    topic.update :topic_sources_attributes => [{
       :platform => platform,
       :keywords => 'funk'
     }]
@@ -90,7 +90,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
 
     topic_source = TopicSource.find_by_platform(platform)
     cpk = CompositePrimaryKeys::CompositeKeys[topic.id, platform]
-    topic.update_attributes :topic_sources_attributes => [{
+    topic.update :topic_sources_attributes => [{
       :id => cpk,
       :keywords => 'jazz'
     }]
@@ -104,7 +104,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     topic = topics(:music)
     topic_source = topic_sources(:music_source)
 
-    topic.update_attributes(:topic_sources_attributes => [{:id => topic_source.id,
+    topic.update(:topic_sources_attributes => [{:id => topic_source.id,
                                                            :keywords => 'classical, jazz'}])
 
     topic_source.reload
@@ -115,7 +115,7 @@ class TestNestedAttributes < ActiveSupport::TestCase
     topic = topics(:music)
     topic_source = topic_sources(:music_source)
 
-    topic.update_attributes(:topic_sources_attributes => [{:id => topic_source.id.to_s,
+    topic.update(:topic_sources_attributes => [{:id => topic_source.id.to_s,
                                                            :keywords => 'classical, jazz'}])
 
     topic_source.reload

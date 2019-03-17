@@ -58,10 +58,11 @@ module ActiveRecord
     end
 
     def _create_record(attribute_names = self.attribute_names)
-      attribute_names &= self.class.column_names
-      attributes_values = attributes_with_values_for_create(attribute_names)
+      attribute_names = attributes_for_create(attribute_names)
 
-      new_id = self.class._insert_record(attributes_values)
+      new_id = self.class._insert_record(
+          attributes_with_values(attribute_names)
+      )
 
       # CPK
       if self.composite? && self.id.compact.empty?

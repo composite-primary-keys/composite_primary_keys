@@ -47,14 +47,14 @@ module ActiveRecord
                          end
 
             parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases, &block)
-            construct(parent, join_root, row_hash, result_set, seen, model_cache, aliases)
+            construct(parent, join_root, row_hash, seen, model_cache)
           }
         end
 
         parents.values
       end
 
-      def construct(ar_parent, parent, row, rs, seen, model_cache, aliases)
+      def construct(ar_parent, parent, row, seen, model_cache)
         return if ar_parent.nil?
 
         parent.children.each do |node|
@@ -63,7 +63,7 @@ module ActiveRecord
             other.loaded!
           elsif ar_parent.association_cached?(node.reflection.name)
             model = ar_parent.association(node.reflection.name).target
-            construct(model, node, row, rs, seen, model_cache, aliases)
+            construct(model, node, row, seen, model_cache)
             next
           end
 
@@ -89,11 +89,12 @@ module ActiveRecord
           model = seen[ar_parent.object_id][node.base_klass][id]
 
           if model
-            construct(model, node, row, rs, seen, model_cache, aliases)
+            construct(model, node, row, seen, model_cache)
           else
-            model = construct_model(ar_parent, node, row, model_cache, id, aliases)
+            model = construct_model(ar_parent, node, row, model_cache, id)
+
             seen[ar_parent.object_id][node.base_klass][id] = model
-            construct(model, node, row, rs, seen, model_cache, aliases)
+            construct(model, node, row, seen, model_cache)
           end
         end
       end

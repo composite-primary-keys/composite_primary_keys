@@ -2,6 +2,9 @@ mysql:
   adapter: mysql2
   username: travis
   password: ""
+  encoding: utf8mb4
+  charset: utf8mb4
+  collation: utf8mb4_bin
   database: composite_primary_keys_unittest
 
 postgresql:

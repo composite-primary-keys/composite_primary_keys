@@ -25,26 +25,27 @@ module ActiveRecord
       end
 
       stmt = Arel::UpdateManager.new
-
-      stmt.set Arel.sql(@klass.send(:sanitize_sql_for_assignment, updates))
-      stmt.table(table)
-
-      if has_join_values?
-        # CPK
-        #@klass.connection.join_to_update(stmt, arel, arel_attribute(primary_key))
-        if primary_key.kind_of?(Array)
-          attributes = primary_key.map do |key|
-            arel_attribute(key)
-          end
-          @klass.connection.join_to_update(stmt, arel, attributes.to_composite_keys)
-        else
-          @klass.connection.join_to_update(stmt, arel, arel_attribute(primary_key))
-        end
+      if @klass.composite?
+        arel_attributes = primary_key.map do |key|
+          arel_attribute(key)
+        end.to_composite_keys
+        subselect = arel.clone
+        subselect.projections = [arel_attributes]
+        stmt.table(table)
+        stmt.key = arel_attributes.in(subselect)
       else
+        stmt.table(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
-        stmt.take(arel.limit)
-        stmt.order(*arel.orders)
-        stmt.wheres = arel.constraints
+      end
+      stmt.take(arel.limit)
+      stmt.offset(arel.offset)
+      stmt.order(*arel.orders)
+      stmt.wheres = arel.constraints
+
+      if updates.is_a?(Hash)
+        stmt.set _substitute_values(updates)
+      else
+        stmt.set Arel.sql(klass.sanitize_sql_for_assignment(updates, table.name))
       end
 
       @klass.connection.update stmt, "#{@klass} Update All"
@@ -65,19 +66,22 @@ module ActiveRecord
       end
 
       stmt = Arel::DeleteManager.new
-      stmt.from(table)
-
-      # CPK
-      if has_join_values? && @klass.composite?
+      if @klass.composite?
         arel_attributes = primary_key.map do |key|
           arel_attribute(key)
         end.to_composite_keys
-        @klass.connection.join_to_delete(stmt, arel, arel_attributes)
-      elsif has_join_values? || has_limit_or_offset?
-        @klass.connection.join_to_delete(stmt, arel, arel_attribute(primary_key))
+        subselect = arel.clone
+        subselect.projections = [arel_attributes]
+        stmt.from(table)
+        stmt.key = arel_attributes.in(subselect)
       else
-        stmt.wheres = arel.constraints
+        stmt.from(arel.join_sources.empty? ? table : arel.source)
+        stmt.key = arel_attribute(primary_key)
       end
+      stmt.take(arel.limit)
+      stmt.offset(arel.offset)
+      stmt.order(*arel.orders)
+      stmt.wheres = arel.constraints
 
       affected = @klass.connection.delete(stmt, "#{@klass} Destroy")
 
