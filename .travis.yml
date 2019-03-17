@@ -12,9 +12,9 @@ script:
   - "rake mysql:test"
 
 rvm:
-  - 2.3.6
-  - 2.4.3
-  - 2.5.0
+  - 2.4.5
+  - 2.5.5
+  - 2.6.2
 
 env:
   - CPK_LOGFILE=log/test.log
