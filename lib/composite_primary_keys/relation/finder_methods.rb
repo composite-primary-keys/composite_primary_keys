@@ -12,7 +12,6 @@ module CompositePrimaryKeys
             # CPK
             # limited_ids.empty? ? relation.none! : relation.where!(primary_key => limited_ids)
             limited_ids.empty? ? relation.none! : relation.where!(cpk_in_predicate(table, self.primary_keys, limited_ids))
-
           end
           relation.limit_value = relation.offset_value = nil
         end
@@ -49,7 +48,13 @@ module CompositePrimaryKeys
       end
 
       def construct_relation_for_exists(conditions)
-        relation = except(:select, :distinct, :order)._select!(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit!(1)
+        conditions = sanitize_forbidden_attributes(conditions)
+
+        if distinct_value && offset_value
+          relation = limit(1)
+        else
+          relation = except(:select, :distinct, :order)._select!(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit!(1)
+        end
 
         case conditions
           # CPK
@@ -65,7 +70,7 @@ module CompositePrimaryKeys
               relation = relation.where(conditions)
             end
           when Array, Hash
-            relation.where!(conditions)
+            relation.where!(conditions) unless conditions.empty?
           else
             relation.where!(primary_key => conditions) unless conditions == :none
         end
@@ -89,55 +94,49 @@ module CompositePrimaryKeys
         model_name = @klass.name
 
         case ids.size
-          when 0
-            error_message = "Couldn't find #{model_name} without an ID"
-            raise RecordNotFound.new(error_message, model_name, primary_key)
-          when 1
-            result = find_one(ids.first)
-            expects_array ? [ result ] : result
-          else
-            find_some(ids)
+        when 0
+          error_message = "Couldn't find #{model_name} without an ID"
+          raise RecordNotFound.new(error_message, model_name, primary_key)
+        when 1
+          result = find_one(ids.first)
+          expects_array ? [ result ] : result
+        else
+          find_some(ids)
         end
-      rescue ::RangeError
-        error_message = "Couldn't find #{model_name} with an out of range ID"
-        raise RecordNotFound.new(error_message, model_name, primary_key, ids)
       end
 
-      def last(limit = nil)
-        return find_last(limit) if loaded? || limit_value
-
-        result = limit(limit || 1)
-        # CPK
-        # result.order!(arel_attribute(primary_key)) if order_values.empty? && primary_key
-        if order_values.empty? && primary_key
-          if composite?
-            result.order!(primary_keys.map { |pk| arel_attribute(pk).asc })
-          elsif
-            result.order!(arel_attribute(primary_key))
-          end
-        end
-
-        result = result.reverse_order!
-
-        limit ? result.reverse : result.first
-      rescue ::ActiveRecord::IrreversibleOrderError
-        ActiveSupport::Deprecation.warn(<<-WARNING.squish)
-            Finding a last element by loading the relation when SQL ORDER
-            can not be reversed is deprecated.
-            Rails 5.1 will raise ActiveRecord::IrreversibleOrderError in this case.
-            Please call `to_a.last` if you still want to load the relation.
-        WARNING
-        find_last(limit)
-      end
+      # def last(limit = nil)
+      #   return find_last(limit) if loaded? || has_limit_or_offset?
+      #
+      #   result = limit(limit || 1)
+      #   # CPK
+      #   # result.order!(arel_attribute(primary_key)) if order_values.empty? && primary_key
+      #   if order_values.empty? && primary_key
+      #     if composite?
+      #       result.order!(primary_keys.map { |pk| arel_attribute(pk).asc })
+      #     elsif
+      #       result.order!(arel_attribute(primary_key))
+      #     end
+      #   end
+      #
+      #   result = result.reverse_order!
+      #
+      #   limit ? result.reverse : result.first
+      # rescue ::ActiveRecord::IrreversibleOrderError
+      #   ActiveSupport::Deprecation.warn(<<-WARNING.squish)
+      #       Finding a last element by loading the relation when SQL ORDER
+      #       can not be reversed is deprecated.
+      #       Rails 5.1 will raise ActiveRecord::IrreversibleOrderError in this case.
+      #       Please call `to_a.last` if you still want to load the relation.
+      #   WARNING
+      #   find_last(limit)
+      # end
 
       def find_one(id)
-        # CPK
-        # if ActiveRecord::Base === id
         if ::ActiveRecord::Base === id
-          id = id.id
-          ActiveSupport::Deprecation.warn(<<-MSG.squish)
-          You are passing an instance of ActiveRecord::Base to `find`.
-          Please pass the id of the object by calling `.id`
+          raise ArgumentError, <<-MSG.squish
+            You are passing an instance of ActiveRecord::Base to `find`.
+            Please pass the id of the object by calling `.id`.
           MSG
         end
 
@@ -223,10 +222,10 @@ module CompositePrimaryKeys
       end
 
       def ordered_relation
-        if order_values.empty? && primary_key
+        if order_values.empty? && (implicit_order_column || primary_key)
           # CPK
-          #order(arel_attribute(primary_key).asc)
-          order(Array(primary_key).map {|key| arel_attribute(key).asc})
+          # order(arel_attribute(implicit_order_column || primary_key).asc)
+          order(Array(implicit_order_column || primary_key).map {|key| arel_attribute(key).asc})
         else
           self
         end

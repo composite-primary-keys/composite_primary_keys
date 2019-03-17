@@ -43,6 +43,12 @@ module ActiveRecord
       stmt.wheres = arel.constraints
 
       if updates.is_a?(Hash)
+        if klass.locking_enabled? &&
+            !updates.key?(klass.locking_column) &&
+            !updates.key?(klass.locking_column.to_sym)
+          attr = arel_attribute(klass.locking_column)
+          updates[attr.name] = _increment_attribute(attr)
+        end
         stmt.set _substitute_values(updates)
       else
         stmt.set Arel.sql(klass.sanitize_sql_for_assignment(updates, table.name))

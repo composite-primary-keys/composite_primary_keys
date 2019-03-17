@@ -86,14 +86,14 @@ module ActiveRecord
             next
           end
 
-          model = seen[ar_parent.object_id][node.base_klass][id]
+          model = seen[ar_parent.object_id][node][id]
 
           if model
             construct(model, node, row, seen, model_cache)
           else
             model = construct_model(ar_parent, node, row, model_cache, id)
 
-            seen[ar_parent.object_id][node.base_klass][id] = model
+            seen[ar_parent.object_id][node][id] = model
             construct(model, node, row, seen, model_cache)
           end
         end

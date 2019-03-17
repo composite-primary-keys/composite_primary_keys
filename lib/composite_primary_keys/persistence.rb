@@ -13,10 +13,10 @@ module ActiveRecord
           id_or_array.each do |id|
             # Is the passed in id actually a record?
             id = id.kind_of?(::ActiveRecord::Base) ? id.id : id
-            where(cpk_id_predicate(self.arel_table, self.primary_key, id)).delete_all
+            delete_by(cpk_id_predicate(self.arel_table, self.primary_key, id))
           end
         else
-          where(primary_key => id_or_array).delete_all
+          delete_by(primary_key => id_or_array)
         end
       end
 

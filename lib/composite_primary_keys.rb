@@ -59,7 +59,6 @@ require 'active_record/nested_attributes'
 
 require 'active_record/connection_adapters/abstract/database_statements'
 require 'active_record/connection_adapters/abstract_adapter'
-require 'active_record/connection_adapters/abstract_mysql_adapter'
 require 'active_record/connection_adapters/postgresql/database_statements'
 
 require 'active_record/relation/where_clause'
@@ -96,7 +95,6 @@ require 'composite_primary_keys/nested_attributes'
 
 require 'composite_primary_keys/connection_adapters/abstract/database_statements'
 require 'composite_primary_keys/connection_adapters/abstract_adapter'
-require 'composite_primary_keys/connection_adapters/abstract_mysql_adapter'
 require 'composite_primary_keys/connection_adapters/postgresql/database_statements'
 require 'composite_primary_keys/connection_adapters/sqlserver/database_statements'
 

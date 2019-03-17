@@ -1,8 +1,6 @@
 module ActiveRecord
   module Associations
     class HasManyThroughAssociation
-
-
       def through_records_for(record)
         # CPK
         # attributes = construct_join_attributes(record)

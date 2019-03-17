@@ -12,7 +12,7 @@ module ActiveRecord
             predicate = finder_class.cpk_id_predicate(finder_class.arel_table, finder_class.primary_key, record.id_in_database || record.id)
             relation = relation.where.not(predicate)
           elsif finder_class.primary_key
-            relation = relation.where.not(finder_class.primary_key => record.id_in_database || record.id)
+            relation = relation.where.not(finder_class.primary_key => record.id_in_database)
           else
             raise UnknownPrimaryKey.new(finder_class, "Can not validate uniqueness for persisted record without primary key.")
           end

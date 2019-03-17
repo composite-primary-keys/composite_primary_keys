@@ -21,11 +21,12 @@ module ActiveRecord
           scope.delete_all
         else
           # CPK
-          # scope.update_all(reflection.foreign_key => nil)
+          # scope.update_all(nullified_owner_attributes)
           conds = Array(reflection.foreign_key).inject(Hash.new) do |mem, key|
             mem[key] = nil
             mem
           end
+          conds[reflection.type] = nil if reflection.type.present?
           scope.update_all(conds)
         end
       end

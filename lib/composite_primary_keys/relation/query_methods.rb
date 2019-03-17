@@ -18,7 +18,8 @@ module CompositePrimaryKeys
         end
 
         order_query.flat_map do |o|
-          case o
+          order_query.flat_map do |o|
+            case o
             when Arel::Attribute
               o.desc
             when Arel::Nodes::Ordering
@@ -33,10 +34,10 @@ module CompositePrimaryKeys
               end
             else
               o
+            end
           end
         end
       end
     end
   end
 end
-

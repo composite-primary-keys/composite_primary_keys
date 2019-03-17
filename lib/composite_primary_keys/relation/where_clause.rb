@@ -2,7 +2,7 @@ module ActiveRecord
   class Relation
     class WhereClause
       def to_h(table_name = nil)
-        equalities = predicates.grep(Arel::Nodes::Equality)
+        equalities = equalities(predicates)
 
         # CPK Adds this line, because ours are coming in with AND->{EQUALITY, EQUALITY}
         equalities = predicates.grep(Arel::Nodes::And).map(&:children).flatten.grep(Arel::Nodes::Equality) if equalities.empty?
