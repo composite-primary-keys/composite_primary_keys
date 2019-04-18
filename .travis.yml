@@ -3,12 +3,12 @@ bundler_args: --without "oracle sqlserver"
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
-  - rake mysql:build_database postgresql:build_database sqlite:build_database
+  - bundle exec rake mysql:build_database postgresql:build_database sqlite:build_database
 
 script:
-  - "rake postgresql:test"
-  - "rake sqlite:test"
-  - "rake mysql:test"
+  - "bundle exec rake postgresql:test"
+  - "bundle exec rake sqlite:test"
+  - "bundle exec rake mysql:test"
 
 env:
   global:
