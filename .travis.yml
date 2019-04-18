@@ -10,12 +10,21 @@ script:
   - "rake sqlite:test"
   - "rake mysql:test"
 
-rvm:
-  - 2.5.5
-  - 2.6.3
-
 env:
-  - CPK_LOGFILE=log/test.log
+  global:
+    - CPK_LOGFILE=log/test.log
+
+matrix:
+  include:
+    - name: "Ruby 2.6 with Rails 6"
+      rvm: 2.6.3
+      env: RAILS_VERSION="~> 6.0.0.beta3"
+    - name: "Ruby 2.5 with Rails 6"
+      rvm: 2.5.5
+      env: RAILS_VERSION="~> 6.0.0.beta3"
+    - name: "Ruby 2.4 with Rails 5"
+      rvm: 2.4.6
+      env: RAILS_VERSION="~> 5.2"
 
 addons:
   postgresql: "9.4"
