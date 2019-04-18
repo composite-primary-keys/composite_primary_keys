@@ -18,5 +18,8 @@ rvm:
 env:
   - CPK_LOGFILE=log/test.log
 
+addons:
+  postgresql: "9.4"
+
 services:
   - postgresql
