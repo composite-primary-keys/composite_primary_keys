@@ -2,7 +2,7 @@ language: ruby
 sudo: false
 bundler_args: --without "oracle sqlserver"
 addons:
-  postgresql: 9.3
+  postgresql: 9.6
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
@@ -14,9 +14,8 @@ script:
   - "rake mysql:test"
 
 rvm:
-  - 2.4.5
   - 2.5.5
-  - 2.6.2
+  - 2.6.3
 
 env:
   - CPK_LOGFILE=log/test.log
