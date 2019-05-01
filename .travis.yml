@@ -1,6 +1,8 @@
 language: ruby
 sudo: false
 bundler_args: --without "oracle sqlserver"
+addons:
+  postgresql: 9.3
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
