@@ -33,7 +33,7 @@ module ActiveRecord
           @owners_by_key
         end
 
-        def run(preloader)
+        def run
           records = load_records do |record|
             # CPK
             #owner = owners_by_key[convert_key(record[association_key_name])]
