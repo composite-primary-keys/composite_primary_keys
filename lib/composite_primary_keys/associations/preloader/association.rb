@@ -34,7 +34,7 @@ module ActiveRecord
         end
 
         def run
-          records = load_records do |record|
+          records = preloaded_records do |record|
             # CPK
             #owner = owners_by_key[convert_key(record[association_key_name])]
 
