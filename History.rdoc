@@ -1,5 +1,6 @@
 == 12.0.0 (?)
-* Update to ActiveRecord 6.0 (Hiroshi Kajisha and Charlie Savage)
+* Update to ActiveRecord 6.0 (Hiroshi Kajisha, Alexandru Anca, Charlie Savage)
+* Update travis setup (Olle Jonsson)
 
 == 11.2.0 (2019-03-16)
 * When creating new records, honor composite key autoincrementing fields if possible (Antti Pitkänen)
