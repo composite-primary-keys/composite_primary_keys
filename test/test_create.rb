@@ -172,4 +172,12 @@ class TestCreate < ActiveSupport::TestCase
 
     assert_equal('Validation failed: Id has already been taken', error.to_s)
   end
+
+  def test_find_or_create_by
+    suburb = Suburb.find_by(:city_id => 3, :suburb_id => 1)
+    assert_nil(suburb)
+
+    suburb = Suburb.find_or_create_by!(:name => 'New Suburb', :city_id => 3, :suburb_id => 1)
+    refute_nil(suburb)
+  end
 end
