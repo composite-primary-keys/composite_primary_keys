@@ -1,3 +1,8 @@
+== 8.1.7 (2019-05-04)
+
+Fix key not being an array in subquery on has_many :through (Eric Proulx)
+Convert batches to arrays before continuing loop (Jeremy Mickelson)
+
 == 8.1.6 (2017-05-20)
 
 Query cache with bind params (ttw)
