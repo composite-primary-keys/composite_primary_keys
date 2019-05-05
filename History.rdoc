@@ -141,6 +141,20 @@
 == 9.0.0.beta1 (2016-04-16)
 * Rails 5 beta support (Sammy Larbi)
 
+== 8.1.7 (2019-05-04)
+
+Fix key not being an array in subquery on has_many :through (Eric Proulx)
+Convert batches to arrays before continuing loop (Jeremy Mickelson)
+
+== 8.1.6 (2017-05-20)
+
+Query cache with bind params (ttw)
+Fix TestIds#test_set_ids_string. Sqlite's serial and integer are a bit different (Boris Peterbarg)
+Associations with inverse fix (Boris Peterbarg)
+Fix save_has_one_association and add a test for it (Boris Peterbarg)
+Fix save_belongs_to_association override (Boris Peterbarg)
+Extend approach from #344 to fix autosave for has_one associations as well (Cameron Finucane)
+
 == 8.1.5 (2017-01-01)
 
 * Don't nest PK twice when looking up id, fixes #319 (Kerey Roper)
