@@ -1,5 +1,7 @@
 language: ruby
 bundler_args: --without "oracle sqlserver"
+addons:
+  postgresql: 9.6
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
@@ -11,15 +13,12 @@ script:
   - "bundle exec rake mysql:test"
 
 rvm:
-  - 2.6.3
   - 2.5.5
+  - 2.6.3
 
 env:
   global:
     - CPK_LOGFILE=log/test.log
-
-addons:
-  postgresql: "9.4"
 
 services:
   - postgresql
