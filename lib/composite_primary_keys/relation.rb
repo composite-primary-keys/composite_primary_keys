@@ -25,22 +25,23 @@ module ActiveRecord
       end
 
       stmt = Arel::UpdateManager.new
+      stmt.table(arel.join_sources.empty? ? table : arel.source)
       if @klass.composite?
-        arel_attributes = primary_key.map do |key|
+        stmt.table(table)
+        subselect = arel.clone
+        arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
-        subselect = arel.clone
-        subselect.projections = [arel_attributes]
-        stmt.table(table)
-        stmt.key = arel_attributes.in(subselect)
+        subselect.projections = arel_attributes
+        stmt.wheres = [arel_attributes.in(subselect)]
       else
         stmt.table(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
+        stmt.wheres = arel.constraints
       end
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
       stmt.order(*arel.orders)
-      stmt.wheres = arel.constraints
 
       if updates.is_a?(Hash)
         if klass.locking_enabled? &&

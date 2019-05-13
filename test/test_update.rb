@@ -67,10 +67,13 @@ class TestUpdate < ActiveSupport::TestCase
   end
 
   def test_update_all_join
-    ReferenceCode.joins(:reference_type).update_all(description: 'random value')
+    ReferenceCode.joins(:reference_type).
+                  where('reference_types.reference_type_id = ?', 2).
+                  update_all(:description => 'random value')
 
-    ReferenceCode.all.each do |reference_code|
-      assert_equal('random value', reference_code.description)
-    end
+    query = ReferenceCode.where('reference_type_id = ?', 2).
+                          where(:description => 'random value')
+
+    assert_equal(2, query.count)
   end
 end
