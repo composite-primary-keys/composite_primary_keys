@@ -25,7 +25,7 @@ module ActiveRecord
       end
 
       stmt = Arel::UpdateManager.new
-      stmt.table(arel.join_sources.empty? ? table : arel.source)
+      # CPK
       if @klass.composite?
         stmt.table(table)
         subselect = arel.clone
@@ -60,10 +60,8 @@ module ActiveRecord
 
     def delete_all
       invalid_methods = INVALID_METHODS_FOR_DELETE_ALL.select do |method|
-        if respond_to?(:get_value)
-          value = get_value(method)
-          SINGLE_VALUE_METHODS.include?(method) ? value : value.any?
-        end
+        value = @values[method]
+        method == :distinct ? value : value&.any?
       end
       if invalid_methods.any?
         raise ActiveRecordError.new("delete_all doesn't support #{invalid_methods.join(', ')}")
@@ -75,22 +73,23 @@ module ActiveRecord
       end
 
       stmt = Arel::DeleteManager.new
+      # CPK
       if @klass.composite?
-        arel_attributes = primary_key.map do |key|
+        stmt.from(table)
+        subselect = arel.clone
+        arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
-        subselect = arel.clone
-        subselect.projections = [arel_attributes]
-        stmt.from(table)
-        stmt.key = arel_attributes.in(subselect)
+        subselect.projections = arel_attributes
+        stmt.wheres = [arel_attributes.in(subselect)]
       else
         stmt.from(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
+        stmt.wheres = arel.constraints
       end
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
       stmt.order(*arel.orders)
-      stmt.wheres = arel.constraints
 
       affected = @klass.connection.delete(stmt, "#{@klass} Destroy")
 

@@ -29,13 +29,12 @@ class TestDelete < ActiveSupport::TestCase
   end
 
   def test_delete_all_with_join
-    department = departments(:accounting)
+    employee = employees(:mindy)
 
     assert_equal(4, Department.count)
 
     Department.joins(:employees).
-               where('departments.department_id = ?', department.department_id).
-               where('departments.location_id = ?', department.location_id).
+               where('employees.name = ?', employee.name).
                delete_all
 
     assert_equal(3, Department.count)
