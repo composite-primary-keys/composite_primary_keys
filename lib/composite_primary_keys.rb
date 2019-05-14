@@ -31,6 +31,8 @@ unless defined?(ActiveRecord)
 end
 
 # AR files we override
+require 'active_record/attribute_methods'
+require 'active_record/autosave_association'
 require 'active_record/counter_cache'
 require 'active_record/fixtures'
 require 'active_record/model_schema'
@@ -38,8 +40,7 @@ require 'active_record/persistence'
 require 'active_record/reflection'
 require 'active_record/relation'
 require 'active_record/sanitization'
-require 'active_record/attribute_methods'
-require 'active_record/autosave_association'
+require 'active_record/transactions'
 
 require 'active_record/associations/association'
 require 'active_record/associations/association_scope'
@@ -64,6 +65,8 @@ require 'active_record/connection_adapters/postgresql/database_statements'
 require 'active_record/relation/where_clause'
 
 # CPK files
+require 'composite_primary_keys/attribute_methods'
+require 'composite_primary_keys/autosave_association'
 require 'composite_primary_keys/persistence'
 require 'composite_primary_keys/base'
 require 'composite_primary_keys/core'
@@ -74,8 +77,7 @@ require 'composite_primary_keys/fixtures'
 require 'composite_primary_keys/reflection'
 require 'composite_primary_keys/relation'
 require 'composite_primary_keys/sanitization'
-require 'composite_primary_keys/attribute_methods'
-require 'composite_primary_keys/autosave_association'
+require 'composite_primary_keys/transactions'
 require 'composite_primary_keys/version'
 
 require 'composite_primary_keys/associations/association'

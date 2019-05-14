@@ -3,6 +3,6 @@ module CompositePrimaryKeys
     MAJOR = 12
     MINOR = 0
     TINY  = 0
-    STRING = [MAJOR, MINOR, TINY, 'rc3'].join('.')
+    STRING = [MAJOR, MINOR, TINY, 'rc4'].join('.')
   end
 end
