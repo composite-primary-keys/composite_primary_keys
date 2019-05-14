@@ -1,16 +1,16 @@
 module ActiveRecord
   module Core
     def initialize_dup(other) # :nodoc:
-      @attributes = @attributes.dup
+      @attributes = @attributes.deep_dup
       # CPK
-      # @attributes.reset(self.class.primary_key)
+      #@attributes.reset(@primary_key)
       Array(self.class.primary_key).each {|key| @attributes.reset(key)}
 
       _run_initialize_callbacks
 
       @new_record               = true
       @destroyed                = false
-      @_start_transaction_state = {}
+      @_start_transaction_state = nil
       @transaction_state        = nil
 
       super
@@ -21,9 +21,9 @@ module ActiveRecord
         # We don't have cache keys for this stuff yet
         return super unless ids.length == 1
         return super if block_given? ||
-                        primary_key.nil? ||
-                        scope_attributes? ||
-                        columns_hash.include?(inheritance_column)
+            primary_key.nil? ||
+            scope_attributes? ||
+            columns_hash.key?(inheritance_column) && !base_class?
 
         # CPK
         return super if self.composite?
@@ -40,8 +40,7 @@ module ActiveRecord
 
         record = statement.execute([id], connection)&.first
         unless record
-          raise RecordNotFound.new("Couldn't find #{name} with '#{primary_key}'=#{id}",
-                                   name, primary_key, id)
+          raise RecordNotFound.new("Couldn't find #{name} with '#{key}'=#{id}", name, key, id)
         end
         record
       end
