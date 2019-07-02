@@ -60,6 +60,14 @@ module ActiveRecord
           true
         end
       end
+
+      private
+
+      def increment_lock
+        lock_col = self.class.locking_column
+        previous_lock_value = send(lock_col).to_i
+        send(lock_col + "=", previous_lock_value + 1)
+      end
     end
   end
 end
