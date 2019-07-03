@@ -64,7 +64,7 @@ module ActiveRecord
       new_id = self.class._insert_record(attributes_values)
 
       # CPK
-      if self.composite? && self.id.compact.empty?
+      if self.composite? && self.id.compact.size != self.class.primary_keys.size
         self.id = new_id
       else
         self.id ||= new_id if self.class.primary_key
