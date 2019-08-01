@@ -2,7 +2,7 @@ module ActiveRecord
   module ConnectionAdapters
     module SQLServer
       module DatabaseStatements
-        def sql_for_insert(sql, pk, id_value, sequence_name, binds)
+        def sql_for_insert(sql, pk, binds)
           sql = if pk && self.class.use_output_inserted
             # CPK
             # quoted_pk = SQLServer::Utils.extract_identifiers(pk).quoted
