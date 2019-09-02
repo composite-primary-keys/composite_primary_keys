@@ -2,7 +2,7 @@ module CompositePrimaryKeys
   module ActiveRecord
     module FinderMethods
       def apply_join_dependency(eager_loading: group_values.empty?)
-        join_dependency = construct_join_dependency(eager_load_values + includes_values)
+        join_dependency = construct_join_dependency(eager_load_values + includes_values, Arel::Nodes::OuterJoin)
         relation = except(:includes, :eager_load, :preload).joins!(join_dependency)
 
         if eager_loading && !using_limitable_reflections?(join_dependency.reflections)
@@ -51,7 +51,7 @@ module CompositePrimaryKeys
         conditions = sanitize_forbidden_attributes(conditions)
 
         if distinct_value && offset_value
-          relation = limit(1)
+          relation = except(:order).limit!(1)
         else
           relation = except(:select, :distinct, :order)._select!(::ActiveRecord::FinderMethods::ONE_AS_ONE).limit!(1)
         end
