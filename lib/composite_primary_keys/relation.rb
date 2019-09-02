@@ -28,11 +28,13 @@ module ActiveRecord
       # CPK
       if @klass.composite?
         stmt.table(table)
-        subselect = arel.clone
+
         arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
-        subselect.projections = arel_attributes
+
+        subselect = subquery_for(arel_attributes, arel)
+
         stmt.wheres = [arel_attributes.in(subselect)]
       else
         stmt.table(arel.join_sources.empty? ? table : arel.source)
@@ -76,11 +78,13 @@ module ActiveRecord
       # CPK
       if @klass.composite?
         stmt.from(table)
-        subselect = arel.clone
+
         arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
-        subselect.projections = arel_attributes
+
+        subselect = subquery_for(arel_attributes, arel)
+
         stmt.wheres = [arel_attributes.in(subselect)]
       else
         stmt.from(arel.join_sources.empty? ? table : arel.source)
@@ -95,6 +99,20 @@ module ActiveRecord
 
       reset
       affected
+    end
+
+    # CPK
+    def subquery_for(key, select)
+      subselect = select.clone
+      subselect.projections = key
+
+      # Materialize subquery by adding distinct
+      # to work with MySQL 5.7.6 which sets optimizer_switch='derived_merge=on'
+      subselect.distinct unless select.limit || select.offset || select.orders.any?
+
+      key_name = Array(key).map {|a_key| a_key.name }.join(',')
+
+      Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
     end
   end
 end
