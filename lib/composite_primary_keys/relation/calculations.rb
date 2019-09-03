@@ -57,6 +57,11 @@ module CompositePrimaryKeys
       def build_count_subquery(relation, column_name, distinct)
         if column_name == :all
           relation.select_values = [ Arel.sql(::ActiveRecord::FinderMethods::ONE_AS_ONE) ] unless distinct
+          if relation.select_values.first.is_a?(Array)
+            relation.select_values = relation.select_values.first.map do |column|
+              Arel::Attribute.new(@klass.unscoped.table, column)
+            end
+          end
         elsif column_name.is_a?(Array)
           relation.select_values = column_name.map do |column|
             Arel::Attribute.new(@klass.unscoped.table, column)
