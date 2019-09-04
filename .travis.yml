@@ -1,7 +1,7 @@
 language: ruby
 bundler_args: --without "oracle sqlserver"
 addons:
-  postgresql: 11.5
+  postgresql: 11
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
