@@ -2,7 +2,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 class TestDelete < ActiveSupport::TestCase
   fixtures :articles, :departments, :employees, :products, :tariffs, :product_tariffs,
-           :reference_types, :reference_codes
+           :reference_types, :reference_codes, :suburbs, :restaurants, :restaurants_suburbs
 
   def test_delete_one
     assert_equal(5, ReferenceCode.count)
@@ -165,6 +165,15 @@ class TestDelete < ActiveSupport::TestCase
 
     product.reload
     assert_equal(1, product.product_tariffs.length)
+  end
+
+  def test_delete_all_with_sort
+    mcdonalds = restaurants(:mcdonalds)
+    assert_equal(2, mcdonalds.suburbs.length)
+
+    mcdonalds.suburbs.where(name: 'First Suburb').delete_all
+    mcdonalds.reload
+    assert_equal(1, mcdonalds.suburbs.length)
   end
 
   def test_delete_records_for_has_many_association_with_composite_primary_key

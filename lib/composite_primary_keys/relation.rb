@@ -91,9 +91,6 @@ module ActiveRecord
         stmt.key = arel_attribute(primary_key)
         stmt.wheres = arel.constraints
       end
-      stmt.take(arel.limit)
-      stmt.offset(arel.offset)
-      stmt.order(*arel.orders)
 
       affected = @klass.connection.delete(stmt, "#{@klass} Destroy")
 
@@ -112,7 +109,7 @@ module ActiveRecord
 
       key_name = Array(key).map {|a_key| a_key.name }.join(',')
 
-      Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
+      Arel::SelectManager.new(subselect.as("active_record_temp")).project(Arel.sql(key_name))
     end
   end
 end
