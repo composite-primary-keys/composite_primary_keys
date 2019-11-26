@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
-  fixtures :articles, :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
+  fixtures :articles, :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs, :cpk_with_default_values
 
   CLASSES = {
     :single => {
@@ -179,5 +179,19 @@ class TestCreate < ActiveSupport::TestCase
 
     suburb = Suburb.find_or_create_by!(:name => 'New Suburb', :city_id => 3, :suburb_id => 1)
     refute_nil(suburb)
+  end
+
+  def test_create_when_pk_has_default_value
+    first = CpkWithDefaultValue.create!
+    refute_nil(first.record_id)
+    assert_equal('', first.record_version)
+
+    second = CpkWithDefaultValue.create!(record_id: first.record_id, record_version: 'Same id, different version')
+    assert_equal(first.record_id, second.record_id)
+    assert_equal('Same id, different version', second.record_version)
+
+    third = CpkWithDefaultValue.create!(record_version: 'Created by version only')
+    refute_nil(third.record_id)
+    assert_equal('Created by version only', third.record_version)
   end
 end

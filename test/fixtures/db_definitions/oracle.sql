@@ -234,3 +234,11 @@ create table pk_called_ids (
     description       varchar(50) default null,
     constraint pk_called_ids_pk primary key (id, reference_code)
 );
+
+create sequence cpk_with_default_values_seq start with 1000;
+
+create table cpk_with_default_values (
+    record_id         int not null,
+    record_version    varchar(50) default '' not null,
+    constraint cpk_with_default_values_pk primary key (record_id, record_version)
+);
