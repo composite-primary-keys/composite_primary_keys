@@ -1,3 +1,7 @@
+== 12.0.1 (2019-11-25)
+* Convert attribute names to strings before checking for them in has_attribute? (Daniel de Haas)
+* Update the comment referring to the overridden Rails code (Daniel de Haas)
+
 == 12.0.0 (2019-09-03)
 * Update to ActiveRecord 6.0 (Hiroshi Kajisha, Alexandru Anca, Charlie Savage, Sammy Larbi)
 * Update travis setup (Olle Jonsson, Charlie Savage)
