@@ -30,6 +30,8 @@ module ActiveRecord
 
       # CPK
       if @klass.composite? && stmt.to_sql =~ /['"]#{primary_key.to_s}['"]/
+        stmt.table(table)
+
         arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
