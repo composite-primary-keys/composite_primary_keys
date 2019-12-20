@@ -25,10 +25,11 @@ module ActiveRecord
       end
 
       stmt = Arel::UpdateManager.new
-      # CPK
-      if @klass.composite?
-        stmt.table(table)
+      stmt.table(arel.join_sources.empty? ? table : arel.source)
+      stmt.key = arel_attribute(primary_key).name
 
+      # CPK
+      if @klass.composite? && stmt.to_sql =~ /['"]#{primary_key.to_s}['"]/
         arel_attributes = primary_keys.map do |key|
           arel_attribute(key)
         end.to_composite_keys
@@ -37,10 +38,9 @@ module ActiveRecord
 
         stmt.wheres = [arel_attributes.in(subselect)]
       else
-        stmt.table(arel.join_sources.empty? ? table : arel.source)
-        stmt.key = arel_attribute(primary_key)
         stmt.wheres = arel.constraints
       end
+
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
       stmt.order(*arel.orders)
@@ -75,8 +75,10 @@ module ActiveRecord
       end
 
       stmt = Arel::DeleteManager.new
+      stmt.from(arel.join_sources.empty? ? table : arel.source)
+      stmt.key = arel_attribute(primary_key)
       # CPK
-      if @klass.composite?
+      if @klass.composite? && stmt.to_sql =~ /['"]#{primary_key.to_s}['"]/
         stmt.from(table)
 
         arel_attributes = primary_keys.map do |key|
@@ -87,8 +89,6 @@ module ActiveRecord
 
         stmt.wheres = [arel_attributes.in(subselect)]
       else
-        stmt.from(arel.join_sources.empty? ? table : arel.source)
-        stmt.key = arel_attribute(primary_key)
         stmt.wheres = arel.constraints
       end
       stmt.take(arel.limit)
