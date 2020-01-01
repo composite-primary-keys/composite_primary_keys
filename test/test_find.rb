@@ -41,6 +41,14 @@ class TestFind < ActiveSupport::TestCase
     assert_equal(['The Netherlands', 'Amsterdam'], capitol.id)
   end
 
+  def test_find_with_strings_with_comma_as_composite_keys
+    capitol = Capitol.create!(country: 'The USA', city: 'Washington, D.C.')
+    assert_equal ['The USA', 'Washington, D.C.'], capitol.id
+
+    assert_equal capitol, Capitol.find(['The USA', 'Washington, D.C.'])
+    assert_equal capitol, Capitol.find(capitol.to_param)
+  end
+
   def test_find_each
     room_assignments = []
     RoomAssignment.find_each(:batch_size => 2) do |assignment|

@@ -64,7 +64,7 @@ module ActiveRecord
           @preloaded_records.map { |record|
             key = Array(association_key_name).map do |key_name|
               record[key_name]
-            end.join(CompositePrimaryKeys::ID_SEP)
+            end.to_composite_keys.to_s
 
             [record, key]
           }
@@ -77,7 +77,7 @@ module ActiveRecord
                                  # owner[owner_key_name].to_s
                                  Array(owner_key_name).map do |key_name|
                                    owner[key_name]
-                                 end.join(CompositePrimaryKeys::ID_SEP)
+                                 end.to_composite_keys.to_s
                                end
                              else
                                owners.group_by do |owner|
@@ -85,10 +85,9 @@ module ActiveRecord
                                  # owner[owner_key_name]
                                  Array(owner_key_name).map do |key_name|
                                    owner[key_name]
-                                 end.join(CompositePrimaryKeys::ID_SEP)
+                                 end.to_composite_keys.to_s
                                end
                              end
-                             
         end
       end
     end

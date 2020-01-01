@@ -84,7 +84,7 @@ module CompositePrimaryKeys
 
         # CPK
         # expects_array = ids.first.kind_of?(Array)
-        ids = CompositePrimaryKeys.normalize(ids)
+        ids = CompositePrimaryKeys.normalize(ids, @klass.primary_keys.length)
         expects_array = ids.flatten != ids.flatten(1)
 
         return ids.first if expects_array && ids.first.empty?
@@ -138,7 +138,7 @@ module CompositePrimaryKeys
 
         result = ids.map do |cpk_ids|
           cpk_ids = if cpk_ids.length == 1
-            cpk_ids.first.split(CompositePrimaryKeys::ID_SEP).to_composite_keys
+            CompositePrimaryKeys::CompositeKeys.parse(cpk_ids.first)
           else
             cpk_ids.to_composite_keys
           end

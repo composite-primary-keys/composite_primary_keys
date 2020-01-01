@@ -4,7 +4,7 @@ module ActiveRecord
       def quote_column_names(name)
         Array(name).map do |col|
           quote_column_name(col.to_s)
-        end.join(CompositePrimaryKeys::ID_SEP)
+        end.to_composite_keys.to_s
       end
     end
   end
