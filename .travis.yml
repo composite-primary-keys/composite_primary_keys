@@ -15,6 +15,12 @@ rvm:
   - 2.0.0
   - 2.1
   - 2.2
+  - 2.3
 
 env:
-  - CPK_LOGFILE=log/test.log
+  global:
+    - CPK_LOGFILE=log/test.log
+
+services:
+  - postgresql
+  - mysql
