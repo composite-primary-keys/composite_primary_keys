@@ -1,3 +1,6 @@
+== 8.1.8 (2020-01-01)
+Fix handling CPK with fields containing comma, #505 (Sergey Semyonov)
+
 == 8.1.7 (2019-05-04)
 
 Fix key not being an array in subquery on has_many :through (Eric Proulx)
