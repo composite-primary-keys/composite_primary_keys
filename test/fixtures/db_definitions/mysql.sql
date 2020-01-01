@@ -202,8 +202,8 @@ create table seats (
 );
 
 create table capitols (
-  country varchar(100) default null,
-  city varchar(100) default null,
+  country varchar(100) not null,
+  city varchar(100) not null,
   primary key (country, city)
 );
 
