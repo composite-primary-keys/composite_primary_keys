@@ -21,4 +21,18 @@ class CompositeArraysTest < ActiveSupport::TestCase
     assert_equal CompositePrimaryKeys::CompositeKeys, keys.class
     assert_equal '1,2,3', keys.to_s
   end
+
+  def test_parse
+    assert_equal ['1', '2'], CompositePrimaryKeys::CompositeKeys.parse('1,2')
+    assert_equal ['The USA', '^Washington, D.C.'],
+                 CompositePrimaryKeys::CompositeKeys.parse('The USA,^5EWashington^2C D.C.')
+    assert_equal ['The USA', '^Washington, D.C.'],
+                 CompositePrimaryKeys::CompositeKeys.parse(['The USA', '^Washington, D.C.'])
+  end
+
+  def test_to_s
+    assert_equal '1,2', CompositePrimaryKeys::CompositeKeys.new([1, 2]).to_s
+    assert_equal 'The USA,^5EWashington^2C D.C.',
+                 CompositePrimaryKeys::CompositeKeys.new(['The USA', '^Washington, D.C.']).to_s
+  end
 end
