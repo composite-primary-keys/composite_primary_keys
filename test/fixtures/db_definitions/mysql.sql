@@ -216,3 +216,9 @@ create table pk_called_ids (
   description varchar(50) default null,
   primary key (id, reference_code)
 );
+
+create table cpk_with_default_values (
+  record_id integer not null,
+  record_version varchar(50) default '' not null,
+  primary key (record_id, record_version)
+);

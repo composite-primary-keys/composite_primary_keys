@@ -64,8 +64,9 @@ module ActiveRecord
       new_id = self.class._insert_record(attributes_values)
 
       # CPK
-      if self.composite? && self.id.compact.empty?
-        self.id = new_id
+      if self.composite?
+        # Merge together the specified id with the new id (specified id gets precedence)
+        self.id = self.id.zip(new_id).map {|id1, id2| (id1 || id2)}
       else
         self.id ||= new_id if self.class.primary_key
       end
