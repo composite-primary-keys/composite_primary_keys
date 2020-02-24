@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
+# Specify your gem's dependencies
+gemspec
 
-gem 'activerecord', '~> 6.0.0'
+#Gem.platforms = [Gem::Platform::RUBY]
 
-gem 'rake'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 # group :db2 do
@@ -31,7 +32,3 @@ end
 # group :sqlserver do
 #   gem 'activerecord-sqlserver-adapter'
 # end
-
-group :test do
-  gem 'minitest'
-end

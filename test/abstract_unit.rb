@@ -1,12 +1,9 @@
 spec_name = ENV['ADAPTER'] || 'sqlite'
-require 'bundler'
-Bundler.require(:default, spec_name.to_sym)
-
-# To make debugging easier, test within this source tree versus an installed gem
-$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-require 'composite_primary_keys'
+require 'bundler/setup'
 require 'minitest/autorun'
-require 'active_support/test_case'
+
+Bundler.require(:default, spec_name.to_sym)
+require 'composite_primary_keys'
 
 # Require the connection spec
 PROJECT_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
