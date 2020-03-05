@@ -49,7 +49,7 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_generated_keys
-    if [nil, 'postgresql', 'sqlite'].exclude?(ENV['ADAPTER'])
+    if [nil, 'postgresql'].exclude?(ENV['ADAPTER'])
       skip 'Not all databases support columns with multiple identity fields'
     end
 
@@ -181,7 +181,7 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_when_pk_has_default_value
-    if [nil, 'postgresql', 'sqlite'].exclude?(ENV['ADAPTER'])
+    if [nil, 'postgresql'].exclude?(ENV['ADAPTER'])
       skip 'Not all databases support columns with multiple identity fields'
     end
 
