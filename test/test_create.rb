@@ -49,14 +49,13 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_generated_keys
-    # Not all databases support columns with multiple identity fields
-    if defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) ||
-       defined?(ActiveRecord::ConnectionAdapters::SQLite3)
-
-      suburb = Suburb.create!(:name => 'Capitol Hill')
-      refute_nil(suburb.city_id)
-      refute_nil(suburb.suburb_id)
+    if [nil, 'postgresql', 'sqlite'].exclude?(ENV['ADAPTER'])
+      skip 'Not all databases support columns with multiple identity fields'
     end
+
+    suburb = Suburb.create!(:name => 'Capitol Hill')
+    refute_nil(suburb.city_id)
+    refute_nil(suburb.suburb_id)
   end
 
   def test_create_on_association
@@ -182,6 +181,10 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_when_pk_has_default_value
+    if [nil, 'postgresql', 'sqlite'].exclude?(ENV['ADAPTER'])
+      skip 'Not all databases support columns with multiple identity fields'
+    end
+
     first = CpkWithDefaultValue.create!
     refute_nil(first.record_id)
     assert_equal('', first.record_version)
