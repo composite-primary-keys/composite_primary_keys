@@ -20,4 +20,5 @@ env:
   - CPK_LOGFILE=log/test.log
 
 services:
+  - postgresql
   - mysql
