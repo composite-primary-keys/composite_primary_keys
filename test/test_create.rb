@@ -50,9 +50,8 @@ class TestCreate < ActiveSupport::TestCase
 
   def test_create_generated_keys
     # Not all databases support columns with multiple identity fields
-    if defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) ||
-       defined?(ActiveRecord::ConnectionAdapters::SQLite3)
-
+    postgres = defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) && Suburb.connection.class == ActiveRecord::ConnectionAdapters::PostgreSQL
+    if postgres
       suburb = Suburb.create!(:name => 'Capitol Hill')
       refute_nil(suburb.city_id)
       refute_nil(suburb.suburb_id)
@@ -182,16 +181,20 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_when_pk_has_default_value
-    first = CpkWithDefaultValue.create!
-    refute_nil(first.record_id)
-    assert_equal('', first.record_version)
+    # sqlite is not able to have an auto incrementing non-primary key
+    sqlite = defined?(ActiveRecord::ConnectionAdapters::SQLite3Adapter) && CpkWithDefaultValue.connection.class == ActiveRecord::ConnectionAdapters::SQLite3Adapter
+    unless sqlite
+      first = CpkWithDefaultValue.create!
+      refute_nil(first.record_id)
+      assert_equal('', first.record_version)
 
-    second = CpkWithDefaultValue.create!(record_id: first.record_id, record_version: 'Same id, different version')
-    assert_equal(first.record_id, second.record_id)
-    assert_equal('Same id, different version', second.record_version)
+      second = CpkWithDefaultValue.create!(record_id: first.record_id, record_version: 'Same id, different version')
+      assert_equal(first.record_id, second.record_id)
+      assert_equal('Same id, different version', second.record_version)
 
-    third = CpkWithDefaultValue.create!(record_version: 'Created by version only')
-    refute_nil(third.record_id)
-    assert_equal('Created by version only', third.record_version)
+      third = CpkWithDefaultValue.create!(record_version: 'Created by version only')
+      refute_nil(third.record_id)
+      assert_equal('Created by version only', third.record_version)
+    end
   end
 end
