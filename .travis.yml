@@ -5,6 +5,7 @@ bundler_args: --without "oracle sqlserver"
 services:
   - mysql
   - postgresql
+  - sqlite
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
