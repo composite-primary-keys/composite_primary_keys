@@ -12,7 +12,6 @@ before_script:
 
 script:
   - "rake postgresql:test"
-  - "rake sqlite:test"
 
 rvm:
   - 2.4.5
