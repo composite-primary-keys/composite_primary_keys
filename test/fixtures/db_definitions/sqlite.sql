@@ -1,7 +1,7 @@
 create table topics (
-    id int not null,  
-    name varchar(50) default null,  
-    feed_size int default null, 
+    id int not null,
+    name varchar(50) default null,
+    feed_size int default null,
     primary key (id)
 );
 
@@ -169,7 +169,7 @@ create table students (
 create table room_assignments (
 	student_id integer not null,
 	dorm_id integer not null,
-	room_id integer not null	
+	room_id integer not null
 );
 
 create table seats (
@@ -206,7 +206,7 @@ create table pk_called_ids (
 );
 
 create table cpk_with_default_values (
-    record_id integer not null,
+    record_id integer not null default (rowid),
     record_version    varchar(50) default '' not null,
     primary key (record_id, record_version)
 );
