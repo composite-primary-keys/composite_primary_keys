@@ -9,11 +9,12 @@ services:
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
-  - rake mysql:build_database postgresql:build_database
+  - rake mysql:build_database postgresql:build_database sqlite:build_database
 
 script:
   - "rake postgresql:test"
   - "rake mysql:test"
+  - "rake sqlite:test"
 
 rvm:
   - 2.4.5

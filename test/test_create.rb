@@ -52,7 +52,6 @@ class TestCreate < ActiveSupport::TestCase
     # Not all databases support columns with multiple identity fields
     postgres = defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) && Suburb.connection.class == ActiveRecord::ConnectionAdapters::PostgreSQL
     if postgres
-      raise Suburb.connection.class.inspect
       suburb = Suburb.create!(:name => 'Capitol Hill')
       refute_nil(suburb.city_id)
       refute_nil(suburb.suburb_id)
