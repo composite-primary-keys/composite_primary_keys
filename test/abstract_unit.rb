@@ -1,4 +1,4 @@
-spec_name = ENV['ADAPTER'] || 'sqlite'
+spec_name = ENV['ADAPTER'] || 'postgresql'
 require 'bundler/setup'
 require 'minitest/autorun'
 

@@ -25,23 +25,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   # Dependencies
-  s.required_ruby_version = '>= 2.2.2'
-
+  s.required_ruby_version = '>= 2.5.0'
   s.add_dependency('activerecord', '~> 6.0.0')
-
   s.add_development_dependency('rake')
-  s.add_development_dependency('mysql2')
-  s.add_development_dependency('sqlite3')
-  s.add_development_dependency('pg')
-
-  # DB2
-  #s.add_development_dependency('ibm_db')
-
-  # Sql server
-  #s.add_development_dependency('tiny_tds')
-  #s.add_development_dependency('activerecord-sqlserver-adapter')
-
-  # Oracle
-  # s.add_development_dependency('ruby-oci8')
-  # s.add_development_dependency('activerecord-oracle_enhanced-adapter')
 end

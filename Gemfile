@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+# Specify your gem's dependencies
+gemspec
+
 #Gem.platforms = [Gem::Platform::RUBY]
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
@@ -28,4 +31,8 @@ end
 
 group :sqlserver do
   gem 'activerecord-sqlserver-adapter'
+end
+
+group :test do
+  gem 'minitest'
 end
