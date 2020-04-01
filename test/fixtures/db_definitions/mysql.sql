@@ -52,7 +52,7 @@ create table product_tariffs (
 );
 
 create table suburbs (
-    city_id int not null,
+    city_id int not null auto_increment,
     suburb_id int not null,
     name varchar(50) not null,
     primary key (city_id, suburb_id)
@@ -218,7 +218,7 @@ create table pk_called_ids (
 );
 
 create table cpk_with_default_values (
-  record_id integer not null,
+  record_id integer not null auto_increment,
   record_version varchar(50) default '' not null,
   primary key (record_id, record_version)
 );
