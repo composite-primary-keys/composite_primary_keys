@@ -17,10 +17,10 @@ script:
   - "rake mysql:test"
 
 rvm:
-  - 2.4.10
+  - 2.4.9
   - 2.5.8
   - 2.6.6
-  - 2.7.1
+  - 2.7.0
 
 env:
   - CPK_LOGFILE=log/test.log
