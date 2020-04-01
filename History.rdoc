@@ -1,4 +1,4 @@
-== 11.3.0 (2020-04-01)
+== 11.3.1 (2020-04-01)
 * Fix overriding AbstractReflection for activerecord 5.2.4 (Sergey Semyonov)
 * Fix handling CPK with fields containing comma (Sergey Semyonov)
 * Fixed incorrect SQL condition for joining by CPK (Sergey Semyonov)
