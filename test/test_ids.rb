@@ -40,6 +40,9 @@ class TestIds < ActiveSupport::TestCase
     testing_with do
       assert_equal '1,1', @first.to_param if composite?
     end
+
+    capitol = Capitol.create!(country: 'The USA', city: 'Washington, D.C.')
+    assert_equal 'The USA,Washington^2C D.C.', capitol.to_param
   end
 
   def test_ids_to_s
