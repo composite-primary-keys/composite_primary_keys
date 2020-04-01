@@ -1,22 +1,23 @@
 language: ruby
-bundler_args: --without "oracle sqlserver"
+sudo: false
+bundler_args: --without "db2 oracle sqlserver"
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
-  - bundle exec rake mysql:build_database postgresql:build_database
+  - rake mysql:build_database postgresql:build_database sqlite:build_database
 
 script:
-  - "bundle exec rake postgresql:test"
-  - "bundle exec rake mysql:test"
+  - "rake postgresql:test"
+  - "rake sqlite:test"
+  - "rake mysql:test"
 
 rvm:
-  - 2.5.7
-  - 2.6.5
-  - 2.7.0
+  - 2.5.8
+  - 2.6.6
+  - 2.7.1
 
 env:
-  global:
-    - CPK_LOGFILE=log/test.log
+  - CPK_LOGFILE=log/test.log
 
 services:
   - postgresql

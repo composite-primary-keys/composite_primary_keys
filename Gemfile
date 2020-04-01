@@ -1,25 +1,22 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies
-gemspec
-
 #Gem.platforms = [Gem::Platform::RUBY]
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
-# group :db2 do
-#   gem 'ibm_db'
-# end
+group :db2 do
+  gem 'ibm_db'
+end
 
 group :mysql do
   gem 'mysql2'
 end
 
-# group :oracle do
-#   gem 'ruby-oci8'
-#   gem 'ruby-plsql'
-#   gem 'activerecord-oracle_enhanced-adapter'
-# end
+group :oracle do
+  gem 'ruby-oci8'
+  gem 'ruby-plsql'
+  gem 'activerecord-oracle_enhanced-adapter'
+end
 
 group :postgresql do
   gem 'pg'
@@ -29,6 +26,6 @@ group :sqlite do
   gem 'sqlite3'
 end
 
-# group :sqlserver do
-#   gem 'activerecord-sqlserver-adapter'
-# end
+group :sqlserver do
+  gem 'activerecord-sqlserver-adapter'
+end

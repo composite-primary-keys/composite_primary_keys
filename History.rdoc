@@ -6,6 +6,14 @@
 * Update to ActiveRecord 6.0 (Hiroshi Kajisha, Alexandru Anca, Charlie Savage, Sammy Larbi)
 * Update travis setup (Olle Jonsson, Charlie Savage)
 
+==11.3.1 (2020-04-01)¶ ↑
+* Fix overriding AbstractReflection for activerecord 5.2.4 (Sergey Semyonov)
+* Fix handling CPK with fields containing comma (Sergey Semyonov)
+* Fixed incorrect SQL condition for joining by CPK (Sergey Semyonov)
+* Update travis.yml file (Sergey Semyonov)
+* Add tests for composite keys with default values (Daniel Wiklund)
+* Fix create record where one or more of the primary keys has a default value (Daniel Wiklund)
+
 == 11.2.0 (2019-03-16)
 * When creating new records, honor composite key autoincrementing fields if possible (Antti Pitkänen)
 * Update Association#run to more closely match ActiveRecord (Fabian Mersch)
