@@ -51,11 +51,11 @@ class TestCreate < ActiveSupport::TestCase
   def test_create_generated_keys
     # Not all databases support columns with multiple identity fields
     postgres = defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) && Suburb.connection.class == ActiveRecord::ConnectionAdapters::PostgreSQL
-    if postgres
-      suburb = Suburb.create!(:name => 'Capitol Hill')
-      refute_nil(suburb.city_id)
-      refute_nil(suburb.suburb_id)
-    end
+    skip unless postgres
+
+    suburb = Suburb.create!(:name => 'Capitol Hill')
+    refute_nil(suburb.city_id)
+    refute_nil(suburb.suburb_id)
   end
 
   def test_create_on_association
