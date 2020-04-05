@@ -1,7 +1,7 @@
 create table topics (
     id int not null auto_increment,
-    name varchar(50) default null,  
-    feed_size int default null, 
+    name varchar(50) default null,
+    feed_size int default null,
     primary key (id)
 );
 
@@ -52,7 +52,7 @@ create table product_tariffs (
 );
 
 create table suburbs (
-    city_id int not null auto_increment,
+    city_id int not null,
     suburb_id int not null,
     name varchar(50) not null,
     primary key (city_id, suburb_id)
