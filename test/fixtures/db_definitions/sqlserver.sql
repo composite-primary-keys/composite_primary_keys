@@ -214,7 +214,8 @@ CREATE TABLE pk_called_ids (
 
 CREATE TABLE cpk_with_default_values (
     record_id         [int] IDENTITY(1000,1) NOT NULL,
-    record_version    [varchar](50) default '' NOT NULL
+    record_version    [varchar](50) default '' NOT NULL,
+    published         [bit] default 0 NOT NULL
     CONSTRAINT [cpk_with_default_values_pk] PRIMARY KEY
-        ( [record_id], [record_version] )
+        ( [record_id], [record_version], [published] )
 );

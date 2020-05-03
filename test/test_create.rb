@@ -185,6 +185,7 @@ class TestCreate < ActiveSupport::TestCase
     first = CpkWithDefaultValue.create!
     refute_nil(first.record_id)
     assert_equal('', first.record_version)
+    assert_equal(false, first.published)
 
     second = CpkWithDefaultValue.create!(record_id: first.record_id, record_version: 'Same id, different version')
     assert_equal(first.record_id, second.record_id)

@@ -66,7 +66,7 @@ module ActiveRecord
       # CPK
       if self.composite?
         # Merge together the specified id with the new id (specified id gets precedence)
-        self.id = self.id.zip(Array(new_id)).map {|id1, id2| (id1 || id2)}
+        self.id = self.id.zip(Array(new_id)).map {|id1, id2| (id1.nil? ? id2 : id1)}
       else
         self.id ||= new_id if self.class.primary_key
       end

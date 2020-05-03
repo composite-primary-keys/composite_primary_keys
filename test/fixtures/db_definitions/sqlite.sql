@@ -206,7 +206,8 @@ create table pk_called_ids (
 );
 
 create table cpk_with_default_values (
-    record_id integer not null,
+    record_id integer default 1 not null,
     record_version    varchar(50) default '' not null,
-    primary key (record_id, record_version)
+    published boolean default 0 not null,
+    primary key (record_id, record_version, published)
 );
