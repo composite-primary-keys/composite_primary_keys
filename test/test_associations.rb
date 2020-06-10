@@ -174,6 +174,12 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tarrifs_length)
   end
 
+  def test_has_many_through_assign_ids
+    hack = Hack.new(name: "foo", users: User.all)
+    hack.user_ids = [""]
+    assert_empty(hack.user_ids)
+  end
+
   def test_new_style_includes_with_conditions
     product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').references(:tariffs).first
     assert_equal(0, product_tariff.tariff.amount)
