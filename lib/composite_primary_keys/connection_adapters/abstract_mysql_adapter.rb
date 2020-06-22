@@ -11,7 +11,7 @@ module ActiveRecord
 
         # CPK
         #key_name = quote_column_name(key.name)
-        key_name = [key].flatten.map {|a_key| quote_column_name(a_key.name)}.join(',')
+        key_name = Array.wrap(key).map {|a_key| quote_column_name(a_key.name)}.join(',')
 
         Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
       end
