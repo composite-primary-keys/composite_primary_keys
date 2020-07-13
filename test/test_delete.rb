@@ -41,6 +41,19 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal(3, Department.count)
   end
 
+  def test_delete_all_with_join_non_cpk
+    employee = employees(:steve)
+
+    assert_equal(5, Employee.count)
+
+    Employee.joins(:department).
+               where('departments.department_id = ?', employee.department_id).
+               where('departments.location_id = ?', employee.location_id).
+               delete_all
+
+    assert_equal(3, Employee.count)
+  end
+
   def test_clear_association
     department = Department.find([1,1])
     assert_equal(2, department.employees.size, "Before clear employee count should be 2.")
