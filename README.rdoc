@@ -113,7 +113,8 @@ divided into the following bundler groups:
 Since it is likely you do not have all the above databases installed on your computer, you want to install just the
 gems for your database.  For example, to test postgresql you would install the appropriate gems like this:
 
-  bundler install --without "mysql oracle sqlite sqlserver"
+  bundler config set --local without "mysql oracle sqlite sqlserver"
+  bundler install
 
 Once you have installed the appropriate gems, the next step is to create the test database. There is a rake
 command for each database. Using our example:
