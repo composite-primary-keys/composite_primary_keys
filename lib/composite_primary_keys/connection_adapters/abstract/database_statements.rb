@@ -6,7 +6,7 @@ module ActiveRecord
         value = exec_insert(sql, name, binds, pk, sequence_name)
 
         # CPK
-        if value && pk.is_a?(Array)
+        if !value&.rows&.empty? && pk.is_a?(Array)
           id_value || value.rows.first
         else
           id_value || last_inserted_id(value)

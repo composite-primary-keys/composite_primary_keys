@@ -65,7 +65,7 @@ module ActiveRecord
       )
 
       # CPK
-      if self.composite? && self.id.compact.empty?
+      if self.composite? && self.id&.compact&.empty?
         self.id = self.id.zip(Array(new_id)).map {|id1, id2| (id1 || id2)}
       else
         self.id ||= new_id if self.class.primary_key
