@@ -113,7 +113,4 @@ require 'composite_primary_keys/validations/uniqueness'
 require 'composite_primary_keys/composite_relation'
 
 require 'composite_primary_keys/arel/to_sql'
-
-# SQL Servers Support - uncomment these lines
-#require 'activerecord-sqlserver-adapter/arel/visitors/sqlserver'
-#require 'composite_primary_keys/arel/sqlserver'
+require 'composite_primary_keys/arel/sqlserver'

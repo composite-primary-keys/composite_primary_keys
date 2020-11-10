@@ -1,5 +1,3 @@
-require 'activerecord-sqlserver-adapter'
-
 module Arel
   module Visitors
     class SQLServer

@@ -1,7 +1,8 @@
-spec_name = ENV['ADAPTER'] || 'sqlite'
-require 'bundler/setup'
+spec_name = ENV['ADAPTER'] || 'postgresql'
+require 'bundler'
 require 'minitest/autorun'
 
+Bundler.setup(:default, spec_name.to_sym)
 Bundler.require(:default, spec_name.to_sym)
 require 'composite_primary_keys'
 
