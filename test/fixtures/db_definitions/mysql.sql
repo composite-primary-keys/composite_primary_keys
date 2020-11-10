@@ -52,7 +52,7 @@ create table product_tariffs (
 );
 
 create table suburbs (
-    city_id int not null,
+    city_id int not null auto_increment,
     suburb_id int not null,
     name varchar(50) not null,
     primary key (city_id, suburb_id)

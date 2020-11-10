@@ -49,12 +49,21 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_generated_keys
-    # mysql/maria db do not support having more than one auto incrementing field in a table
-    unless Suburb.connection.is_a?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
-      suburb = Suburb.create!(:name => 'Capitol Hill')
-      refute_nil(suburb.city_id)
-      refute_nil(suburb.suburb_id)
+    values = {:name => 'Capitol Hill'}
+
+    # mysql/maria db do not support having more than one auto incrementing field in a table. We check
+    # the class name because the mysql2adapter might not be loaded
+    if Suburb.connection.class.name == "ActiveRecord::ConnectionAdapters::Mysql2Adapter"
+      values[:suburb_id] = 3
+    # SQLite does not support an autoincrementing field in a composite key
+    elsif Suburb.connection.class.name == "ActiveRecord::ConnectionAdapters::SQLite3Adapter"
+      values[:city_id] = 3
+      values[:suburb_id] = 3
     end
+
+    suburb = Suburb.create!(values)
+    assert(suburb.city_id >=  3)
+    assert(suburb.suburb_id >= 3)
   end
 
   def test_create_on_association
