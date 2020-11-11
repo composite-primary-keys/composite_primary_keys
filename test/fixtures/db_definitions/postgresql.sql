@@ -179,13 +179,6 @@ create table room_assignments (
     room_id    int not null
 );
 
-create table seats (
-  flight_number int not null,
-  seat          int not null,
-  customer      int,
-  primary key (flight_number, seat)
-);
-
 create table capitols (
   country text not null,
   city text not null,

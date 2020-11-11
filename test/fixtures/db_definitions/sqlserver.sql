@@ -170,14 +170,6 @@ CREATE TABLE room_assignments (
     room_id    [int] NOT NULL
 );
 
-CREATE TABLE seats (
-    flight_number [int] NOT NULL,
-    seat          [int] NOT NULL,
-    customer      [int]
-    CONSTRAINT [seats_pk] PRIMARY KEY
-        ( [flight_number], [seat] )
-);
-
 CREATE TABLE capitols (
     country varchar(450) NOT NULL,
     city varchar(450) NOT NULL

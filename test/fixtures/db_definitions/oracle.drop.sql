@@ -38,7 +38,6 @@ drop table room_attribute_assignments;
 drop table room_assignments;
 drop table students;
 drop sequence students_seq;
-drop table seats;
 drop table capitols;
 drop table products_restaurants;
 drop table employees_groups;
