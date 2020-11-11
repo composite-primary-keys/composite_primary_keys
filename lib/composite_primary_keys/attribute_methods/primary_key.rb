@@ -1,6 +1,19 @@
 module ActiveRecord
   module AttributeMethods
     module PrimaryKey
+      module ClassMethods
+        def suppress_composite_primary_key(pk)
+          pk
+          # return pk unless pk.is_a?(Array)
+          #
+          # warn <<~WARNING
+          #         WARNING: Active Record does not support composite primary key.
+          #
+          #         #{table_name} has composite primary key. Composite primary key is ignored.
+          # WARNING
+        end
+      end
+
       # Returns the primary key previous value.
       def id_was
         sync_with_transaction_state
