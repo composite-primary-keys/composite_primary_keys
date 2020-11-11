@@ -7,11 +7,11 @@ first:
 second1:
   id: 2
   city_id: 2
-  suburb_id: 1
+  suburb_id: 2
   name: First Street
 
 second2:
   id: 3
   city_id: 2
-  suburb_id: 1
+  suburb_id: 2
   name: Second Street

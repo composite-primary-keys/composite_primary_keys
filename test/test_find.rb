@@ -76,7 +76,7 @@ class TestFind < ActiveSupport::TestCase
 
   def test_find_last_suburb
     suburb = Suburb.last
-    assert_equal([2,1], suburb.id)
+    assert_equal([2,2], suburb.id)
   end
 
   def test_find_last_suburb_with_order

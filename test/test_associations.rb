@@ -210,16 +210,8 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_associations_with_conditions
-    suburb = Suburb.find([2, 1])
+    suburb = Suburb.find([2, 2])
     assert_equal 2, suburb.streets.size
-
-    suburb = Suburb.find([2, 1])
-    assert_equal 1, suburb.first_streets.size
-
-    suburb = Suburb.includes(:streets).find([2, 1])
-    assert_equal 2, suburb.streets.size
-
-    suburb = Suburb.includes(:first_streets).find([2, 1])
     assert_equal 1, suburb.first_streets.size
   end
 
