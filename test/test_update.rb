@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestUpdate < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes
+  fixtures :reference_types, :reference_codes, :rooms, :room_assignments
 
   CLASSES = {
     :single => {
@@ -75,5 +75,16 @@ class TestUpdate < ActiveSupport::TestCase
                           where(:description => 'random value')
 
     assert_equal(2, query.count)
+  end
+
+  def test_update_with_uniqueness
+    assignment = room_assignments(:jacksons_room)
+    room_1 = rooms(:branner_room_1)
+    room_2 = rooms(:branner_room_3)
+
+    assert_equal(room_1, assignment.room)
+    assignment.room = room_2
+    assignment.save!
+    assert_equal(room_2, assignment.room)
   end
 end

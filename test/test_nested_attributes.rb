@@ -2,7 +2,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestNestedAttributes < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes
+  fixtures :reference_types, :reference_codes, :topics, :topic_sources
 
   def test_nested_atttribute_create
     code_id = 1001
@@ -64,8 +64,6 @@ class TestNestedAttributes < ActiveSupport::TestCase
     assert_equal(reference_code.code_label, 'XX')
     assert_equal(reference_code.abbreviation, 'Xx')
   end
-
-  fixtures :topics, :topic_sources
 
   def test_nested_attributes_create_with_string_in_primary_key
     platform = 'instagram'
