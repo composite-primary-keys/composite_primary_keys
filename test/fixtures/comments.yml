@@ -1,16 +1,17 @@
-comment1:
+employee_comment:
   id: 1
+  article: first
   person_id: 1
   person_type: Employee
-  
-comment2:
+
+user_comment_1:
   id: 2
+  article: second
   person_id: 1
   person_type: User
-  hack_id: 7
-  
-comment3:
+
+user_comment_2:
   id: 3
-  person_id: 7
-  person_type: Hack
-  
+  article: second
+  person_id: 2
+  person_type: User

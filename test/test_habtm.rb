@@ -133,9 +133,9 @@ class TestHabtm < ActiveSupport::TestCase
 
     # reload to force reload of associations
     product_one = Product.find(1)
-    assert_equal 2, product_one.restaurants.size
+    assert_equal(2, product_one.restaurants.size)
 
     product_three = Product.find(3)
-    assert_equal 0, product_three.restaurants.size
+    assert_equal(0, product_three.restaurants.size)
   end
 end

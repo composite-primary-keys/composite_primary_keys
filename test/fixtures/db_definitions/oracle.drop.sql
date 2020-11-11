@@ -27,8 +27,6 @@ drop table employees;
 drop sequence employees_seq;
 drop table comments;
 drop sequence comments_seq;
-drop table hacks;
-drop sequence hacks_seq;
 drop table restaurants;
 drop table restaurants_suburbs;
 drop table dorms;

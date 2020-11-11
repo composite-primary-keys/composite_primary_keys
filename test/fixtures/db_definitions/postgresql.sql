@@ -124,16 +124,9 @@ create table employees (
 
 create table comments (
     id          serial not null,
-    person_id   int          default null,
-    shown       int          default null,
-    person_type varchar(100) default null,
-    hack_id     int          default null,
-    primary key (id)
-);
-
-create table hacks (
-    id serial not null,
-    name varchar(50) not null,
+    article_id  int not null references articles (id),
+    person_id   int not null,
+    person_type varchar(100) not null,
     primary key (id)
 );
 

@@ -1,7 +1,8 @@
 first:
-  id: 1
   name: Article One
   
 second:
-  id: 2
   name: Article Two
+
+third:
+  name: Article Three

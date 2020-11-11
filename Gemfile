@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 group :db2 do
-  gem 'ibm_db'
+  #gem 'ibm_db'
 end
 
 group :mysql do
@@ -11,9 +11,9 @@ group :mysql do
 end
 
 group :oracle do
-  gem 'ruby-oci8'
-  gem 'ruby-plsql'
-  gem 'activerecord-oracle_enhanced-adapter'
+  #gem 'ruby-oci8'
+  #gem 'ruby-plsql'
+  #gem 'activerecord-oracle_enhanced-adapter'
 end
 
 group :postgresql do

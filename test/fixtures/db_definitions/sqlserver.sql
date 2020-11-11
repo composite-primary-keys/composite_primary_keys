@@ -117,15 +117,9 @@ CREATE TABLE employees (
 
 CREATE TABLE comments (
     id          [int] IDENTITY(1000,1) PRIMARY KEY NOT NULL,
-    person_id   [int] NULL,
-    shown       [int] NULL,
-    person_type varchar(100)      NULL,
-    hack_id     [int] NULL
-);
-
-CREATE TABLE hacks (
-    id   [int]  IDENTITY(1000,1) PRIMARY KEY NOT NULL,
-    name [varchar](50) NOT NULL
+    article_id  [int] NOT NULL,
+    person_id   [int] NOT NULL,
+    person_type varchar(100) NULL
 );
 
 CREATE TABLE restaurants (

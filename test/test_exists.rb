@@ -4,8 +4,8 @@ class TestExists < ActiveSupport::TestCase
   fixtures :articles, :departments, :capitols
   
   def test_id
-    assert(Article.exists?(1))
-    assert(!Article.exists?(-1))
+    assert(Dorm.exists?(1))
+    assert(!Dorm.exists?(-1))
   end
 
   def test_array

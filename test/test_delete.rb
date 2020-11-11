@@ -131,13 +131,13 @@ class TestDelete < ActiveSupport::TestCase
   def test_delete_not_destroy_on_cpk
     tariff = Tariff.where(tariff_id: 2).first
     tariff.delete
-    assert !tariff.persisted?
+    refute(tariff.persisted?)
   end
 
   def test_delete_not_destroy_on_non_cpk
-    article = Article.first
+    article = articles(:third)
     article.delete
-    assert !article.persisted?
+    refute(article.persisted?)
   end
 
   def test_destroy_has_many_delete_all

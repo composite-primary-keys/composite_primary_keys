@@ -174,6 +174,13 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(3, tarrifs_length)
   end
 
+  def test_has_many_through_2
+    assert_equal(3, Article.count)
+    user = users(:santiago)
+    article_names = user.articles.map(&:name).sort
+    assert_equal(['Article One', 'Article Two'], article_names)
+  end
+
   def test_new_style_includes_with_conditions
     product_tariff = ProductTariff.includes(:tariff).where('tariffs.amount < 5').references(:tariffs).first
     assert_equal(0, product_tariff.tariff.amount)

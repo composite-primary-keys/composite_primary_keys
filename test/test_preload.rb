@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestPreload < ActiveSupport::TestCase
-  fixtures :comments, :users, :employees, :groups, :hacks, :readings
+  fixtures :articles, :comments, :users, :employees, :groups, :readings
 
   class UserForPreload < User
     has_many :comments_with_include_condition, -> { where('person_type = ?', 'User')},
@@ -31,10 +31,11 @@ class TestPreload < ActiveSupport::TestCase
 
   def test_preload_for_conditioned_has_many_association
     # has one comment
+    article = articles(:first)
     user1 = users(:santiago)
     user2 = UserForPreload.create(name: 'TestPreload')
-    Comment.create(person: user2, person_type: 'User')
-    Comment.create(person: user2, person_type: 'User')
+    Comment.create(article: article, person: user2, person_type: 'User')
+    Comment.create(article: article, person: user2, person_type: 'User')
 
     users = UserForPreload.where(id: [user1.id, user2.id]).all
     assert_equal(1, users.first.comments_with_include_condition.size)

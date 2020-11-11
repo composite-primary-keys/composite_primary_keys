@@ -122,16 +122,9 @@ create table employees (
 
 create table comments (
     id int not null auto_increment,
-    person_id int default null,
-    shown int default null,
-    person_type varchar(100) default null,
-    hack_id int default null,
-    primary key (id)
-);
-
-create table hacks (
-    id int not null auto_increment,
-    name varchar(50) not null,
+    article_id int not null,
+    person_id int not null,
+    person_type varchar(100) not null,
     primary key (id)
 );
 
