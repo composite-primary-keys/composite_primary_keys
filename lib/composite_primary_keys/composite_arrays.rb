@@ -49,14 +49,6 @@ module CompositePrimaryKeys
       end
     end
 
-    def in(other)
-      case other
-        when Arel::SelectManager
-          Arel::Nodes::In.new(self, other.ast)
-      end
-    end
-
-
     def to_s
       # Doing this makes it easier to parse Base#[](attr_name)
       map { |key| Utils.escape_string_key(key.to_s) }.join(ID_SEP)

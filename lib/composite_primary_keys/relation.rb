@@ -27,15 +27,8 @@ module ActiveRecord
       stmt = Arel::UpdateManager.new
       # CPK
       if @klass.composite?
-        stmt.table(table)
-
-        arel_attributes = primary_keys.map do |key|
-          arel_attribute(key)
-        end.to_composite_keys
-
-        subselect = subquery_for(arel_attributes, arel)
-
-        stmt.wheres = [arel_attributes.in(subselect)]
+        stmt.table(arel_table)
+        cpk_in_subquery(stmt)
       else
         stmt.table(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
@@ -75,22 +68,16 @@ module ActiveRecord
       end
 
       stmt = Arel::DeleteManager.new
-      # CPK
+
       if @klass.composite?
-        stmt.from(table)
-
-        arel_attributes = primary_keys.map do |key|
-          arel_attribute(key)
-        end.to_composite_keys
-
-        subselect = subquery_for(arel_attributes, arel)
-
-        stmt.wheres = [arel_attributes.in(subselect)]
+        stmt.from(arel_table)
+        cpk_in_subquery(stmt)
       else
         stmt.from(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
         stmt.wheres = arel.constraints
       end
+
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
       stmt.order(*arel.orders)
@@ -102,17 +89,39 @@ module ActiveRecord
     end
 
     # CPK
-    def subquery_for(key, select)
-      subselect = select.clone
-      subselect.projections = key
+    def cpk_in_subquery(stmt)
+      # Setup the subquery
+      subquery = arel.clone
+      subquery.projections = primary_keys.map do |key|
+        arel_table[key]
+      end
 
-      # Materialize subquery by adding distinct
-      # to work with MySQL 5.7.6 which sets optimizer_switch='derived_merge=on'
-      subselect.distinct unless select.limit || select.offset || select.orders.any?
+      where_fields = primary_keys.map do |key|
+        arel_table[key]
+      end
+      where = Arel::Nodes::Grouping.new(where_fields).in(subquery)
+      stmt.wheres = [where]
+    end
 
-      key_name = Array(key).map {|a_key| a_key.name }.join(',')
+    def cpk_exists_subquery(stmt)
+      # Alias the outer table so we can join to in from the subquery
+      aliased_table = arel_table.alias("cpk_outer_relation")
+      stmt.table(aliased_table)
 
-      Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
+      # Setup the subquery
+      subquery = arel.clone
+      subquery.projections = primary_keys.map do |key|
+        arel_table[key]
+      end
+
+      # Setup correlation to the outer query via where clauses
+      primary_keys.map do |key|
+        outer_attribute = aliased_table[key]
+        inner_attribute = arel_table[key]
+        where = outer_attribute.eq(inner_attribute)
+        subquery.where(where)
+      end
+      stmt.wheres = [Arel::Nodes::Exists.new(subquery)]
     end
   end
 end
