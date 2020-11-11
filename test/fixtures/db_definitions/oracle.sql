@@ -52,9 +52,11 @@ create table product_tariffs (
     constraint product_tariffs_pk primary key (product_id, tariff_id, tariff_start_date)
 );
 
+create sequence suburbs_city_id_seq start with 1000;
+
 create table suburbs (
-    city_id   number(11),
-    suburb_id number(11),
+    city_id   number(11) default suburbs_city_id_seq.nextval not null,
+    suburb_id number(11) not null,
     name      varchar(50) not null,
     constraint suburbs_pk primary key (city_id, suburb_id)
 );

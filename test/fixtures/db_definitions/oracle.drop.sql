@@ -9,6 +9,7 @@ drop sequence products_seq;
 drop table tariffs;
 drop table product_tariffs;
 drop table suburbs;
+drop sequence suburbs_city_id_seq;
 drop table streets;
 drop sequence streets_seq;
 drop table users;

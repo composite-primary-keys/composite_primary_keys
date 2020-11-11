@@ -5,7 +5,7 @@ class TestExists < ActiveSupport::TestCase
   
   def test_id
     assert(Dorm.exists?(1))
-    assert(!Dorm.exists?(-1))
+    refute(Dorm.exists?(-1))
   end
 
   def test_array
