@@ -20,43 +20,43 @@ class TestUpdate < ActiveSupport::TestCase
     self.class.classes = CLASSES
   end
 
-  # def test_setup
-  #   testing_with do
-  #     assert_not_nil @klass_info[:update]
-  #   end
-  # end
-  #
-  # def test_update_attributes
-  #   testing_with do
-  #     assert(@first.update(@klass_info[:update]))
-  #     assert(@first.reload)
-  #     @klass_info[:update].each_pair do |attr_name, new_value|
-  #       assert_equal(new_value, @first[attr_name])
-  #     end
-  #   end
-  # end
-  #
-  # def test_update_primary_key
-  #   obj = ReferenceCode.find([1,1])
-  #   obj.reference_type_id = 2
-  #   obj.reference_code = 3
-  #   assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
-  #   assert(obj.save)
-  #   assert(obj.reload)
-  #   assert_equal(2, obj.reference_type_id)
-  #   assert_equal(3, obj.reference_code)
-  #   assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
-  #   assert_equal([2, 3], obj.id)
-  # end
-  #
-  # def test_update_attribute
-  #   obj = ReferenceType.find(1)
-  #   obj[:abbreviation] = 'a'
-  #   obj['abbreviation'] = 'b'
-  #   assert(obj.save)
-  #   assert(obj.reload)
-  #   assert_equal('b', obj.abbreviation)
-  # end
+  def test_setup
+    testing_with do
+      assert_not_nil @klass_info[:update]
+    end
+  end
+
+  def test_update_attributes
+    testing_with do
+      assert(@first.update(@klass_info[:update]))
+      assert(@first.reload)
+      @klass_info[:update].each_pair do |attr_name, new_value|
+        assert_equal(new_value, @first[attr_name])
+      end
+    end
+  end
+
+  def test_update_primary_key
+    obj = ReferenceCode.find([1,1])
+    obj.reference_type_id = 2
+    obj.reference_code = 3
+    assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
+    assert(obj.save)
+    assert(obj.reload)
+    assert_equal(2, obj.reference_type_id)
+    assert_equal(3, obj.reference_code)
+    assert_equal({"reference_type_id" => 2, "reference_code" => 3}, obj.ids_hash)
+    assert_equal([2, 3], obj.id)
+  end
+
+  def test_update_attribute
+    obj = ReferenceType.find(1)
+    obj[:abbreviation] = 'a'
+    obj['abbreviation'] = 'b'
+    assert(obj.save)
+    assert(obj.reload)
+    assert_equal('b', obj.abbreviation)
+  end
 
   def test_update_all
     ReferenceCode.update_all(description: 'random value')
@@ -66,14 +66,14 @@ class TestUpdate < ActiveSupport::TestCase
     end
   end
 
-  # def test_update_all_join
-  #   ReferenceCode.joins(:reference_type).
-  #                 where('reference_types.reference_type_id = ?', 2).
-  #                 update_all(:description => 'random value')
-  #
-  #   query = ReferenceCode.where('reference_type_id = ?', 2).
-  #                         where(:description => 'random value')
-  #
-  #   assert_equal(2, query.count)
-  # end
+  def test_update_all_join
+    ReferenceCode.joins(:reference_type).
+                  where('reference_types.reference_type_id = ?', 2).
+                  update_all(:description => 'random value')
+
+    query = ReferenceCode.where('reference_type_id = ?', 2).
+                          where(:description => 'random value')
+
+    assert_equal(2, query.count)
+  end
 end

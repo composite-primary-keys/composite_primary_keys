@@ -5,10 +5,10 @@ first:
 
 second:
   city_id: 2
-  suburb_id: 1
+  suburb_id: 2
   name: Second Suburb
 
 no_mcdonalds:
   city_id: 1
-  suburb_id: 2
+  suburb_id: 3
   name: Third Suburb  
