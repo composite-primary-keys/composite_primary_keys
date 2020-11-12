@@ -27,7 +27,11 @@ unless defined?(ActiveRecord)
   require 'active_record'
 end
 
-# AR files we override
+# ActiveModel files we override
+# _write_attribute
+require 'active_model/attribute_assignment'
+
+# ActiveRecord files we override
 require 'active_record/attribute_methods'
 require 'active_record/autosave_association'
 require 'active_record/counter_cache'
@@ -61,7 +65,8 @@ require 'active_record/connection_adapters/postgresql/database_statements'
 
 require 'active_record/relation/where_clause'
 
-# CPK files
+# CPK overrides
+require_relative 'composite_primary_keys/active_model/attribute_assignment'
 require_relative 'composite_primary_keys/attribute_methods'
 require_relative 'composite_primary_keys/autosave_association'
 require_relative 'composite_primary_keys/persistence'

@@ -93,7 +93,7 @@ create table membership_statuses (
 );
 
 create table departments (
-    id int not null,
+    id int not null auto_increment,
     location_id int not null,
     primary key (id, location_id)
 );

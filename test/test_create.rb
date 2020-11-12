@@ -49,21 +49,19 @@ class TestCreate < ActiveSupport::TestCase
   end
 
   def test_create_with_partial_serial
-    department = Department.new(:location_id => 100)
+    attributes = {:location_id => 100}
+
+    # SQLite does not support an autoincrementing field in a composite key
+    if Department.connection.class.name == "ActiveRecord::ConnectionAdapters::SQLite3Adapter"
+      attributes[:id] = 100
+    end
+
+    department = Department.new(attributes)
     assert_nil(department.attributes[:id])
 
     department.save!
     refute_nil(department.attributes["id"])
     assert_equal(100, department.location_id)
-  end
-
-  def test_create_generated_keys
-    values = {:name => 'Capitol Hill',
-              :suburb_id => 4}
-
-    suburb = Suburb.create!(values)
-    refute_nil(suburb.city_id)
-    assert_equal(suburb.suburb_id, 4)
   end
 
   def test_create_on_association
