@@ -1,6 +1,3 @@
-drop table topics;
-drop sequence topics_seq;
-drop table topic_sources;
 drop table reference_types;
 drop sequence reference_types_seq;
 drop table reference_codes;

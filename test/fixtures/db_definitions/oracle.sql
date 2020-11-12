@@ -1,17 +1,3 @@
-create sequence topics_seq start with 1000;
-
-create table topics (
-    id          number(11)  primary key,
-    name        varchar(50) default null,  
-    feed_size   number(11)  default null
-);
-
-create table topic_sources (
-    topic_id number(11),
-    platform varchar(50),
-    keywords varchar(50) default null
-);
-
 create sequence reference_types_seq start with 1000;
 
 create table reference_types (

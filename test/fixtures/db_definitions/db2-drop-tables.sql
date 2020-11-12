@@ -15,5 +15,3 @@ drop table KITCHEN_SINK;
 drop table RESTAURANTS;
 drop table RESTAURANTS_SUBURBS;
 drop table PRODUCTS_RESTAURANTS;
-drop table TOPICS;
-drop table TOPIC_SOURCES;
