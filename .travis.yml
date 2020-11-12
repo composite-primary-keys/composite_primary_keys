@@ -1,10 +1,10 @@
 dist: focal
 language: ruby
-sudo: false
+sudo: true
 bundler_args: --without "db2 oracle sqlserver"
 
 install:
-  - mysql -u root -e 'CREATE USER IF NOT EXISTS travis@localhost; GRANT ALL ON *.* TO travis@localhost;'
+  - sudo mysql -u root -e 'CREATE USER IF NOT EXISTS travis@localhost; GRANT ALL ON *.* TO travis@localhost;'
 
 before_script:
   - cp test/connections/databases.ci.yml test/connections/databases.yml
