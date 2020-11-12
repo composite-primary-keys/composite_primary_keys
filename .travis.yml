@@ -22,4 +22,4 @@ env:
 
 services:
   - postgresql
-  - mariadb: "10.5"
+  - mariadb: "10.5.8"
