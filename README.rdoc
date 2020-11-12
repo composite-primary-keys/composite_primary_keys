@@ -133,7 +133,7 @@ Finally, to run tests:
 
   rake postgresql:test
 
-Travis build status: {<img src="https://travis-ci.org/composite-primary-keys/composite_primary_keys.svg" alt="Build Status" />}[https://travis-ci.org/composite-primary-keys/composite_primary_keys]
+Travis build status: {<img src="https://travis-ci.com/composite-primary-keys/composite_primary_keys.svg" alt="Build Status" />}[https://travis-ci.com/composite-primary-keys/composite_primary_keys]
 
 === DB2
 
