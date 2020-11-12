@@ -14,7 +14,7 @@ script:
 rvm:
   - 2.5.8
   - 2.6.6
-  - 2.7.1
+  - 2.7.2
 
 env:
   - CPK_LOGFILE=log/test.log
