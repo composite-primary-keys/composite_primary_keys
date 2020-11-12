@@ -96,18 +96,23 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_has_one_association_primary_key_and_foreign_key_are_present
-    department = departments(:human_resources)
+    # department = departments(:engineering)
+    # assert_equal(2, department.employees.count)
+    # assert_equal('Sarah', department.employees[0].name)
+    # assert_equal('Robert', department.employees[1].name)
+    # assert_equal('Sarah', department.head.name)
 
+    department = departments(:human_resources)
     assert_equal(1, department.employees.count)
     assert_equal('Mindy', department.employees[0].name)
+    assert_equal('Mindy', department.head.name)
 
     head = department.create_head(name: 'Rick')
-    assert_equal(department.department_id, head.department_id)
-    assert_equal(department.location_id, head.location_id)
+    assert_equal(department, head.department)
+    assert_equal('Rick', department.head.name)
 
     department.reload
     assert_equal(1, department.employees.count)
-    assert_equal('Rick', department.employees[0].name)
   end
 
   def test_has_one_autosave
@@ -239,7 +244,7 @@ class TestAssociations < ActiveSupport::TestCase
     steve = employees(:steve)
     steve.department = departments(:engineering)
     # It was returning this before:
-    #   {"[:department_id, :location_id]"=>[nil, [2, 1]]}
+    #   {"[:id, :location_id]"=>[nil, [2, 1]]}
     assert_equal({"department_id"=>[1, 2]}, steve.changes)
   end
 
@@ -263,12 +268,12 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal user,    reading.user
   end
 
-  def test_has_many_build__composite_key
+  def test_has_many_build_composite_key
     department = departments(:engineering)
     employee = department.employees.build
-    assert_equal department.department_id, employee.department_id
-    assert_equal department.location_id,   employee.location_id
-    assert_equal department,               employee.department
+    assert_equal(department[:id], employee.department_id)
+    assert_equal(department.location_id, employee.location_id)
+    assert_equal(department, employee.department)
   end
 
   def test_has_many_with_primary_key

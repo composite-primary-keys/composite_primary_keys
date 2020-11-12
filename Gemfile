@@ -11,9 +11,9 @@ group :mysql do
 end
 
 group :oracle do
-  #gem 'ruby-oci8'
-  #gem 'ruby-plsql'
-  #gem 'activerecord-oracle_enhanced-adapter'
+  gem 'ruby-oci8'
+  gem 'ruby-plsql'
+  gem 'activerecord-oracle_enhanced-adapter'
 end
 
 group :postgresql do

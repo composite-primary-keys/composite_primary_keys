@@ -59,7 +59,7 @@ class TestFind < ActiveSupport::TestCase
   end
 
   def test_find_each_with_scope
-    scoped_departments = Department.where("department_id <> 3")
+    scoped_departments = Department.where("id <> 3")
     scoped_departments.find_each(:batch_size => 2) do |department|
       assert department.id != 3
     end

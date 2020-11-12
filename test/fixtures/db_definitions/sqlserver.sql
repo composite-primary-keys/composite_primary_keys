@@ -175,13 +175,3 @@ CREATE TABLE employees_groups (
     employee_id [int] not null,
     group_id [int] not null
 );
-
-CREATE TABLE pk_called_ids (
-    id                [int] IDENTITY(1000,1) NOT NULL,
-    reference_code    [int]         not null,
-    code_label        [varchar](50) default null,
-    abbreviation      [varchar](50) default null,
-    description       [varchar](50) default null
-    CONSTRAINT [pk_called_ids_pk] PRIMARY KEY
-        ( [id], [reference_code] )
-);

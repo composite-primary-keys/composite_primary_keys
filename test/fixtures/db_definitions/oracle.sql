@@ -196,14 +196,3 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
-
-create sequence pk_called_ids_seq start with 1000;
-
-create table pk_called_ids (
-    id                int not null,
-    reference_code    int not null,
-    code_label        varchar(50) default null,
-    abbreviation      varchar(50) default null,
-    description       varchar(50) default null,
-    constraint pk_called_ids_pk primary key (id, reference_code)
-);

@@ -29,8 +29,8 @@ class TestExists < ActiveSupport::TestCase
   end
 
   def test_cpk_array_condition
-    assert(Department.exists?(['department_id = ? and location_id = ?', 1, 1]))
-    assert(!Department.exists?(['department_id = ? and location_id = ?', 1, -1]))
+    assert(Department.exists?(['id = ? and location_id = ?', 1, 1]))
+    assert(!Department.exists?(['id = ? and location_id = ?', 1, -1]))
   end
 
   def test_cpk_array_string_id

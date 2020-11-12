@@ -89,6 +89,17 @@ module ActiveRecord
       end
       alias_method :ids, :id
 
+      # This is overridden purely for json serialization support. If the model is composite
+      # and one of the keys is id, then we don't want to call the id method, instead we want
+      # to get the id attribute value
+      def read_attribute_for_serialization(attribute)
+        if self.composite? && attribute == 'id'
+          read_attribute(attribute)
+        else
+          send(attribute)
+        end
+      end
+
       def ids_hash
         self.class.primary_key.zip(ids).inject(Hash.new) do |hash, (key, value)|
           hash[key] = value

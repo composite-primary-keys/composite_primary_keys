@@ -95,9 +95,9 @@ create table membership_statuses (
 );
 
 create table departments (
-    department_id int not null,
-    location_id   int not null,
-    primary key (department_id, location_id)
+    id serial not null,
+    location_id int not null,
+    primary key (id, location_id)
 );
 
 create table employees (
@@ -180,13 +180,4 @@ create table products_restaurants (
 create table employees_groups (
   employee_id int not null,
   group_id int not null
-);
-
-create table pk_called_ids (
-    id serial not null,
-    reference_code    int         not null,
-    code_label        varchar(50) default null,
-    abbreviation      varchar(50) default null,
-    description       varchar(50) default null,
-    primary key (id, reference_code)
 );

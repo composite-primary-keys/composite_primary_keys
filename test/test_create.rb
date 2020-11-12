@@ -48,6 +48,15 @@ class TestCreate < ActiveSupport::TestCase
     end
   end
 
+  def test_create_with_partial_serial
+    department = Department.new(:location_id => 100)
+    assert_nil(department.attributes[:id])
+
+    department.save!
+    refute_nil(department.attributes["id"])
+    assert_equal(100, department.location_id)
+  end
+
   def test_create_generated_keys
     values = {:name => 'Capitol Hill',
               :suburb_id => 4}
