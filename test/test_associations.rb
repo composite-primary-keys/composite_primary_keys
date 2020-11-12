@@ -139,9 +139,10 @@ class TestAssociations < ActiveSupport::TestCase
 
     department.reload
     assert_equal(3, department.employees.count)
-    assert_equal('Steve', department.employees[0].name)
-    assert_equal('Jill', department.employees[1].name)
-    assert_equal('Rick', department.employees[2].name)
+    employees = department.employees.sort_by(&:name)
+    assert_equal('Jill', employees[0].name)
+    assert_equal('Rick', employees[1].name)
+    assert_equal('Steve', employees[2].name)
   end
 
   def test_find_includes_product_tariffs_product
@@ -330,9 +331,11 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_limitable_reflections
-    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').references(:membership_statuses).limit(1)
-    assert_equal(1, memberships.length)
+    memberships = Membership.includes(:statuses).where("membership_statuses.status = ?", 'Active').references(:membership_statuses)
+    assert_equal(2, memberships.length)
+
     assert_equal([1,1], memberships[0].id)
+    assert_equal([3,2], memberships[1].id)
   end
 
   def test_foreign_key_present_with_null_association_ids
