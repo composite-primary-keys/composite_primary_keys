@@ -3,10 +3,8 @@ language: ruby
 sudo: true
 bundler_args: --without "db2 oracle sqlserver"
 
-install:
-  - sudo mysql -u root -e 'CREATE USER IF NOT EXISTS travis@localhost; GRANT ALL ON *.* TO travis@localhost;'
-
 before_script:
+  - sudo mysql -u root -e 'CREATE USER IF NOT EXISTS travis@localhost; GRANT ALL ON *.* TO travis@localhost;'
   - cp test/connections/databases.ci.yml test/connections/databases.yml
   - rake mysql:build_database postgresql:build_database sqlite:build_database
 
