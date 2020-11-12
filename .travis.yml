@@ -22,4 +22,3 @@ env:
 services:
   - postgresql
   - mariadb
-  - mysql
