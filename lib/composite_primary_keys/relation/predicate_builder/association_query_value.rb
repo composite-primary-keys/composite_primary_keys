@@ -6,7 +6,7 @@ module ActiveRecord
         if associated_table.association_join_foreign_key.is_a?(Array)
           if ids.is_a?(ActiveRecord::Relation)
             ids.map do |id|
-              id.ids_hash
+              associated_table.association_join_foreign_key.zip(id.id).to_h
             end
           else
             [associated_table.association_join_foreign_key.zip(ids).to_h]
