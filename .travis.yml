@@ -25,4 +25,5 @@ services:
   - postgresql
 
 addons:
+  - postgresql: '12'
   - mariadb: "10.5"
