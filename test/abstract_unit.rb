@@ -1,4 +1,4 @@
-spec_name = ENV['ADAPTER'] || 'mysql'
+spec_name = ENV['ADAPTER'] || 'postgresql'
 require 'bundler'
 require 'minitest/autorun'
 
