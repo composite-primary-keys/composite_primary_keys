@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestExists < ActiveSupport::TestCase
-  fixtures :articles, :departments, :capitols
+  fixtures :articles, :capitols, :departments, :dorms
   
   def test_id
     assert(Dorm.exists?(1))
