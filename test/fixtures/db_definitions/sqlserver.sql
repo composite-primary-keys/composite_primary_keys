@@ -90,10 +90,10 @@ CREATE TABLE membership_statuses (
 );
 
 CREATE TABLE departments (
-    department_id [int] NOT NULL,
+    id [int] IDENTITY(100,1) NOT NULL,
     location_id   [int] NOT NULL
     CONSTRAINT [departments_pk] PRIMARY KEY
-        ( [department_id], [location_id] )
+        ( [id], [location_id] )
 );
 
 CREATE TABLE employees (

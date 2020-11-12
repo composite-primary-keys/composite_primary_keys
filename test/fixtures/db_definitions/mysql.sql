@@ -93,9 +93,9 @@ create table membership_statuses (
 );
 
 create table departments (
-    department_id int not null,
+    id int not null,
     location_id int not null,
-    primary key (department_id, location_id)
+    primary key (id, location_id)
 );
 
 create table employees (

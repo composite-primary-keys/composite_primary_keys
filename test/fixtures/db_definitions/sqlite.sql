@@ -87,9 +87,9 @@ create table membership_statuses (
 );
 
 create table departments (
-    department_id integer not null,
+    id integer not null,
     location_id integer not null,
-    primary key (department_id, location_id)
+    primary key (id, location_id)
 );
 
 create table employees (

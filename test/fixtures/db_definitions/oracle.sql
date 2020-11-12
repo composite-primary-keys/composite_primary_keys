@@ -101,10 +101,12 @@ create table membership_statuses (
     status   varchar(50) not null
 );
 
+create sequence departments_seq start with 1000;
+
 create table departments (
-    department_id number(11) not null,
+    id number(11) not null,
     location_id   number(11) not null,
-    constraint departments_pk primary key (department_id, location_id)
+    constraint departments_pk primary key (id, location_id)
 );
 
 create sequence employees_seq start with 1000;
