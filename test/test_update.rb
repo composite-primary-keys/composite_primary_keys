@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestUpdate < ActiveSupport::TestCase
-  fixtures :reference_types, :reference_codes, :rooms, :room_assignments
+  fixtures :departments, :reference_types, :reference_codes, :rooms, :room_assignments
 
   CLASSES = {
     :single => {
@@ -34,6 +34,13 @@ class TestUpdate < ActiveSupport::TestCase
         assert_equal(new_value, @first[attr_name])
       end
     end
+  end
+
+  def test_update_attributes_with_id_field
+    department = departments(:accounting)
+    department.update_attribute(:location_id, 3)
+    department.reload
+    assert_equal(3, department.location_id)
   end
 
   def test_update_primary_key
