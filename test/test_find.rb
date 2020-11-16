@@ -74,6 +74,18 @@ class TestFind < ActiveSupport::TestCase
     assert_equal(with_quoted_identifiers(expected), error.message)
   end
 
+  def test_find_with_invalid_ids
+    assert_raise(::ActiveRecord::RecordNotFound) do
+      Suburb.find([-1, -1])
+    end
+  end
+
+  def test_find_with_no_ids
+    assert_raise(::ActiveRecord::RecordNotFound) do
+      Suburb.find
+    end
+  end
+
   def test_find_last_suburb
     suburb = Suburb.last
     assert_equal([2,2], suburb.id)

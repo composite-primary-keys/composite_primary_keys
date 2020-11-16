@@ -40,7 +40,7 @@ module ActiveRecord
 
         record = statement.execute([id], connection)&.first
         unless record
-          raise RecordNotFound.new("Couldn't find #{name} with '#{key}'=#{id}", name, key, id)
+          raise ::ActiveRecord::RecordNotFound.new("Couldn't find #{name} with '#{key}'=#{id}", name, key, id)
         end
         record
       end
