@@ -92,7 +92,7 @@ module CompositePrimaryKeys
         case ids.size
           when 0
             error_message = "Couldn't find #{model_name} without an ID"
-            raise RecordNotFound.new(error_message, model_name, primary_key)
+            raise ::ActiveRecord::RecordNotFound.new(error_message, model_name, primary_key)
           when 1
             result = find_one(ids.first)
             expects_array ? [ result ] : result
@@ -101,7 +101,7 @@ module CompositePrimaryKeys
         end
       rescue ::RangeError
         error_message = "Couldn't find #{model_name} with an out of range ID"
-        raise RecordNotFound.new(error_message, model_name, primary_key, ids)
+        raise ::ActiveRecord::RecordNotFound.new(error_message, model_name, primary_key, ids)
       end
 
       def last(limit = nil)
