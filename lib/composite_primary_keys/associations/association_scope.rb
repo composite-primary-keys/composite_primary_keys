@@ -23,9 +23,8 @@ module ActiveRecord
       end
 
       def last_chain_scope(scope, reflection, owner)
-        join_keys = reflection.join_keys
-        key = join_keys.key
-        foreign_key = join_keys.foreign_key
+        key = reflection.join_primary_key
+        foreign_key = reflection.join_foreign_key
 
         table = reflection.aliased_table
 
@@ -46,9 +45,8 @@ module ActiveRecord
       end
 
       def next_chain_scope(scope, reflection, next_reflection)
-        join_keys = reflection.join_keys
-        key = join_keys.key
-        foreign_key = join_keys.foreign_key
+        key = reflection.join_primary_key
+        foreign_key = reflection.join_foreign_key
 
         table = reflection.aliased_table
         foreign_table = next_reflection.aliased_table

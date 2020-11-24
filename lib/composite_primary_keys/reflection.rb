@@ -6,8 +6,8 @@ module ActiveRecord
         scope_chain_items = join_scopes(table, predicate_builder)
         klass_scope       = klass_join_scope(table, predicate_builder)
 
-        key         = join_keys.key
-        foreign_key = join_keys.foreign_key
+        key         = join_primary_key
+        foreign_key = join_foreign_key
 
         # CPK
         #klass_scope.where!(table[key].eq(foreign_table[foreign_key]))
