@@ -13,3 +13,7 @@ human_resources:
 offsite_accounting:
   id: 1
   location_id: 2
+
+offsite_engineering:
+  id: 2
+  location_id: 2

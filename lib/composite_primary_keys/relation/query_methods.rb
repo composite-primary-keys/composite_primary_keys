@@ -4,12 +4,12 @@ module CompositePrimaryKeys
       def reverse_sql_order(order_query)
         if order_query.empty?
           # CPK
-          # return [arel_attribute(primary_key).desc] if primary_key
+          # return [table[primary_key].desc] if primary_key
 
           if primary_key
             # break apart CPKs
             return primary_key.map do |key|
-              arel_attribute(key).desc
+              table[key].desc
             end
           else
             raise IrreversibleOrderError,

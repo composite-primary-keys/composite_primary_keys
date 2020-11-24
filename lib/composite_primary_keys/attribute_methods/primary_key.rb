@@ -16,7 +16,6 @@ module ActiveRecord
 
       # Returns the primary key previous value.
       def id_was
-        sync_with_transaction_state
         # CPK
         # attribute_was(self.class.primary_key)
         if self.composite?
@@ -29,7 +28,6 @@ module ActiveRecord
       end
 
       def id_in_database
-        sync_with_transaction_state
         # CPK
         # attribute_in_database(self.class.primary_key)
         if self.composite?

@@ -3,7 +3,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 class TestCalculations < ActiveSupport::TestCase
   fixtures :articles, :products, :tariffs, :product_tariffs, :suburbs, :streets, :restaurants,
            :dorms, :rooms, :room_attributes, :room_attribute_assignments, :students, :room_assignments, :users, :readings,
-           :departments, :employees, :memberships, :membership_statuses
+           :departments, :employees, :memberships, :membership_statuses, :reference_codes, :reference_types
 
   def test_count
     assert_equal(3, Product.includes(:product_tariffs).count)
@@ -19,7 +19,14 @@ class TestCalculations < ActiveSupport::TestCase
     product = products(:first_product)
     assert_equal(1, product.product_tariffs.select('tariff_start_date').distinct.count)
   end
-  
+
+  def test_count_on_joined_relations_that_have_column_names_in_common
+    count_without_includes = ReferenceCode.count
+    count_with_includes  = ReferenceCode.includes(:reference_type).references(:reference_type).count
+    assert_equal(count_without_includes, count_with_includes)
+    assert_equal(5, count_with_includes)
+  end
+
   def test_count_not_distinct
     product = products(:first_product)
     assert_equal(2, product.product_tariffs.select('tariff_start_date').count)

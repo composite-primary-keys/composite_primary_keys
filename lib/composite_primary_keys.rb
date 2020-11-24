@@ -23,7 +23,7 @@
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>6.0.0'
+  gem 'activerecord', '~>6.1.0'
   require 'active_record'
 end
 
@@ -64,6 +64,7 @@ require 'active_record/connection_adapters/abstract_adapter'
 require 'active_record/connection_adapters/postgresql/database_statements'
 
 require 'active_record/relation/where_clause'
+require 'active_record/table_metadata'
 
 # CPK overrides
 require_relative 'composite_primary_keys/active_model/attribute_assignment'
@@ -115,3 +116,4 @@ require_relative 'composite_primary_keys/composite_relation'
 
 require_relative 'composite_primary_keys/arel/to_sql'
 require_relative 'composite_primary_keys/arel/sqlserver'
+require_relative 'composite_primary_keys/table_metadata'

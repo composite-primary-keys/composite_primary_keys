@@ -26,3 +26,8 @@ mindy:
   department_id: 3
   location_id: 2
   name: Mindy
+
+casey:
+  department_id: 2
+  location_id: 2
+  name: Casey

@@ -1,3 +1,6 @@
+== 13.0.0 (unreleased)
+* Update to ActiveRecord 6.0 (Javier Julio, Charlie Savage, Sammy Larbi)
+
 == 12.0.8 (2021-02-16)
 * Revert to previous MySQL/MariaDB auto increment fix
 
@@ -508,7 +511,7 @@ by replacing quoted identifiers with all-caps equivalents on Oracle (Rhett Sutph
 * Update Oracle tests (Rhett Sutphin)
 
 == 4.1.1 2011-08-31
-* Support for AR 3.1.1 
+* Support for AR 3.1.1
 * Make polymorphic belongs_to work in rails 3.1.1 (Tom Hughes)
 * Eliminate relative paths from the test suite (Rhett Sutphin)
 * Minor improvements to the CPK test runner w/o relative path changes (Rhett Sutphin)

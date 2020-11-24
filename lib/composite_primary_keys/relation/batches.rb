@@ -1,10 +1,14 @@
 module CompositePrimaryKeys
   module ActiveRecord
     module Batches
-      def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil)
+      def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil, order: :asc)
         relation = self
         unless block_given?
           return ::ActiveRecord::Batches::BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
+        end
+
+        unless [:asc, :desc].include?(order)
+          raise ArgumentError, ":order must be :asc or :desc, got #{order.inspect}"
         end
 
         if arel.orders.present?
@@ -17,8 +21,8 @@ module CompositePrimaryKeys
           batch_limit = remaining if remaining < batch_limit
         end
 
-        relation = relation.reorder(batch_order).limit(batch_limit)
-        relation = apply_limits(relation, start, finish)
+        relation = relation.reorder(batch_order(order)).limit(batch_limit)
+        relation = apply_limits(relation, start, finish, order)
         relation.skip_query_cache! # Retaining the results in the query cache would undermine the point of batching
         batch_relation = relation
 
@@ -61,7 +65,9 @@ module CompositePrimaryKeys
           end
 
           # CPK
-          # batch_relation = relation.where(arel_attribute(primary_key).gt(primary_key_offset))
+          #batch_relation = relation.where(
+          #  predicate_builder[primary_key, primary_key_offset, order == :desc ? :lt : :gt]
+          #)
           batch_relation = if composite?
             # CPK
             # Lexicographically select records
@@ -81,7 +87,9 @@ module CompositePrimaryKeys
             end.reduce(:or)
             relation.where(query)
           else
-            relation.where(arel_attribute(primary_key).gt(primary_key_offset))
+            batch_relation = relation.where(
+              predicate_builder[primary_key, primary_key_offset, order == :desc ? :lt : :gt]
+            )
           end
         end
       end
@@ -95,9 +103,9 @@ module CompositePrimaryKeys
         ary.length.times.reduce([]) { |results, i| results << ary[0..i] }
       end
 
-      def batch_order
+      def batch_order(order)
         self.primary_key.map do |key|
-          arel_attribute(key).asc
+          table[key].public_send(order)
         end
       end
     end
