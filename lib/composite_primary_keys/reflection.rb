@@ -29,6 +29,7 @@ module ActiveRecord
     class AssociationReflection < MacroReflection
       def active_record_primary_key
         # CPK (Rails freezes the string returned in the expression that calculates PK here. But Rails uses the `-` method which is not available on Array for CPK, so we calculate it in one line and freeze it on the next)
+        # @active_record_primary_key ||= -(options[:primary_key]&.to_s || primary_key(active_record))
         pk = options[:primary_key]&.to_s || primary_key(active_record)
         @active_record_primary_key ||= pk.freeze
       end
