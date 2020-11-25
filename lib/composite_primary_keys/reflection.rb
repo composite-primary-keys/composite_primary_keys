@@ -25,5 +25,13 @@ module ActiveRecord
         scope_chain_items.inject(klass_scope, &:merge!)
       end
     end
+
+    class AssociationReflection < MacroReflection
+      def active_record_primary_key
+        # CPK (Rails freezes the string returned in the expression that calculates PK here. But Rails uses the `-` method which is not available on Array for CPK, so we calculate it in one line and freeze it on the next)
+        pk = options[:primary_key]&.to_s || primary_key(active_record)
+        @active_record_primary_key ||= pk.freeze
+      end
+    end
   end
 end
