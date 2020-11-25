@@ -51,7 +51,11 @@ module CompositePrimaryKeys
           type_for(column_name)
         end
 
-        type_cast_calculated_value(value, type, operation)
+        type_cast_calculated_value(result.cast_values.first, operation) do |value|
+          type = column.try(:type_caster) ||
+            lookup_cast_type_from_join_dependencies(column_name.to_s) || Type.default_value
+          type.deserialize(value)
+        end
       end
 
       def build_count_subquery(relation, column_name, distinct)
