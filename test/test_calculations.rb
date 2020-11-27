@@ -19,7 +19,7 @@ class TestCalculations < ActiveSupport::TestCase
     product = products(:first_product)
     assert_equal(1, product.product_tariffs.select('tariff_start_date').distinct.count)
   end
-  
+
   def test_count_not_distinct
     product = products(:first_product)
     assert_equal(2, product.product_tariffs.select('tariff_start_date').count)
