@@ -2,28 +2,32 @@ require File.expand_path('../abstract_unit', __FILE__)
 
 class TestAttributes < ActiveSupport::TestCase
   fixtures :reference_types, :reference_codes, :products, :tariffs, :product_tariffs
-  
+
   CLASSES = {
     :single => {
       :class => ReferenceType,
       :primary_keys => :reference_type_id,
     },
-    :dual   => { 
+    :dual   => {
       :class => ReferenceCode,
       :primary_keys => [:reference_type_id, :reference_code],
     },
   }
-  
+
   def setup
     self.class.classes = CLASSES
   end
-  
+
   def test_brackets
+    tested_at_least_on_attribute = false
     testing_with do
       @first.attributes.each_pair do |attr_name, value|
+        next if value.nil?
         assert_equal value, @first[attr_name]
+        tested_at_least_on_attribute = true
       end
     end
+    assert tested_at_least_on_attribute
   end
 
   def test_brackets_primary_key
