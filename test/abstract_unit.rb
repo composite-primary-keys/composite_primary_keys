@@ -1,7 +1,6 @@
 spec_name = ENV['ADAPTER'] || 'sqlite'
 require 'bundler'
 require 'minitest/autorun'
-require "minitest/focus"
 
 Bundler.setup(:default, spec_name.to_sym)
 Bundler.require(:default, spec_name.to_sym)
