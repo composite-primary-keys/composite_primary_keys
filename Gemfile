@@ -30,6 +30,7 @@ end
 
 group :test do
   gem 'minitest'
+  gem 'minitest-focus'
 end
 
 # Load composite primary keys last since we may override code from the activerecord-sqlserver-adapter if using SqlServer.
