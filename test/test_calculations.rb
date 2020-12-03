@@ -20,6 +20,11 @@ class TestCalculations < ActiveSupport::TestCase
     assert_equal(1, product.product_tariffs.select('tariff_start_date').distinct.count)
   end
 
+  def test_count_on_joined_relations_that_have_column_names_in_common
+    count = ReferenceCode.includes(:reference_type).references(:reference_type).count
+    assert_equal(5, count)
+  end
+
   def test_count_not_distinct
     product = products(:first_product)
     assert_equal(2, product.product_tariffs.select('tariff_start_date').count)
