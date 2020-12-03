@@ -43,7 +43,9 @@ module CompositePrimaryKeys
 
         type_cast_calculated_value(result.cast_values.first, operation) do |value|
           type = column.try(:type_caster) ||
-            lookup_cast_type_from_join_dependencies(column_name.to_s) || Type.default_value
+            # CPK
+            # lookup_cast_type_from_join_dependencies(column_name.to_s) || Type.default_value
+            lookup_cast_type_from_join_dependencies(column_name.to_s) || ::ActiveRecord::Type.default_value
           type.deserialize(value)
         end
       end
