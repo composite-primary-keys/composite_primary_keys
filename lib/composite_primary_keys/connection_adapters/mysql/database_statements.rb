@@ -11,7 +11,7 @@ module ActiveRecord
           # CPK
           if pk.is_a?(Array)
             pk.map do |key|
-              column = self.column_for(arel.ast.relation.name, key)
+              column = column_for(arel.ast.relation.name, key)
               column.auto_increment? ? last_inserted_id(value) : nil
             end
           else
