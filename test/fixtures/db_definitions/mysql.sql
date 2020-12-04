@@ -72,7 +72,7 @@ create table readings (
     primary key (id)
 );
 
-create table groups (
+create table `groups` (
     id int not null auto_increment,
     name varchar(50) not null,
     primary key (id)
