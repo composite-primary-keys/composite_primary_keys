@@ -23,7 +23,7 @@
 
 unless defined?(ActiveRecord)
   require 'rubygems'
-  gem 'activerecord', '~>6.1.0.rc1'
+  gem 'activerecord', '~>6.1.0'
   require 'active_record'
 end
 
