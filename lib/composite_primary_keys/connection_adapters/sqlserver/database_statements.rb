@@ -15,15 +15,18 @@ module ActiveRecord
 
                   table_name ||= get_table_name(sql)
                   exclude_output_inserted = exclude_output_inserted_table_name?(table_name, sql)
-
                   if exclude_output_inserted
                     id_sql_type = exclude_output_inserted.is_a?(TrueClass) ? "bigint" : exclude_output_inserted
+                    # CPK
+                    # <<~SQL.squish
+                    #   DECLARE @ssaIdInsertTable table (#{quoted_pk} #{id_sql_type});
+                    #   #{sql.dup.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT INSERTED.#{quoted_pk} INTO @ssaIdInsertTable"}
+                    #   SELECT CAST(#{quoted_pk.join(',')} AS #{id_sql_type}) FROM @ssaIdInsertTable
+                    # SQL
                     <<~SQL.squish
-                      DECLARE @ssaIdInsertTable table (#{quoted_pk} #{id_sql_type});
-                      # CPK
-                      # #{sql.dup.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT INSERTED.#{quoted_pk} INTO @ssaIdInsertTable"}
+                      DECLARE @ssaIdInsertTable table (#{quoted_pk.map {|subkey| "#{subkey} #{id_sql_type}"}.join(", ")});
                       #{sql.dup.insert sql.index(/ (DEFAULT )?VALUES/), " OUTPUT INSERTED.#{quoted_pk.join(', INSERTED.')} INTO @ssaIdInsertTable"}
-                      SELECT CAST(#{quoted_pk.join(',')} AS #{id_sql_type}) FROM @ssaIdInsertTable
+                      SELECT #{quoted_pk.map {|subkey| "CAST(#{subkey} AS #{id_sql_type}) #{subkey}"}.join(", ")} FROM @ssaIdInsertTable
                     SQL
                   else
                     # CPK
