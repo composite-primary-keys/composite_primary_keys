@@ -28,7 +28,7 @@ module ActiveRecord
       # CPK
       if @klass.composite?
         stmt.table(arel_table)
-        cpk_in_subquery(stmt)
+        cpk_subquery(stmt)
       else
         stmt.table(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
@@ -71,7 +71,7 @@ module ActiveRecord
 
       if @klass.composite?
         stmt.from(arel_table)
-        cpk_in_subquery(stmt)
+        cpk_subquery(stmt)
       else
         stmt.from(arel.join_sources.empty? ? table : arel.source)
         stmt.key = arel_attribute(primary_key)
@@ -89,6 +89,29 @@ module ActiveRecord
     end
 
     # CPK
+    def cpk_subquery(stmt)
+      # For update and delete statements we need a way to specify which records should
+      # get updated. By default, Rails creates a nested IN subquery that uses the primary
+      # key. Postgresql, Sqlite, MariaDb and Oracle support IN subqueries with multiple
+      # columns but MySQL and SqlServer do not. Instead SQL server supports EXISTS queries
+      # and MySQL supports obfuscated IN queries. Thus we need to check the type of
+      # database adapter to decide how to proceed.
+      if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
+        cpk_mysql_subquery(stmt)
+      elsif defined?(ActiveRecord::ConnectionAdapters::SQLServerAdapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::SQLServerAdapter)
+        cpk_exists_subquery(stmt)
+      else
+        cpk_in_subquery(stmt)
+      end
+    end
+
+    # Used by postgresql, sqlite, mariadb and oracle. Example query:
+    #
+    # UPDATE reference_codes
+    # SET ...
+    # WHERE (reference_codes.reference_type_id, reference_codes.reference_code) IN
+    #      (SELECT reference_codes.reference_type_id, reference_codes.reference_code
+    #       FROM reference_codes)
     def cpk_in_subquery(stmt)
       # Setup the subquery
       subquery = arel.clone
@@ -103,25 +126,68 @@ module ActiveRecord
       stmt.wheres = [where]
     end
 
+    # CPK. This is an alternative to IN subqueries. It is used by sqlserver.
+    # Example query:
+    #
+    # UPDATE reference_codes
+    # SET ...
+    # WHERE EXISTS
+    #  (SELECT 1
+    #  FROM reference_codes cpk_child
+    #  WHERE reference_codes.reference_type_id = cpk_child.reference_type_id AND
+    #        reference_codes.reference_code = cpk_child.reference_code)
     def cpk_exists_subquery(stmt)
-      # Alias the outer table so we can join to in from the subquery
-      aliased_table = arel_table.alias("cpk_outer_relation")
-      stmt.table(aliased_table)
+      arel_attributes = primary_keys.map do |key|
+        arel_attribute(key)
+      end.to_composite_keys
 
-      # Setup the subquery
-      subquery = arel.clone
-      subquery.projections = primary_keys.map do |key|
-        arel_table[key]
-      end
+      # Clone the query
+      subselect = arel.clone
+
+      # Alias the table - we assume just one table
+      aliased_table = subselect.froms.first
+      aliased_table.table_alias = "cpk_child"
+
+      # Project - really we could just set this to "1"
+      subselect.projections = arel_attributes
 
       # Setup correlation to the outer query via where clauses
       primary_keys.map do |key|
-        outer_attribute = aliased_table[key]
-        inner_attribute = arel_table[key]
+        outer_attribute = arel_table[key]
+        inner_attribute = aliased_table[key]
         where = outer_attribute.eq(inner_attribute)
-        subquery.where(where)
+        subselect.where(where)
       end
-      stmt.wheres = [Arel::Nodes::Exists.new(subquery)]
+      stmt.wheres = [Arel::Nodes::Exists.new(subselect)]
+    end
+
+    # CPK. This is the old way CPK created subqueries and is used by MySql.
+    # MySQL does not support referencing the same table that is being UPDATEd or
+    # DELETEd in a subquery so we obfuscate it. The ugly query looks like this:
+    #
+    # UPDATE `reference_codes`
+    # SET ...
+    # WHERE (reference_codes.reference_type_id, reference_codes.reference_code) IN
+    #  (SELECT reference_type_id,reference_code
+    #   FROM (SELECT DISTINCT `reference_codes`.`reference_type_id`, `reference_codes`.`reference_code`
+    #         FROM `reference_codes`) __active_record_temp)
+    def cpk_mysql_subquery(stmt)
+      arel_attributes = primary_keys.map do |key|
+        arel_attribute(key)
+      end.to_composite_keys
+
+      subselect = arel.clone
+      subselect.projections = arel_attributes
+
+      # Materialize subquery by adding distinct
+      # to work with MySQL 5.7.6 which sets optimizer_switch='derived_merge=on'
+      subselect.distinct unless arel.limit || arel.offset || arel.orders.any?
+
+      key_name = arel_attributes.map(&:name).join(',')
+
+      manager = Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
+
+      stmt.wheres = [Arel::Nodes::In.new(arel_attributes, manager.ast)]
     end
   end
 end
