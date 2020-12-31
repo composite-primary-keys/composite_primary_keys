@@ -1,3 +1,8 @@
+== 12.0.4 (2020-12-30)
+* Fix compatibility with Ruby Ruby 2.6 and below (ta1kt0me)
+* Finally get SQLServer mass updates and deletes working (Charlie Savage)
+* Fix MySQL mass updates and deletes that were broken by 12.0.3 (Charlie Savage)
+
 == 12.0.3 (2020-11-11)
 * Prevents infinite loops with gems which modify the 'attributes' method (Nicholas Guarino)
 * Improve delete_all and update_all queries (Charlie Savage)
