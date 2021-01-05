@@ -4,7 +4,7 @@ module CompositePrimaryKeys
       def in_batches(of: 1000, start: nil, finish: nil, load: false, error_on_ignore: nil)
         relation = self
         unless block_given?
-          return BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
+          return ::ActiveRecord::Batches::BatchEnumerator.new(of: of, start: start, finish: finish, relation: self)
         end
 
         if arel.orders.present?

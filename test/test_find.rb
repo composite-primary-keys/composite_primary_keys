@@ -103,6 +103,13 @@ class TestFind < ActiveSupport::TestCase
     end
   end
 
+  def test_in_batches_enumerator
+    enumerator = Department.in_batches
+    enumerator.each do |batch|
+      assert_equal(Department.count, batch.size)
+    end
+  end
+
   def test_in_batches_of_1
     num_found = 0
     Department.in_batches(of: 1) do |batch|
