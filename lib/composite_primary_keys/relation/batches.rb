@@ -105,7 +105,7 @@ module CompositePrimaryKeys
 
       def batch_order(order)
         self.primary_key.map do |key|
-          arel_attribute(key).public_send(order)
+          table[key].public_send(order)
         end
       end
     end

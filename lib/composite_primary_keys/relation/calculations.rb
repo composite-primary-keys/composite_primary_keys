@@ -4,11 +4,12 @@ module CompositePrimaryKeys
       def aggregate_column(column_name)
         # CPK
         if column_name.kind_of?(Array)
+          # Note: Test don't seem to run this code?
           column_name.map do |column|
-            @klass.arel_attribute(column_name)
+            @klass.arel_table[column]
           end
         elsif @klass.has_attribute?(column_name) || @klass.attribute_alias?(column_name)
-          @klass.arel_attribute(column_name)
+          @klass.arel_table[column_name]
         else
           Arel.sql(column_name == :all ? "*" : column_name.to_s)
         end

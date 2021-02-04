@@ -31,7 +31,7 @@ module ActiveRecord
         cpk_subquery(stmt)
       else
         stmt.table(arel.join_sources.empty? ? table : arel.source)
-        stmt.key = arel_attribute(primary_key)
+        stmt.key = table[primary_key]
         stmt.wheres = arel.constraints
       end
       stmt.take(arel.limit)
@@ -42,7 +42,7 @@ module ActiveRecord
         if klass.locking_enabled? &&
             !updates.key?(klass.locking_column) &&
             !updates.key?(klass.locking_column.to_sym)
-          attr = arel_attribute(klass.locking_column)
+          attr = table[klass.locking_column]
           updates[attr.name] = _increment_attribute(attr)
         end
         stmt.set _substitute_values(updates)
@@ -74,7 +74,7 @@ module ActiveRecord
         cpk_subquery(stmt)
       else
         stmt.from(arel.join_sources.empty? ? table : arel.source)
-        stmt.key = arel_attribute(primary_key)
+        stmt.key = table[primary_key]
         stmt.wheres = arel.constraints
       end
 
@@ -138,7 +138,7 @@ module ActiveRecord
     #        reference_codes.reference_code = cpk_child.reference_code)
     def cpk_exists_subquery(stmt)
       arel_attributes = primary_keys.map do |key|
-        arel_attribute(key)
+        table[key]
       end.to_composite_keys
 
       # Clone the query
@@ -173,7 +173,7 @@ module ActiveRecord
     #         FROM `reference_codes`) __active_record_temp)
     def cpk_mysql_subquery(stmt)
       arel_attributes = primary_keys.map do |key|
-        arel_attribute(key)
+        table[key]
       end.to_composite_keys
 
       subselect = arel.clone
