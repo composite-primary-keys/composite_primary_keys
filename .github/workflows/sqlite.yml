@@ -1,0 +1,30 @@
+name: sqlite
+
+on: [push, pull_request]
+
+jobs:
+  sqlite_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ruby: [2.5, 2.6, 2.7]
+    runs-on: ${{matrix.os}}
+    env:
+      BUNDLE_WITHOUT: "db2 oracle sqlserver postgresql mysql"
+      BUNDLE_JOBS: 4
+      BUNDLE_PATH: vendor/bundle
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true
+      - name: Installing packages
+        run: sudo apt-get install libsqlite3-dev
+      - name: Setup database config
+        run: cp test/connections/databases.ci.yml test/connections/databases.yml
+      - name: Prepare databases
+        run: bundle exec rake sqlite:build_database
+      - name: SQLite test
+        run: bundle exec rake sqlite:test
