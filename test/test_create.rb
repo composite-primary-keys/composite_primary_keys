@@ -177,4 +177,21 @@ class TestCreate < ActiveSupport::TestCase
     suburb = Suburb.find_or_create_by!(:name => 'New Suburb', :city_id => 3, :suburb_id => 1)
     refute_nil(suburb)
   end
+
+  def test_cache
+    Suburb.cache do
+      # Suburb does not exist
+      suburb = Suburb.find_by(:city_id => 10, :suburb_id => 10)
+      assert_nil(suburb)
+
+      # Create it
+      suburb = Suburb.create!(:name => 'New Suburb', :city_id => 10, :suburb_id => 10)
+
+      # Should be able to find it
+      suburb = Suburb.find_by(:city_id => 10)
+      refute_nil(suburb)
+      refute_nil(suburb.city_id)
+      refute_nil(suburb.suburb_id)
+    end
+  end
 end
