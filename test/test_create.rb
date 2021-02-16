@@ -62,7 +62,7 @@ class TestCreate < ActiveSupport::TestCase
 
     # SQLite does not support an autoincrementing field in a composite key
     if Department.connection.class.name == "ActiveRecord::ConnectionAdapters::SQLite3Adapter"
-      attributes[:id] = 100
+      attributes[:id] = 200
     end
 
     department = Department.new(attributes)
