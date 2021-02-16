@@ -16,10 +16,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          mariadb_ROOT_PASSWORD: root
-          mariadb_USER: github
-          mariadb_PASSWORD: github
-          mariadb_DATABASE: composite_primary_keys_unittest
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: github
+          MYSQL_PASSWORD: github
+          MYSQL_DATABASE: composite_primary_keys_unittest
         options: >-
           --health-cmd "mysqladmin ping -h localhost"
           --health-interval 10s
