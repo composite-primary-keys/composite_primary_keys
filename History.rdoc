@@ -1,3 +1,9 @@
+== 12.0.7 (2021-02-15)
+* Switch to GitHub actions (ta1kt0me)
+* Fix MySQL/MariaDB query cache issue bug introduced in version 12.0.3 - see #539 (Charlie Savage)
+* Do a better job of supporting composite keys with an auto incrementing field for
+  MySQL and MariaDB (Charlie Savage)
+
 == 12.0.6 (2021-01-04)
 * Fix issue when calling in_batches without a block (Charlie Savage)
 
