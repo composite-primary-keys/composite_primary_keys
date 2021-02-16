@@ -48,6 +48,15 @@ class TestCreate < ActiveSupport::TestCase
     end
   end
 
+  def test_create_with_array
+    date = Date.new(2027, 01, 27)
+    tariff = Tariff.create!(id: [10, date], amount: 27)
+    refute_nil(tariff)
+    assert_equal([10, date], tariff.id)
+    assert_equal(date, tariff.start_date)
+    assert_equal(27, tariff.amount)
+  end
+
   def test_create_with_partial_serial
     attributes = {:location_id => 100}
 
