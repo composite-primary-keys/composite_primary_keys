@@ -18,7 +18,7 @@ module ActiveRecord
           # Is there an autoincrementing field?
           auto_key = pk.find do |key|
             attribute = arel.ast.relation[key]
-            column = self.column_for_attribute(attribute)
+            column = column_for_attribute(attribute)
             if column.respond_to?(:auto_increment?)
               column.auto_increment?
             end
