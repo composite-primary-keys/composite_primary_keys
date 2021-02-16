@@ -1,0 +1,45 @@
+name: mariadb
+
+on: [push, pull_request]
+
+jobs:
+  mariadb_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ruby: [2.5, 2.6, 2.7, 3.0]
+    runs-on: ${{matrix.os}}
+    services:
+      mariadb:
+        image: mariadb
+        ports:
+          - 3306:3306
+        env:
+          mariadb_ROOT_PASSWORD: root
+          mariadb_USER: github
+          mariadb_PASSWORD: github
+          mariadb_DATABASE: composite_primary_keys_unittest
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      BUNDLE_WITHOUT: "db2 oracle sqlserver sqlite postgresql"
+      BUNDLE_JOBS: 4
+      BUNDLE_PATH: vendor/bundle
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{matrix.ruby}}
+          bundler-cache: true
+      - name: Setup database config
+        run: cp test/connections/databases.ci.yml test/connections/databases.yml
+      - name: Prepare databases
+        run: bundle exec rake mysql:rebuild_database
+        env:
+          mariadb_ROOT_PASSWORD: root
+      - name: mariadb test
+        run: bundle exec rake mysql:test
