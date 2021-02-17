@@ -100,7 +100,7 @@ require_relative 'composite_primary_keys/nested_attributes'
 
 require_relative 'composite_primary_keys/connection_adapters/abstract/database_statements'
 require_relative 'composite_primary_keys/connection_adapters/abstract_adapter'
-#require_relative 'composite_primary_keys/connection_adapters/mysql/database_statements'
+require_relative 'composite_primary_keys/connection_adapters/mysql/database_statements'
 require_relative 'composite_primary_keys/connection_adapters/postgresql/database_statements'
 require_relative 'composite_primary_keys/connection_adapters/sqlserver/database_statements'
 
