@@ -13,7 +13,7 @@ module ActiveRecord
         # CPK
         # name = primary_key if name == "id" && primary_key
         name = primary_key if name == "id" && primary_key && !composite?
-        sync_with_transaction_state if name == primary_key
+
         _write_attribute(name, value)
       end
 

@@ -6,8 +6,8 @@ module ActiveRecord
         scope_chain_items = join_scopes(table, predicate_builder)
         klass_scope       = klass_join_scope(table, predicate_builder)
 
-        key         = join_keys.key
-        foreign_key = join_keys.foreign_key
+        key         = join_primary_key
+        foreign_key = join_foreign_key
 
         # CPK
         #klass_scope.where!(table[key].eq(foreign_table[foreign_key]))
@@ -23,6 +23,62 @@ module ActiveRecord
         end
 
         scope_chain_items.inject(klass_scope, &:merge!)
+      end
+    end
+
+    class AssociationReflection < MacroReflection
+      def foreign_key
+        # CPK
+        # @foreign_key ||= -(options[:foreign_key]&.to_s || derive_foreign_key)
+        @foreign_key ||= begin
+          fk = options[:foreign_key] || derive_foreign_key
+          fk.freeze
+        end
+        @foreign_key
+      end
+
+      def association_foreign_key
+        # CPK
+        # @association_foreign_key ||= -(options[:association_foreign_key]&.to_s || class_name.foreign_key)
+        @association_foreign_key ||= begin
+          fk = options[:association_foreign_key] || class_name.foreign_key
+          fk.freeze
+        end
+      end
+
+      def active_record_primary_key
+        # CPK (Rails freezes the string returned in the expression that calculates PK here. But Rails uses the `-` method which is not available on Array for CPK, so we calculate it in one line and freeze it on the next)
+        # @active_record_primary_key ||= -(options[:primary_key]&.to_s || primary_key(active_record))
+        @active_record_primary_key ||= begin
+          pk = options[:primary_key] || primary_key(active_record)
+          pk.freeze
+        end
+      end
+    end
+
+    class BelongsToReflection < AssociationReflection
+      def association_primary_key(klass = nil)
+        if primary_key = options[:primary_key]
+          # CPK
+          # @association_primary_key ||= -primary_key.to_s
+          @association_primary_key ||= primary_key.freeze
+        else
+          primary_key(klass || self.klass)
+        end
+      end
+    end
+
+    class ThroughReflection < AbstractReflection #:nodoc:
+      def association_primary_key(klass = nil)
+        # Get the "actual" source reflection if the immediate source reflection has a
+        # source reflection itself
+        if primary_key = actual_source_reflection.options[:primary_key]
+          # CPK
+          # @association_primary_key ||= -primary_key.to_s
+          @association_primary_key ||= primary_key.freeze
+        else
+          primary_key(klass || self.klass)
+        end
       end
     end
   end

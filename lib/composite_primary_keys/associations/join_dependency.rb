@@ -15,46 +15,62 @@ module ActiveRecord
         end
       end
 
-      def instantiate(result_set, &block)
+      def instantiate(result_set, strict_loading_value, &block)
         primary_key = aliases.column_alias(join_root, join_root.primary_key)
 
-        seen = Hash.new { |i, object_id|
-          i[object_id] = Hash.new { |j, child_class|
+        seen = Hash.new { |i, parent|
+          i[parent] = Hash.new { |j, child_class|
             j[child_class] = {}
           }
-        }
+        }.compare_by_identity
 
         model_cache = Hash.new { |h, klass| h[klass] = {} }
         parents = model_cache[join_root]
-        column_aliases = aliases.column_aliases join_root
+
+        column_aliases = aliases.column_aliases(join_root)
+        column_names = []
+
+        result_set.columns.each do |name|
+          column_names << name unless /\At\d+_r\d+\z/.match?(name)
+        end
+
+        if column_names.empty?
+          column_types = {}
+        else
+          column_types = result_set.column_types
+          unless column_types.empty?
+            attribute_types = join_root.attribute_types
+            column_types = column_types.slice(*column_names).delete_if { |k, _| attribute_types.key?(k) }
+          end
+          column_aliases += column_names.map! { |name| Aliases::Column.new(name, name) }
+        end
 
         message_bus = ActiveSupport::Notifications.instrumenter
 
         payload = {
-            record_count: result_set.length,
-            class_name: join_root.base_klass.name
+          record_count: result_set.length,
+          class_name: join_root.base_klass.name
         }
 
         message_bus.instrument("instantiation.active_record", payload) do
           result_set.each { |row_hash|
             # CPK
             # parent_key = primary_key ? row_hash[primary_key] : row_hash
-            # CPK
             parent_key = if primary_key.kind_of?(Array)
                            primary_key.map {|key| row_hash[key]}
                          else
                            primary_key ? row_hash[primary_key] : row_hash
                          end
 
-            parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases, &block)
-            construct(parent, join_root, row_hash, seen, model_cache)
+            parent = parents[parent_key] ||= join_root.instantiate(row_hash, column_aliases, column_types, &block)
+            construct(parent, join_root, row_hash, seen, model_cache, strict_loading_value)
           }
         end
 
         parents.values
       end
 
-      def construct(ar_parent, parent, row, seen, model_cache)
+      def construct(ar_parent, parent, row, seen, model_cache, strict_loading_value)
         return if ar_parent.nil?
 
         parent.children.each do |node|
@@ -63,12 +79,11 @@ module ActiveRecord
             other.loaded!
           elsif ar_parent.association_cached?(node.reflection.name)
             model = ar_parent.association(node.reflection.name).target
-            construct(model, node, row, seen, model_cache)
+            construct(model, node, row, seen, model_cache, strict_loading_value)
             next
           end
 
           key = aliases.column_alias(node, node.primary_key)
-
           # CPK
           if key.is_a?(Array)
             id = Array(key).map do |column_alias|
@@ -80,21 +95,21 @@ module ActiveRecord
             id = row[key]
           end
 
-          if id.nil? # duplicating this so it is clear what remained unchanged from the original
+          if id.nil?
             nil_association = ar_parent.association(node.reflection.name)
             nil_association.loaded!
             next
           end
 
-          model = seen[ar_parent.object_id][node][id]
+          model = seen[ar_parent][node][id]
 
           if model
-            construct(model, node, row, seen, model_cache)
+            construct(model, node, row, seen, model_cache, strict_loading_value)
           else
-            model = construct_model(ar_parent, node, row, model_cache, id)
+            model = construct_model(ar_parent, node, row, model_cache, id, strict_loading_value)
 
-            seen[ar_parent.object_id][node][id] = model
-            construct(model, node, row, seen, model_cache)
+            seen[ar_parent][node][id] = model
+            construct(model, node, row, seen, model_cache, strict_loading_value)
           end
         end
       end

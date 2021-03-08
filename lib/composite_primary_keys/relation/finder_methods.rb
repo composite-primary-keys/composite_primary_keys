@@ -26,12 +26,12 @@ module CompositePrimaryKeys
       def limited_ids_for(relation)
         # CPK
         # values = @klass.connection.columns_for_distinct(
-        #     connection.column_name_from_arel_node(arel_attribute(primary_key)),
+        #     connection.column_name_from_arel_node(table[primary_key]),
         #     relation.order_values
         # )
 
         columns = @klass.primary_keys.map do |key|
-          connection.visitor.compile(arel_attribute(key))
+          connection.visitor.compile(table[key])
         end
         values = @klass.connection.columns_for_distinct(columns, relation.order_values)
 
@@ -110,12 +110,12 @@ module CompositePrimaryKeys
       #
       #   result = limit(limit || 1)
       #   # CPK
-      #   # result.order!(arel_attribute(primary_key)) if order_values.empty? && primary_key
+      #   # result.order!(table[primary_key]) if order_values.empty? && primary_key
       #   if order_values.empty? && primary_key
       #     if composite?
-      #       result.order!(primary_keys.map { |pk| arel_attribute(pk).asc })
+      #       result.order!(primary_keys.map { |pk| table[pk].asc })
       #     elsif
-      #       result.order!(arel_attribute(primary_key))
+      #       result.order!(table[primary_key])
       #     end
       #   end
       #
@@ -224,8 +224,8 @@ module CompositePrimaryKeys
       def ordered_relation
         if order_values.empty? && (implicit_order_column || primary_key)
           # CPK
-          # order(arel_attribute(implicit_order_column || primary_key).asc)
-          order(Array(implicit_order_column || primary_key).map {|key| arel_attribute(key).asc})
+          # order(table[implicit_order_column || primary_key].asc)
+          order(Array(implicit_order_column || primary_key).map {|key| table[key].asc})
         else
           self
         end
