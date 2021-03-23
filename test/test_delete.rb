@@ -12,8 +12,9 @@ class TestDelete < ActiveSupport::TestCase
 
   def test_delete_one_with_id
     assert_equal(5, ReferenceCode.count)
-    ReferenceCode.delete(ReferenceCode.first.id)
+    deleted = ReferenceCode.delete(ReferenceCode.first.id)
     assert_equal(4, ReferenceCode.count)
+    assert_equal(1, deleted)
   end
 
   def test_destroy_one
@@ -24,8 +25,9 @@ class TestDelete < ActiveSupport::TestCase
 
   def test_delete_all
     refute_empty(ReferenceCode.all)
-    ReferenceCode.delete_all
+    deleted = ReferenceCode.delete_all
     assert_empty(ReferenceCode.all)
+    assert_equal(5, deleted)
   end
 
   def test_delete_all_with_join
@@ -33,11 +35,12 @@ class TestDelete < ActiveSupport::TestCase
 
     assert_equal(5, Department.count)
 
-    Department.joins(:employees).
-               where('employees.name = ?', employee.name).
-               delete_all
+    deleted = Department.joins(:employees).
+                         where('employees.name = ?', employee.name).
+                         delete_all
 
     assert_equal(4, Department.count)
+    assert_equal(1, deleted)
   end
 
   def test_clear_association

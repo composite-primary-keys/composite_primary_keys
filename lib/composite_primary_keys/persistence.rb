@@ -10,11 +10,12 @@ module ActiveRecord
                           Array(id_or_array)
                         end
 
-          id_or_array.each do |id|
+          # Delete should return the number of deleted records
+          id_or_array.map do |id|
             # Is the passed in id actually a record?
             id = id.kind_of?(::ActiveRecord::Base) ? id.id : id
             delete_by(cpk_id_predicate(self.arel_table, self.primary_key, id))
-          end
+          end.sum
         else
           delete_by(primary_key => id_or_array)
         end
