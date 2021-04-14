@@ -27,7 +27,7 @@ module ActiveRecord
           # convert_to_id(value)
           if value.nil?
             nil
-          elsif value.composite?
+          elsif value.respond_to?(:composite?) && value.composite?
             value.class.primary_keys.zip(value.id)
           else
             convert_to_id(value)

@@ -355,4 +355,10 @@ class TestAssociations < ActiveSupport::TestCase
     article.reading_ids = Reading.pluck(:id)
     assert_equal article.reading_ids, Reading.pluck(:id)
   end
+
+  def test_find_by_association
+    assert_equal Membership.where(user: '1').count, 1
+    assert_equal Membership.where(user_id: '1').count, 1
+    assert_equal Membership.where(user: User.find(1)).count, 1
+  end
 end
