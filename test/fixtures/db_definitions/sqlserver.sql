@@ -58,6 +58,12 @@ CREATE TABLE users (
     name varchar(50) NOT NULL
 );
 
+CREATE TABLE emails (
+    id      [int] IDENTITY(1000,1) NOT NULL,
+    user_id [int] NOT NULL,
+    address [varchar](50) NOT NULL
+);
+
 CREATE TABLE articles (
     id   [int] IDENTITY(1000,1) NOT NULL,
     name varchar(50) NOT NULL

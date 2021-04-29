@@ -56,6 +56,12 @@ create table users (
     name varchar(50) not null
 );
 
+create table emails (
+    id integer not null primary key autoincrement,
+    user_id int not null,
+    address varchar(50) not null
+);
+
 create table articles (
     id integer not null primary key autoincrement,
     name varchar(50) not null

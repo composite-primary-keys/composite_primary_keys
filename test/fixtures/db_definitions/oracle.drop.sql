@@ -9,6 +9,8 @@ drop table suburbs;
 drop sequence suburbs_city_id_seq;
 drop table streets;
 drop sequence streets_seq;
+drop table emails;
+drop sequence emails_seq;
 drop table users;
 drop sequence users_seq;
 drop table articles;

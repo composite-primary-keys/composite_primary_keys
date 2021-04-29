@@ -56,6 +56,13 @@ CREATE TABLE users (
   PRIMARY KEY  (id)
 );
 
+CREATE TABLE emails (
+  id integer NOT NULL,
+  user_id integer NOT NULL,
+  address varchar(50) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE articles (
   id integer NOT NULL ,
   name varchar(50) NOT NULL,

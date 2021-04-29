@@ -63,6 +63,14 @@ create table users (
     name varchar(50) not null
 );
 
+create sequence emails_seq start with 1000;
+
+create table emails (
+    id      number(11) primary key,
+    user_id number(11) not null,
+    address varchar(50) not null
+);
+
 create sequence articles_seq start with 1000;
 
 create table articles (
