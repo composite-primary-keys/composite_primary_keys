@@ -361,4 +361,24 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal Membership.where(user_id: '1').count, 1
     assert_equal Membership.where(user: User.find(1)).count, 1
   end
+
+  def test_set_inverse
+    user = User.new(name: 'test')
+    email = user.email = Email.new(address: 'test@test.com')
+
+    email_reflection = User.reflections['email']
+    user_reflection = Email.reflections['user']
+    assert_equal('user_id', email_reflection.foreign_key)
+    assert_equal('user_id', user_reflection.foreign_key)
+
+    assert email._has_attribute?(email_reflection.foreign_key)
+
+    assert_equal(email, user.email)
+    assert_equal(email.user_id, nil)
+
+    user.save
+
+    assert user.email.persisted?
+    assert_equal(user.id, user.email.user_id)
+  end
 end

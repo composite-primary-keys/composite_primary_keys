@@ -31,7 +31,7 @@ module ActiveRecord
         # CPK
         # @foreign_key ||= -(options[:foreign_key]&.to_s || derive_foreign_key)
         @foreign_key ||= begin
-          fk = options[:foreign_key] || derive_foreign_key
+          fk = extract_keys(options[:foreign_key]) || derive_foreign_key
           fk.freeze
         end
         @foreign_key
@@ -41,7 +41,7 @@ module ActiveRecord
         # CPK
         # @association_foreign_key ||= -(options[:association_foreign_key]&.to_s || class_name.foreign_key)
         @association_foreign_key ||= begin
-          fk = options[:association_foreign_key] || class_name.foreign_key
+          fk = extract_keys(options[:association_foreign_key]) || class_name.foreign_key
           fk.freeze
         end
       end
@@ -50,9 +50,15 @@ module ActiveRecord
         # CPK (Rails freezes the string returned in the expression that calculates PK here. But Rails uses the `-` method which is not available on Array for CPK, so we calculate it in one line and freeze it on the next)
         # @active_record_primary_key ||= -(options[:primary_key]&.to_s || primary_key(active_record))
         @active_record_primary_key ||= begin
-          pk = options[:primary_key] || primary_key(active_record)
+          pk = extract_keys(options[:primary_key]) || primary_key(active_record)
           pk.freeze
         end
+      end
+
+      private
+
+      def extract_keys(keys)
+        keys && (keys.is_a?(Array) ? keys.map { |k| k.to_s.freeze } : keys.to_s)
       end
     end
 

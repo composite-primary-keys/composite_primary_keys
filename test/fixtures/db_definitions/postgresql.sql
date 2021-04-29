@@ -60,6 +60,13 @@ create table users (
     primary key (id)
 );
 
+create table emails (
+    id serial not null,
+    user_id int not null,
+    address varchar(50) not null,
+    primary key(id)
+);
+
 create table articles (
     id   serial not null,
     name varchar(50) not null,
