@@ -32,7 +32,8 @@ module CompositePrimaryKeys
     end
 
     def cpk_id_predicate(table, keys, values)
-      eq_predicates = keys.zip(values).map do |key, value|
+      # We zip on values then keys in case values are not provided for each key field
+      eq_predicates = values.zip(keys).map do |value, key|
         table[key].eq(value)
       end
       cpk_and_predicate(eq_predicates)
