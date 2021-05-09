@@ -73,6 +73,18 @@ class TestCreate < ActiveSupport::TestCase
     assert_equal(100, department.location_id)
   end
 
+  def test_create_with_id
+    department = Department.create!(id: [2, 3])
+    assert_equal([2, 3], department.id)
+    assert_equal(2, department.attributes["id"])
+    assert_equal(3, department.attributes["location_id"])
+
+    department.reload
+    assert_equal([2, 3], department.id)
+    assert_equal(2, department.attributes["id"])
+    assert_equal(3, department.attributes["location_id"])
+  end
+
   def test_create_on_association
     suburb = Suburb.first
     suburb.streets.create(:name => "my street")
