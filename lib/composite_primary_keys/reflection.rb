@@ -30,20 +30,13 @@ module ActiveRecord
       def foreign_key
         # CPK
         # @foreign_key ||= -(options[:foreign_key]&.to_s || derive_foreign_key)
-        @foreign_key ||= begin
-          fk = options[:foreign_key] || derive_foreign_key
-          fk.freeze
-        end
-        @foreign_key
+        @foreign_key ||= extract_keys(options[:foreign_key]) || derive_foreign_key
       end
 
       def association_foreign_key
         # CPK
         # @association_foreign_key ||= -(options[:association_foreign_key]&.to_s || class_name.foreign_key)
-        @association_foreign_key ||= begin
-          fk = options[:association_foreign_key] || class_name.foreign_key
-          fk.freeze
-        end
+        @association_foreign_key ||= extract_keys(options[:association_foreign_key]) || class_name.foreign_key
       end
 
       def active_record_primary_key
@@ -52,6 +45,19 @@ module ActiveRecord
         @active_record_primary_key ||= begin
           pk = options[:primary_key] || primary_key(active_record)
           pk.freeze
+        end
+      end
+
+      private
+
+      def extract_keys(keys)
+        case keys
+          when Array
+            keys.map { |k| k.to_s }
+          when NilClass
+            nil
+          else
+            keys.to_s
         end
       end
     end

@@ -53,6 +53,17 @@ class TestAttributes < ActiveSupport::TestCase
     compare_indexes(tarrif, tarrif.class.primary_key, product_tariff, [:tariff_id, :tariff_start_date])
   end
 
+  def test_has_attribute
+    tariff = tariffs(:flat)
+    assert(tariff.has_attribute?([:tariff_id, :start_date]))
+    assert(tariff.has_attribute?(['tariff_id', 'start_date']))
+  end
+
+  def test_has__attribute
+    tariff = tariffs(:flat)
+    assert(tariff._has_attribute?(['tariff_id', 'start_date']))
+  end
+
   private
 
   def compare_indexes(obj1, indexes1, obj2, indexes2)
