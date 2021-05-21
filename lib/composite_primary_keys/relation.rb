@@ -29,7 +29,7 @@ module ActiveRecord
       stmt.key = table[primary_key]
 
       # CPK
-      if @klass.composite? && stmt.to_sql =~ /['"]#{primary_key.to_s}['"]/
+      if @klass.composite? && @klass.connection.visitor.compile(stmt.ast) =~ /['"]#{primary_key.to_s}['"]/
         stmt = Arel::UpdateManager.new
         stmt.table(arel_table)
         cpk_subquery(stmt)
@@ -74,7 +74,7 @@ module ActiveRecord
       stmt.key = table[primary_key]
 
       # CPK
-      if @klass.composite? && stmt.to_sql =~ /['"]#{primary_key.to_s}['"]/
+      if @klass.composite? && @klass.connection.visitor.compile(stmt.ast) =~ /['"]#{primary_key.to_s}['"]/
         stmt = Arel::DeleteManager.new
         stmt.from(arel_table)
         cpk_subquery(stmt)

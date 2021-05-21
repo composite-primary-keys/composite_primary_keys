@@ -74,6 +74,8 @@ class TestUpdate < ActiveSupport::TestCase
   end
 
   def test_update_all_join
+    tested_update_all = false
+    Arel::Table.engine = nil # should not rely on the global Arel::Table.engine
     ReferenceCode.joins(:reference_type).
                   where('reference_types.reference_type_id = ?', 2).
                   update_all(:description => 'random value')
@@ -82,6 +84,10 @@ class TestUpdate < ActiveSupport::TestCase
                           where(:description => 'random value')
 
     assert_equal(2, query.count)
+    tested_update_all = true
+  ensure
+    Arel::Table.engine = ActiveRecord::Base
+    assert tested_update_all
   end
 
   def test_update_with_uniqueness
