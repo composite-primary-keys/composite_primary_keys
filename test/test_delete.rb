@@ -31,6 +31,8 @@ class TestDelete < ActiveSupport::TestCase
   end
 
   def test_delete_all_with_join
+    tested_delete_all = false
+    Arel::Table.engine = nil # should not rely on the global Arel::Table.engine
     employee = employees(:mindy)
 
     assert_equal(5, Department.count)
@@ -41,6 +43,10 @@ class TestDelete < ActiveSupport::TestCase
 
     assert_equal(4, Department.count)
     assert_equal(1, deleted)
+    tested_delete_all = true
+  ensure
+    Arel::Table.engine = ActiveRecord::Base
+    assert tested_delete_all
   end
 
   def test_clear_association
