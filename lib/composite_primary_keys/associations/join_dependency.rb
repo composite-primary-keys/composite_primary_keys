@@ -1,6 +1,25 @@
 module ActiveRecord
   module Associations
     class JoinDependency
+
+      class JoinAssociation < JoinPart # :nodoc:
+        private
+          def append_constraints(join, constraints)
+            if join.is_a?(Arel::Nodes::StringJoin)
+              join_string = Arel::Nodes::And.new(constraints.unshift join.left)
+              join.left = Arel.sql(base_klass.connection.visitor.compile(join_string))
+            else
+              right = join.right
+              # CPK
+              if right.expr.children.empty?
+                right.expr = Arel::Nodes::And.new(constraints)
+              else
+                right.expr = Arel::Nodes::And.new(constraints.unshift right.expr)
+              end
+            end
+          end
+      end
+
       class Aliases # :nodoc:
         def column_alias(node, column)
           # CPK
