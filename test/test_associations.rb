@@ -343,6 +343,14 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal([3,2], memberships[1].id)
   end
 
+  def test_scoped_has_many_with_primary_key_with_associations
+    memberships = Membership.joins(:active_statuses)
+    assert_equal(2, memberships.length)
+
+    assert_equal([1,1], memberships[0].id)
+    assert_equal([3,2], memberships[1].id)
+  end
+
   def test_foreign_key_present_with_null_association_ids
     group = Group.new
     group.memberships.build
