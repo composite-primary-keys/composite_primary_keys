@@ -344,6 +344,7 @@ class TestAssociations < ActiveSupport::TestCase
   end
 
   def test_scoped_has_many_with_primary_key_with_associations
+    puts Membership.includes(:active_statuses).references(:membership_statuses).to_sql
     memberships = Membership.includes(:active_statuses).references(:membership_statuses)
     assert_equal(2, memberships.length)
     assert_equal([1,1], memberships[0].id)
