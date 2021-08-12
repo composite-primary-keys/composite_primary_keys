@@ -3,7 +3,7 @@ class Membership < ActiveRecord::Base
   belongs_to :user
 	belongs_to :group
 	has_many :statuses, :class_name => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
-  has_many :active_statuses, -> { where(membership_statuses: { status: "Active"}) },
+  has_many :active_statuses, -> { where('membership_statuses.status = ?', 'Active') },
            :class_name => 'MembershipStatus', :foreign_key => [:user_id, :group_id]
   has_many :readings, :primary_key => :user_id, :foreign_key => :user_id
 end
