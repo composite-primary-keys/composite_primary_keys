@@ -54,8 +54,8 @@ create table product_tariffs (
 );
 
 create table suburbs (
-    city_id   int         not null,
-    suburb_id int         not null,
+    city_id   serial      not null,
+    suburb_id serial      not null,
     name      varchar(50) not null,
     primary key (city_id, suburb_id)
 );
@@ -226,4 +226,11 @@ create table pk_called_ids (
     abbreviation      varchar(50) default null,
     description       varchar(50) default null,
     primary key (id, reference_code)
+);
+
+create table cpk_with_default_values (
+    record_id serial not null,
+    record_version varchar(50) default '' not null,
+    published boolean default false not null,
+    primary key (record_id, record_version, published)
 );

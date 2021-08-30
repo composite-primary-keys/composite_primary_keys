@@ -60,6 +60,27 @@ module ActiveRecord
           true
         end
       end
+
+      def _create_record(attribute_names = self.attribute_names)
+        attribute_names &= self.class.column_names
+        attributes_values = arel_attributes_with_values_for_create(attribute_names)
+
+        new_id = self.class.unscoped.insert attributes_values
+
+        # CPK
+        if self.composite?
+          # Merge together the specified id with the new id (specified id gets precedence)
+          self.id = self.id.zip(Array(new_id)).map {|id1, id2| (id1.nil? ? id2 : id1)}
+        else
+          self.id ||= new_id if self.class.primary_key
+        end
+
+        @new_record = false
+
+        yield(self) if block_given?
+
+        id
+      end
     end
   end
 end
