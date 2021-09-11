@@ -48,3 +48,5 @@ drop table products_restaurants;
 drop table employees_groups;
 drop table pk_called_ids;
 drop sequence pk_called_ids_seq;
+drop table cpk_with_default_values;
+drop sequence cpk_with_default_values_seq;

@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestCreate < ActiveSupport::TestCase
-  fixtures :articles, :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs
+  fixtures :articles, :students, :dorms, :rooms, :room_assignments, :reference_types, :reference_codes, :streets, :suburbs, :cpk_with_default_values
 
   CLASSES = {
     :single => {
@@ -45,6 +45,17 @@ class TestCreate < ActiveSupport::TestCase
         flunk "Incorrect exception raised: #{$!}, #{$!.class}"
       end
       assert_equal composite?, !@successful, "Create should have failed for composites; #{@obj.inspect}"
+    end
+  end
+
+  def test_create_generated_keys
+    # Not all databases support columns with multiple identity fields
+    if defined?(ActiveRecord::ConnectionAdapters::PostgreSQL) ||
+       defined?(ActiveRecord::ConnectionAdapters::SQLite3)
+
+      suburb = Suburb.create!(:name => 'Capitol Hill')
+      refute_nil(suburb.city_id)
+      refute_nil(suburb.suburb_id)
     end
   end
 
@@ -160,5 +171,20 @@ class TestCreate < ActiveSupport::TestCase
     end
 
     assert_equal('Validation failed: Id has already been taken', error.to_s)
+  end
+
+  def test_create_when_pk_has_default_value
+    first = CpkWithDefaultValue.create!
+    refute_nil(first.record_id)
+    assert_equal('', first.record_version)
+    assert_equal(false, first.published)
+
+    second = CpkWithDefaultValue.create!(record_id: first.record_id, record_version: 'Same id, different version')
+    assert_equal(first.record_id, second.record_id)
+    assert_equal('Same id, different version', second.record_version)
+
+    third = CpkWithDefaultValue.create!(record_version: 'Created by version only')
+    refute_nil(third.record_id)
+    assert_equal('Created by version only', third.record_version)
   end
 end
