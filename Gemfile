@@ -7,7 +7,7 @@ group :db2 do
 end
 
 group :mysql do
-  gem 'mysql2'
+  #gem 'mysql2'
 end
 
 group :oracle do
@@ -25,7 +25,7 @@ group :sqlite do
 end
 
 group :sqlserver do
-  gem 'activerecord-sqlserver-adapter'
+  #  gem 'activerecord-sqlserver-adapter'
 end
 
 group :test do

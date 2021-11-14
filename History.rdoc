@@ -1,3 +1,8 @@
+== 13.0.1
+* Fix invalid sql generation for some cases of scoped associations (Ryan Mulligan)
+* Fix unintentional connection to database (Kazuhiro Masuda)
+* Zip values then keys - fixes #548 (Charlie Savage)
+
 == 13.0.0
 * Update to ActiveRecord 6.1 (Javier Julio, Charlie Savage, Sammy Larbi)
 
