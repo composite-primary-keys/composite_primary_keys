@@ -30,11 +30,18 @@ module ActiveRecord
           end
         end
 
-        constraints = _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
+        constraints = constraints.map { |name, value| predicate_builder[name, value] }
 
-        um = arel_table.where(
-          constraints.reduce(&:and)
-        ).compile_update(_substitute_values(values), primary_key)
+        default_constraint = build_default_constraint
+        constraints << default_constraint if default_constraint
+
+        if current_scope = self.global_current_scope
+          constraints << current_scope.where_clause.ast
+        end
+
+        um = Arel::UpdateManager.new(arel_table)
+        um.set(values.transform_keys { |name| arel_table[name] })
+        um.wheres = constraints
 
         connection.update(um, "#{self} Update")
       end
@@ -48,10 +55,16 @@ module ActiveRecord
           end
         end
 
-        constraints = _substitute_values(constraints).map { |attr, bind| attr.eq(bind) }
+        constraints = constraints.map { |name, value| predicate_builder[name, value] }
 
-        dm = Arel::DeleteManager.new
-        dm.from(arel_table)
+        default_constraint = build_default_constraint
+        constraints << default_constraint if default_constraint
+
+        if current_scope = self.global_current_scope
+          constraints << current_scope.where_clause.ast
+        end
+
+        dm = Arel::DeleteManager.new(arel_table)
         dm.wheres = constraints
 
         connection.delete(dm, "#{self} Destroy")
@@ -73,6 +86,7 @@ module ActiveRecord
       end
 
       @new_record = false
+      @previously_new_record = true
 
       yield(self) if block_given?
 
