@@ -45,7 +45,7 @@ module CompositePrimaryKeys
         if operation != "count"
           type = column.try(:type_caster) ||
             lookup_cast_type_from_join_dependencies(column_name.to_s) || Type.default_value
-          type = type.subtype if Enum::EnumType === type
+          type = type.subtype if ::ActiveRecord::Enum::EnumType === type
         end
 
         type_cast_calculated_value(result.cast_values.first, operation, type) do |value|
