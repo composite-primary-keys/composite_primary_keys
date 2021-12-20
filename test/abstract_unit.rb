@@ -21,6 +21,10 @@ ActiveRecord::Base.configurations = {test: spec}
 
 # Tell ActiveRecord where to find models
 ActiveSupport::Dependencies.autoload_paths << File.join(PROJECT_ROOT, 'test', 'fixtures')
+Dir[File.join(PROJECT_ROOT, 'test', 'fixtures', '*.rb')].each do |file_path|
+  require_file = file_path.sub(PROJECT_ROOT, '..').sub('.rb', '')
+  require_relative require_file
+end
 
 I18n.config.enforce_available_locales = true
 
