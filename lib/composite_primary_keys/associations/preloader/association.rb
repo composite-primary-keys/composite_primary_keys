@@ -2,6 +2,20 @@ module ActiveRecord
   module Associations
     class Preloader
       class Association
+
+        class LoaderQuery
+          def load_records_for_keys(keys, &block)
+            # CPK
+            if association_key_name.is_a?(Array)
+              predicate = cpk_in_predicate(scope.klass.arel_table, association_key_name, keys)
+              scope.where(predicate).load(&block)
+            else
+              scope.where(association_key_name => keys).load(&block)
+            end
+          end
+        end
+
+        # TODO: is records_for needed anymore? Rails' implementation has changed significantly
         def records_for(ids)
           records = if association_key_name.is_a?(Array)
                       predicate = cpk_in_predicate(klass.arel_table, association_key_name, ids)
@@ -33,6 +47,7 @@ module ActiveRecord
           end
         end
 
+        # TODO: is records_by_owner needed anymore? Rails' implementation has changed significantly
         def records_by_owner
           @records_by_owner ||= preloaded_records.each_with_object({}) do |record, result|
             key = if association_key_name.is_a?(Array)

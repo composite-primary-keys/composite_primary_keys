@@ -42,7 +42,13 @@ module CompositePrimaryKeys
 
         result = skip_query_cache_if_necessary { @klass.connection.select_all(query_builder) }
 
-        type_cast_calculated_value(result.cast_values.first, operation) do |value|
+        if operation != "count"
+          type = column.try(:type_caster) ||
+            lookup_cast_type_from_join_dependencies(column_name.to_s) || ::ActiveRecord::Type.default_value
+          type = type.subtype if ::ActiveRecord::Enum::EnumType === type
+        end
+
+        type_cast_calculated_value(result.cast_values.first, operation, type) do |value|
           type = column.try(:type_caster) ||
             # CPK
             # lookup_cast_type_from_join_dependencies(column_name.to_s) || Type.default_value

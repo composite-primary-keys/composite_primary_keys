@@ -1,8 +1,8 @@
 module CompositePrimaryKeys
   module VERSION
-    MAJOR = 13
+    MAJOR = 14
     MINOR = 0
-    TINY  = 1
+    TINY  = 0
     STRING = [MAJOR, MINOR, TINY].join('.')
   end
 end

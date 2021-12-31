@@ -62,6 +62,7 @@ end
 ActiveRecord::Associations::AssociationScope.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Associations::JoinDependency::JoinAssociation.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Associations::Preloader::Association.send(:include, CompositePrimaryKeys::Predicates)
+ActiveRecord::Associations::Preloader::Association::LoaderQuery.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Associations::HasManyAssociation.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Associations::HasManyThroughAssociation.send(:include, CompositePrimaryKeys::Predicates)
 ActiveRecord::Base.send(:extend, CompositePrimaryKeys::Predicates)
