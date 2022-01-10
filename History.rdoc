@@ -1,3 +1,6 @@
+== 14.0.1 (2022-01-9)
+* Fix mistake in Gemfile (Charlie Savage)
+
 == 14.0.0 (2022-01-9)
 * Update to ActiveRecord 7.0 (Sammy Larbi)
 
