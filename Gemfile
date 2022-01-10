@@ -3,12 +3,12 @@ source 'https://rubygems.org'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
 
 group :db2 do
-  #gem 'ibm_db'
+  gem 'ibm_db'
 end
 
-# group :mysql do
-#   gem 'mysql2'
-# end
+group :mysql do
+  gem 'mysql2'
+end
 
 group :oracle do
   gem 'ruby-oci8'

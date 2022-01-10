@@ -1,9 +1,12 @@
-== 13.0.1
+== 13.0.2 (2022-01-09)
+* Fix scoped associations take #2 (Charlie Savage)
+
+== 13.0.1 (2021-11-14)
 * Fix invalid sql generation for some cases of scoped associations (Ryan Mulligan)
 * Fix unintentional connection to database (Kazuhiro Masuda)
 * Zip values then keys - fixes #548 (Charlie Savage)
 
-== 13.0.0
+== 13.0.0 (2021-05-09)
 * Update to ActiveRecord 6.1 (Javier Julio, Charlie Savage, Sammy Larbi)
 
 == 12.0.10 (2021-05-09)
