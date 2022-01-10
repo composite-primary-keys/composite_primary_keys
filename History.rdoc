@@ -1,3 +1,8 @@
+== 13.0.3 (2022-01-09)
+* Remove override on ActiveRecord::Base#to_param. That method has moved to Integration
+  so no longer works. #541. (Charlie Savage)
+* Check if an assocation is polymorhpic. Fixes #558.
+
 == 13.0.2 (2022-01-09)
 * Fix scoped associations take #2 (Charlie Savage)
 
