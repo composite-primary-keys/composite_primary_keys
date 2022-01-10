@@ -343,7 +343,7 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal([3,2], memberships[1].id)
   end
 
-  def test_scoped_has_many_with_primary_key_with_associations
+  def test_join_constraints
     memberships = Membership.joins(:active_statuses)
     assert_equal(2, memberships.length)
 
