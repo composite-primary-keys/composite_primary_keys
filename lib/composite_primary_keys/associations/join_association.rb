@@ -11,7 +11,7 @@ module ActiveRecord
             else
               right = join.right
               # CPK
-              if right.expr.children.empty?
+              if right.expr.is_a?(Arel::Nodes::And) && right.expr.children.empty?
                 right.expr = Arel::Nodes::And.new(constraints)
               else
                 right.expr = Arel::Nodes::And.new(constraints.unshift right.expr)

@@ -6,9 +6,9 @@ group :db2 do
   gem 'ibm_db'
 end
 
-group :mysql do
-  gem 'mysql2'
-end
+# group :mysql do
+#   gem 'mysql2'
+# end
 
 group :oracle do
   gem 'ruby-oci8'
