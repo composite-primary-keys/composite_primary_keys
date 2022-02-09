@@ -124,6 +124,15 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal('Sarah1', department.head.name)
   end
 
+  def test_has_no_autosave
+    department = departments(:engineering)
+    assert_equal('Sarah', department.head_without_autosave.name)
+
+    department.head_without_autosave.name = 'Sarah1'
+    department.save!
+    assert_equal('Sarah1', department.head_without_autosave.name)
+  end
+
   def test_has_many_association_is_not_cached_to_where_it_returns_the_wrong_ones
     engineering = departments(:engineering)
     engineering_employees = engineering.employees
