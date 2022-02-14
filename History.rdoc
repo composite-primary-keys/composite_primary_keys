@@ -1,3 +1,6 @@
+== 14.0.4 (2022-02-13)
+* Fix for changed method in Rails 7.0.2 (Yota)
+
 == 14.0.3 (2022-01-09)
 * Remove override on ActiveRecord::Base#to_param. That method has moved to Integration
   so no longer works. #541. (Charlie Savage)
