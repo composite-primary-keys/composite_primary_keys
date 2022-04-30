@@ -35,4 +35,10 @@ class CompositeArraysTest < ActiveSupport::TestCase
     assert_equal 'The USA,^5EWashington^2C D.C.',
                  CompositePrimaryKeys::CompositeKeys.new(['The USA', '^Washington, D.C.']).to_s
   end
+
+  def test_to_param
+    assert_equal '1,2', CompositePrimaryKeys::CompositeKeys.new([1, 2]).to_param
+    assert_equal 'The USA,^5EWashington^2C D.C.',
+                 CompositePrimaryKeys::CompositeKeys.new(['The USA', '^Washington, D.C.']).to_param
+  end
 end

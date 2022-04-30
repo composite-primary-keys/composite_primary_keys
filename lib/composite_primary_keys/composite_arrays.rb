@@ -53,6 +53,8 @@ module CompositePrimaryKeys
       # Doing this makes it easier to parse Base#[](attr_name)
       map { |key| Utils.escape_string_key(key.to_s) }.join(ID_SEP)
     end
+
+    alias_method :to_param, :to_s
   end
 
   module Utils
