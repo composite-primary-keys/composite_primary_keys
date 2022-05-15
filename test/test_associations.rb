@@ -367,7 +367,21 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal(false, associations.send('foreign_key_present?'))
   end
 
-  def test_ids_equals_for_non_CPK_case
+  def test_assignment_by_ids_as_arrays
+    room = Room.create dorm: dorms(:branner), room_id: 4
+    room.room_assignment_ids = [[3, 1, 2], [4, 1, 2]]
+    room.save!
+    assert_equal room.room_assignments.map(&:student_id), [3, 4]
+  end
+
+  def test_assignment_by_ids_as_strings
+    room = Room.create dorm: dorms(:branner), room_id: 4
+    room.room_assignment_ids = ['3,1,2', '4,1,2']
+    room.save!
+    assert_equal room.room_assignments.map(&:student_id), [3, 4]
+  end
+
+  def test_assignment_by_ids_for_non_CPK_case
     article = Article.new
     article.reading_ids = Reading.pluck(:id)
     assert_equal article.reading_ids, Reading.pluck(:id)
