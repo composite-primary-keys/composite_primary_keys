@@ -374,6 +374,14 @@ class TestAssociations < ActiveSupport::TestCase
     assert_equal room.room_assignments.map(&:student_id), [3, 4]
   end
 
+  def test_assignment_by_ids_as_arrays_that_contains_a_comma
+    room = Room.create dorm: dorms(:branner), room_id: 4
+    e = assert_raises ActiveRecord::RecordNotFound do
+      room.room_assignment_ids = [['5,,', '5,,', '5,,']]
+    end
+    assert_match /'student_id,dorm_id,room_id'=\[\[5, 5, 5\]\]/, e.message
+  end
+
   def test_assignment_by_ids_as_strings
     room = Room.create dorm: dorms(:branner), room_id: 4
     room.room_assignment_ids = ['3,1,2', '4,1,2']

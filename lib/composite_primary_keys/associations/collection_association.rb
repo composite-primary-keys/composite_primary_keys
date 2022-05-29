@@ -6,7 +6,7 @@ module CompositePrimaryKeys
 
       # CPK-
       if primary_key.is_a?(Array)
-        ids = CompositePrimaryKeys.normalize(ids, primary_key.size)
+        ids = ids.map { |id| CompositePrimaryKeys::CompositeKeys.parse(id) }
         primary_key.each_with_index do |key, i|
           pk_type = klass.type_for_attribute(key)
           ids.each { |id| id[i] = pk_type.cast(id[i]) }
@@ -15,7 +15,7 @@ module CompositePrimaryKeys
         predicate = CompositePrimaryKeys::Predicates.cpk_in_predicate(klass.arel_table, reflection.association_primary_key, ids)
         records = klass.where(predicate).index_by do |r|
           reflection.association_primary_key.map{ |k| r.send(k) }
-        end.values_at(*ids)
+        end.values_at(*ids).compact
       else
         pk_type = klass.type_for_attribute(primary_key)
         ids.map! { |i| pk_type.cast(i) }
