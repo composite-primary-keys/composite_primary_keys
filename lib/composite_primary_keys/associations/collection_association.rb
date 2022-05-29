@@ -7,8 +7,8 @@ module CompositePrimaryKeys
       # CPK-
       if primary_key.is_a?(Array)
         ids = CompositePrimaryKeys.normalize(ids, primary_key.size)
-        primary_key.each_with_index do |primary_key, i|
-          pk_type = klass.type_for_attribute(primary_key)
+        primary_key.each_with_index do |key, i|
+          pk_type = klass.type_for_attribute(key)
           ids.each { |id| id[i] = pk_type.cast(id[i]) }
         end
 
