@@ -5,7 +5,7 @@ module ActiveRecord
 
       def construct_join_attributes(*records)
         # CPK
-        if source_reflection.klass.composite?
+        if !self.source_reflection.polymorphic? && source_reflection.klass.composite?
           ensure_mutable
 
           ids = records.map do |record|
