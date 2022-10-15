@@ -4,7 +4,7 @@ class RoomAssignment < ActiveRecord::Base
   belongs_to :room, :foreign_key => [:dorm_id, :room_id], :primary_key => [:dorm_id, :room_id]
   validates :student_id, uniqueness: {
     conditions: ->(record) {
-      where(id: record.id) # enough just to exercise this code path
+      where(student_id: record.student_id) # enough just to exercise this code path
     }
   }
 
