@@ -72,7 +72,7 @@ But first, lets check out our primary keys.
   Membership.primary_key  # => [:user_id, :group_id] # composite keys
   Membership.primary_key.to_s # => "user_id,group_id"
 
-Now we want to be able to find instances using the same syntax we always use for ActiveRecords…
+Now we want to be able to find instances using the same syntax we always use for ActiveRecords.
 
   MembershipStatus.find(1)    # single id returns single instance
   => <MembershipStatus:0x392a8c8 @attributes={"id"=>"1", "status"=>"Active"}>
