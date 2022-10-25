@@ -1,0 +1,14 @@
+santiago:
+  id: 1
+  other_id: 7
+  name: Frank
+
+drnic:
+  id: 2
+  other_id: 8
+  name: Jelby
+
+cfis:
+  id: 3
+  other_id: 9
+  name: Flornacle

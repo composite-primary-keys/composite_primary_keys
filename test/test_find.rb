@@ -3,7 +3,7 @@ require File.expand_path('../abstract_unit', __FILE__)
 # Testing the find action on composite ActiveRecords with two primary keys
 class TestFind < ActiveSupport::TestCase
   fixtures :capitols, :departments, :reference_types, :reference_codes,
-    :suburbs, :employees
+    :suburbs, :employees, :other_users
 
   def test_find_first
     ref_code = ReferenceCode.order('reference_type_id, reference_code').first
@@ -160,5 +160,36 @@ class TestFind < ActiveSupport::TestCase
 
     ref_code = ref_codes[1]
     assert_equal([2,1], ref_code.id)
+  end
+
+  # OUR TESTS
+  def test_find_by_one_association_with_actual_find_by
+    department = departments(:engineering)
+    employee = Employee.find_by(:department => department)
+    assert_not_nil(employee)
+  end
+
+  def test_find_by_polymorphic_association
+    other_user = OtherUser.find([1, 7])
+
+    comment = Comment.find_by(person: other_user)
+    assert_not_nil(comment)
+    assert_equal("Article Two", comment.article.name)
+  end
+
+  def test_where_for_polymorphic_association
+    employee = Employee.find(1)
+    user = User.find(1)
+
+    employee_comments = Comment.where(person: employee)
+    assert_equal(1, employee_comments.to_a.count)
+    assert_equal("Article One", employee_comments.to_a.first.article.name)
+
+    user_comments = Comment.where(person: user)
+    assert_equal(1, user_comments.to_a.count)
+    assert_equal("Article Two", user_comments.to_a.first.article.name)
+
+    users = User.includes(:comments).find(1)
+    assert_equal(user_comments.first, users.comments.first)
   end
 end

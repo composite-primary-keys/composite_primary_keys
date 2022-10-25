@@ -36,8 +36,8 @@ class TestPolymorphic < ActiveSupport::TestCase
   def test_clear_has_many_through
     article = articles(:second)
 
-    assert_equal(2, article.comments.size)
+    assert_equal(3, article.comments.size)
     article.user_commentators = []
-    assert_equal(0, article.comments.size)
+    assert_equal(1, article.comments.size)
   end
 end

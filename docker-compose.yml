@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  postgres:
+    container_name: bp-postgres
+    image: postgres:14.5-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+

@@ -60,6 +60,13 @@ create table users (
     primary key (id)
 );
 
+create table other_users (
+    id   serial not null,
+    other_id serial not null,
+    name varchar(50) not null,
+    primary key (id, other_id)
+);
+
 create table articles (
     id   serial not null,
     name varchar(50) not null,
