@@ -31,6 +31,7 @@ class TestCreate < ActiveSupport::TestCase
       assert new_obj = @klass.create(@klass_info[:create])
       assert !new_obj.new_record?
       assert new_obj.id
+      assert new_obj.previously_new_record?
     end
   end
 
