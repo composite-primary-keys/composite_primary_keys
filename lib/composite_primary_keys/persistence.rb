@@ -73,6 +73,7 @@ module ActiveRecord
       end
 
       @new_record = false
+      @previously_new_record = true
 
       yield(self) if block_given?
 
