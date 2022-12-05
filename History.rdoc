@@ -1,4 +1,4 @@
-== 13.0.4
+== 13.0.4 (2022-12-05)
 * Fix previously_new_record? not being set to true after create
 
 == 13.0.3 (2022-01-09)
