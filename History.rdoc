@@ -15,6 +15,9 @@
 == 14.0.0 (2022-01-9)
 * Update to ActiveRecord 7.0 (Sammy Larbi)
 
+== 13.0.4 (2022-12-05)
+* Fix previously_new_record? not being set to true after create (Akinori MUSHA)
+
 == 13.0.3 (2022-01-09)
 * Remove override on ActiveRecord::Base#to_param. That method has moved to Integration
   so no longer works. #541. (Charlie Savage)
