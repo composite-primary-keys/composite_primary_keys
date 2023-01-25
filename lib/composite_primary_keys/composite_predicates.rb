@@ -51,9 +51,59 @@ module CompositePrimaryKeys
     end
 
     def cpk_in_predicate(table, primary_keys, ids)
+      if primary_keys.length == 2
+        cpk_in_predicate_with_grouped_keys(table, primary_keys, ids)
+      else
+        cpk_in_predicate_with_non_grouped_keys(table, primary_keys, ids)
+      end
+    end
+
+    def cpk_in_predicate_with_non_grouped_keys(table, primary_keys, ids)
       and_predicates = ids.map do |id|
         cpk_id_predicate(table, primary_keys, id)
       end
+
+      cpk_or_predicate(and_predicates)
+    end
+
+    def cpk_in_predicate_with_grouped_keys(table, primary_keys, ids)
+      keys_by_first_column_name = Hash.new { |hash, key| hash[key] = [] }
+      keys_by_second_column_name = Hash.new { |hash, key| hash[key] = [] }
+
+      ids.map.each do |first_key_part, second_key_part|
+        keys_by_first_column_name[first_key_part] << second_key_part
+        keys_by_second_column_name[second_key_part] << first_key_part
+      end
+
+      low_cardinality_column_name, high_cardinality_column_name, groups = \
+        if keys_by_first_column_name.size <= keys_by_second_column_name.size
+          [primary_keys.first, primary_keys.second, keys_by_first_column_name]
+        else
+          [primary_keys.second, primary_keys.first, keys_by_second_column_name]
+        end
+
+      and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
+        non_nil_high_cardinality_values = high_cardinality_values.compact
+        in_clause = table[high_cardinality_column_name].in(non_nil_high_cardinality_values)
+        inclusion_clauses = if non_nil_high_cardinality_values.size != high_cardinality_values.size
+                              Arel::Nodes::Grouping.new(
+                                Arel::Nodes::Or.new(
+                                  in_clause,
+                                  table[high_cardinality_column_name].eq(nil)
+                                )
+                              )
+                            else
+                              in_clause
+                            end
+
+        Arel::Nodes::And.new(
+          [
+            table[low_cardinality_column_name].eq(low_cardinality_value),
+            inclusion_clauses
+          ]
+        )
+      end
+
       cpk_or_predicate(and_predicates)
     end
   end
