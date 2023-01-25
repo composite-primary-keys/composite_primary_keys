@@ -57,4 +57,60 @@ class TestPredicates < ActiveSupport::TestCase
     pred = cpk_and_predicate(predicates)
     assert_equal(with_quoted_identifiers(expected), pred.to_sql)
   end
+
+  def test_in
+    dep = Department.arel_table
+
+    primary_keys = [[1, 1], [1, 2]]
+
+    connection = ActiveRecord::Base.connection
+    quoted_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
+    expected = "#{quoted_id_column} = 1 AND #{quoted_location_id_column} IN (1, 2)"
+
+    pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
+  end
+
+  def test_in_with_nil_primary_key_part
+    dep = Department.arel_table
+
+    primary_keys = [[nil, 1], [nil, 2]]
+
+    connection = ActiveRecord::Base.connection
+    quoted_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
+    expected = "#{quoted_id_column} IS NULL AND #{quoted_location_id_column} IN (1, 2)"
+
+    pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
+  end
+
+  def test_in_with_nil_secondary_key_part
+    dep = Department.arel_table
+
+    primary_keys = [[1, 1], [1, nil]]
+
+    connection = ActiveRecord::Base.connection
+    quoted_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
+    expected = "#{quoted_id_column} = 1 AND (#{quoted_location_id_column} IN (1) OR #{quoted_location_id_column} IS NULL)"
+
+    pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
+  end
+
+  def test_in_with_multiple_primary_key_parts
+    dep = Department.arel_table
+
+    primary_keys = [[1, 1], [1, 2], [2, 3], [2, 4]]
+
+    connection = ActiveRecord::Base.connection
+    quoted_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
+    expected = "(#{quoted_id_column} = 1 AND #{quoted_location_id_column} IN (1, 2) OR #{quoted_id_column} = 2 AND #{quoted_location_id_column} IN (3, 4))"
+
+    pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
+  end
 end
