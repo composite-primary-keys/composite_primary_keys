@@ -77,9 +77,9 @@ module CompositePrimaryKeys
 
       low_cardinality_column_name, high_cardinality_column_name, groups = \
         if keys_by_first_column_name.size <= keys_by_second_column_name.size
-          primary_keys + [keys_by_first_column_name]
+          [primary_keys.first, primary_keys.second, keys_by_first_column_name]
         else
-          primary_keys.reverse + [keys_by_second_column_name]
+          [primary_keys.second, primary_keys.first, keys_by_second_column_name]
         end
 
       and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
