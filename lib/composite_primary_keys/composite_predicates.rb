@@ -67,28 +67,28 @@ module CompositePrimaryKeys
     end
 
     def cpk_in_predicate_with_grouped_keys(table, primary_keys, ids)
-      keys_by_first_key_part = Hash.new { |h, k| h[k] = [] }
-      keys_by_second_key_part = Hash.new { |h, k| h[k] = [] }
+      keys_by_first_column_name = Hash.new { |hash, key| hash[key] = [] }
+      keys_by_second_column_name = Hash.new { |hash, key| hash[key] = [] }
 
-      ids.map.each do |first_key_part, second_key_part|
-        keys_by_first_key_part[first_key_part] << second_key_part
-        keys_by_second_key_part[second_key_part] << first_key_part
+      ids.map.each do |first_column_name, second_column_name|
+        keys_by_first_column_name[first_column_name] << second_column_name
+        keys_by_second_column_name[second_column_name] << first_column_name
       end
 
-      low_cardinality_key_part, high_cardinality_key_part, groups = \
-        if keys_by_first_key_part.keys.size <= keys_by_second_key_part.keys.size
-          primary_keys + [keys_by_first_key_part]
+      low_cardinality_column_name, high_cardinality_column_name, groups = \
+        if keys_by_first_column_name.size <= keys_by_second_column_name.size
+          primary_keys + [keys_by_first_column_name]
         else
-          primary_keys.reverse + [keys_by_second_key_part]
+          primary_keys.reverse + [keys_by_second_column_name]
         end
 
       and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
-        in_clause = table[high_cardinality_key_part].in(high_cardinality_values.compact)
+        in_clause = table[high_cardinality_column_name].in(high_cardinality_values.compact)
         inclusion_clauses = if high_cardinality_values.include?(nil)
                               Arel::Nodes::Grouping.new(
                                 Arel::Nodes::Or.new(
                                   in_clause,
-                                  table[high_cardinality_key_part].eq(nil)
+                                  table[high_cardinality_column_name].eq(nil)
                                 )
                               )
                             else
@@ -97,7 +97,7 @@ module CompositePrimaryKeys
 
         Arel::Nodes::And.new(
           [
-            table[low_cardinality_key_part].eq(low_cardinality_value),
+            table[low_cardinality_column_name].eq(low_cardinality_value),
             inclusion_clauses
           ]
         )
