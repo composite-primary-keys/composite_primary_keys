@@ -70,9 +70,9 @@ module CompositePrimaryKeys
       keys_by_first_column_name = Hash.new { |hash, key| hash[key] = [] }
       keys_by_second_column_name = Hash.new { |hash, key| hash[key] = [] }
 
-      ids.map.each do |first_column_name, second_column_name|
-        keys_by_first_column_name[first_column_name] << second_column_name
-        keys_by_second_column_name[second_column_name] << first_column_name
+      ids.map.each do |first_key_part, second_key_part|
+        keys_by_first_column_name[first_key_part] << second_key_part
+        keys_by_second_column_name[second_key_part] << first_key_part
       end
 
       low_cardinality_column_name, high_cardinality_column_name, groups = \
