@@ -52,40 +52,55 @@ module CompositePrimaryKeys
 
     def cpk_in_predicate(table, primary_keys, ids)
       if primary_keys.length == 2
-        low_cardinality_key_part, high_cardinality_key_part = if ids.map(&:second).uniq.size > ids.map(&:first).uniq.size
-                                                                %i[first second]
-                                                              else
-                                                                %i[second first]
-                                                              end
-
-        groups = ids.group_by(&low_cardinality_key_part).transform_values do |values|
-          values.map(&high_cardinality_key_part)
-        end
-
-        and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
-          in_clause = table[primary_keys.send(high_cardinality_key_part)].in(high_cardinality_values.compact)
-          inclusion_clauses = if high_cardinality_values.include?(nil)
-                                Arel::Nodes::Grouping.new(
-                                  Arel::Nodes::Or.new(
-                                    in_clause,
-                                    table[primary_keys.send(high_cardinality_key_part)].eq(nil)
-                                  )
-                                )
-                              else
-                                in_clause
-                              end
-
-          Arel::Nodes::And.new(
-            [
-              table[primary_keys.send(low_cardinality_key_part)].eq(low_cardinality_value),
-              inclusion_clauses
-            ]
-          )
-        end
+        cpk_in_predicate_with_grouped_keys(table, primary_keys, ids)
       else
-        and_predicates = ids.map do |id|
-          cpk_id_predicate(table, primary_keys, id)
+        cpk_in_predicate_with_non_grouped_keys(table, primary_keys, ids)
+      end
+    end
+
+    def cpk_in_predicate_with_non_grouped_keys(table, primary_keys, ids)
+      and_predicates = ids.map do |id|
+        cpk_id_predicate(table, primary_keys, id)
+      end
+
+      cpk_or_predicate(and_predicates)
+    end
+
+    def cpk_in_predicate_with_grouped_keys(table, primary_keys, ids)
+      keys_by_first_key_part = Hash.new { |h, k| h[k] = [] }
+      keys_by_second_key_part = Hash.new { |h, k| h[k] = [] }
+
+      ids.map.each do |first_key_part, second_key_part|
+        keys_by_first_key_part[first_key_part] << second_key_part
+        keys_by_second_key_part[second_key_part] << first_key_part
+      end
+
+      low_cardinality_key_part, high_cardinality_key_part, groups = \
+        if keys_by_first_key_part.keys.size <= keys_by_second_key_part.keys.size
+          primary_keys + [keys_by_first_key_part]
+        else
+          primary_keys.reverse + [keys_by_second_key_part]
         end
+
+      and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
+        in_clause = table[high_cardinality_key_part].in(high_cardinality_values.compact)
+        inclusion_clauses = if high_cardinality_values.include?(nil)
+                              Arel::Nodes::Grouping.new(
+                                Arel::Nodes::Or.new(
+                                  in_clause,
+                                  table[high_cardinality_key_part].eq(nil)
+                                )
+                              )
+                            else
+                              in_clause
+                            end
+
+        Arel::Nodes::And.new(
+          [
+            table[low_cardinality_key_part].eq(low_cardinality_value),
+            inclusion_clauses
+          ]
+        )
       end
 
       cpk_or_predicate(and_predicates)

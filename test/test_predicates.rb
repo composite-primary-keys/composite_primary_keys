@@ -72,6 +72,23 @@ class TestPredicates < ActiveSupport::TestCase
     assert_equal(with_quoted_identifiers(expected), pred.to_sql)
   end
 
+  def test_in_with_low_cardinality_second_key_part
+    dep = Department.arel_table
+
+    primary_keys = [[1, 1], [2, 1]]
+
+    connection = ActiveRecord::Base.connection
+    quoted_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('id')}"
+    quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
+    expected = "#{quoted_location_id_column} = 1 AND #{quoted_id_column} IN (1, 2)"
+
+    require 'byebug'
+    byebug
+
+    pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
+    assert_equal(with_quoted_identifiers(expected), pred.to_sql)
+  end
+
   def test_in_with_nil_primary_key_part
     dep = Department.arel_table
 
