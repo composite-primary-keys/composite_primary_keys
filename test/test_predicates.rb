@@ -82,9 +82,6 @@ class TestPredicates < ActiveSupport::TestCase
     quoted_location_id_column = "#{connection.quote_table_name('departments')}.#{connection.quote_column_name('location_id')}"
     expected = "#{quoted_location_id_column} = 1 AND #{quoted_id_column} IN (1, 2)"
 
-    require 'byebug'
-    byebug
-
     pred = cpk_in_predicate(dep, [:id, :location_id], primary_keys)
     assert_equal(with_quoted_identifiers(expected), pred.to_sql)
   end
