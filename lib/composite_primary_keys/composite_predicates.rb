@@ -83,8 +83,9 @@ module CompositePrimaryKeys
         end
 
       and_predicates = groups.map do |low_cardinality_value, high_cardinality_values|
-        in_clause = table[high_cardinality_column_name].in(high_cardinality_values.compact)
-        inclusion_clauses = if high_cardinality_values.include?(nil)
+        non_nil_high_cardinality_values = high_cardinality_values.compact
+        in_clause = table[high_cardinality_column_name].in(non_nil_high_cardinality_values)
+        inclusion_clauses = if non_nil_high_cardinality_values.size != high_cardinality_values.size
                               Arel::Nodes::Grouping.new(
                                 Arel::Nodes::Or.new(
                                   in_clause,
