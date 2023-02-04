@@ -1,3 +1,8 @@
+== 13.0.5 (2023-02-04)
+* Improve query generation for cpk_in_predicate. This reduces the length of
+queries when loading many keys and enables Postgres to use index scans
+more frequently. (Andrew Kiellor)
+
 == 13.0.4 (2022-12-05)
 * Fix previously_new_record? not being set to true after create
 
