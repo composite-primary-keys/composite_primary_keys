@@ -1,3 +1,15 @@
+== 14.0.5 (2023-02-04)
+* Improve query generation for cpk_in_predicate. This reduces the length of
+queries when loading many keys and enables Postgres to use index scans
+more frequently. (Andrew Kiellor)
+* Add Ruby 3.2 to CI and update checkout action versions (Peter Goldstein)
+* Fix grammatical correction in README.rdoc (Sam Corl)
+* Add an assertion for previously_new_record? (Akinori Musha)
+* Fix validate_each (Benjamin Fleischer)
+* Reduce ambiguity by avoiding #normalize (Mitsuhiro Shibuya)
+* Accept strings in has_many ids assignment (Mitsuhiro Shibuya)
+* Make CompositeKeys respond to #to_param consistently with ActiveRecord::Base (Mitsuhiro Shibuya)
+
 == 14.0.4 (2022-02-13)
 * Fix for changed method in Rails 7.0.2 (Yota)
 
