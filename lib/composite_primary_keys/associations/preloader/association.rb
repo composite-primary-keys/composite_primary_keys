@@ -33,20 +33,28 @@ module ActiveRecord
           end
         end
 
-        def records_by_owner
-          @records_by_owner ||= preloaded_records.each_with_object({}) do |record, result|
-            key = if association_key_name.is_a?(Array)
-                    Array(record[association_key_name]).map do |key|
-                      convert_key(key)
-                    end
-                  else
-                    convert_key(record[association_key_name])
-                  end
-            owners_by_key[key].each do |owner|
-              (result[owner] ||= []) << record
+        def load_records
+          # owners can be duplicated when a relation has a collection association join
+          # #compare_by_identity makes such owners different hash keys
+          @records_by_owner = {}.compare_by_identity
+          raw_records = owner_keys.empty? ? [] : records_for(owner_keys)
+
+          @preloaded_records = raw_records.select do |record|
+            assignments = false
+
+            owners_by_key[convert_key(record[association_key_name])].each do |owner|
+              entries = (@records_by_owner[owner] ||= [])
+
+              if reflection.collection? || entries.empty?
+                entries << record
+                assignments = true
+              end
             end
+
+            assignments
           end
         end
+
       end
     end
   end
