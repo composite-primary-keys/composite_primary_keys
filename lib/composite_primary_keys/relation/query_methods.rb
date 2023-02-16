@@ -18,23 +18,21 @@ module CompositePrimaryKeys
         end
 
         order_query.flat_map do |o|
-          order_query.flat_map do |o|
-            case o
-            when Arel::Attribute
-              o.desc
-            when Arel::Nodes::Ordering
-              o.reverse
-            when String
-              if does_not_support_reverse?(o)
-                raise IrreversibleOrderError, "Order #{o.inspect} can not be reversed automatically"
-              end
-              o.split(",").map! do |s|
-                s.strip!
-                s.gsub!(/\sasc\Z/i, " DESC") || s.gsub!(/\sdesc\Z/i, " ASC") || (s << " DESC")
-              end
-            else
-              o
+          case o
+          when Arel::Attribute
+            o.desc
+          when Arel::Nodes::Ordering
+            o.reverse
+          when String
+            if does_not_support_reverse?(o)
+              raise IrreversibleOrderError, "Order #{o.inspect} can not be reversed automatically"
             end
+            o.split(",").map! do |s|
+              s.strip!
+              s.gsub!(/\sasc\Z/i, " DESC") || s.gsub!(/\sdesc\Z/i, " ASC") || (s << " DESC")
+            end
+          else
+            o
           end
         end
       end
