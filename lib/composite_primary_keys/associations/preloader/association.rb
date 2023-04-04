@@ -46,22 +46,6 @@ module ActiveRecord
             (result[key] ||= []) << owner if key
           end
         end
-
-        # TODO: is records_by_owner needed anymore? Rails' implementation has changed significantly
-        def records_by_owner
-          @records_by_owner ||= preloaded_records.each_with_object({}) do |record, result|
-            key = if association_key_name.is_a?(Array)
-                    Array(record[association_key_name]).map do |key|
-                      convert_key(key)
-                    end
-                  else
-                    convert_key(record[association_key_name])
-                  end
-            owners_by_key[key].each do |owner|
-              (result[owner] ||= []) << record
-            end
-          end
-        end
       end
     end
   end

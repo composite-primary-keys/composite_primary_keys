@@ -2,7 +2,7 @@
 
 == Summary
 
-ActiveRecords infamously doesn't support composite primary keys.
+ActiveRecord infamously doesn't support composite primary keys.
 This gem, composite_primary_keys, or CPK for short, extends ActiveRecord
 to support composite keys.
 

@@ -1,3 +1,19 @@
+== 14.0.6 (2023-02-04)
+* Port fix for #573 (Charlie Savage)
+* Port fix for fix #577 (Charlie Savage)
+
+== 14.0.5 (2023-02-04)
+* Improve query generation for cpk_in_predicate. This reduces the length of
+queries when loading many keys and enables Postgres to use index scans
+more frequently. (Andrew Kiellor)
+* Add Ruby 3.2 to CI and update checkout action versions (Peter Goldstein)
+* Fix grammatical correction in README.rdoc (Sam Corl)
+* Add an assertion for previously_new_record? (Akinori Musha)
+* Fix validate_each (Benjamin Fleischer)
+* Reduce ambiguity by avoiding #normalize (Mitsuhiro Shibuya)
+* Accept strings in has_many ids assignment (Mitsuhiro Shibuya)
+* Make CompositeKeys respond to #to_param consistently with ActiveRecord::Base (Mitsuhiro Shibuya)
+
 == 14.0.4 (2022-02-13)
 * Fix for changed method in Rails 7.0.2 (Yota)
 
@@ -14,6 +30,20 @@
 
 == 14.0.0 (2022-01-9)
 * Update to ActiveRecord 7.0 (Sammy Larbi)
+
+== 13.0.7 (2023-02-04)
+* Fix #573 (Charlie Savage)
+
+== 13.0.6 (2023-02-04)
+* Fix #577 (Charlie Savage)
+
+== 13.0.5 (2023-02-04)
+* Improve query generation for cpk_in_predicate. This reduces the length of
+queries when loading many keys and enables Postgres to use index scans
+more frequently. (Andrew Kiellor)
+
+== 13.0.4 (2022-12-05)
+* Fix previously_new_record? not being set to true after create (Akinori MUSHA)
 
 == 13.0.3 (2022-01-09)
 * Remove override on ActiveRecord::Base#to_param. That method has moved to Integration
