@@ -58,6 +58,14 @@ CREATE TABLE users (
     name varchar(50) NOT NULL
 );
 
+CREATE TABLE moderators (
+    id [int] PRIMARY KEY
+);
+
+CREATE TABLE admins (
+    id [int] PRIMARY KEY
+);
+
 CREATE TABLE articles (
     id   [int] IDENTITY(1000,1) NOT NULL,
     name varchar(50) NOT NULL
@@ -146,6 +154,21 @@ CREATE TABLE room_attribute_assignments (
     dorm_id           [int] NOT NULL,
     room_id           [int] NOT NULL,
     room_attribute_id [int] NOT NULL
+);
+
+CREATE TABLE staff_rooms (
+    dorm_id [int] NOT NULL,
+    room_id [int] NOT NULL,
+    CONSTRAINT [staff_rooms_pk] PRIMARY KEY CLUSTERED
+        ( [dorm_id], [room_id] )
+);
+
+CREATE TABLE staff_room_keys (
+    dorm_id [int] NOT NULL,
+    room_id [int] NOT NULL,
+    key_no  [varchar](50) NOT NULL,
+    CONSTRAINT [staff_room_keys_pk] PRIMARY KEY CLUSTERED
+        ( [dorm_id], [room_id] )
 );
 
 CREATE TABLE students (

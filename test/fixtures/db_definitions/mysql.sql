@@ -58,6 +58,16 @@ create table users (
     primary key (id)
 );
 
+create table moderators (
+    id int not null,
+    primary key (id)
+);
+
+create table admins (
+    id int not null,
+    primary key (id)
+);
+
 create table articles (
     id int not null auto_increment,
     name varchar(50) not null,
@@ -150,6 +160,19 @@ create table room_attribute_assignments (
     dorm_id int not null,
     room_id int not null,
     room_attribute_id int not null
+);
+
+create table staff_rooms (
+    dorm_id int not null,
+    room_id int not null,
+    primary key (dorm_id, room_id)
+);
+
+create table staff_room_keys (
+    dorm_id int not null,
+    room_id int not null,
+    key_no varchar(50) not null,
+    primary key (dorm_id, room_id)
 );
 
 create table students (

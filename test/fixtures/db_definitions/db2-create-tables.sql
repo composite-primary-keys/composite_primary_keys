@@ -56,6 +56,16 @@ CREATE TABLE users (
   PRIMARY KEY  (id)
 );
 
+CREATE TABLE moderators (
+  id integer NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE admins (
+  id integer NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE articles (
   id integer NOT NULL ,
   name varchar(50) NOT NULL,
@@ -109,4 +119,28 @@ create table products_restaurants (
   product_id integer not null,
   franchise_id integer not null,
   store_id integer not null
+);
+
+create table dorms (
+  id integer not null,
+  primary key (id)
+)
+
+create table rooms (
+  dorm_id integer not null,
+  room_id integer not null,
+  primary key (dorm_id, room_id)
+);
+
+create table staff_rooms (
+  dorm_id integer not null,
+  room_id integer not null,
+  primary key (dorm_id, room_id)
+);
+
+create table staff_room_keys (
+  dorm_id integer not null,
+  room_id integer not null,
+  key_no varchar(50) not null,
+  primary key (dorm_id, room_id)
 );
