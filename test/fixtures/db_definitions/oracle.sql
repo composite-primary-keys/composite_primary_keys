@@ -63,6 +63,14 @@ create table users (
     name varchar(50) not null
 );
 
+create table moderators (
+    id  number(11)   primary key
+);
+
+create table admins (
+    id  number(11)   primary key
+);
+
 create sequence articles_seq start with 1000;
 
 create table articles (
@@ -167,6 +175,19 @@ create table room_attribute_assignments (
     dorm_id           number(11) not null,
     room_id           number(11) not null,
     room_attribute_id number(11) not null
+);
+
+create table staff_rooms (
+    dorm_id  number(11) not null,
+    room_id  number(11) not null,
+    constraint staff_rooms_pk primary key (dorm_id, room_id)
+);
+
+create table staff_room_keys (
+    dorm_id number(11) not null,
+    room_id number(11) not null,
+    key_no  varchar(50) not null,
+    constraint staff_room_keys_pk primary key (dorm_id, room_id)
 );
 
 create sequence students_seq start with 1000;

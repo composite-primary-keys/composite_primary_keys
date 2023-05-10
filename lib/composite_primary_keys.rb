@@ -52,7 +52,6 @@ require 'active_record/associations/join_dependency'
 require 'active_record/associations/preloader/association'
 require 'active_record/associations/singular_association'
 require 'active_record/associations/collection_association'
-require 'active_record/associations/through_association'
 
 require 'active_record/attribute_methods/primary_key'
 require 'active_record/attribute_methods/read'
@@ -91,7 +90,6 @@ require_relative 'composite_primary_keys/associations/has_many_through_associati
 require_relative 'composite_primary_keys/associations/join_association'
 require_relative 'composite_primary_keys/associations/preloader/association'
 require_relative 'composite_primary_keys/associations/collection_association'
-require_relative 'composite_primary_keys/associations/through_association'
 
 require_relative 'composite_primary_keys/attribute_methods/primary_key'
 require_relative 'composite_primary_keys/attribute_methods/read'
