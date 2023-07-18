@@ -74,8 +74,11 @@ module ActiveRecord
     def _create_record(attribute_names = self.attribute_names)
       attribute_names = attributes_for_create(attribute_names)
 
+      returning_columns_for_insert = nil
+
       new_id = self.class._insert_record(
-          attributes_with_values(attribute_names)
+          attributes_with_values(attribute_names),
+          returning_columns_for_insert
       )
 
       # CPK
