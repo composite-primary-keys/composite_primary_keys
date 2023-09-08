@@ -15,3 +15,9 @@ user_comment_2:
   article: second
   person_id: 2
   person_type: User
+  
+user_comment_3:
+  id: 4
+  article: first
+  person_id: 1
+  person_type: User1
