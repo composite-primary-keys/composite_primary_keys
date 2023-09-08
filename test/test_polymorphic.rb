@@ -40,4 +40,10 @@ class TestPolymorphic < ActiveSupport::TestCase
     article.user_commentators = []
     assert_equal(0, article.comments.size)
   end
+
+  def test_polymorphic_has_many_with_polymorphic_name
+    comments = UserWithPolymorphicName.find(1).comments
+    assert_equal 1, comments[0].person_id
+    assert_equal "User1", comments[0].person_type
+  end
 end

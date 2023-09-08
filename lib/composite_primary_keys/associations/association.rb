@@ -11,8 +11,8 @@ module ActiveRecord
             attributes[key1] = owner[key2]
           end
 
-          if reflection.options[:as]
-            attributes[reflection.type] = owner.class.base_class.name
+          if reflection.type
+            attributes[reflection.type] = owner.class.polymorphic_name
           end
         end
 
