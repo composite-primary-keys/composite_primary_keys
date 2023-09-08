@@ -24,4 +24,10 @@ class TestPolymorphic < ActiveSupport::TestCase
     user = users(:santiago)
     assert_equal(['andrew'], user.hacks.collect { |a| a.name }.sort)
   end
+
+  def test_polymorphic_has_many_with_polymorphic_name
+    comments = UserWithPolymorphicName.find(1).comments
+    assert_equal 1, comments[0].person_id
+    assert_equal "User1", comments[0].person_type
+  end
 end
