@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 #
-# if run as script, load the file as library while starting irb 
+# if run as script, load the file as library while starting irb
 #
 if __FILE__ == $0
   irb = RUBY_PLATFORM =~ /(:?mswin|mingw)/ ? 'irb.bat' : 'irb'
@@ -12,7 +12,7 @@ end
 #
 # check if the given adapter is supported (default: mysql)
 #
-adapters = %w[mysql sqlite oracle oracle_enhanced postgresql ibm_db]
+adapters = %w[mysql sqlite oracle oracle_enhanced postgresql ibm_db trilogy]
 adapter = ENV['ADAPTER'] || 'mysql'
 unless adapters.include? adapter
   puts "Usage: #{__FILE__} <adapter>"
