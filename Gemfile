@@ -28,6 +28,11 @@ group :sqlserver do
   gem 'activerecord-sqlserver-adapter'
 end
 
+group :trilogy do
+  gem 'trilogy'
+  gem 'activerecord-trilogy-adapter'
+end
+
 group :test do
   gem 'minitest'
 end
