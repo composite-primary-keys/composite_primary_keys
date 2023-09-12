@@ -1,5 +1,7 @@
 module ActiveRecord
   class Relation
+    AR_CONNECTION_TRILOGY_ADAPTER = ActiveRecord::ConnectionAdapters::TrilogyAdapter
+
     alias :initialize_without_cpk :initialize
     def initialize(klass, table: klass.arel_table, predicate_builder: klass.predicate_builder, values: {})
       initialize_without_cpk(klass, table: table, predicate_builder: predicate_builder, values: values)
@@ -101,6 +103,8 @@ module ActiveRecord
       # and MySQL supports obfuscated IN queries. Thus we need to check the type of
       # database adapter to decide how to proceed.
       if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
+        cpk_mysql_subquery(stmt)
+      elsif defined?(AR_CONNECTION_TRILOGY_ADAPTER) && connection.is_a?(AR_CONNECTION_TRILOGY_ADAPTER)
         cpk_mysql_subquery(stmt)
       elsif defined?(ActiveRecord::ConnectionAdapters::SQLServerAdapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::SQLServerAdapter)
         cpk_exists_subquery(stmt)
