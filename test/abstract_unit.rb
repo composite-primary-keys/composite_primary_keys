@@ -1,6 +1,11 @@
 spec_name = ENV['ADAPTER'] || 'postgresql'
 require 'bundler'
 require 'minitest/autorun'
+if spec_name == "trilogy"
+  require "activerecord-trilogy-adapter"
+  require "trilogy_adapter/connection"
+  ActiveRecord::Base.extend TrilogyAdapter::Connection
+end
 
 Bundler.setup(:default, spec_name.to_sym)
 Bundler.require(:default, spec_name.to_sym)
