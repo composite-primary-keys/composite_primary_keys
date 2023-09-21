@@ -21,7 +21,7 @@ sqlite:
   database: <%= File.join(project_root, 'db', 'composite_primary_keys_unittest.sqlite') %>
 
 trilogy:
-  adapter: mysql2
+  adapter: trilogy
   username: github
   password: github
   host: 127.0.0.1
