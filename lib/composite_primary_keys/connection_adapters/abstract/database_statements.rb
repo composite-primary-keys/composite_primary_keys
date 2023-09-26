@@ -6,7 +6,7 @@ module ActiveRecord
         value = exec_insert(sql, name, binds, pk, sequence_name)
 
         return id_value if id_value
-        if pk.is_a?(Array) && !active_record_result(value).empty?
+        if pk.is_a?(Array) && value.respond_to?(:empty?) && !value.empty?
           # This is a CPK model and the query result is not empty. Thus we can figure out the new ids for each
           # auto incremented field
           pk.map {|key| value.first[key]}
@@ -30,16 +30,6 @@ module ActiveRecord
         else
           last_inserted_id(value)
         end
-      end
-
-      private
-
-      def active_record_result(value)
-        return value if @config[:adapter] != "trilogy"
-
-        # Create an AR Result so we can respond to #empty?
-        # since Trilogy:Result doesn't respond to it.
-        ActiveRecord::Result.new(value.fields, value.to_a)
       end
     end
   end
