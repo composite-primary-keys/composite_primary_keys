@@ -102,6 +102,8 @@ module ActiveRecord
       # database adapter to decide how to proceed.
       if defined?(ActiveRecord::ConnectionAdapters::Mysql2Adapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::Mysql2Adapter)
         cpk_mysql_subquery(stmt)
+      elsif defined?(ActiveRecord::ConnectionAdapters::TrilogyAdapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::TrilogyAdapter)
+        cpk_mysql_subquery(stmt)
       elsif defined?(ActiveRecord::ConnectionAdapters::SQLServerAdapter) && connection.is_a?(ActiveRecord::ConnectionAdapters::SQLServerAdapter)
         cpk_exists_subquery(stmt)
       else

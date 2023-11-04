@@ -6,8 +6,7 @@ module ActiveRecord
         value = exec_insert(sql, name, binds, pk, sequence_name)
 
         return id_value if id_value
-
-        if pk.is_a?(Array) && !value.empty?
+        if pk.is_a?(Array) && value.respond_to?(:empty?) && !value.empty?
           # This is a CPK model and the query result is not empty. Thus we can figure out the new ids for each
           # auto incremented field
           pk.map {|key| value.first[key]}

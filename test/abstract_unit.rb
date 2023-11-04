@@ -14,6 +14,12 @@ spec = CompositePrimaryKeys::ConnectionSpec[spec_name]
 puts "Loaded #{spec_name}"
 
 # And now connect to the database
+if spec_name == "trilogy"
+  require "activerecord-trilogy-adapter"
+  require "trilogy_adapter/connection"
+  ActiveRecord::Base.extend TrilogyAdapter::Connection
+end
+
 ActiveRecord::Base.establish_connection(spec)
 
 # Tell active record about the configuration

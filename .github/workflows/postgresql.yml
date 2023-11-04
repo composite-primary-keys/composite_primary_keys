@@ -24,7 +24,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
-      BUNDLE_WITHOUT: "db2 oracle sqlserver mysql splite"
+      BUNDLE_WITHOUT: "db2 oracle sqlserver mysql sqlite trilogy"
       BUNDLE_JOBS: 4
       BUNDLE_PATH: vendor/bundle
     steps:
