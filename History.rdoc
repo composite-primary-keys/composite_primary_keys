@@ -1,3 +1,9 @@
+== 14.0.7 (2023-11-04)
+* Add support for Trilogy Adapter (Zack Mariscal)
+* Add Dockerfile and Docker compose support (Zack Mariscal)
+* Support polymorphic_name (Vladimir Kochnev)
+* Fix HasOneThrough association (kyori19)
+
 == 14.0.6 (2023-02-04)
 * Port fix for #573 (Charlie Savage)
 * Port fix for fix #577 (Charlie Savage)
