@@ -1,3 +1,7 @@
+== 14.0.8 (2023-11-24)
+* Support polymorphic_name (Vladimir Kochnev)
+* Fix HasOneThrough association (kyori19)
+
 == 14.0.7 (2023-11-04)
 * Add support for Trilogy Adapter (Zack Mariscal)
 * Add Dockerfile and Docker compose support (Zack Mariscal)
@@ -36,6 +40,9 @@ more frequently. (Andrew Kiellor)
 
 == 14.0.0 (2022-01-9)
 * Update to ActiveRecord 7.0 (Sammy Larbi)
+
+==13.0.8 (2023-11-24)
+Fix ‘polymorphic_name` support (Vladimir Kochnev)
 
 == 13.0.7 (2023-02-04)
 * Fix #573 (Charlie Savage)
