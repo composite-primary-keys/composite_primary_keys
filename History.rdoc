@@ -1,3 +1,6 @@
+== 13.0.8 (2023-11-24)
+Fix `polymorphic_name` support (Vladimir Kochnev)
+
 == 13.0.7 (2023-02-04)
 * Fix #573 (Charlie Savage)
 
