@@ -66,7 +66,7 @@ module ActiveRecord
             # Make sure we are operating on the actual object which is in the association's
             # proxy_target array (either by finding it, or adding it if not found)
             # Take into account that the proxy_target may have changed due to callbacks
-             target_record = cpk_detect_record(attributes['id'], association.target)
+            target_record = cpk_detect_record(attributes['id'], association.target)
             if target_record
               existing_record = target_record
             else
