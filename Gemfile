@@ -29,8 +29,8 @@ group :sqlserver do
 end
 
 group :trilogy do
-  gem 'trilogy'
-  gem 'activerecord-trilogy-adapter'
+ gem 'trilogy'
+ gem 'activerecord-trilogy-adapter'
 end
 
 group :test do
