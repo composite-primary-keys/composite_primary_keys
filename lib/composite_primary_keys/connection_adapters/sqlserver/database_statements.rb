@@ -2,7 +2,7 @@ module ActiveRecord
   module ConnectionAdapters
     module SQLServer
       module DatabaseStatements
-        def sql_for_insert(sql, pk, binds)
+        def sql_for_insert(sql, pk, binds, _returning = nil)
           if pk.nil?
             table_name = query_requires_identity_insert?(sql)
             pk = primary_key(table_name)
