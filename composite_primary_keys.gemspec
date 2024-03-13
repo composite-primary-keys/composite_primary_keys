@@ -1,5 +1,5 @@
 # Read the current version
-#$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+# $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require_relative 'lib/composite_primary_keys/version'
 
 Gem::Specification.new do |s|
@@ -23,6 +23,10 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.test_files   = Dir.glob('test/**')
   s.license = 'MIT'
+
+  s.metadata = {
+    'changelog_uri' => 'https://github.com/composite-primary-keys/composite_primary_keys/blob/master/History.rdoc'
+  }
 
   # Dependencies
   s.required_ruby_version = '>= 2.7.0'
