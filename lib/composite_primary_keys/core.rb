@@ -16,6 +16,29 @@ module ActiveRecord
       super
     end
 
+    def primary_key_values_present?
+      if self.composite?
+        id.all? {|key| !key.nil?}
+      else
+        !id.nil?
+      end
+    end
+
+    def ==(comparison_object)
+      super ||
+        comparison_object.instance_of?(self.class) &&
+        primary_key_values_present? &&
+        comparison_object.id == id
+    end
+
+    def hash
+      if primary_key_values_present?
+        self.class.hash ^ id.hash
+      else
+        super
+      end
+    end
+
     module ClassMethods
       def find(*ids) # :nodoc:
         # We don't have cache keys for this stuff yet
