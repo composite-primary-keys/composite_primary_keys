@@ -21,7 +21,8 @@ group :postgresql do
 end
 
 group :sqlite do
-  gem 'sqlite3'
+  # Needed to match active record sqlite3 connection adapter
+  gem 'sqlite3', '~> 1.4'
 end
 
 group :sqlserver do
