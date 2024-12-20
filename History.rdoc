@@ -1,3 +1,7 @@
+== 13.0.8 (2024-12-19)
+* Fix `update_all` to update loaded associations (Piotr Kowalski)
+* Fix object comparison for models with composite keys (Piotr Kowalski)
+
 == 13.0.8 (2023-11-24)
 Fix `polymorphic_name` support (Vladimir Kochnev)
 
