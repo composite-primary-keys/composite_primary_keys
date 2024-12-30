@@ -37,7 +37,6 @@ module ActiveRecord
 
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
-      stmt.order(*arel.orders)
 
       if updates.is_a?(Hash)
         if klass.locking_enabled? &&
@@ -81,7 +80,6 @@ module ActiveRecord
 
       stmt.take(arel.limit)
       stmt.offset(arel.offset)
-      stmt.order(*arel.orders)
 
       affected = klass.connection.delete(stmt, "#{klass} Destroy")
 

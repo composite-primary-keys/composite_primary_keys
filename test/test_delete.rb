@@ -30,6 +30,13 @@ class TestDelete < ActiveSupport::TestCase
     assert_equal(5, deleted)
   end
 
+  def test_delete_all_default_order
+    refute_empty(Tariff.all)
+    deleted = Tariff.delete_all
+    assert_empty(Tariff.all)
+    assert_equal(3, deleted)
+  end
+
   def test_delete_all_with_join
     tested_delete_all = false
     Arel::Table.engine = nil # should not rely on the global Arel::Table.engine

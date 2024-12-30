@@ -12,7 +12,7 @@ class TestCalculations < ActiveSupport::TestCase
     expected = {Date.today => 2,
                 Date.today.next => 1}
 
-    assert_equal(expected, Tariff.group(:start_date).count)
+    assert_equal(expected, Tariff.unscoped.group(:start_date).count)
   end
 
   def test_count_distinct

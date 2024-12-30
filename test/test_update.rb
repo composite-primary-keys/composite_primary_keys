@@ -73,6 +73,14 @@ class TestUpdate < ActiveSupport::TestCase
     end
   end
 
+  def test_update_all_default_order
+    Tariff.update_all(amount: 1337)
+
+    Tariff.all.each do |reference_code|
+      assert_equal(1337, reference_code.amount)
+    end
+  end
+
   def test_update_all_join
     tested_update_all = false
     Arel::Table.engine = nil # should not rely on the global Arel::Table.engine
