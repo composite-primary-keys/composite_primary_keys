@@ -40,3 +40,4 @@ drop sequence students_seq;
 drop table capitols;
 drop table products_restaurants;
 drop table employees_groups;
+drop table role_assignments;

@@ -1,0 +1,9 @@
+user_one:
+  subject: gid://app/User/1
+  role: admin
+  object: ~
+
+user_one_manage_dorm:
+  subject: gid://app/User/1
+  role: dorm_manage
+  object: gid://app/Dorm/1

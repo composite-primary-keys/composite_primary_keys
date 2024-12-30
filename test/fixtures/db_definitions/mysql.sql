@@ -179,3 +179,12 @@ create table employees_groups (
   employee_id int not null,
   group_id int not null
 );
+
+create table role_assignments (
+  subject varchar(50) not null,
+  role varchar(50) not null,
+  object varchar(50) default null,
+  created_at timestamp without time zone not null,
+  updated_at timestamp without time zone not null,
+  UNIQUE(subject, role, object)
+);

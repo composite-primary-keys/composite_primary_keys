@@ -149,7 +149,7 @@ create table students (
 create table room_assignments (
 	student_id integer not null,
 	dorm_id integer not null,
-	room_id integer not null	
+	room_id integer not null
 );
 
 create table capitols (
@@ -167,4 +167,13 @@ create table products_restaurants (
 create table employees_groups (
   employee_id integer not null,
   group_id integer not null
+);
+
+create table role_assignments (
+  subject varchar(50) not null,
+  role varchar(50) not null,
+  object varchar(50) default null,
+  created_at timestamp without time zone not null,
+  updated_at timestamp without time zone not null,
+  UNIQUE(subject, role, object)
 );

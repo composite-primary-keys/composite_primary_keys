@@ -1,7 +1,7 @@
 require File.expand_path('../abstract_unit', __FILE__)
 
 class TestEqual < ActiveSupport::TestCase
-  fixtures :restaurants, :products
+  fixtures :restaurants, :products, :role_assignments
 
   ############################################################
   ### Tests for Product model with single primary key (id) ###
@@ -35,6 +35,12 @@ class TestEqual < ActiveSupport::TestCase
   def test_composite_same
     first = Restaurant.find([1, 1])
     second = Restaurant.find([1, 1])
+    assert_equal(first, second)
+  end
+
+  def test_composite_same_with_partial_nil_values
+    first = RoleAssignment.find(['gid://app/User/1', 'admin', nil])
+    second = RoleAssignment.find(['gid://app/User/1', 'admin', nil])
     assert_equal(first, second)
   end
 

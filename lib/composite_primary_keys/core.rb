@@ -17,11 +17,7 @@ module ActiveRecord
     end
 
     def primary_key_values_present?
-      if self.composite?
-        id.all? {|key| !key.nil?}
-      else
-        !id.nil?
-      end
+      self.composite? ? id.any? : !id.nil?
     end
 
     def ==(comparison_object)

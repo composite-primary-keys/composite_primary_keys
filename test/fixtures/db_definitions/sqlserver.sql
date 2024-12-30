@@ -78,7 +78,7 @@ CREATE TABLE groups (
 CREATE TABLE memberships (
     user_id  [int] NOT NULL,
     group_id [int] NOT NULL
-    CONSTRAINT [memberships_pk] PRIMARY KEY 
+    CONSTRAINT [memberships_pk] PRIMARY KEY
         ( [user_id], [group_id] )
 );
 
@@ -115,7 +115,7 @@ CREATE TABLE restaurants (
     store_id     [int] NOT NULL,
     name         [varchar](100),
     lock_version [int] DEFAULT 0
-    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [restaurants_pk] PRIMARY KEY CLUSTERED
         ( [franchise_id], [store_id] )
 );
 
@@ -133,7 +133,7 @@ CREATE TABLE dorms (
 CREATE TABLE rooms (
     dorm_id [int] NOT NULL,
     room_id [int] NOT NULL,
-    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [rooms_pk] PRIMARY KEY CLUSTERED
         ( [dorm_id], [room_id] )
 );
 
@@ -161,7 +161,7 @@ CREATE TABLE room_assignments (
 CREATE TABLE capitols (
     country varchar(450) NOT NULL,
     city varchar(450) NOT NULL
-    CONSTRAINT [capitols_pk] PRIMARY KEY 
+    CONSTRAINT [capitols_pk] PRIMARY KEY
         ( [country], [city] )
 );
 
@@ -174,4 +174,13 @@ CREATE TABLE products_restaurants (
 CREATE TABLE employees_groups (
     employee_id [int] not null,
     group_id [int] not null
+);
+
+create table role_assignments (
+  subject varchar(50) not null,
+  role varchar(50) not null,
+  object varchar(50) default null,
+  created_at timestamp without time zone not null,
+  updated_at timestamp without time zone not null,
+  UNIQUE(subject, role, object)
 );
