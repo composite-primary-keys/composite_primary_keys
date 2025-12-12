@@ -5,9 +5,9 @@ module Arel
         values = o.map do |key|
           case key
             when Arel::Attributes::Attribute
-              "#{key.relation.name}.#{key.name}"
+              "#{quote_table_name(key.relation.name)}.#{quote_column_name(key.name)}"
             else
-              key
+              quote_column_name(key)
           end
         end
         collector << "(#{values.join(', ')})"

@@ -173,8 +173,8 @@ module ActiveRecord
     #
     # UPDATE `reference_codes`
     # SET ...
-    # WHERE (reference_codes.reference_type_id, reference_codes.reference_code) IN
-    #  (SELECT reference_type_id,reference_code
+    # WHERE (`reference_codes`.`reference_type_id`, `reference_codes`.`reference_code`) IN
+    #  (SELECT `reference_type_id`,`reference_code`
     #   FROM (SELECT DISTINCT `reference_codes`.`reference_type_id`, `reference_codes`.`reference_code`
     #         FROM `reference_codes`) __active_record_temp)
     def cpk_mysql_subquery(stmt)
@@ -189,7 +189,9 @@ module ActiveRecord
       # to work with MySQL 5.7.6 which sets optimizer_switch='derived_merge=on'
       subselect.distinct unless arel.limit || arel.offset || arel.orders.any?
 
-      key_name = arel_attributes.map(&:name).join(',')
+      key_name = arel_attributes.map(&:name).map do |name|
+        connection.quote_column_name(name)
+      end.join(',')
 
       manager = Arel::SelectManager.new(subselect.as("__active_record_temp")).project(Arel.sql(key_name))
 
